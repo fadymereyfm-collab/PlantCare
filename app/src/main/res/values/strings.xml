@@ -1,0 +1,82 @@
+<resources>
+    <!-- App name and general strings -->
+    <string name="app_name">PlantCare</string>
+    <string name="app_name_arabic">العناية بالنباتات</string>
+    
+    <!-- Navigation -->
+    <string name="my_plants">My Plants</string>
+    <string name="my_plants_arabic">نباتاتي</string>
+    <string name="care_schedule">Care Schedule</string>
+    <string name="care_schedule_arabic">جدول العناية</string>
+    <string name="plant_guide">Plant Guide</string>
+    <string name="plant_guide_arabic">دليل النباتات</string>
+    
+    <!-- Activities -->
+    <string name="add_plant">Add Plant</string>
+    <string name="add_plant_arabic">إضافة نبتة</string>
+    <string name="plant_details">Plant Details</string>
+    <string name="plant_details_arabic">تفاصيل النبتة</string>
+    <string name="settings">Settings</string>
+    <string name="settings_arabic">الإعدادات</string>
+    
+    <!-- Plant details -->
+    <string name="plant_name">Plant Name</string>
+    <string name="plant_name_arabic">اسم النبتة</string>
+    <string name="plant_type">Plant Type</string>
+    <string name="plant_type_arabic">نوع النبتة</string>
+    <string name="location">Location</string>
+    <string name="location_arabic">الموقع</string>
+    <string name="add_photo">Add Photo</string>
+    <string name="add_photo_arabic">إضافة صورة</string>
+    <string name="save_plant">Save Plant</string>
+    <string name="save_plant_arabic">حفظ النبتة</string>
+    
+    <!-- Instructions and messages -->
+    <string name="add_plant_instruction">Fill in the details below to add a new plant to your collection.</string>
+    <string name="add_plant_instruction_arabic">املأ التفاصيل أدناه لإضافة نبتة جديدة إلى مجموعتك.</string>
+    <string name="no_plants_message">No plants added yet. Tap the + button to add your first plant!</string>
+    <string name="no_plants_message_arabic">لم تتم إضافة أي نباتات بعد. اضغط على زر + لإضافة نبتتك الأولى!</string>
+    <string name="no_tasks_message">No care tasks scheduled. Add plants to see their care schedule.</string>
+    <string name="no_tasks_message_arabic">لا توجد مهام عناية مجدولة. أضف نباتات لرؤية جدول العناية بها.</string>
+    <string name="plant_detail_placeholder">Plant details will be displayed here.</string>
+    <string name="plant_detail_placeholder_arabic">ستظهر تفاصيل النبتة هنا.</string>
+    
+    <!-- Plant care -->
+    <string name="watering">Watering</string>
+    <string name="watering_arabic">الري</string>
+    <string name="fertilizing">Fertilizing</string>
+    <string name="fertilizing_arabic">التسميد</string>
+    <string name="pruning">Pruning</string>
+    <string name="pruning_arabic">التقليم</string>
+    <string name="repotting">Repotting</string>
+    <string name="repotting_arabic">إعادة الزراعة</string>
+    
+    <!-- Plant status -->
+    <string name="healthy">Healthy</string>
+    <string name="healthy_arabic">صحية</string>
+    <string name="needs_care">Needs Care</string>
+    <string name="needs_care_arabic">تحتاج رعاية</string>
+    <string name="sick">Sick</string>
+    <string name="sick_arabic">مريضة</string>
+    
+    <!-- Common actions -->
+    <string name="save">Save</string>
+    <string name="save_arabic">حفظ</string>
+    <string name="cancel">Cancel</string>
+    <string name="cancel_arabic">إلغاء</string>
+    <string name="delete">Delete</string>
+    <string name="delete_arabic">حذف</string>
+    <string name="edit">Edit</string>
+    <string name="edit_arabic">تعديل</string>
+    
+    <!-- Days and time -->
+    <string name="days">days</string>
+    <string name="days_arabic">أيام</string>
+    <string name="today">Today</string>
+    <string name="today_arabic">اليوم</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="tomorrow_arabic">غداً</string>
+    <string name="overdue">Overdue</string>
+    <string name="overdue_arabic">متأخر</string>
+    
+</resources>
