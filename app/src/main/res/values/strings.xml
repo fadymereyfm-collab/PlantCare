@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PlantCare</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="status_logged_in">Status: Logged In</string>
+    <string name="status_not_logged_in">Status: Not Logged In</string>
+    <string name="todays_tasks">Today\'s Tasks</string>
+    <string name="no_tasks_message">No tasks available. Please login to sync your data.</string>
+    <string name="login_successful">Login successful</string>
+    <string name="logout_successful">Logout successful</string>
+    <string name="data_import_success">Data imported successfully</string>
+    <string name="data_import_failed">Failed to import data</string>
+    <string name="data_export_failed">Failed to export data</string>
+    <string name="watering_reminder">Watering reminder</string>
+    <string name="task_type_icon">Task type icon</string>
+</resources>
