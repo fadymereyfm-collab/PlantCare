@@ -132,22 +132,38 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         
+        // Check if we have local data already
+        boolean hasLocalData = dataManager.hasLocalData();
+        boolean hasCloudData = cloudDataManager.hasCloudData(userId);
+        
+        Log.d(TAG, "Data status - Local: " + hasLocalData + ", Cloud: " + hasCloudData);
+        
+        // Always try to import from cloud, especially after fresh install
         cloudDataManager.importData(userId, new CloudDataManager.DataImportCallback() {
             @Override
             public void onSuccess(List<TodayTask> importedTasks) {
                 Log.d(TAG, "Data import successful. Imported " + importedTasks.size() + " tasks");
                 
-                // Save imported data locally
-                dataManager.saveTasks(importedTasks);
+                // Determine how to handle the imported data
+                if (!hasLocalData) {
+                    // Fresh install or no local data - use imported data directly
+                    Log.d(TAG, "No local data found, using imported data directly");
+                    dataManager.saveTasks(importedTasks);
+                } else {
+                    // Merge with existing local data
+                    Log.d(TAG, "Merging imported data with existing local data");
+                    dataManager.mergeTasks(importedTasks);
+                }
                 
                 // Update UI
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         loadLocalData();
-                        Toast.makeText(MainActivity.this, 
-                            "Data imported successfully: " + importedTasks.size() + " tasks", 
-                            Toast.LENGTH_SHORT).show();
+                        String message = importedTasks.size() > 0 ? 
+                            "Data imported successfully: " + importedTasks.size() + " tasks" :
+                            "Connected to cloud storage";
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -158,11 +174,19 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        // Show error but don't block user from using the app
                         Toast.makeText(MainActivity.this, 
-                            "Failed to import data: " + error, 
+                            "Could not sync with cloud: " + error, 
                             Toast.LENGTH_LONG).show();
-                        // Still load any existing local data
+                        
+                        // Load any existing local data
                         loadLocalData();
+                        
+                        // If no local data exists, create some default tasks for the user
+                        if (!dataManager.hasLocalData()) {
+                            Log.d(TAG, "No local data found, creating default tasks");
+                            createDefaultLocalTasks();
+                        }
                     }
                 });
             }
@@ -224,6 +248,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     
+    private void createDefaultLocalTasks() {
+        Log.d(TAG, "Creating default local tasks for new user");
+        List<TodayTask> defaultTasks = new ArrayList<>();
+        
+        defaultTasks.add(new TodayTask(
+            "Welcome to PlantCare!", 
+            "Start by adding your plants and setting up watering schedules", 
+            "watering"
+        ));
+        
+        defaultTasks.add(new TodayTask(
+            "Check plant health", 
+            "Look for signs of pests, diseases, or nutrient deficiencies", 
+            "fertilizing"
+        ));
+        
+        dataManager.saveTasks(defaultTasks);
+        loadLocalData();
+        
+        Toast.makeText(this, "Welcome! Your data will sync with the cloud.", Toast.LENGTH_LONG).show();
+    }
+    
     @Override
     protected void onPause() {
         super.onPause();
@@ -231,5 +277,12 @@ public class MainActivity extends AppCompatActivity {
         if (isLoggedIn) {
             exportDataToCloud();
         }
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Check if login status changed while app was in background
+        checkLoginStatus();
     }
 }

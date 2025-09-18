@@ -63,9 +63,17 @@ public class CloudDataManager {
                     String cloudDataJson = cloudPrefs.getString(KEY_CLOUD_DATA_PREFIX + userId, null);
                     
                     if (cloudDataJson == null || cloudDataJson.isEmpty()) {
-                        Log.d(TAG, "No cloud data found for user: " + userId);
-                        // Create some default data for demonstration
+                        Log.d(TAG, "No cloud data found for user: " + userId + " - providing default data");
+                        // For new users or users without cloud data, provide default tasks
                         List<TodayTask> defaultTasks = createDefaultTasks();
+                        
+                        // Save the default data to cloud immediately so it's available next time
+                        String defaultDataJson = tasksToJson(defaultTasks);
+                        SharedPreferences.Editor editor = cloudPrefs.edit();
+                        editor.putString(KEY_CLOUD_DATA_PREFIX + userId, defaultDataJson);
+                        editor.putLong(KEY_CLOUD_DATA_PREFIX + userId + "_timestamp", System.currentTimeMillis());
+                        editor.commit();
+                        
                         mainHandler.post(() -> callback.onSuccess(defaultTasks));
                         return;
                     }
@@ -74,10 +82,13 @@ public class CloudDataManager {
                     List<TodayTask> importedTasks = parseCloudData(cloudDataJson);
                     
                     if (importedTasks.isEmpty()) {
-                        Log.w(TAG, "Cloud data exists but no tasks found");
+                        Log.w(TAG, "Cloud data exists but no tasks found - providing default data");
+                        List<TodayTask> defaultTasks = createDefaultTasks();
+                        mainHandler.post(() -> callback.onSuccess(defaultTasks));
+                    } else {
+                        Log.d(TAG, "Successfully parsed " + importedTasks.size() + " tasks from cloud");
+                        mainHandler.post(() -> callback.onSuccess(importedTasks));
                     }
-                    
-                    mainHandler.post(() -> callback.onSuccess(importedTasks));
                     
                 } catch (Exception e) {
                     Log.e(TAG, "Error importing data for user: " + userId, e);
