@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">PlantCare</string>
+
+    <!-- عام -->
+    <string name="add_plant">Zu meiner Liste hinzufügen</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="close">Schließen</string>
+    <string name="camera">Foto machen</string>
+    <string name="delete">Löschen</string>
+    <string name="plant_image">Pflanzenbild</string>
+    <string name="add_to_favorites">Zu Favoriten hinzufügen</string>
+    <string name="search_hint">Suche Pflanzen…</string>
+
+    <!-- التكرار -->
+    <string name="repeat_none">Einmalig</string>
+    <string name="repeat_daily">🔁 täglich</string>
+    <string name="repeat_weekly">🔁 wöchentlich</string>
+
+    <!-- التذكير -->
+    <string name="reminder_description">📝 %1$s</string>
+    <string name="reminder_added">Tägliche Erinnerung hinzugefügt</string>
+    <string name="reminder_saved">Erinnerung gespeichert</string>
+    <string name="no_reminders">Keine Erinnerungen für diesen Tag</string>
+
+    <!-- تبويبات -->
+    <string name="tab_all_plants">Alle Pflanzen</string>
+    <string name="tab_my_plants">Meine Pflanzen</string>
+    <string name="tab_calendar">Kalender</string>
+    <string name="tab_today">Heute</string>
+
+    <!-- إعدادات عامة -->
+    <string name="settings">Einstellungen</string>
+    <string name="go_to_today">Zum heutigen Tag springen</string>
+    <string name="take_photo">Foto machen</string>
+    <string name="water_plant">Pflanze gießen</string>
+    <string name="take_cover_photo">Titelbild aufnehmen</string>
+    <string name="view_archive_photos">Archivfotos ansehen</string>
+
+    <!-- المصادقة (حوار البداية الحديث) -->
+    <string name="auth_welcome_title">Willkommen!</string>
+    <string name="auth_google_signup">Mit Google registrieren</string>
+    <string name="auth_facebook_signup">Mit Facebook registrieren</string>
+    <string name="auth_email_signup">Mit E‑Mail registrieren</string>
+    <string name="auth_have_account_signin">Bereits ein Konto? Anmelden.</string>
+    <string name="auth_google_needs_config">Google‑Anmeldung muss konfiguriert werden (Anbieter aktivieren + SHA‑1/256 hinzufügen + google‑services.json synchronisieren).</string>
+    <string name="auth_facebook_needs_config">Facebook‑Anmeldung muss konfiguriert werden (facebook_app_id + Client‑Token + Manifest‑Metadaten).</string>
+
+    <!-- نصوص قديمة للحوارات البريدية -->
+    <string name="auth_sign_in">Anmelden</string>
+    <string name="auth_sign_up">Registrieren</string>
+    <string name="auth_email">E-Mail</string>
+    <string name="auth_name_optional">Name (optional)</string>
+    <string name="auth_password">Passwort</string>
+    <string name="auth_fill_required">Bitte E-Mail und Passwort eingeben</string>
+    <string name="auth_email_exists">E-Mail bereits registriert</string>
+    <string name="auth_invalid">E-Mail oder Passwort ungültig</string>
+    <string name="auth_welcome">Willkommen!</string>
+    <string name="auth_signed_up">Konto erstellt</string>
+
+    <!-- أقسام الإعدادات -->
+    <string name="settings_section_account">Konto</string>
+    <string name="settings_section_security">Sicherheit</string>
+    <string name="settings_section_preferences">Einstellungen</string>
+    <string name="settings_section_sync">Synchronisation</string>
+    <string name="settings_section_danger">Gefahrenbereich</string>
+
+    <!-- الحساب -->
+    <string name="settings_name_hint">Name</string>
+    <string name="settings_update_name">Name aktualisieren</string>
+    <string name="settings_manage_google">Google‑Konto verwalten</string>
+    <string name="settings_provider_google">Google</string>
+    <string name="settings_provider_email">E‑Mail</string>
+    <string name="settings_provider_unknown">Unbekannter Anbieter</string>
+    <string name="settings_enter_name">Bitte Name eingeben</string>
+    <string name="settings_name_updated">Name aktualisiert</string>
+
+    <!-- الأمان -->
+    <string name="settings_old_password">Altes Passwort</string>
+    <string name="settings_new_password">Neues Passwort</string>
+    <string name="settings_confirm_password">Passwort bestätigen</string>
+    <string name="settings_change_password">Passwort ändern</string>
+    <string name="settings_set_password">Passwort festlegen</string>
+    <string name="settings_set_password_info">Sie können ein Passwort hinzufügen, um sich zusätzlich per E‑Mail anzumelden.</string>
+    <string name="settings_password_rules">Mindestens 8 Zeichen mit Groß‑/Kleinbuchstaben und Zahl.</string>
+    <string name="settings_password_mismatch">Passwörter stimmen nicht überein</string>
+    <string name="settings_wrong_old_password">Altes Passwort ist falsch</string>
+    <string name="settings_password_changed">Passwort geändert</string>
+    <string name="settings_password_set">Passwort festgelegt</string>
+
+    <!-- التفضيلات / العرض -->
+    <string name="settings_theme">Darstellung</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Hell</string>
+    <string name="settings_theme_dark">Dunkel</string>
+
+    <!-- الإشعارات القديمة لديك -->
+    <string name="settings_enable_notifications">Benachrichtigungen</string>
+    <string name="settings_pick_reminder_time">Erinnerungszeit</string>
+
+    <!-- المزامنة -->
+    <string name="settings_synced">Synchronisiert</string>
+    <string name="settings_sync_now">Jetzt synchronisieren</string>
+
+    <!-- خروج / حذف -->
+    <string name="settings_logout">Abmelden</string>
+    <string name="settings_delete_account">Konto löschen</string>
+    <string name="settings_delete_confirm">Dieses Konto und alle zugehörigen lokalen Daten werden gelöscht. Fortfahren?</string>
+    <string name="settings_account_deleted">Konto gelöscht</string>
+
+    <!-- إضافات -->
+    <string name="settings_language_label">Sprache</string>
+    <string name="settings_notifications">Benachrichtigungen</string>
+    <string name="settings_water_reminders">Bewässerungs-Erinnerungen</string>
+
+    <!-- رسائل الكاميرا بالألمانية -->
+    <string name="camera_permission_required">Kamerazugriff erforderlich</string>
+    <string name="camera_app_not_found">Keine Kamera‑App gefunden. Vorschau wird verwendet.</string>
+    <string name="camera_file_create_error">Bilddatei konnte nicht erstellt werden</string>
+
+    <!-- ====== الإضافات المطلوبة لإزالة أخطاء الربط ====== -->
+    <string name="lighting_label">Licht</string>
+    <string name="soil_label">Boden</string>
+    <string name="watering_label">Bewässerung</string>
+    <string name="fertilizing_label">Düngung</string>
+    <string name="add_photo">Foto hinzufügen</string>
+    <string name="view_photos">Fotos ansehen</string>
+
+    <!-- Widget strings -->
+    <string name="widget_no_tasks">Keine Aufgaben heute!</string>
+    <string name="plant_thumbnail">Pflanzenthumbnail</string>
+    <string name="task_status">Aufgabenstatus</string>
+
+    <!-- Onboarding strings -->
+    <string name="onboarding_welcome_title">Willkommen bei PlantCare</string>
+    <string name="onboarding_welcome_desc">Deine App für die perfekte Pflanzenpflege. Bewässerungserinnerungen, Pflanzenkatalog und Fotospeicher.</string>
+    <string name="onboarding_watering_title">Bewässerungserinnerungen</string>
+    <string name="onboarding_watering_desc">Erhalte tägliche Erinnerungen, wenn deine Pflanzen Wasser benötigen.</string>
+    <string name="onboarding_catalog_title">Pflanzenkatalog &amp; Archiv</string>
+    <string name="onboarding_catalog_desc">Durchsuche unseren Katalog nach Pflanzen und speichere Fotos deiner grünen Freunde.</string>
+    <string name="onboarding_plants_title">Wähle deine ersten Pflanzen</string>
+    <string name="onboarding_plants_subtitle">Wähle einige Pflanzen, um zu starten (optional)</string>
+    <string name="onboarding_next">Weiter</string>
+    <string name="onboarding_skip">Überspringen</string>
+    <string name="onboarding_create_account">Konto erstellen</string>
+    <string name="onboarding_login">Anmelden</string>
+    <string name="onboarding_guest">Ohne Konto testen</string>
+
+    <!-- Weather / Wetter -->
+    <string name="weather_permission_title">Standort für Wetterdaten</string>
+    <string name="weather_permission_message">PlantCare benötigt deinen ungefähren Standort, um Bewässerungstipps basierend auf dem aktuellen Wetter zu geben.</string>
+    <string name="weather_tip_rain">Es regnet! Deine Pflanzen brauchen heute weniger Wasser.</string>
+    <string name="weather_tip_hot">Hitze! Deine Pflanzen brauchen mehr Wasser als gewöhnlich.</string>
+    <string name="weather_tip_humid">Hohe Luftfeuchtigkeit – weniger gießen.</string>
+    <string name="weather_tip_cold">Kalt draußen! Pflanzen brauchen jetzt weniger Wasser.</string>
+    <string name="weather_tip_normal">Normales Wetter – gieße wie gewohnt.</string>
+    <string name="weather_enable_location">Standort aktivieren</string>
+    <string name="weather_no_data">Noch keine Wetterdaten verfügbar</string>
+
+    <!-- Plant Identification / Pflanzenerkennung -->
+    <string name="identify_title">Pflanze erkennen</string>
+    <string name="identify_placeholder">Foto aufnehmen oder aus Galerie wählen</string>
+    <string name="identify_camera">Kamera</string>
+    <string name="identify_gallery">Galerie</string>
+    <string name="identify_button">Pflanze erkennen</string>
+    <string name="identify_results_title">Ergebnisse</string>
+    <string name="identify_no_results">Keine Pflanze erkannt. Versuche ein anderes Foto mit besserer Beleuchtung.</string>
+    <string name="identify_error">Fehler: %1$s</string>
+    <string name="identify_add_plant">Hinzufügen</string>
+    <string name="identify_plant_added">Pflanze wurde hinzugefügt!</string>
+    <string name="identify_image_missing">Bild nicht gefunden</string>
+    <string name="identify_family_format">Familie: %1$s</string>
+    <string name="identify_suggestion_image_desc">Referenzfoto dieser Pflanze</string>
+    <string name="compare_label_candidate">Vorschlag</string>
+    <string name="compare_label_photo">Dein Foto</string>
+    <string name="compare_confirm">Das bin ich!</string>
+
+    <!-- PlantNet — menschliche Fehlermeldungen nach Typ -->
+    <string name="identify_error_invalid_key">Der PlantNet‑Dienst hat deinen Schlüssel abgelehnt. Die App kann die Erkennung gerade nicht nutzen — bitte später erneut versuchen.</string>
+    <string name="identify_error_quota_exceeded">Das tägliche Erkennungs­limit ist erreicht. Morgen geht es weiter — oder versuche es später noch einmal.</string>
+    <string name="identify_error_no_internet">Keine Internet­verbindung. Bitte WLAN oder mobile Daten prüfen und erneut versuchen.</string>
+    <string name="identify_error_timeout">Die Erkennung hat zu lange gedauert. Prüfe deine Verbindung und versuche es noch einmal.</string>
+    <string name="identify_error_server">Der Erkennungs­dienst ist vorüber­gehend nicht erreichbar. Bitte in einigen Minuten erneut versuchen.</string>
+    <string name="identify_error_unknown">Etwas hat nicht geklappt. Bitte die Erkennung später erneut versuchen.</string>
+    <string name="identify_enriching">Hole Pflanzen­informationen…</string>
+
+    <!-- Organ types -->
+    <string name="organ_auto">Automatisch</string>
+    <string name="organ_leaf">Blatt</string>
+    <string name="organ_flower">Blüte</string>
+    <string name="organ_fruit">Frucht</string>
+    <string name="organ_bark">Rinde</string>
+
+    <!-- Datenschutz-Einstellungen (Einstellungen-Dialog) -->
+    <string name="settings_section_privacy">Datenschutz &amp; Daten</string>
+    <string name="settings_analytics_label">Anonyme Nutzungsanalyse &amp; Absturzberichte</string>
+    <string name="settings_export_data">Meine Daten exportieren (JSON)</string>
+    <string name="settings_export_success">Exportdatei erstellt</string>
+    <string name="settings_export_error">Export fehlgeschlagen – bitte erneut versuchen</string>
+
+    <!-- Allgemeine Aktionen -->
+    <string name="action_save">SPEICHERN</string>
+    <string name="action_delete_caps">LÖSCHEN</string>
+    <string name="saved">Gespeichert</string>
+    <string name="deleted">Gelöscht</string>
+    <string name="filter_all">Alle</string>
+
+    <!-- Pflanze hinzufügen / Katalog -->
+    <string name="add_plant_name_required">Bitte Pflanzennamen eingeben</string>
+    <string name="add_plant_select_room">Bitte Raum auswählen</string>
+    <string name="add_plant_select_date">Bitte Startdatum auswählen</string>
+    <string name="plant_added">Pflanze hinzugefügt!</string>
+    <string name="plant_added_to_catalog">Die Pflanze wurde in den Katalog aufgenommen</string>
+    <string name="save_failed">Speichern fehlgeschlagen: %1$s</string>
+    <string name="watering_format">Bewässerung: %1$s</string>
+
+    <!-- Fotos -->
+    <string name="photos_from_date">📸 Fotos vom %1$s</string>
+
+    <!-- Dialoge -->
+    <string name="dialog_water_all_title">Alle gießen?</string>
+    <string name="dialog_water_all_message">Wurden alle Pflanzen in „%1$s“ gegossen?</string>
+    <string name="dialog_reschedule_title">Neu planen?</string>
+    <string name="dialog_reschedule_message">Die Pflanze ist seit %1$d Tag(en) überfällig.\nMöchten Sie alle zukünftigen Erinnerungen ab heute neu planen?</string>
+
+    <!-- Erinnerungen Validierung -->
+    <string name="reminder_title_required">Titel darf nicht leer sein!</string>
+    <string name="reminder_date_required">Datum darf nicht leer sein!</string>
+
+    <!-- Anmeldung -->
+    <string name="login_already_have_account">Schon Konto? Jetzt anmelden</string>
+    <string name="login_new_user_register">Neu hier? Jetzt registrieren</string>
+
+    <!-- E-Mail &amp; Passwort -->
+    <string name="email_invalid">Bitte gültige E-Mail eingeben</string>
+    <string name="password_too_short">Bitte sicheres Passwort/PIN eingeben (mind. 4 Zeichen)</string>
+
+    <!-- Cloud -->
+    <string name="cloud_import_failed">Cloud-Import fehlgeschlagen</string>
+    <string name="cloud_import_success">Cloud-Daten importiert</string>
+
+    <!-- Räume &amp; Pflanzen -->
+    <string name="delete_failed">Löschen fehlgeschlagen</string>
+    <string name="no_rooms_available">Keine Räume verfügbar</string>
+    <string name="no_plants_in_room">Keine Pflanzen vorhanden</string>
+
+    <!-- Sitzung -->
+    <string name="error_no_active_session">Keine aktive Sitzung.</string>
+
+    <!-- Datenschutz-Einwilligung (DSGVO) -->
+    <string name="consent_title">Datenschutz &amp; Analyse</string>
+    <string name="consent_body">Um PlantCare zu verbessern, möchten wir anonyme Nutzungsdaten und Absturzberichte erfassen.\n\nWir erfassen niemals persönliche Daten oder Standortinformationen für Analysezwecke. Du kannst deine Einwilligung jederzeit in den Einstellungen widerrufen.</string>
+    <string name="consent_privacy_link">Datenschutzerklärung lesen →</string>
+    <string name="consent_accept">Zustimmen</string>
+    <string name="consent_decline">Nur notwendige</string>
+    <string name="consent_privacy_url">https://fadymereyfm-collab.github.io/PlantCare/</string>
+</resources>
