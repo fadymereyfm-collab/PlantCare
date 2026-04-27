@@ -1,11 +1,30 @@
 # PlantCare Progress Tracker
-## Last Updated: 2026-04-27
-## Current Layer: Layer 5 → COMPLETE (proceed to Layer 6)
-## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4, Task 5.5, Task 5.6
+## Last Updated: 2026-04-28
+## Current Layer: Layer 6 (in progress)
+## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4, Task 5.5, Task 5.6, Task 6.3, Task 6.4
 ## Deferred: Privacy Policy GitHub Pages activation — docs/index.html + pages.yml exist; needs GitHub remote + Pages activation
 ## Deferred (Task 5.3): APK size analysis — devDebug AAB = 33.4 MB; release build with R8 expected < 25 MB; verify when signing key available
-## Last Verified Task: Task 5.6 — AAB builds successfully (devDebug 33.4 MB, BUILD SUCCESSFUL)
-## Next Task: Layer 6 — Task 6.1: Google Play Console setup (requires manual steps) → Task 6.3: Google Play Billing Library integration
+## Deferred (Task 6.1): Google Play Console setup — requires Play Console account + manual form completion
+## Deferred (Task 6.2): Billing SKUs — requires Play Console to create SKUs (monthly_pro, yearly_pro, lifetime_pro)
+## Last Verified Task: Task 6.3/6.4 — BillingManager.kt + PaywallDialogFragment.kt + ProStatusManager.kt (BUILD SUCCESSFUL 2m)
+## Next Task: Task 6.5 — AdMob Banner integration (requires AdMob account + test ad unit IDs)
+
+---
+
+## Session: 2026-04-28 (Scheduled Task — auto, Task 6.3/6.4 — Billing + Paywall)
+### Tasks Completed: Task 6.3 (Billing Library), Task 6.4 (Paywall Dialog)
+### Layer: Layer 6
+### Evidence:
+  - app/build.gradle: added `billing-ktx:6.2.0`
+  - billing/BillingManager.kt: BillingClient, connect(), queryProducts(), launchPurchase(), restorePurchases(), isPro StateFlow
+  - billing/ProStatusManager.kt: SharedPreferences-backed isPro flag, FREE_PLANT_LIMIT = 8
+  - billing/PaywallDialogFragment.kt: non-aggressive paywall with close button, Monthly/Yearly/Lifetime options, Restore Purchases
+  - res/layout/dialog_paywall.xml: full paywall layout
+  - res/drawable/bg_card_outline.xml: rounded outline shape for pricing cards
+  - strings.xml: 12 paywall string keys added (DE)
+  - Note: BillingManager requires Play Console SKUs (monthly_pro, yearly_pro, lifetime_pro) to be active; queryProducts() returns empty list until then
+### Build Status: ✅ assembleDevDebug passed (2m, BUILD SUCCESSFUL)
+### Next Task: Task 6.5 — AdMob Banner (requires AdMob account) or Task 6.6 — ASO content
 
 ---
 

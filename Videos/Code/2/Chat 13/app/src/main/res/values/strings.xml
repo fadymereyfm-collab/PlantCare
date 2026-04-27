@@ -262,4 +262,18 @@
     <string name="cd_fab_add_plant">Pflanze hinzufügen</string>
     <string name="cd_onboarding_image">Vorschaubild</string>
     <string name="cd_selected">Ausgewählt</string>
+
+    <!-- Paywall / PlantCare Pro -->
+    <string name="paywall_title">PlantCare Pro 🌿</string>
+    <string name="paywall_comparison">Kostenlos: bis zu 8 Pflanzen\nPro: unbegrenzte Pflanzen, keine Werbung, alle Features</string>
+    <string name="paywall_monthly_label">Monatlich · €2,99/Monat · 7 Tage kostenlos</string>
+    <string name="paywall_yearly_label">Jährlich · €19,99/Jahr · 7 Tage kostenlos ⭐ Empfohlen</string>
+    <string name="paywall_lifetime_label">Einmalig · €39,99 · Für immer Pro</string>
+    <string name="paywall_subscribe">Abonnieren</string>
+    <string name="paywall_subscribe_recommended">Abonnieren (Empfohlen)</string>
+    <string name="paywall_buy_lifetime">Einmalig kaufen</string>
+    <string name="paywall_restore">Käufe wiederherstellen</string>
+    <string name="paywall_restore_done">Käufe erfolgreich wiederhergestellt</string>
+    <string name="paywall_restore_failed">Keine früheren Käufe gefunden</string>
+    <string name="paywall_limit_reached">Du brauchst mehr Platz für deine grüne Familie! Upgrade auf Pro für unbegrenzte Pflanzen.</string>
 </resources>
