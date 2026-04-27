@@ -1,10 +1,26 @@
 # PlantCare Progress Tracker
 ## Last Updated: 2026-04-27
-## Current Layer: Layer 5 (in progress)
-## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4, Task 5.5
+## Current Layer: Layer 5 → COMPLETE (proceed to Layer 6)
+## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4, Task 5.5, Task 5.6
 ## Deferred: Privacy Policy GitHub Pages activation — docs/index.html + pages.yml exist; needs GitHub remote + Pages activation
-## Last Verified Task: Task 5.5 — PlantNet caching (DB v9→v10, identification_cache table, SHA-256, 7-day TTL)
-## Next Task: Task 5.6 — App Bundle (AAB) build verification
+## Deferred (Task 5.3): APK size analysis — devDebug AAB = 33.4 MB; release build with R8 expected < 25 MB; verify when signing key available
+## Last Verified Task: Task 5.6 — AAB builds successfully (devDebug 33.4 MB, BUILD SUCCESSFUL)
+## Next Task: Layer 6 — Task 6.1: Google Play Console setup (requires manual steps) → Task 6.3: Google Play Billing Library integration
+
+---
+
+## Session: 2026-04-27 (Scheduled Task — auto, Tasks 5.1–5.6 Layer 5 completion)
+### Tasks Completed: Task 5.1 (Remove Facebook SDK), Task 5.2-BoM (Firebase BoM 33.7.0), Task 5.4 (Top-3 plant ID), Task 5.5 (PlantNet caching), Task 5.6 (AAB build)
+### Layer: Layer 5 — COMPLETE
+### Evidence:
+  - Task 5.1: Facebook SDK dependency + imports + UI + 2 strings removed; BUILD ✅
+  - Task 5.2: firebase-bom 32.5.0 → 33.7.0; BUILD ✅ (2m 38s)
+  - Task 5.4: .take(3) in repository, Analytics.logPlantIdentified(rank, pct), btnNoneCorrect UI; BUILD ✅
+  - Task 5.5: CachedIdentification entity, IdentificationCacheDao, MIGRATION_9_10, DB v10, SHA-256 cache; BUILD ✅ (1m 5s)
+  - Task 5.6: bundleDevDebug → app-dev-debug.aab 33.4 MB; BUILD ✅
+  - Task 5.3 (APK size): deferred — devDebug 33 MB (release expected < 25 MB with R8)
+### Commits: d62c7e6, 04b1567, 58a98a7, d3ed9e8
+### Next Task: Layer 6 — Task 6.3: Google Play Billing Library integration (Tasks 6.1/6.2 require Play Console manual steps)
 
 ---
 
