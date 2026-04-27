@@ -276,4 +276,8 @@
     <string name="paywall_restore_done">Käufe erfolgreich wiederhergestellt</string>
     <string name="paywall_restore_failed">Keine früheren Käufe gefunden</string>
     <string name="paywall_limit_reached">Du brauchst mehr Platz für deine grüne Familie! Upgrade auf Pro für unbegrenzte Pflanzen.</string>
+
+    <!-- AdMob — test IDs; replace with real IDs from AdMob console before release -->
+    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="admob_banner_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
 </resources>

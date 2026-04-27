@@ -22,9 +22,11 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.plantcare.DataChangeNotifier;
+import com.example.plantcare.ads.AdManager;
 import com.example.plantcare.weekbar.ArchiveStore;
 import com.example.plantcare.media.CoverCloudSync; // Cloud sync for cover/profile picture
 import com.example.plantcare.media.PhotoStorage;
+import com.google.android.gms.ads.AdView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -47,6 +49,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *   then import, then pull covers into Room.
  */
 public class MainActivity extends AppCompatActivity {
+
+    private AdManager adManager;
 
     private Plant currentPlantForPhoto;
     private PlantDao dao;
@@ -172,6 +176,27 @@ public class MainActivity extends AppCompatActivity {
         }
 
         selectTab(0);
+
+        adManager = new AdManager(this, (AdView) findViewById(R.id.adBanner));
+        adManager.start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adManager != null) adManager.resume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (adManager != null) adManager.pause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (adManager != null) adManager.destroy();
     }
 
     private void selectTab(int tabIndex) {

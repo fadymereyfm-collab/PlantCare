@@ -178,6 +178,9 @@ dependencies {
     // Google Play Billing
     implementation "com.android.billingclient:billing-ktx:6.2.0"
 
+    // Google Mobile Ads (AdMob) — banner for free tier
+    implementation "com.google.android.gms:play-services-ads:23.4.0"
+
     // TensorFlow Lite — Krankheitsdiagnose mit lokalem Modell
     implementation "org.tensorflow:tensorflow-lite:2.14.0"
     implementation "org.tensorflow:tensorflow-lite-support:0.4.4"

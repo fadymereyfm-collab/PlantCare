@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- نسخة محسّنة للتبويبات: ضمان ظهور كامل النص + دعم التمرير الأفقي إذا لزم -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootMain"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -124,4 +125,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+    <!-- AdMob Banner — shown for free users only; Pro users see this as gone -->
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/admob_banner_unit_id" />
 </LinearLayout>
