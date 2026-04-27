@@ -1,10 +1,25 @@
 # PlantCare Progress Tracker
 ## Last Updated: 2026-04-27
 ## Current Layer: Layer 5 (in progress)
-## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4
+## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4, Task 5.5
 ## Deferred: Privacy Policy GitHub Pages activation — docs/index.html + pages.yml exist; needs GitHub remote + Pages activation
-## Last Verified Task: Task 5.4 — Top-3 plant ID results (repository .take(3), Analytics rank logging, "Keine Übereinstimmung" button)
-## Next Task: Task 5.5 — PlantNet caching (SHA-256 image hash → Room cache, 7-day TTL)
+## Last Verified Task: Task 5.5 — PlantNet caching (DB v9→v10, identification_cache table, SHA-256, 7-day TTL)
+## Next Task: Task 5.6 — App Bundle (AAB) build verification
+
+---
+
+## Session: 2026-04-27 (Scheduled Task — auto, Task 5.5 — PlantNet Caching)
+### Task Completed: Task 5.5 — PlantNet caching
+### Layer: Layer 5
+### Evidence:
+  - New entity: data/plantnet/CachedIdentification.kt (imageHash PK, responseJson, timestamp)
+  - New DAO: data/plantnet/IdentificationCacheDao.kt (findByHash, upsert, deleteOlderThan)
+  - DatabaseMigrations.java: MIGRATION_9_10 — CREATE TABLE identification_cache
+  - AppDatabase.java: version 9 → 10, CachedIdentification entity registered, identificationCacheDao() added
+  - PlantIdentificationRepository.kt: SHA-256 hash → cache lookup → API fallback → cache persist (7-day TTL)
+  - Gson serialization for List<IdentificationResult>
+### Build Status: ✅ assembleDevDebug passed (1m 5s)
+### Next Task: Task 5.6 — App Bundle (AAB) build verification
 
 ---
 
