@@ -1,10 +1,21 @@
 # PlantCare Progress Tracker
 ## Last Updated: 2026-04-27
 ## Current Layer: Layer 5 (in progress)
-## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1
+## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM
 ## Deferred: Privacy Policy GitHub Pages activation — docs/index.html + pages.yml exist; needs GitHub remote + Pages activation
-## Last Verified Task: Task 5.1 — Remove Facebook SDK (dependency removed, imports + fields + method removed, layouts cleaned, 2 strings removed)
-## Next Task: Task 5.2 (Firebase BoM update) or Task 5.4 (Top-3 plant ID results) — Layer 5 remaining tasks
+## Last Verified Task: Task 5.2 — Firebase BoM 32.5.0 → 33.7.0 (BUILD SUCCESSFUL in 2m 38s)
+## Next Task: Task 5.4 — Top-3 plant identification results (UI + Analytics)
+
+---
+
+## Session: 2026-04-27 (Scheduled Task — auto, Task 5.2 — Firebase BoM Update)
+### Task Completed: Task 5.2 — Firebase BoM Update
+### Layer: Layer 5
+### Evidence:
+  - firebase-bom 32.5.0 → 33.7.0 in app/build.gradle
+  - All Firebase libraries (auth, firestore, storage, crashlytics, analytics) resolved cleanly
+### Build Status: ✅ assembleDevDebug passed (2m 38s, BUILD SUCCESSFUL)
+### Next Task: Task 5.4 — Top-3 plant identification results
 
 ---
 
