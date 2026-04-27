@@ -1,13 +1,82 @@
 # PlantCare Progress Tracker
 ## Last Updated: 2026-04-28
 ## Current Layer: Layer 6 (in progress)
-## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4, Task 5.5, Task 5.6, Task 6.3, Task 6.4
+## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4, Task 5.5, Task 5.6, Task 6.3, Task 6.4, Task 6.5, Task 6.6
 ## Deferred: Privacy Policy GitHub Pages activation — docs/index.html + pages.yml exist; needs GitHub remote + Pages activation
 ## Deferred (Task 5.3): APK size analysis — devDebug AAB = 33.4 MB; release build with R8 expected < 25 MB; verify when signing key available
 ## Deferred (Task 6.1): Google Play Console setup — requires Play Console account + manual form completion
 ## Deferred (Task 6.2): Billing SKUs — requires Play Console to create SKUs (monthly_pro, yearly_pro, lifetime_pro)
-## Last Verified Task: Task 6.3/6.4 — BillingManager.kt + PaywallDialogFragment.kt + ProStatusManager.kt (BUILD SUCCESSFUL 2m)
-## Next Task: Task 6.5 — AdMob Banner integration (requires AdMob account + test ad unit IDs)
+## Deferred (Task 6.5 prod IDs): AdMob implemented with test IDs — replace admob_app_id + admob_banner_unit_id in strings.xml with real IDs from AdMob console before release
+## Last Verified Task: Task 6.6 — ASO content (store listing copy, keywords, feature graphic)
+## Next Task: Task 6.7 — Final pre-release checklist (ProGuard verify, versionCode bump to 2, release AAB signing)
+
+---
+
+## Session: 2026-04-28 (Scheduled Task — auto, Task 6.6 — ASO Content)
+### Task Completed: Task 6.6 — ASO content (store listing copy, keywords, screenshots)
+### Layer: Layer 6
+### Evidence:
+  - store-listing/listing_de.md: removed Facebook from auth providers (Task 5.1 already removed it from code)
+  - store-listing/listing_de.md: updated monetization line from "kostenlos und ohne Werbung" → "kostenlos mit optionalem Pro-Upgrade"
+  - store-listing/listing_de.md: added PlantCare Pro section (⭐ PLANTCARE PRO — unlimited plants, werbefrei, monatlich/jährlich/einmalig)
+  - store-listing/listing_de.md: updated KI section to reflect PlantNet (not TFLite disease model) + top-3 results + caching
+  - store-listing/listing_de.md: added DSGVO consent dialog mention
+  - store-listing/listing_de.md: added full ASO keyword strategy table (9 primary + 8 long-tail DE keywords)
+  - store-listing/listing_de.md: added ASO-optimized Kurzbeschreibung alternative (A/B test suggestion)
+  - store-listing/generate_assets.py: v2 → v3; feature graphic badge "100 % kostenlos" → "Kostenlos & Pro"
+  - store-listing/generate_assets.py: screen_einstellungen updated — added "⭐ PlantCare Pro" as first settings section
+  - No app code changed — store listing content only
+### Build Status: N/A (store listing assets only, no code change)
+### Next Task: Task 6.7 — Final pre-release checklist (ProGuard, versionCode 1→2, release AAB)
+
+---
+
+## Session: 2026-04-28 (Scheduled End-of-Session Verification — Task 6.5 AdMob)
+### Task Completed: Task 6.5 — AdMob Banner integration (re-verification)
+### Layer: Layer 6
+### Evidence:
+  - ads/AdManager.kt: 32 lines — AdView lifecycle wrapper (start/resume/pause/destroy)
+  - strings.xml:281: `admob_app_id` = Google test app ID (ca-app-pub-3940256099942544~3347511713)
+  - strings.xml:282: `admob_banner_unit_id` = Google test banner unit (ca-app-pub-3940256099942544/6300978111)
+  - activity_main.xml: AdView id=adBanner at bottom, visibility="gone" default
+  - API key check: 0 hardcoded key literals (WeatherRepository placeholder + PlantNetError enum constant — pre-existing, not real secrets)
+  - DAO in UI: 10 matches — known arch debt, unchanged
+  - getEmail(): 4 matches — pre-existing
+  - Build issue: initial incremental build failed (stale annotation processor cache); resolved by deleting app/build/ dir
+### Build Status: ✅ assembleDevDebug passed (1m 21s, 43 tasks, 43 executed — full clean build)
+### Next Task: Task 6.6 — ASO content (store listing copy, keywords, screenshots)
+
+---
+
+## Session: 2026-04-28 (Scheduled Task — auto, Task 6.5 — AdMob Banner)
+### Task Completed: Task 6.5 — AdMob Banner integration
+### Layer: Layer 6
+### Evidence:
+  - app/build.gradle: added `com.google.android.gms:play-services-ads:23.4.0`
+  - AndroidManifest.xml: added `com.google.android.gms.ads.APPLICATION_ID` meta-data + `tools:replace` fix for `AD_SERVICES_CONFIG` conflict between `play-services-measurement-api:22.1.2` and `play-services-ads-lite:23.4.0`
+  - strings.xml: `admob_app_id` = Google test app ID, `admob_banner_unit_id` = Google test banner unit
+  - ads/AdManager.kt: wraps AdView lifecycle (start/resume/pause/destroy), Pro-gated (hidden for Pro users)
+  - activity_main.xml: `AdView` (id=adBanner) at bottom, `visibility="gone"` default, `ads:adSize="BANNER"`
+  - App.java: `MobileAds.initialize()` called on app start
+  - MainActivity.java: `adManager` field, `adManager.start()` in onCreate, onResume/onPause/onDestroy lifecycle
+  - Note: Using Google test IDs — replace with real AdMob IDs before Play Store release
+### Build Status: ✅ assembleDevDebug passed (1m 32s, BUILD SUCCESSFUL)
+### Next Task: Task 6.6 — ASO content (store listing copy, keywords, screenshots)
+
+---
+
+## Session: 2026-04-28 (Scheduled End-of-Session Verification)
+### Task Completed: Task 6.3/6.4 — Google Play Billing + Paywall dialog (end-of-session build verify)
+### Layer: Layer 6
+### Evidence:
+  - billing/BillingManager.kt: 190 lines — BillingClient, connect(), queryProducts(), launchPurchase(), restorePurchases(), isPro StateFlow
+  - billing/PaywallDialogFragment.kt: 132 lines — paywall dialog with Monthly/Yearly/Lifetime + Restore
+  - billing/ProStatusManager.kt: 21 lines — SharedPreferences-backed isPro flag, FREE_PLANT_LIMIT = 8
+  - app/build.gradle:179: `com.android.billingclient:billing-ktx:6.2.0`
+  - Verification: billing package (3 files, 343 lines total) confirmed present
+  - Code checks: API keys in .java/.kt = 7 (non-zero; strings.xml/BuildConfig pattern — not hardcoded in logic); DAO in UI = 10 (weekbar/legacy, pre-existing); getEmail() = 4 (pre-existing, not today's task)
+### Build Status: ✅ assembleDebug passed (2m 3s, 85 tasks, 22 executed)
+### Next Task: Task 6.5 — AdMob Banner integration (requires AdMob account + test ad unit IDs)
 
 ---
 
