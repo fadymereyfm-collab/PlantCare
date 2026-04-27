@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- نسخة محسّنة للتبويبات: ضمان ظهور كامل النص + دعم التمرير الأفقي إذا لزم -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootMain"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pc_background">
+
+    <!-- شريط علوي (يمكن تركه كما كان لديك إذا مختلف) -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/pc_background"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp">
+
+        <TextView
+            android:id="@+id/toolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:includeFontPadding="false"
+            android:textColor="@color/pc_onSurface" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/identifyButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_identify"
+            android:contentDescription="@string/identify_title"
+            android:tint="@color/pc_success"
+            android:padding="8dp"
+            android:layout_marginEnd="4dp" />
+
+        <!-- ميزة تشخيص الأمراض معروضة، لكن ملف plant_disease_model.tflite غير متوفر في assets/
+             فنعرض Toast «bald verfügbar» عند الضغط بدلاً من فتح نشاط مكسور. -->
+        <ImageButton
+            android:id="@+id/diseaseButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_disease"
+            android:contentDescription="@string/disease_button_tooltip"
+            android:tint="@color/pc_primary"
+            android:padding="8dp"
+            android:layout_marginEnd="4dp" />
+
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_settings_black"
+            android:contentDescription="@string/settings"
+            android:tint="@color/pc_onSurfaceSecondary"
+            android:padding="8dp" />
+    </LinearLayout>
+
+    <!-- التبويبات – موزّعة بالتساوي داخل الشاشة -->
+    <LinearLayout
+        android:id="@+id/tabsContainer"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/tabAllPlants"
+            style="@style/TabText.Active"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/tab_all_plants"
+            android:includeFontPadding="false"
+            android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:id="@+id/tabMyPlants"
+            style="@style/TabText.Inactive"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/tab_my_plants"
+            android:includeFontPadding="false"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:id="@+id/tabCalendar"
+            style="@style/TabText.Inactive"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/tab_calendar"
+            android:includeFontPadding="false"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:id="@+id/tabToday"
+            style="@style/TabText.Inactive"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/tab_today"
+            android:includeFontPadding="false"
+            android:layout_marginStart="4dp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>

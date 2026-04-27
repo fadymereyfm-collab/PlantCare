@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textPlantName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp" />
+
+        <ImageView
+            android:id="@+id/plantDetailImageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/cd_plant_photo"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/textLighting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Licht:" />
+
+        <TextView
+            android:id="@+id/textSoilType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Boden:" />
+
+        <TextView
+            android:id="@+id/textWatering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bewässerung:" />
+
+        <TextView
+            android:id="@+id/textFertilizing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Düngung:" />
+
+        <!-- الأزرار -->
+        <Button
+            android:id="@+id/addToMyPlantsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Zu Meine Pflanzen hinzufügen"
+            android:layout_marginTop="12dp" />
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Entfernen"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/buttonRename"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Umbenennen"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/takePhotoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Foto aufnehmen"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/buttonViewPhotos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📷 Bilder ansehen" />
+
+        <Button
+            android:id="@+id/buttonClose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Schließen"
+            android:layout_marginTop="12dp" />
+    </LinearLayout>
+</ScrollView>

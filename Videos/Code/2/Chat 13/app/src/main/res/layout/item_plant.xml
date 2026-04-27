@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="8dp"
+    android:layout_marginHorizontal="8dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@color/card_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/imagePlant"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_default_plant"
+            android:background="@drawable/circle_bg"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/plant_image"
+            android:clipToOutline="true" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/textPlantName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Aloe Vera"
+                android:textColor="@color/pc_onSurface"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/cairo"/>
+
+            <!-- سيُملأ من المهايئ بقيمة السقاية -->
+            <TextView
+                android:id="@+id/textPlantType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bewässerung: —"
+                android:textColor="@color/pc_onSurfaceSecondary"
+                android:textSize="13sp"
+                android:fontFamily="@font/cairo"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageFavorite"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_star_outline"
+            android:contentDescription="@string/add_to_favorites"
+            android:tint="@color/modern_accent"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

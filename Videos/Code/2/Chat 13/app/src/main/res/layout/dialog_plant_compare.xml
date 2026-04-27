@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Full-screen comparison dialog.
+    Top half   → candidate plant reference image (from PlantNet)
+    Bottom half → the photo the user just captured
+    Toolbar    → close (X) | plant name | confirm button
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/pc_background">
+
+    <!-- ── Toolbar ─────────────────────────────────────────────── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="12dp"
+        android:background="@color/pc_surface"
+        android:elevation="4dp">
+
+        <ImageButton
+            android:id="@+id/btnCompareClose"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_close"
+            android:contentDescription="@string/close"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="@color/pc_onSurface" />
+
+        <TextView
+            android:id="@+id/txtComparePlantName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/pc_onSurface"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCompareConfirm"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/compare_confirm"
+            android:textSize="13sp"
+            android:textColor="@color/pc_onPrimary"
+            app:backgroundTint="@color/pc_success"
+            app:cornerRadius="18dp"
+            app:icon="@drawable/ic_check"
+            app:iconTint="@color/pc_onPrimary"
+            app:iconSize="16dp"
+            app:iconPadding="4dp" />
+
+    </LinearLayout>
+
+    <!-- ── Top half: Candidate reference image ─────────────────── -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/imgCandidatePlant"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/compare_label_candidate" />
+
+        <!-- Semi-transparent label at bottom-left -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="12dp"
+            android:text="@string/compare_label_candidate"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:background="#AA000000"
+            android:letterSpacing="0.04" />
+
+    </FrameLayout>
+
+    <!-- ── Divider ───────────────────────────────────────────────── -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/pc_primary" />
+
+    <!-- ── Bottom half: User's captured photo ──────────────────── -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/imgCapturedPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/compare_label_photo" />
+
+        <!-- Semi-transparent label at bottom-left -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_margin="12dp"
+            android:text="@string/compare_label_photo"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:background="#AA000000"
+            android:letterSpacing="0.04" />
+
+    </FrameLayout>
+
+</LinearLayout>

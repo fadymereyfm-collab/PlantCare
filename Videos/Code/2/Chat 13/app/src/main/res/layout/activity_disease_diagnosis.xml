@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/pc_background">
+
+    <!-- Top Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/pc_background"
+        android:paddingStart="8dp"
+        android:paddingEnd="16dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="@string/close"
+            android:tint="@color/pc_onSurface"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/disease_title"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/pc_onSurface"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Image Preview Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/pc_outline"
+                app:strokeWidth="1dp"
+                android:layout_marginBottom="16dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp">
+
+                    <LinearLayout
+                        android:id="@+id/placeholderContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@color/pc_surfaceVariant">
+
+                        <ImageView
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:src="@drawable/ic_disease"
+                            android:tint="@color/pc_onSurfaceSecondary"
+                            android:contentDescription="@null" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/disease_placeholder"
+                            android:textColor="@color/pc_onSurfaceSecondary"
+                            android:textSize="14sp"
+                            android:layout_marginTop="8dp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/imagePreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"
+                        android:contentDescription="@string/plant_image" />
+                </FrameLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Kamera / Galerie -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCamera"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:text="@string/identify_camera"
+                    android:textColor="@color/pc_onSurface"
+                    app:icon="@drawable/ic_camera"
+                    app:iconTint="@color/pc_onSurface"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="@color/pc_outline" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGallery"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:text="@string/identify_gallery"
+                    android:textColor="@color/pc_onSurface"
+                    app:icon="@drawable/ic_gallery"
+                    app:iconTint="@color/pc_onSurface"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="@color/pc_outline" />
+            </LinearLayout>
+
+            <!-- Analyze -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAnalyze"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="@string/disease_analyze_button"
+                android:textSize="16sp"
+                android:enabled="false"
+                app:cornerRadius="12dp"
+                android:backgroundTint="@color/pc_success"
+                android:textColor="@color/pc_onPrimary"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Historie öffnen -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnHistory"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/disease_open_history"
+                app:icon="@drawable/ic_history"
+                android:textColor="@color/pc_onSurface"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Loading -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
+                android:indeterminateTint="@color/pc_primary"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Fehler / Keine Ergebnisse -->
+            <TextView
+                android:id="@+id/txtMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/pc_onSurfaceSecondary"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Ergebnisse -->
+            <LinearLayout
+                android:id="@+id/resultsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/disease_results_title"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@color/pc_onSurface"
+                    android:layout_marginBottom="8dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/resultsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:layout_marginBottom="12dp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/disease_save_button"
+                android:textSize="15sp"
+                android:visibility="gone"
+                app:cornerRadius="12dp"
+                android:backgroundTint="@color/pc_primary"
+                android:textColor="@color/pc_onPrimary" />
+
+            <!-- Feature 5: Behandlungsplan aus Diagnose erzeugen.
+                 Nur sichtbar nach erfolgreicher Diagnose, und nur wenn die
+                 Top-Klasse nicht "healthy" ist und eine Ziel-Pflanze gewählt wurde. -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTreatmentPlan"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/treatment_plan_button"
+                android:textSize="15sp"
+                android:visibility="gone"
+                app:cornerRadius="12dp"
+                android:backgroundTint="@color/pc_secondary"
+                android:textColor="@color/pc_onPrimary" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

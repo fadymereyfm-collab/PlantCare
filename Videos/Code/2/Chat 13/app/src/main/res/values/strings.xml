@@ -255,4 +255,12 @@
     <string name="consent_accept">Zustimmen</string>
     <string name="consent_decline">Nur notwendige</string>
     <string name="consent_privacy_url">https://fadymereyfm-collab.github.io/PlantCare/</string>
+
+    <!-- Accessibility content descriptions -->
+    <string name="cd_plant_preview">Pflanzenvorschau</string>
+    <string name="cd_plant_photo">Pflanzenfoto</string>
+    <string name="cd_archive_photo">Archivfoto</string>
+    <string name="cd_fab_add_plant">Pflanze hinzufügen</string>
+    <string name="cd_onboarding_image">Vorschaubild</string>
+    <string name="cd_selected">Ausgewählt</string>
 </resources>
