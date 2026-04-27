@@ -1,14 +1,59 @@
 # PlantCare Progress Tracker
 ## Last Updated: 2026-04-28
 ## Current Layer: Layer 6 (in progress)
-## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4, Task 5.5, Task 5.6, Task 6.3, Task 6.4, Task 6.5, Task 6.6
+## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4, Task 5.5, Task 5.6, Task 6.3, Task 6.4, Task 6.5, Task 6.6, Task 6.7
 ## Deferred: Privacy Policy GitHub Pages activation — docs/index.html + pages.yml exist; needs GitHub remote + Pages activation
 ## Deferred (Task 5.3): APK size analysis — devDebug AAB = 33.4 MB; release build with R8 expected < 25 MB; verify when signing key available
 ## Deferred (Task 6.1): Google Play Console setup — requires Play Console account + manual form completion
 ## Deferred (Task 6.2): Billing SKUs — requires Play Console to create SKUs (monthly_pro, yearly_pro, lifetime_pro)
 ## Deferred (Task 6.5 prod IDs): AdMob implemented with test IDs — replace admob_app_id + admob_banner_unit_id in strings.xml with real IDs from AdMob console before release
-## Last Verified Task: Task 6.6 — ASO content (store listing copy, keywords, feature graphic)
-## Next Task: Task 6.7 — Final pre-release checklist (ProGuard verify, versionCode bump to 2, release AAB signing)
+## Last Verified Task: Task 6.7 — Final pre-release checklist (ProGuard, versionCode 1→2, release AAB 20 MB signed)
+## Next Task: Layer 6 COMPLETE — proceed to Play Store upload (upload AAB, fill store listing, activate SKUs, replace AdMob test IDs)
+
+---
+
+## Session: 2026-04-28 (Scheduled Task — auto, Task 6.7 — Final Pre-release Checklist)
+### Task Completed: Task 6.7 — Final pre-release checklist
+### Layer: Layer 6 — COMPLETE
+### Evidence:
+  - proguard-rules.pro: removed stale Facebook SDK rule (Task 5.1 removed Facebook)
+  - proguard-rules.pro: added Google Play Billing rules (`com.android.billingclient.**`)
+  - proguard-rules.pro: added AdMob rules (`com.google.android.gms.ads.**`)
+  - proguard-rules.pro: added billing package keep (`com.example.plantcare.billing.**`) — PaywallDialogFragment needs fragment reflection
+  - app/build.gradle: versionCode 1 → 2
+  - app/build.gradle: versionName "0.1.0" → "1.0.0"
+  - AAB: app/build/outputs/bundle/prodRelease/app-prod-release.aab — 20 MB (down from 33 MB devDebug; R8 shrinking effective)
+  - Signing: SHA256 06:2A:CE:00:2F:34:99:0F:F6:22:35:43:8B:01:88:43:26:5B:9A:BE:1F:CB:CD:55:D8:91:FE:8A:4A:8B:6F:C6 ✅ (matches Task 3.2 keystore)
+  - Keystore validity: until 2053 ✅
+  - Build warnings: only @Deprecated DatabaseClient usage (known arch debt) + unused params (pre-existing)
+  - AppDatabase.getInstance (all files, outside repository/): 54 total (pre-existing arch debt; previously-reported "10" was ui/ subfolder only)
+### Build Status: ✅ bundleProdRelease passed (5m 52s, 56 tasks executed, BUILD SUCCESSFUL)
+### Deferred (unchanged):
+  - Task 6.5 prod IDs: replace test AdMob IDs with real ones from AdMob console before release
+  - Task 6.2: Create Play Console SKUs (monthly_pro, yearly_pro, lifetime_pro)
+  - Task 6.1: Play Console account setup + manual form completion
+  - Privacy Policy: GitHub Pages activation (docs/index.html ready; needs GitHub remote + Pages activation)
+### Next Task: Layer 6 COMPLETE — Play Store upload workflow:
+  1. Upload app-prod-release.aab to Play Console (Internal Testing track)
+  2. Fill store listing (use store-listing/listing_de.md)
+  3. Upload graphics (store-listing/graphics/ + screenshots/)
+  4. Activate SKUs: monthly_pro, yearly_pro, lifetime_pro
+  5. Replace AdMob test IDs in strings.xml with real IDs from AdMob console
+  6. Activate GitHub Pages for Privacy Policy URL
+
+---
+
+## Session: 2026-04-28 (Scheduled End-of-Session Verification — Task 6.6 ASO Content)
+### Task Completed: Task 6.6 — ASO content (store listing copy, keywords, feature graphic)
+### Layer: Layer 6
+### Evidence:
+  - No app code changed — store listing assets only (listing_de.md, generate_assets.py)
+  - API key check: PLANTNET_API_KEY via BuildConfig ✅; WeatherRepository placeholder only ✅; 0 real hardcoded keys
+  - DAO in UI layer: 10 matches (AppDatabase.getInstance/DatabaseClient) — known arch debt, unchanged ✅
+  - getEmail(): 4 matches — pre-existing, unchanged ✅
+  - TFLite asset: not present — not yet required ✅
+### Build Status: ✅ assembleDebug passed (4m 49s, 85 tasks, 52 executed / 33 up-to-date)
+### Next Task: Task 6.7 — Final pre-release checklist (ProGuard verify, versionCode 1→2, release AAB signing)
 
 ---
 
