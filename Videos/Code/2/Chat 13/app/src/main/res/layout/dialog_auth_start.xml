@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   الحوار الابتدائي للمصادقة:
-  - يحتوي أزرار Google / (Facebook مخفي) / البريد الإلكتروني.
+  - يحتوي أزرار Google / البريد الإلكتروني.
   - AuthStartDialogFragment يعتمد فقط على المعرّفات:
-      btnGoogle, btnFacebook, btnEmail, textHaveAccount, buttonClose
-  - تم تبسيطه وإزالة أي حقول غير مستخدمة لمنع التضارب والانهيارات.
+      btnGoogle, btnEmail, textHaveAccount, buttonClose
   - العرض النهائي يُضبط إلى 90% في الكود (onStart) وليس هنا.
 -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -65,17 +64,6 @@
                 android:text="Mit Google anmelden"
                 android:textAllCaps="false"
                 android:layout_marginBottom="12dp" />
-
-            <!-- زر Facebook (مخفي حالياً) -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnFacebook"
-                style="@style/Button.Secondary"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="Mit Facebook anmelden"
-                android:textAllCaps="false"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone" />
 
             <!-- زر البريد -->
             <com.google.android.material.button.MaterialButton

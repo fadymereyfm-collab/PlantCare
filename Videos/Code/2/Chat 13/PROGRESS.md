@@ -1,10 +1,27 @@
 # PlantCare Progress Tracker
 ## Last Updated: 2026-04-27
 ## Current Layer: Layer 5 (in progress)
-## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2
+## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1
 ## Deferred: Privacy Policy GitHub Pages activation — docs/index.html + pages.yml exist; needs GitHub remote + Pages activation
-## Last Verified Task: Task 5.2 — Accessibility Audit (6 cd_* strings, 49 contentDescription attrs across 32 layouts, 9 ImageButtons → 48dp)
-## Next Task: Task 5.1 — Monetization (Google Play Billing / PlantCare Pro)
+## Last Verified Task: Task 5.1 — Remove Facebook SDK (dependency removed, imports + fields + method removed, layouts cleaned, 2 strings removed)
+## Next Task: Task 5.2 (Firebase BoM update) or Task 5.4 (Top-3 plant ID results) — Layer 5 remaining tasks
+
+---
+
+## Session: 2026-04-27 (Scheduled Task — auto, Task 5.1 — Remove Facebook SDK)
+### Task Completed: Task 5.1 — Remove Facebook SDK
+### Layer: Layer 5
+### Evidence:
+  - Removed `com.facebook.android:facebook-login:16.3.0` from app/build.gradle
+  - Removed imports `FacebookSdk`, `CallbackManager` from AuthStartDialogFragment.java
+  - Removed `fbCallbackManager` field from AuthStartDialogFragment.java
+  - Removed `initFacebookIfPossible()` method (lines 303-312)
+  - Removed `btnFacebook` View reference + `setVisibility(GONE)` call
+  - Removed `btnFacebook` button from dialog_auth_start.xml and fragment_auth.xml
+  - Removed `auth_facebook_signup` and `auth_facebook_needs_config` strings from strings.xml
+  - No Facebook references in AndroidManifest (confirmed clean)
+### Build Status: ✅ assembleDevDebug passed (24s, BUILD SUCCESSFUL)
+### Next Task: Task 5.2 — Firebase BoM update (32.5.0 → 33.x) or Task 5.4 — Top-3 plant ID results
 
 ---
 

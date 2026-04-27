@@ -41,11 +41,9 @@
     <!-- المصادقة (حوار البداية الحديث) -->
     <string name="auth_welcome_title">Willkommen!</string>
     <string name="auth_google_signup">Mit Google registrieren</string>
-    <string name="auth_facebook_signup">Mit Facebook registrieren</string>
     <string name="auth_email_signup">Mit E‑Mail registrieren</string>
     <string name="auth_have_account_signin">Bereits ein Konto? Anmelden.</string>
     <string name="auth_google_needs_config">Google‑Anmeldung muss konfiguriert werden (Anbieter aktivieren + SHA‑1/256 hinzufügen + google‑services.json synchronisieren).</string>
-    <string name="auth_facebook_needs_config">Facebook‑Anmeldung muss konfiguriert werden (facebook_app_id + Client‑Token + Manifest‑Metadaten).</string>
 
     <!-- نصوص قديمة للحوارات البريدية -->
     <string name="auth_sign_in">Anmelden</string>
