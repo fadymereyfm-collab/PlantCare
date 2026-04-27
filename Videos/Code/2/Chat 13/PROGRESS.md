@@ -1,10 +1,25 @@
 # PlantCare Progress Tracker
 ## Last Updated: 2026-04-27
 ## Current Layer: Layer 5 (in progress)
-## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM
+## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4
 ## Deferred: Privacy Policy GitHub Pages activation — docs/index.html + pages.yml exist; needs GitHub remote + Pages activation
-## Last Verified Task: Task 5.2 — Firebase BoM 32.5.0 → 33.7.0 (BUILD SUCCESSFUL in 2m 38s)
-## Next Task: Task 5.4 — Top-3 plant identification results (UI + Analytics)
+## Last Verified Task: Task 5.4 — Top-3 plant ID results (repository .take(3), Analytics rank logging, "Keine Übereinstimmung" button)
+## Next Task: Task 5.5 — PlantNet caching (SHA-256 image hash → Room cache, 7-day TTL)
+
+---
+
+## Session: 2026-04-27 (Scheduled Task — auto, Task 5.4 — Top-3 Plant ID Results)
+### Task Completed: Task 5.4 — Top-3 plant identification results
+### Layer: Layer 5
+### Evidence:
+  - PlantIdentificationRepository.kt: added `.take(3)` — API returns at most 3 candidates
+  - Analytics.kt: added `logPlantIdentified(context, rank, confidencePct)` — rank 1/2/3 or 0 for none
+  - IdentificationResultAdapter.kt: callbacks now include rank (position+1), passed via bind(result, rank)
+  - activity_plant_identify.xml: added btnNoneCorrect ("Keine Übereinstimmung — erneut versuchen")
+  - PlantIdentifyActivity.kt: btnNoneCorrect → logPlantIdentified(rank=0) + viewModel.reset()
+  - strings.xml: `identify_none_correct`, `identify_results_title` → "Ergebnisse (Top 3)"
+### Build Status: ✅ assembleDevDebug passed (58s)
+### Next Task: Task 5.5 — PlantNet caching
 
 ---
 

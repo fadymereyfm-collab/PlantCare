@@ -162,8 +162,9 @@
     <string name="identify_camera">Kamera</string>
     <string name="identify_gallery">Galerie</string>
     <string name="identify_button">Pflanze erkennen</string>
-    <string name="identify_results_title">Ergebnisse</string>
+    <string name="identify_results_title">Ergebnisse (Top 3)</string>
     <string name="identify_no_results">Keine Pflanze erkannt. Versuche ein anderes Foto mit besserer Beleuchtung.</string>
+    <string name="identify_none_correct">Keine Übereinstimmung — erneut versuchen</string>
     <string name="identify_error">Fehler: %1$s</string>
     <string name="identify_add_plant">Hinzufügen</string>
     <string name="identify_plant_added">Pflanze wurde hinzugefügt!</string>
