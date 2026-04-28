@@ -153,7 +153,7 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .setTitle(R.string.dialog_water_all_title)
                 .setMessage(context.getString(R.string.dialog_water_all_message, header.roomName))
                 .setPositiveButton(R.string.action_yes, (dialog, which) -> {
-                    new Thread(() -> {
+                    com.example.plantcare.util.BgExecutor.io(() -> {
                         ReminderDao reminderDao = DatabaseClient.getInstance(context)
                                 .getAppDatabase().reminderDao();
                         boolean anyMarkedDone = false;
@@ -175,7 +175,7 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                             notifyDataSetChanged();
                             DataChangeNotifier.notifyChange();
                         });
-                    }).start();
+                    });
                 })
                 .setNegativeButton("Nein", null)
                 .show();
@@ -265,14 +265,14 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                                     dialogFragment.show(((MainActivity) context).getSupportFragmentManager(),
                                             "edit_manual_reminder");
                                 } else if (which == 1) {
-                                    new Thread(() -> {
+                                    com.example.plantcare.util.BgExecutor.io(() -> {
                                         DatabaseClient.getInstance(context).getAppDatabase().reminderDao().delete(reminder);
                                         ((MainActivity) context).runOnUiThread(() -> {
                                             items.remove(position);
                                             notifyDataSetChanged();
                                             DataChangeNotifier.notifyChange();
                                         });
-                                    }).start();
+                                    });
                                 }
                             })
                             .setNegativeButton("Abbrechen", null)
@@ -295,7 +295,7 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
      */
     private void openPlantDetails(WateringReminder reminder) {
         if (reminder == null || reminder.plantName == null) return;
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             PlantDao plantDao = DatabaseClient.getInstance(context).plantDao();
 
             Plant foundPlant = null;
@@ -318,11 +318,11 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                             "plant_detail_popup");
                 });
             }
-        }).start();
+        });
     }
 
     private void loadPlantThumbAsync(WateringReminder reminder, ImageView target) {
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             PlantDao plantDao = DatabaseClient.getInstance(context).plantDao();
             Plant plant = null;
 
@@ -348,17 +348,17 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                     );
                 }
             });
-        }).start();
+        });
     }
 
     private void updateReminderAndNotify(WateringReminder reminder) {
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             DatabaseClient.getInstance(context).getAppDatabase().reminderDao().update(reminder);
             ((MainActivity) context).runOnUiThread(() -> {
                 notifyDataSetChanged();
                 DataChangeNotifier.notifyChange();
             });
-        }).start();
+        });
     }
 
     private void showRescheduleDialogCustom(WateringReminder reminder, int overdue) {
@@ -377,13 +377,13 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .create();
 
         btnYes.setOnClickListener(v -> {
-            new Thread(() -> {
+            com.example.plantcare.util.BgExecutor.io(() -> {
                 ReminderUtils.rescheduleFromToday(reminder, context);
                 ((MainActivity) context).runOnUiThread(() -> {
                     dialog.dismiss();
                     DataChangeNotifier.notifyChange();
                 });
-            }).start();
+            });
         });
         btnNo.setOnClickListener(v -> {
             reminder.done = true;

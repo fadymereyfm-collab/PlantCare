@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_channel_name">Plant care reminders</string>
+    <string name="notif_channel_description">Daily reminders for your plant care</string>
+
+    <string name="notif_welcome_back_title">Welcome back soon! 🌱</string>
+    <string name="notif_welcome_back_body">Your plants felt your return.\nA fresh watering round is waiting tomorrow 💧</string>
+
+    <plurals name="notif_pending_count">
+        <item quantity="one">\n🔔 You have 1 reminder today!</item>
+        <item quantity="other">\n🔔 You have %d reminders today!</item>
+    </plurals>
+
+    <string-array name="notif_morning_titles">
+        <item>Good morning, plant whisperer! 🌱</item>
+        <item>Your plants are already awake! ☀️</item>
+        <item>Time to start watering! 💧</item>
+        <item>Plants have feelings too! 🌿</item>
+        <item>Green morning! 🍀</item>
+        <item>Your plants are eagerly waiting! 🌞</item>
+        <item>Coffee ready… plants thirsty! ☕🌵</item>
+        <item>New day, new watering can! 🚿</item>
+        <item>Your plants ask: where are you?! 🌺</item>
+        <item>The sun is shining and your plants are smiling! 😊🌻</item>
+    </string-array>
+
+    <string-array name="notif_morning_bodies">
+        <item>Your plants are calling your name… water them before they get angry! 😤🌱</item>
+        <item>If your plants could text, they\'d say: \"I\'m thirsty!\" 💬💧</item>
+        <item>Your plants waited for you all night… don\'t let them down! 🌙🥺</item>
+        <item>Plants have no legs to walk to the kitchen… help them! 🦶❌🪴</item>
+        <item>Imagine your plants could talk… they\'d be protesting! 📢🌿</item>
+        <item>Your plants are more loyal than some humans… show them gratitude! 💚</item>
+        <item>3 seconds of your time = a happy plant all day! ⏱️😄</item>
+        <item>Don\'t forget: plants love water more than you love coffee! ☕🌊</item>
+        <item>Your plants want nothing but a bit of water and lots of love! 💕🌱</item>
+        <item>Water your plants… before they ask for child support! 💸🪴</item>
+        <item>Your plants say: if you love me, water me! 🥹💧</item>
+        <item>Every drop of water = a smile on a leaf! 💧😊🍃</item>
+        <item>Your little seedling says: I grow thanks to you! Thank you! 🌱➡️🌳</item>
+        <item>If your plants had WhatsApp, you\'d have 100 messages! 📱🌿</item>
+        <item>There\'s a plant waiting for the hero of the day… and that\'s you! 🦸‍♂️🌺</item>
+        <item>Your plants feel lonely… go say hi! 👋🌵</item>
+        <item>Don\'t you want to see your plants shine today? Go on! 🥳🌻</item>
+        <item>Plants can\'t clap… but they can grow for you! 👏🌱</item>
+        <item>Calm your conscience and water your plants! 😇💧</item>
+        <item>Your plant asks: what did I do to deserve this thirst?! 😭🏜️</item>
+    </string-array>
+
+    <string-array name="notif_evening_titles">
+        <item>Good evening, plant friend! 🌹</item>
+        <item>Your plants say good evening! 🌷</item>
+        <item>Before you go to bed… 🌙🌿</item>
+        <item>A friendly evening reminder! 💚</item>
+        <item>Your plants wish good night! 😴🌱</item>
+        <item>Last task of the day! 🎯🪴</item>
+        <item>Have a green evening! 💚🌿</item>
+        <item>Your plants want to make sure you don\'t forget them! 🧐🌺</item>
+        <item>Time to relax… with your plants! 🧘🌱</item>
+        <item>Hey plant hero! One last mission! 🦸🌻</item>
+    </string-array>
+
+    <string-array name="notif_evening_bodies">
+        <item>Have you watered your plants today? If not, there\'s still time! ⏰🌱</item>
+        <item>Your plants want to fall asleep peacefully… water them and reassure them! 😴💧</item>
+        <item>Last chance today! Your plants are waiting before you turn off the light! 💡🌿</item>
+        <item>Your plants stayed up all night… don\'t let them sleep thirsty! 🥱💧</item>
+        <item>Plants also love to fall asleep happy… help them! 🛏️🌺</item>
+        <item>If you forgot to water, this is your last chance today! ⚡🪴</item>
+        <item>Before you turn on Netflix… water your plants! 📺🌱</item>
+        <item>One minute of your time = a happy plant all night! 🌙😊</item>
+        <item>Your plants can\'t sleep without water… just like you without a pillow! 🛌💧</item>
+        <item>Imagine waking up tomorrow and your plants are upset… don\'t risk it! 😱🌵</item>
+        <item>Your plants say: I don\'t want gifts, just water! 🎁❌💧✅</item>
+        <item>A quick watering before bed = a beautiful morning for your plants! 🌅🌿</item>
+        <item>Your plants will dream of water tonight… make the dream come true! 💭💧</item>
+        <item>Nothing\'s nicer than a watered plant at bedtime! 😌🌱</item>
+        <item>Your plants say: if you forget me again… I\'ll wilt! 😤🥀</item>
+        <item>Water your plants and earn karma points! 🤲🌿</item>
+        <item>Remember before sleep: your plants are entrusted to you! 💚🌺</item>
+        <item>Your plants produced oxygen for you all day… repay them with water! 🫁💧</item>
+        <item>Your plants need you… just one minute! ⏱️🥺🌱</item>
+        <item>The last night without watering… tomorrow is a new beginning! 🌈🪴</item>
+    </string-array>
+
+    <string-array name="notif_no_reminder_titles">
+        <item>Day off for your plants! 🎉🌿</item>
+        <item>No watering today! 😎🪴</item>
+        <item>Your plants are resting! 💤🌱</item>
+        <item>A quiet day in the garden! 🧘🌻</item>
+    </string-array>
+
+    <string-array name="notif_no_reminder_bodies">
+        <item>No reminders today… but check on your plants anyway! 👀🌱</item>
+        <item>Your plants are doing well and content! Enjoy your day! 😊🌿</item>
+        <item>No watering needed today! Maybe a quick hello? 👋🌺</item>
+        <item>A task-free day… but don\'t forget your plants love you! 💚🌷</item>
+        <item>Nothing to do today… but a loving glance costs nothing! 😍🌵</item>
+    </string-array>
+</resources>

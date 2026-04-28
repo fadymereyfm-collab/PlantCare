@@ -81,9 +81,7 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
         btnClose = v.findViewById(R.id.buttonClose);
         btnNext = v.findViewById(R.id.buttonNext);
 
-        cachedUserEmail = requireContext()
-                .getSharedPreferences("prefs", Context.MODE_PRIVATE)
-                .getString("current_user_email", null);
+        cachedUserEmail = EmailContext.current(requireContext());
         guestMode = (cachedUserEmail == null);
 
         String fallback = (plant != null && !TextUtils.isEmpty(plant.name)) ? plant.name : "Pflanze";
@@ -245,6 +243,26 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
                     final Context appCtx = requireContext().getApplicationContext();
                     final String email = cachedUserEmail;
 
+                    if (!com.example.plantcare.billing.ProStatusManager.isPro(appCtx)) {
+                        FragmentBg.<Integer>runWithResult(this,
+                                () -> AppDatabase.getInstance(appCtx).plantDao().countUserPlants(email),
+                                count -> {
+                                    if (count != null && count >= com.example.plantcare.billing.ProStatusManager.FREE_PLANT_LIMIT) {
+                                        new com.example.plantcare.billing.PaywallDialogFragment().show(
+                                                getParentFragmentManager(),
+                                                com.example.plantcare.billing.PaywallDialogFragment.TAG);
+                                    } else {
+                                        actuallyAddPlant(appCtx, email, nickname, roomId, startDate);
+                                    }
+                                });
+                        return;
+                    }
+                    actuallyAddPlant(appCtx, email, nickname, roomId, startDate);
+                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        picker.show();
+    }
+
+    private void actuallyAddPlant(Context appCtx, String email, String nickname, int roomId, Date startDate) {
                     FragmentBg.runIO(this,
                             () -> {
                                 AppDatabase db = AppDatabase.getInstance(appCtx);
@@ -301,11 +319,5 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
                                 if (onPlantAdded != null) onPlantAdded.run();
                                 dismissAllowingStateLoss();
                             });
-                },
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)
-        );
-        picker.show();
     }
 }

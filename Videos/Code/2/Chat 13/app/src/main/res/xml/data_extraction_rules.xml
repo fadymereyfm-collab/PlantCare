@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Disable cloud backup and device-to-device transfer of sensitive prefs and DB.
+    Tokens, cached email, and Pro state must NEVER be exfiltrated via adb backup.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="sharedpref" path="prefs.xml" />
+        <exclude domain="sharedpref" path="secure_prefs.xml" />
+        <exclude domain="sharedpref" path="pro_status.xml" />
+        <exclude domain="database" path="plantcare_db" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="prefs.xml" />
+        <exclude domain="sharedpref" path="secure_prefs.xml" />
+        <exclude domain="sharedpref" path="pro_status.xml" />
+        <exclude domain="database" path="plantcare_db" />
+    </device-transfer>
+</data-extraction-rules>

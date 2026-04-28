@@ -3,9 +3,12 @@ package com.example.plantcare.billing
 import android.app.Activity
 import android.content.Context
 import com.android.billingclient.api.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -31,6 +34,7 @@ class BillingManager(private val context: Context) : PurchasesUpdatedListener {
         @Volatile
         private var INSTANCE: BillingManager? = null
 
+        @JvmStatic
         fun getInstance(context: Context): BillingManager {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: BillingManager(context.applicationContext).also { INSTANCE = it }
@@ -186,5 +190,16 @@ class BillingManager(private val context: Context) : PurchasesUpdatedListener {
     private fun grantOrRevokePro(isPro: Boolean) {
         ProStatusManager.setPro(context, isPro)
         _isPro.value = isPro
+    }
+
+    /** Java-friendly fire-and-forget wrappers (called from App.java / Activity onResume). */
+    @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
+    fun connectAsync() {
+        GlobalScope.launch(Dispatchers.IO) { connect() }
+    }
+
+    @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
+    fun restorePurchasesAsync() {
+        GlobalScope.launch(Dispatchers.IO) { runCatching { restorePurchases() } }
     }
 }

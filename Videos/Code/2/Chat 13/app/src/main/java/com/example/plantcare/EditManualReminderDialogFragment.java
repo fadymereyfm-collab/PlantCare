@@ -72,7 +72,7 @@ public class EditManualReminderDialogFragment extends DialogFragment {
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     calendar.setTime(sdf.parse(editDate.getText().toString()));
-                } catch (Exception ignored) {}
+                } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
             }
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
@@ -93,7 +93,7 @@ public class EditManualReminderDialogFragment extends DialogFragment {
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     calendar.setTime(sdf.parse(editEndDate.getText().toString()));
-                } catch (Exception ignored) {}
+                } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
             }
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
@@ -167,11 +167,11 @@ public class EditManualReminderDialogFragment extends DialogFragment {
                 FirebaseSyncManager.get().syncReminder(reminder);
 
                 int repeatDays = 0;
-                try { repeatDays = Integer.parseInt(newRepeat); } catch (Exception ignored) {}
+                try { repeatDays = Integer.parseInt(newRepeat); } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
                 if (repeatDays > 0) {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     Calendar cal = Calendar.getInstance();
-                    try { cal.setTime(sdf.parse(newDate)); } catch (Exception ignored) {}
+                    try { cal.setTime(sdf.parse(newDate)); } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
 
                     Calendar maxCal = Calendar.getInstance();
                     maxCal.setTime(cal.getTime());
@@ -258,7 +258,7 @@ public class EditManualReminderDialogFragment extends DialogFragment {
                 if (repeatInt > 0)
                     showFuture = true;
             }
-        } catch (Exception ignored) {}
+        } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
         textEditAffectsFuture.setVisibility(showFuture ? View.VISIBLE : View.GONE);
         editEndDate.setVisibility(showFuture ? (checkNoEndDate.isChecked() ? View.GONE : View.VISIBLE) : View.GONE);
         checkNoEndDate.setVisibility(showFuture ? View.VISIBLE : View.GONE);

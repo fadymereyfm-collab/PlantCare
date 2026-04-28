@@ -23,12 +23,17 @@ android {
         versionCode 2
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        resConfigs "de"
+        resConfigs "de", "en"
 
         // PlantNet API key — read from local.properties (dev) or env var (CI)
         def plantnetKey = localProps.getProperty("PLANTNET_API_KEY")
                 ?: System.getenv("PLANTNET_API_KEY") ?: ""
         buildConfigField "String", "PLANTNET_API_KEY", "\"${plantnetKey}\""
+
+        // OpenWeatherMap API key — read from local.properties (dev) or env var (CI)
+        def owmKey = localProps.getProperty("OPENWEATHER_API_KEY")
+                ?: System.getenv("OPENWEATHER_API_KEY") ?: ""
+        buildConfigField "String", "OPENWEATHER_API_KEY", "\"${owmKey}\""
     }
 
     flavorDimensions "environment"
@@ -101,6 +106,9 @@ ksp {
 }
 
 dependencies {
+    // LeakCanary — debug-only memory leak detection (ships only in debug builds, no release impact)
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.13'
+
     implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'

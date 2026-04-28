@@ -73,8 +73,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
         }, true);
         recyclerView.setAdapter(adapter);
 
-        SharedPreferences prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        userEmail = prefs.getString("current_user_email", null);
+        userEmail = EmailContext.current(this);
 
         setupActivityResultLaunchers();
         refreshList();
@@ -160,7 +159,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
 
     private void handleCameraResult() {
         if (currentPlantForPhoto == null || (photoURI == null && capturedPhotoFile == null)) return;
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             try {
                 // Ensure the captured photo becomes the canonical cover.jpg for this plant
                 Uri coverUri = null;
@@ -173,7 +172,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
                         int n;
                         while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
                         out.flush();
-                    } catch (Throwable ignored) {}
+                    } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
                     coverUri = PhotoStorage.coverUri(this, (long) currentPlantForPhoto.id);
                     try {
                         MediaScannerConnection.scanFile(
@@ -182,7 +181,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
                                 null,
                                 null
                         );
-                    } catch (Throwable ignored) {}
+                    } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
                 } else if (photoURI != null) {
                     // Copy from content uri to cover file
                     try {
@@ -195,7 +194,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
                             out.flush();
                         }
                         coverUri = PhotoStorage.coverUri(this, (long) currentPlantForPhoto.id);
-                    } catch (Throwable ignored) {}
+                    } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
                 }
 
                 // 1) Update profile image in Plant row
@@ -210,14 +209,13 @@ public class PlantsInRoomActivity extends AppCompatActivity
                 // 2) Set as cover in ArchiveStore so the loader picks it with highest priority
                 try {
                     if (userEmail == null) {
-                        SharedPreferences prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
-                        userEmail = prefs.getString("current_user_email", null);
+                        userEmail = EmailContext.current(getApplicationContext());
                     }
                     Uri toArchive = (coverUri != null) ? coverUri : photoURI;
                     if (userEmail != null && toArchive != null) {
                         ArchiveStore.INSTANCE.setCover(getApplicationContext(), userEmail, currentPlantForPhoto.id, toArchive);
                     }
-                } catch (Throwable ignored) {}
+                } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
 
                 // 3) Persist a PlantPhoto marked as cover and start pending-aware upload
                 try {
@@ -235,13 +233,13 @@ public class PlantsInRoomActivity extends AppCompatActivity
                     if (uploadUri != null) {
                         FirebaseSyncManager.get().uploadPlantPhotoWithPending(getApplicationContext(), photo, uploadUri);
                     }
-                } catch (Throwable ignored) {}
+                } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
 
                 // 4) Sync plant metadata (imageUri) to Firebase (best-effort)
-                try { FirebaseSyncManager.get().syncPlant(currentPlantForPhoto); } catch (Throwable ignored) {}
+                try { FirebaseSyncManager.get().syncPlant(currentPlantForPhoto); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
 
                 // 5) Upload cover to Storage and persist download URL to Firestore + Room + plants collection
-                try { CoverCloudSync.uploadCover(getApplicationContext(), (long) currentPlantForPhoto.id, null, null); } catch (Throwable ignored) {}
+                try { CoverCloudSync.uploadCover(getApplicationContext(), (long) currentPlantForPhoto.id, null, null); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
 
                 runOnUiThread(() -> {
                     Toast.makeText(this, getString(R.string.msg_saved), Toast.LENGTH_SHORT).show();
@@ -249,8 +247,8 @@ public class PlantsInRoomActivity extends AppCompatActivity
                 });
                 DataChangeNotifier.notifyChange(); // refresh any open detail dialog image
 
-            } catch (Throwable ignored) {}
-        }).start();
+            } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+        });
         currentPlantForPhoto = null;
         photoURI = null;
         capturedPhotoFile = null;
@@ -258,11 +256,11 @@ public class PlantsInRoomActivity extends AppCompatActivity
 
     private void refreshList() {
         final int finalRoomId = roomId;
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             AppDatabase db = DatabaseClient.getInstance(this).getAppDatabase();
             List<Plant> plants = db.plantDao().getAllUserPlantsInRoom(finalRoomId, userEmail);
             runOnUiThread(() -> adapter.setPlantList(plants));
-        }).start();
+        });
     }
 
     @Override
@@ -287,7 +285,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
                 .setTitle(R.string.confirm_delete_plant_title)
                 .setMessage(R.string.confirm_delete_plant_message)
                 .setPositiveButton(R.string.action_delete, (d, w) -> {
-                    new Thread(() -> {
+                    com.example.plantcare.util.BgExecutor.io(() -> {
                         FirebaseSyncManager fsm = FirebaseSyncManager.get();
                         try {
                             AppDatabase db = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase();
@@ -308,7 +306,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
                         } catch (Throwable t) {
                             runOnUiThread(() -> Toast.makeText(this, R.string.delete_failed, Toast.LENGTH_SHORT).show());
                         }
-                    }).start();
+                    });
                 })
                 .setNegativeButton(R.string.action_cancel, null)
                 .show();
@@ -316,7 +314,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
 
     @Override
     public void onRequestMovePlantToRoom(Plant plant) {
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             AppDatabase db = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase();
             List<RoomCategory> rooms = db.roomCategoryDao().getAllRoomsForUser(plant.userEmail);
             runOnUiThread(() -> {
@@ -330,7 +328,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
                         .setTitle("In Raum verschieben")
                         .setItems(names, (d, which) -> {
                             RoomCategory target = rooms.get(which);
-                            new Thread(() -> {
+                            com.example.plantcare.util.BgExecutor.io(() -> {
                                 plant.roomId = target.id;
                                 DatabaseClient.getInstance(getApplicationContext()).getAppDatabase().plantDao().update(plant);
                                 runOnUiThread(() -> {
@@ -338,12 +336,12 @@ public class PlantsInRoomActivity extends AppCompatActivity
                                     refreshList();
                                 });
                                 DataChangeNotifier.notifyChange();
-                            }).start();
+                            });
                         })
                         .setNegativeButton("Abbrechen", null)
                         .show();
             });
-        }).start();
+        });
     }
 
     @Override

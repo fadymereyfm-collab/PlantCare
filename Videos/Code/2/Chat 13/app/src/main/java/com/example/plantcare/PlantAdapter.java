@@ -86,8 +86,7 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.PlantViewHol
 
         // الصورة: استخدام PlantImageLoader الموحّد (cover → archive → DB → catalog)
         if (holder.image != null) {
-            android.content.SharedPreferences prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
-            String userEmail = prefs.getString("current_user_email", null);
+            String userEmail = EmailContext.current(context);
             String displayName = (plant.isUserPlant && plant.nickname != null && !plant.nickname.isEmpty())
                     ? plant.nickname : plant.name;
             PlantImageLoader.loadInto(context, holder.image, (long) plant.id, displayName, userEmail);
@@ -103,10 +102,10 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.PlantViewHol
                 holder.star.setOnClickListener(v -> {
                     plant.isFavorite = !plant.isFavorite;
                     AppDatabase db = DatabaseClient.getInstance(context).getAppDatabase();
-                    new Thread(() -> {
+                    com.example.plantcare.util.BgExecutor.io(() -> {
                         db.plantDao().update(plant);
                         DataChangeNotifier.notifyChange();
-                    }).start();
+                    });
                     sortFilteredList();
                     notifyDataSetChanged();
                 });

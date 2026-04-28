@@ -3,6 +3,7 @@ package com.example.plantcare.weekbar
 import android.Manifest
 import android.app.DatePickerDialog
 import android.content.Context
+import com.example.plantcare.EmailContext
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Environment
@@ -66,8 +67,7 @@ class PhotoCaptureCoordinator(
             val context = fragment.requireContext()
             val imageUri = pendingUri ?: run { clearPending(); return@registerForActivityResult }
 
-            val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-            val emailRaw = prefs.getString("current_user_email", null)
+            val emailRaw = EmailContext.current(context)
             if (emailRaw.isNullOrBlank()) {
                 Toast.makeText(context, R.string.error_no_active_session, Toast.LENGTH_SHORT).show()
                 clearPending()
@@ -122,8 +122,7 @@ class PhotoCaptureCoordinator(
                 return@registerForActivityResult
             }
             val context = fragment.requireContext()
-            val prefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-            val emailRaw = prefs.getString("current_user_email", null)
+            val emailRaw = EmailContext.current(context)
             if (emailRaw.isNullOrBlank()) {
                 Toast.makeText(context, R.string.error_no_active_session, Toast.LENGTH_SHORT).show()
                 clearPending()

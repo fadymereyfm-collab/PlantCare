@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="disease_title">Disease diagnosis</string>
+    <string name="disease_placeholder">Take a photo or pick one from the gallery.</string>
+    <string name="disease_analyze_button">Analyze leaf</string>
+    <string name="disease_save_button">Save result</string>
+    <string name="disease_open_history">View history</string>
+
+    <string name="disease_results_title">Diagnosis results</string>
+    <string name="disease_no_results">No matching disease detected. Please use a clearer leaf photo.</string>
+    <string name="disease_error">Error: %1$s</string>
+    <string name="disease_healthy_label">%1$s — Healthy</string>
+    <string name="disease_confidence_percent">%1$.1f %%</string>
+    <string name="disease_no_advice">No specific advice available.</string>
+    <string name="disease_saved">Diagnosis saved</string>
+
+    <string name="disease_history_title">Diagnosis history</string>
+    <string name="disease_history_empty">No diagnoses saved yet.</string>
+    <string name="disease_history_delete_title">Delete diagnosis?</string>
+    <string name="disease_history_delete_message">This entry will be removed permanently.</string>
+
+    <string name="disease_button_tooltip">Detect disease</string>
+    <string name="disease_feature_unavailable">This feature is not available in this version.</string>
+
+    <string name="disease_pick_plant_title">Which plant does this diagnosis belong to?</string>
+    <string name="disease_pick_plant_message">Select the affected plant from your collection. The diagnosis will then be linked to it.</string>
+    <string name="disease_pick_plant_none">No plant — save as general</string>
+    <string name="disease_pick_plant_empty">No plants in your collection yet. The diagnosis will be saved as general.</string>
+    <string name="disease_pick_plant_cancel">Cancel</string>
+</resources>

@@ -210,8 +210,16 @@ public class AddPlantDialogFragment extends DialogFragment {
         }
         final String userEmail = getUserEmail();
         final String imgUri = photoUri != null ? photoUri.toString() : null;
-        FragmentBg.runIO(this,
+        final android.content.Context appCtx = requireContext().getApplicationContext();
+        FragmentBg.<Boolean>runWithResult(this,
                 () -> {
+                    if (!com.example.plantcare.billing.ProStatusManager.isPro(appCtx)) {
+                        int currentCount = AppDatabase.getInstance(appCtx).plantDao()
+                                .countUserPlants(userEmail);
+                        if (currentCount >= com.example.plantcare.billing.ProStatusManager.FREE_PLANT_LIMIT) {
+                            return Boolean.FALSE;
+                        }
+                    }
                     Plant plant = new Plant();
                     plant.nickname = name;
                     plant.roomId = selectedRoomId;
@@ -223,9 +231,16 @@ public class AddPlantDialogFragment extends DialogFragment {
                     plant.isUserPlant = true;
                     plant.userEmail = userEmail;
                     plant.imageUri = imgUri;
-                    AppDatabase.getInstance(requireContext()).plantDao().insert(plant);
+                    AppDatabase.getInstance(appCtx).plantDao().insert(plant);
+                    return Boolean.TRUE;
                 },
-                () -> {
+                inserted -> {
+                    if (Boolean.FALSE.equals(inserted)) {
+                        new com.example.plantcare.billing.PaywallDialogFragment().show(
+                                getParentFragmentManager(),
+                                com.example.plantcare.billing.PaywallDialogFragment.TAG);
+                        return;
+                    }
                     Toast.makeText(requireContext(), R.string.plant_added, Toast.LENGTH_SHORT).show();
                     if (onPlantAdded != null) onPlantAdded.run();
                     dismiss();
@@ -233,7 +248,6 @@ public class AddPlantDialogFragment extends DialogFragment {
     }
 
     private String getUserEmail() {
-        SharedPreferences prefs = requireContext().getSharedPreferences("prefs", getContext().MODE_PRIVATE);
-        return prefs.getString("current_user_email", null);
+        return EmailContext.current(requireContext());
     }
 }

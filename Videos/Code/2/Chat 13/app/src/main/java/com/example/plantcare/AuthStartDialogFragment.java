@@ -262,11 +262,9 @@ public class AuthStartDialogFragment extends DialogFragment {
         final String emailFinal = (email != null) ? email : "nouser@unknown";
         final String nameFinal  = (name != null)  ? name  : "";
 
-        SharedPreferences prefs = requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        prefs.edit()
-                .putString("current_user_email", emailFinal)
-                .putString("current_user_name", nameFinal)
-                .apply();
+        EmailContext.setCurrent(requireContext(), emailFinal);
+        requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                .edit().putString("current_user_name", nameFinal).apply();
 
         // إدخال المستخدم محلياً (إن لم يكن موجوداً)
         FragmentBg.runIO(this, () -> {

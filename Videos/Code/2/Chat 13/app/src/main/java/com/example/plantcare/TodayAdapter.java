@@ -112,25 +112,24 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
                                 EditManualReminderDialogFragment dialogFragment = EditManualReminderDialogFragment.newInstance(r);
                                 dialogFragment.show(((MainActivity) context).getSupportFragmentManager(), "edit_manual_reminder");
                             } else if (which == 1) {
-                                new Thread(() -> {
+                                com.example.plantcare.util.BgExecutor.io(() -> {
                                     DatabaseClient.getInstance(context).getAppDatabase().reminderDao().delete(r);
                                     ((MainActivity) context).runOnUiThread(() -> {
                                         reminders.remove(position);
                                         notifyDataSetChanged();
                                         DataChangeNotifier.notifyChange();
                                     });
-                                }).start();
+                                });
                             }
                         })
                         .setNegativeButton("Abbrechen", null)
                         .show();
             } else {
-                new Thread(() -> {
+                com.example.plantcare.util.BgExecutor.io(() -> {
                     PlantDao plantDao = DatabaseClient.getInstance(context).plantDao();
                     Plant foundPlant = null;
 
-                    String userEmail = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-                            .getString("current_user_email", null);
+                    String userEmail = EmailContext.current(context);
                     List<Plant> allUserCopies = plantDao.getAllUserPlantsWithNameAndUser(r.plantName, userEmail);
                     if (!allUserCopies.isEmpty()) {
                         foundPlant = plantDao.findById(allUserCopies.get(0).id);
@@ -150,20 +149,20 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
                                     "plant_detail_popup");
                         });
                     }
-                }).start();
+                });
             }
             return true;
         });
     }
 
     private void updateReminder(Context context, WateringReminder reminder) {
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             DatabaseClient.getInstance(context).getAppDatabase().reminderDao().update(reminder);
             ((MainActivity) context).runOnUiThread(() -> {
                 notifyDataSetChanged();
                 DataChangeNotifier.notifyChange();
             });
-        }).start();
+        });
     }
 
     private void showRescheduleDialogCustom(Context context, WateringReminder reminder, int overdue) {
@@ -182,13 +181,13 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
                 .create();
 
         btnYes.setOnClickListener(v -> {
-            new Thread(() -> {
+            com.example.plantcare.util.BgExecutor.io(() -> {
                 ReminderUtils.rescheduleFromToday(reminder, context);
                 ((MainActivity) context).runOnUiThread(() -> {
                     dialog.dismiss();
                     DataChangeNotifier.notifyChange();
                 });
-            }).start();
+            });
         });
         btnNo.setOnClickListener(v -> {
             reminder.done = true;
@@ -209,12 +208,11 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
     }
 
     private void loadPlantThumbAsync(Context context, WateringReminder reminder, ImageView target) {
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             PlantDao plantDao = DatabaseClient.getInstance(context).plantDao();
             Plant plant = null;
 
-            String userEmail = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
-                    .getString("current_user_email", null);
+            String userEmail = EmailContext.current(context);
 
             List<Plant> copiesByNameAndUser = plantDao.getAllUserPlantsWithNameAndUser(reminder.plantName, userEmail);
             if (!copiesByNameAndUser.isEmpty()) {
@@ -235,7 +233,7 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
                     target.setImageResource(R.drawable.ic_default_plant);
                 }
             });
-        }).start();
+        });
     }
 
     @Override

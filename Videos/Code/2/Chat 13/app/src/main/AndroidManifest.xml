@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- CAMERA permission is optional for TakePicture() when delegating to external camera,
+         but keeping it does not hurt. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Required for notifications on Android 13 (API 33) and above -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Location for weather-based reminders (coarse is sufficient) -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- Required for Firebase, Wikipedia image fetching, and Glide HTTP image loading -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name=".App"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:usesCleartextTraffic="false"
+        android:localeConfig="@xml/locale_config"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.PlantCareApp">
+
+        <!-- DSGVO: disable Firebase data collection until the user gives explicit consent -->
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+
+        <!-- AdMob — test App ID; replace with real ID from AdMob console before release -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
+        <!-- Resolve conflict between play-services-measurement-api and play-services-ads-lite
+             over AD_SERVICES_CONFIG; use the AdMob-provided config. -->
+        <property
+            android:name="android.adservices.AD_SERVICES_CONFIG"
+            android:resource="@xml/gma_ad_services_config"
+            tools:replace="android:resource" />
+
+        <!-- Onboarding is the launcher; it redirects to MainActivity if already completed -->
+        <activity
+            android:name=".ui.onboarding.OnboardingActivity"
+            android:exported="true"
+            android:theme="@style/Theme.PlantCareApp">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".PlantsInRoomActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.identify.PlantIdentifyActivity"
+            android:exported="false"
+            android:label="@string/identify_title" />
+
+        <activity
+            android:name=".ui.disease.DiseaseDiagnosisActivity"
+            android:exported="false"
+            android:label="@string/disease_title" />
+
+        <activity
+            android:name=".ui.disease.DiagnosisHistoryActivity"
+            android:exported="false"
+            android:label="@string/disease_history_title" />
+
+        <!-- Widget Provider -->
+        <receiver
+            android:name=".widget.PlantCareWidget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/plantcare_widget_info" />
+        </receiver>
+
+        <!-- Widget Service -->
+        <service
+            android:name=".widget.PlantCareWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <!-- FileProvider for sharing a destination Uri with the camera app -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
+    </application>
+
+</manifest>

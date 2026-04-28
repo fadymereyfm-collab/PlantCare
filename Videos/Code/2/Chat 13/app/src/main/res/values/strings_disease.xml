@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Diagnose: Titel + allgemeine Texte -->
+    <string name="disease_title">Krankheitsdiagnose</string>
+    <string name="disease_placeholder">Nehmen Sie ein Foto auf oder wählen Sie ein Bild aus der Galerie.</string>
+    <string name="disease_analyze_button">Blatt analysieren</string>
+    <string name="disease_save_button">Ergebnis speichern</string>
+    <string name="disease_open_history">Verlauf anzeigen</string>
+
+    <!-- Ergebnisse -->
+    <string name="disease_results_title">Diagnose-Ergebnisse</string>
+    <string name="disease_no_results">Keine passende Krankheit erkannt. Bitte ein klareres Blattfoto verwenden.</string>
+    <string name="disease_error">Fehler: %1$s</string>
+    <string name="disease_healthy_label">%1$s — Gesund</string>
+    <string name="disease_confidence_percent">%1$.1f %%</string>
+    <string name="disease_no_advice">Keine spezifischen Hinweise verfügbar.</string>
+    <string name="disease_saved">Diagnose gespeichert</string>
+
+    <!-- Verlauf -->
+    <string name="disease_history_title">Diagnose-Verlauf</string>
+    <string name="disease_history_empty">Noch keine Diagnosen gespeichert.</string>
+    <string name="disease_history_delete_title">Diagnose löschen?</string>
+    <string name="disease_history_delete_message">Dieser Eintrag wird unwiderruflich entfernt.</string>
+
+    <!-- Button im Hauptbildschirm -->
+    <string name="disease_button_tooltip">Krankheit erkennen</string>
+    <string name="disease_feature_unavailable">Diese Funktion ist in dieser Version nicht verfügbar.</string>
+
+    <!-- Pflanzen­auswahl beim Speichern einer Diagnose -->
+    <string name="disease_pick_plant_title">Zu welcher Pflanze gehört diese Diagnose?</string>
+    <string name="disease_pick_plant_message">Wähle die betroffene Pflanze aus deiner Sammlung. Die Diagnose wird dann mit dieser Pflanze verknüpft.</string>
+    <string name="disease_pick_plant_none">Keine Pflanze — allgemein speichern</string>
+    <string name="disease_pick_plant_empty">Noch keine Pflanzen in deiner Sammlung. Die Diagnose wird allgemein gespeichert.</string>
+    <string name="disease_pick_plant_cancel">Abbrechen</string>
+</resources>

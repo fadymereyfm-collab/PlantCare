@@ -277,6 +277,19 @@
     <string name="paywall_restore_failed">Keine früheren Käufe gefunden</string>
     <string name="paywall_limit_reached">Du brauchst mehr Platz für deine grüne Familie! Upgrade auf Pro für unbegrenzte Pflanzen.</string>
 
+    <!-- Settings: PlantCare Pro section -->
+    <string name="settings_section_pro">PlantCare Pro</string>
+    <string name="settings_pro_status_free">Kostenlos · bis zu 8 Pflanzen</string>
+    <string name="settings_pro_status_active">Pro aktiv · unbegrenzte Pflanzen</string>
+    <string name="settings_open_paywall">Auf Pro upgraden</string>
+    <string name="settings_restore_pro">Käufe wiederherstellen</string>
+
+    <!-- Settings: language picker -->
+    <string name="settings_section_language">Sprache</string>
+    <string name="settings_language_system">System</string>
+    <string name="settings_language_de">Deutsch</string>
+    <string name="settings_language_en">English</string>
+
     <!-- AdMob — test IDs; replace with real IDs from AdMob console before release -->
     <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
     <string name="admob_banner_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>

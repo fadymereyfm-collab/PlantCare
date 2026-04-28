@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_channel_name">Pflanzenpflege-Erinnerungen</string>
+    <string name="notif_channel_description">Tägliche Erinnerungen für deine Pflanzenpflege</string>
+
+    <string name="notif_welcome_back_title">Willkommen bald zurück! 🌱</string>
+    <string name="notif_welcome_back_body">Deine Pflanzen haben deine Rückkehr gespürt.\nMorgen wartet eine frische Gießrunde auf dich 💧</string>
+
+    <plurals name="notif_pending_count">
+        <item quantity="one">\n🔔 Du hast 1 Erinnerung heute!</item>
+        <item quantity="other">\n🔔 Du hast %d Erinnerungen heute!</item>
+    </plurals>
+
+    <string-array name="notif_morning_titles">
+        <item>Guten Morgen, Pflanzenflüsterer! 🌱</item>
+        <item>Deine Pflanzen sind schon wach! ☀️</item>
+        <item>Los geht\'s mit Gießen! 💧</item>
+        <item>Pflanzen haben auch Gefühle! 🌿</item>
+        <item>Grüner Morgen! 🍀</item>
+        <item>Deine Pflanzen warten sehnsüchtig! 🌞</item>
+        <item>Kaffee fertig… Pflanzen durstig! ☕🌵</item>
+        <item>Neuer Tag, neue Gießkanne! 🚿</item>
+        <item>Deine Pflanzen fragen: Wo bleibst du?! 🌺</item>
+        <item>Die Sonne scheint und deine Pflanzen lächeln! 😊🌻</item>
+    </string-array>
+
+    <string-array name="notif_morning_bodies">
+        <item>Deine Pflanzen rufen deinen Namen… Komm gießen, bevor sie sauer werden! 😤🌱</item>
+        <item>Wenn deine Pflanzen SMS schreiben könnten, würden sie sagen: \"Ich hab Durst!\" 💬💧</item>
+        <item>Deine Pflanzen haben die ganze Nacht auf dich gewartet… Enttäusche sie nicht! 🌙🥺</item>
+        <item>Pflanzen haben keine Beine, um in die Küche zu gehen… Hilf ihnen! 🦶❌🪴</item>
+        <item>Stell dir vor, deine Pflanzen könnten reden… Sie würden demonstrieren! 📢🌿</item>
+        <item>Deine Pflanzen sind treuer als manche Menschen… Zeig ihnen Dankbarkeit! 💚</item>
+        <item>3 Sekunden deiner Zeit = eine glückliche Pflanze den ganzen Tag! ⏱️😄</item>
+        <item>Vergiss nicht: Pflanzen lieben Wasser mehr als du Kaffee! ☕🌊</item>
+        <item>Deine Pflanzen wollen nichts außer etwas Wasser und ganz viel Liebe! 💕🌱</item>
+        <item>Gieß deine Pflanzen… bevor sie Unterhalt verlangen! 💸🪴</item>
+        <item>Deine Pflanzen sagen: Wenn du mich liebst, gieß mich! 🥹💧</item>
+        <item>Jeder Tropfen Wasser = ein Lächeln auf einem Blatt! 💧😊🍃</item>
+        <item>Dein kleiner Setzling sagt: Ich wachse dank dir! Danke! 🌱➡️🌳</item>
+        <item>Wenn deine Pflanzen WhatsApp hätten, hättest du 100 Nachrichten! 📱🌿</item>
+        <item>Es gibt eine Pflanze bei dir, die auf den Helden des Tages wartet… und das bist du! 🦸‍♂️🌺</item>
+        <item>Deine Pflanzen fühlen sich einsam… Geh und sag Hallo! 👋🌵</item>
+        <item>Willst du nicht sehen, wie deine Pflanzen heute strahlen? Los! 🥳🌻</item>
+        <item>Pflanzen können nicht klatschen… aber sie können für dich wachsen! 👏🌱</item>
+        <item>Beruhige dein Gewissen und gieß deine Pflanzen! 😇💧</item>
+        <item>Deine Pflanze fragt: Was hab ich getan, um den Durst zu verdienen?! 😭🏜️</item>
+    </string-array>
+
+    <string-array name="notif_evening_titles">
+        <item>Guten Abend, Pflanzenfreund! 🌹</item>
+        <item>Deine Pflanzen sagen Guten Abend! 🌷</item>
+        <item>Bevor du schlafen gehst… 🌙🌿</item>
+        <item>Eine freundliche Abend-Erinnerung! 💚</item>
+        <item>Deine Pflanzen wünschen Gute Nacht! 😴🌱</item>
+        <item>Letzte Aufgabe des Tages! 🎯🪴</item>
+        <item>Grünen Abend noch! 💚🌿</item>
+        <item>Deine Pflanzen wollen sichergehen, dass du sie nicht vergisst! 🧐🌺</item>
+        <item>Zeit zum Entspannen… mit deinen Pflanzen! 🧘🌱</item>
+        <item>Hey Pflanzenheld! Eine letzte Mission! 🦸🌻</item>
+    </string-array>
+
+    <string-array name="notif_evening_bodies">
+        <item>Hast du heute deine Pflanzen gegossen? Wenn nicht, ist noch Zeit! ⏰🌱</item>
+        <item>Deine Pflanzen wollen entspannt einschlafen… Gieß sie und beruhige sie! 😴💧</item>
+        <item>Letzte Chance heute! Deine Pflanzen warten, bevor du das Licht ausmachst! 💡🌿</item>
+        <item>Deine Pflanzen waren die ganze Nacht wach… Lass sie nicht durstig einschlafen! 🥱💧</item>
+        <item>Auch Pflanzen schlafen gerne zufrieden ein… Hilf ihnen! 🛏️🌺</item>
+        <item>Falls du vergessen hast zu gießen, ist das hier deine letzte Chance heute! ⚡🪴</item>
+        <item>Bevor du Netflix einschaltest… gieß deine Pflanzen! 📺🌱</item>
+        <item>Eine Minute deiner Zeit = eine glückliche Pflanze die ganze Nacht! 🌙😊</item>
+        <item>Deine Pflanzen können ohne Wasser nicht schlafen… genau wie du ohne Kissen! 🛌💧</item>
+        <item>Stell dir vor, du wachst morgen auf und deine Pflanzen sind beleidigt… Riskier\'s nicht! 😱🌵</item>
+        <item>Deine Pflanzen sagen: Ich will keine Geschenke, nur Wasser! 🎁❌💧✅</item>
+        <item>Schnell gießen vor dem Schlafen = ein schöner Morgen für deine Pflanzen! 🌅🌿</item>
+        <item>Deine Pflanzen werden heute Nacht vom Wasser träumen… Mach den Traum wahr! 💭💧</item>
+        <item>Nichts ist schöner als eine gegossene Pflanze vor dem Schlafengehen! 😌🌱</item>
+        <item>Deine Pflanzen sagen: Wenn du mich nochmal vergisst… welke ich! 😤🥀</item>
+        <item>Gieß deine Pflanzen und verdiene Karma-Punkte! 🤲🌿</item>
+        <item>Denk dran bevor du einschläfst: Deine Pflanzen sind dir anvertraut! 💚🌺</item>
+        <item>Deine Pflanzen haben den ganzen Tag Sauerstoff für dich produziert… Revanchier dich mit Wasser! 🫁💧</item>
+        <item>Deine Pflanzen brauchen dich… nur eine Minute! ⏱️🥺🌱</item>
+        <item>Die letzte Nacht ohne Gießen… Morgen wird ein neuer Anfang! 🌈🪴</item>
+    </string-array>
+
+    <string-array name="notif_no_reminder_titles">
+        <item>Freier Tag für deine Pflanzen! 🎉🌿</item>
+        <item>Kein Gießen heute! 😎🪴</item>
+        <item>Deine Pflanzen ruhen sich aus! 💤🌱</item>
+        <item>Ein ruhiger Tag im Garten! 🧘🌻</item>
+    </string-array>
+
+    <string-array name="notif_no_reminder_bodies">
+        <item>Du hast heute keine Erinnerungen… Aber schau trotzdem mal nach deinen Pflanzen! 👀🌱</item>
+        <item>Deinen Pflanzen geht\'s gut und sie sind zufrieden! Genieß deinen Tag! 😊🌿</item>
+        <item>Heute kein Gießen nötig! Aber vielleicht kurz Hallo sagen? 👋🌺</item>
+        <item>Aufgabenfreier Tag… Aber vergiss nicht, dass deine Pflanzen dich lieben! 💚🌷</item>
+        <item>Heute nichts zu tun… Aber ein liebevoller Blick kostet nichts! 😍🌵</item>
+    </string-array>
+</resources>

@@ -78,11 +78,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dao = DatabaseClient.getInstance(getApplicationContext()).plantDao();
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-        currentUserEmail = prefs.getString("current_user_email", null);
+        currentUserEmail = EmailContext.current(this);
 
         // Guest mode: allow usage without Firebase auth
-        boolean isGuest = prefs.getBoolean("is_guest", false);
+        boolean isGuest = EmailContext.isGuest(this);
 
         if (!isGuest && com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() == null) {
             AuthStartDialogFragment auth = new AuthStartDialogFragment();
@@ -90,13 +89,13 @@ public class MainActivity extends AppCompatActivity {
         } else if (isGuest && currentUserEmail == null) {
             // Set guest email if not already set
             currentUserEmail = "guest@local";
-            prefs.edit().putString("current_user_email", "guest@local").apply();
+            EmailContext.setCurrent(this, "guest@local", true);
         }
 
         if (!isGuest && com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null) {
             // Reinstall-safe sequence without Java lambdas -> Kotlin Unit mismatch
-            try { CoverCloudSync.ensurePlantsCollectionHasImageUri(getApplicationContext(), null); } catch (Throwable ignored) {}
-            try { CoverCloudSync.pullCoversToRoom(getApplicationContext(), null, null); } catch (Throwable ignored) {}
+            try { CoverCloudSync.ensurePlantsCollectionHasImageUri(getApplicationContext(), null); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+            try { CoverCloudSync.pullCoversToRoom(getApplicationContext(), null, null); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
         }
 
         getSupportFragmentManager().setFragmentResultListener(
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     }
                             );
-                        } catch (Throwable ignored) {}
+                        } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
                     }
                 }
         );
@@ -185,6 +184,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (adManager != null) adManager.resume();
+        com.example.plantcare.billing.BillingManager
+                .getInstance(this)
+                .restorePurchasesAsync();
     }
 
     @Override
@@ -266,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void seedDatabaseIfEmpty() {
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             if (dao.countAll() == 0) {
                 try (BufferedReader reader = new BufferedReader(
                         new InputStreamReader(getAssets().open("plants.csv")))) {
@@ -301,13 +303,13 @@ public class MainActivity extends AppCompatActivity {
             try {
                 com.example.plantcare.ui.util.PlantCategoryUtil
                         .classifyAllUnclassified(AppDatabase.getInstance(getApplicationContext()));
-            } catch (Throwable ignored) {}
+            } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
 
             // Catalog images are fetched on-demand per plant via
             // PlantImageLoader.resolveBestImage(...) (step 6, Wikipedia fallback).
             // Bulk startup fetch was removed to keep app launch fast and
             // to avoid unnecessary network traffic for plants never viewed.
-        }).start();
+        });
     }
 
     private void openSettingsDialog() {
@@ -383,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String getCurrentUserEmail() {
         if (currentUserEmail != null) return currentUserEmail;
-        return getSharedPreferences("prefs", MODE_PRIVATE).getString("current_user_email", null);
+        return EmailContext.current(this);
     }
 
     private File createImageFile() throws IOException {
@@ -414,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
         String todayStr = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String dateToUse = (pendingPhotoDate != null && !pendingPhotoDate.isEmpty()) ? pendingPhotoDate : todayStr;
 
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             if (currentPlantForPhoto != null) {
                 if (isCoverPhoto) {
                     Uri coverUri = copyToCoverAndGetUri(currentPlantForPhoto.id, photoURI);
@@ -435,14 +437,14 @@ public class MainActivity extends AppCompatActivity {
                                 ArchiveStore.INSTANCE.setCover(getApplicationContext(), email, (long) currentPlantForPhoto.id, toStore);
                             }
                         }
-                    } catch (Throwable ignored) {}
+                    } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
 
                     Uri photoForUpload = (coverUri != null) ? coverUri : photoURI;
                     insertAndUploadPhoto(currentPlantForPhoto.id, dateToUse, photoForUpload, true);
 
                     try {
                         CoverCloudSync.uploadCover(getApplicationContext(), (long) currentPlantForPhoto.id, null, null);
-                    } catch (Throwable ignored) {}
+                    } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
                 } else {
                     insertAndUploadPhoto(currentPlantForPhoto.id, dateToUse, photoURI, false);
                 }
@@ -451,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
             }
             runOnUiThread(this::refreshFragments);
             com.example.plantcare.DataChangeNotifier.notifyChange();
-        }).start();
+        });
 
         pendingPhotoDate = null;
         pendingGalleryPlantId = null;
@@ -480,11 +482,11 @@ public class MainActivity extends AppCompatActivity {
                 : new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         int plantId = (pendingGalleryPlantId != null) ? pendingGalleryPlantId : 0;
 
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             insertAndUploadPhoto(plantId, dateToUse, imageUri, false);
             runOnUiThread(this::refreshFragments);
             com.example.plantcare.DataChangeNotifier.notifyChange();
-        }).start();
+        });
 
         pendingGalleryPhotoDate = null;
         pendingGalleryPlantId = null;
@@ -508,7 +510,7 @@ public class MainActivity extends AppCompatActivity {
             if (uri != null) {
                 FirebaseSyncManager.get().uploadPlantPhotoWithPending(getApplicationContext(), photo, uri);
             }
-        } catch (Throwable ignored) {}
+        } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
     }
 
     public void refreshFragments() {
@@ -526,7 +528,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void importCloudDataForUser(@NonNull String email) {
-        new Thread(() -> {
+        com.example.plantcare.util.BgExecutor.io(() -> {
             try {
                 AppDatabase db = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase();
                 db.reminderDao().deleteAllRemindersForUser(email);
@@ -539,69 +541,69 @@ public class MainActivity extends AppCompatActivity {
                 fsm.importUserData(email, new FirebaseSyncManager.DataImportCallback() {
                     @Override
                     public void onPlantsImported(List<Plant> plants) {
-                        new Thread(() -> {
+                        com.example.plantcare.util.BgExecutor.io(() -> {
                             try {
                                 if (plants != null) {
                                     for (Plant p : plants) {
                                         if (p == null) continue;
                                         if (p.userEmail == null || p.userEmail.isEmpty()) p.userEmail = email;
                                         p.isUserPlant = true;
-                                        try { db.plantDao().insert(p); } catch (Throwable ignored) {}
+                                        try { db.plantDao().insert(p); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
                                     }
                                 }
                             } finally {
                                 if (remaining.decrementAndGet() == 0) onCloudImportFinished();
                             }
-                        }).start();
+                        });
                     }
 
                     @Override
                     public void onRemindersImported(List<WateringReminder> reminders) {
-                        new Thread(() -> {
+                        com.example.plantcare.util.BgExecutor.io(() -> {
                             try {
                                 if (reminders != null) {
                                     for (WateringReminder r : reminders) {
                                         if (r == null) continue;
                                         if (r.userEmail == null || r.userEmail.isEmpty()) r.userEmail = email;
-                                        try { db.reminderDao().insert(r); } catch (Throwable ignored) {}
+                                        try { db.reminderDao().insert(r); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
                                     }
                                 }
                             } finally {
                                 if (remaining.decrementAndGet() == 0) onCloudImportFinished();
                             }
-                        }).start();
+                        });
                     }
 
                     @Override
                     public void onPhotosImported(List<PlantPhoto> photos) {
-                        new Thread(() -> {
+                        com.example.plantcare.util.BgExecutor.io(() -> {
                             try {
                                 if (photos != null) {
                                     for (PlantPhoto ph : photos) {
                                         if (ph == null) continue;
                                         if (ph.userEmail == null || ph.userEmail.isEmpty()) ph.userEmail = email;
-                                        try { db.plantPhotoDao().insert(ph); } catch (Throwable ignored) {}
+                                        try { db.plantPhotoDao().insert(ph); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
                                     }
                                 }
                             } finally {
                                 if (remaining.decrementAndGet() == 0) onCloudImportFinished();
                             }
-                        }).start();
+                        });
                     }
                 });
             } catch (Throwable t) {
                 runOnUiThread(() -> Toast.makeText(this, R.string.cloud_import_failed, Toast.LENGTH_SHORT).show());
             }
-        }).start();
+        });
     }
 
     private void onCloudImportFinished() {
-        try { CoverCloudSync.pullCoversToRoom(getApplicationContext(), null, null); } catch (Throwable ignored) {}
+        try { CoverCloudSync.pullCoversToRoom(getApplicationContext(), null, null); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
 
         runOnUiThread(() -> {
-            try { Toast.makeText(this, R.string.cloud_import_success, Toast.LENGTH_SHORT).show(); } catch (Throwable ignored) {}
+            try { Toast.makeText(this, R.string.cloud_import_success, Toast.LENGTH_SHORT).show(); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
             refreshFragments();
         });
-        try { com.example.plantcare.DataChangeNotifier.notifyChange(); } catch (Throwable ignored) {}
+        try { com.example.plantcare.DataChangeNotifier.notifyChange(); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
     }
 }

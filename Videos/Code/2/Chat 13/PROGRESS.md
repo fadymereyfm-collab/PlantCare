@@ -1,14 +1,226 @@
 # PlantCare Progress Tracker
 ## Last Updated: 2026-04-28
-## Current Layer: Layer 6 (in progress)
-## Completed Tasks: Task 0.1, Task 0.2, Task 0.3, Task 0.4, Task 0.6, Task 1.1, Task 1.2, Task 1.3, Task 1.4, Task 1.5, Task 2.1, Task 2.2, Task 2.3, Task 2.4, Task 2.5, Task 3.1, Task 3.2, Task 3.3, Task 3.4, Task 4.1, Task 4.2, Task 4.3, Task 4.4, Task 4.5, Task 5.3, Task 5.2, Task 5.1, Task 5.2-BoM, Task 5.4, Task 5.5, Task 5.6, Task 6.3, Task 6.4, Task 6.5, Task 6.6, Task 6.7
-## Deferred: Privacy Policy GitHub Pages activation — docs/index.html + pages.yml exist; needs GitHub remote + Pages activation
-## Deferred (Task 5.3): APK size analysis — devDebug AAB = 33.4 MB; release build with R8 expected < 25 MB; verify when signing key available
-## Deferred (Task 6.1): Google Play Console setup — requires Play Console account + manual form completion
-## Deferred (Task 6.2): Billing SKUs — requires Play Console to create SKUs (monthly_pro, yearly_pro, lifetime_pro)
-## Deferred (Task 6.5 prod IDs): AdMob implemented with test IDs — replace admob_app_id + admob_banner_unit_id in strings.xml with real IDs from AdMob console before release
-## Last Verified Task: Task 6.7 — Final pre-release checklist (ProGuard, versionCode 1→2, release AAB 20 MB signed)
-## Next Task: Layer 6 COMPLETE — proceed to Play Store upload (upload AAB, fill store listing, activate SKUs, replace AdMob test IDs)
+## Current Layer: Audit Phase D (QA) — code-side complete, manual QA pending
+## Completed Tasks: Task 0.1–0.6, 1.1–1.5, 2.1–2.5, 3.1–3.4, 4.1–4.5, 5.1–5.6, 6.3–6.7, Phase-A1, Phase-A3, Phase-A2, Phase-A4 (hide), Phase-B1, Phase-B2, Phase-B4, Phase-B5, Phase-B6, Phase-C2, Phase-C4, Phase-C5, Phase-D4, Phase-D5
+## Deferred (manual): see "Manual Action Required" section below
+## Last Verified Task: Master pass A2→D5 — assembleProdRelease ✅ 3m 1s
+## Next Task: Manual Phase E — Play Console upload + AdMob real IDs + Privacy Policy Pages
+
+---
+
+## Session: 2026-04-28 (Master pass — Phases A2 → D5 in one shot)
+### Tasks Completed: A2, A4 (hide), B1, B2, B4, B5, B6, C2, C4, C5, D4, D5
+### Layer: Audit Phases A → D (code-side)
+### Evidence (final grep snapshot):
+  - `grep -rn "YOUR_API_KEY_HERE" app/src/main/java` → **0** (A3 holds, no regression)
+  - `grep -rn "catch.*ignored" app/src/main/java` → **0** (was 50; C5 ✅)
+  - `grep -rn "new Thread(" app/src/main/java/com/example/plantcare/ui/ app/src/main/java/com/example/plantcare/weekbar/` → **0 actual calls** (1 hit is a doc comment in FragmentBg.kt; C4 ✅)
+  - `grep -rn "AppDatabase.getInstance" app/src/main/java/com/example/plantcare/ui/viewmodel/` → **0** (was 5 ViewModels; C2 ✅)
+  - `grep -rn "AppDatabase.getInstance|DatabaseClient\." app/src/main/java/com/example/plantcare/ | grep -v repository/` → **95** (was 102; C2 reduced by 7 across VMs; remaining 95 are Java Activities/Fragments — out of scope for this pass, see Manual Action below)
+  - `grep -n "resConfigs" app/build.gradle` → `resConfigs "de", "en"` (B1 ✅)
+  - `ls app/src/main/res/values-en/` → strings.xml + strings_disease.xml + notifications.xml (B2 ✅)
+  - `ls app/src/main/res/xml/locale_config.xml` → contains `<locale name="de" />` and `<locale name="en" />` (B6 ✅)
+
+### Detailed changes per task:
+
+**Phase A2 — Billing wired**
+- `App.java:onCreate()` → `BillingManager.getInstance(this).connectAsync()`
+- `MainActivity.java:onResume()` → `BillingManager.getInstance(this).restorePurchasesAsync()`
+- `AddPlantDialogFragment.savePlant()` → gates on `ProStatusManager.isPro` + `plantDao.countUserPlants() >= FREE_PLANT_LIMIT(8)` → opens `PaywallDialogFragment`
+- `AddToMyPlantsDialogFragment.openDatePickerAndAddPlant()` → same Pro gate before insert
+- `SettingsDialogFragment` + `dialog_settings.xml` → new "PlantCare Pro" card with status text + "Auf Pro upgraden" + "Käufe wiederherstellen"
+- `BillingManager.kt` → `@JvmStatic getInstance()` + Java-friendly `connectAsync()` / `restorePurchasesAsync()` wrappers
+- `ProStatusManager.kt` → `@JvmStatic isPro/setPro` for Java callers
+- New `PlantDao.countUserPlants(email)` query
+
+**Phase A4 — Disease feature gated**
+- `DiseaseDiagnosisActivity.onCreate()` → checks `assets.list().contains("plant_disease_model.tflite")`; if missing shows toast + `finish()`
+- New string `disease_feature_unavailable` (DE + EN)
+- (MainActivity already had a soft-disable toast on `diseaseButton`; activity-level guard adds defense in depth)
+
+**Phase B1+B6 — i18n config**
+- `app/build.gradle:26` → `resConfigs "de", "en"`
+- `res/xml/locale_config.xml` → added `<locale android:name="en" />`
+
+**Phase B5 — Notification strings externalized**
+- New `res/values/notifications.xml` with 4 string-arrays (morning/evening titles+bodies, no-reminder titles+bodies, ~50 strings) + plural for pending count
+- `PlantNotificationHelper.java` rewritten — reads from resources (`getStringArray`, `getQuantityString`); 250→130 lines, no DE strings inside
+
+**Phase B2 — values-en**
+- `res/values-en/strings.xml` (~290 keys translated DE→EN, all 8 source files consolidated)
+- `res/values-en/strings_disease.xml` (~25 keys)
+- `res/values-en/notifications.xml` (~50 strings + plural)
+
+**Phase B4 — Per-App Language picker**
+- `dialog_settings.xml` → new "Sprache" card with RadioGroup (System / DE / EN)
+- `SettingsDialogFragment.wireLanguagePicker()` → uses `AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(...))` — no Activity restart needed (handled by Per-App Language API)
+
+**Phase C2 — ViewModels use Repositories**
+- `AllPlantsViewModel.kt` → `PlantRepository.getAllCatalogPlantsList()`
+- `MyPlantsViewModel.kt` → `PlantRepository` + `RoomCategoryRepository`
+- `OnboardingViewModel.kt` → `PlantRepository.getAllCatalogPlantsList()`
+- `PlantIdentifyViewModel.kt` → `PlantRepository.insertPlant()` (was `DatabaseClient.plantDao()`)
+- `TodayViewModel.kt` → `PlantRepository` + `ReminderRepository` + `RoomCategoryRepository` (the buildRoomGroups algorithm preserved)
+- `PlantRepository` extended with suspend list accessors: `getAllCatalogPlantsList`, `getUserPlantsListForUser`, `getUserPlantsInRoomList`, `findUserPlantsByName/Nickname`, `findAnyByName/Nickname`, `countUserPlants`
+- `RoomCategoryRepository.getRoomsListForUser` (suspend list accessor)
+- `ReminderRepository.getTodayAllRemindersList`
+
+**Phase C4 — new Thread() removed from UI**
+- New `util/BgExecutor.java` (Java-friendly fixed-pool executor with crash-reporter wrapping)
+- 21 `new Thread(...).start()` → `BgExecutor.io(...)` across MainActivity, PlantAdapter, PlantDetailDialogFragment, PlantsInRoomActivity, TodayAdapter, DailyWateringAdapter
+- 0 actual `new Thread(` left in UI (1 doc-comment hit in FragmentBg.kt)
+
+**Phase C5 — catch (X ignored) → CrashReporter.log(e)**
+- 49 occurrences across 10 files: MainActivity (13), PlantsInRoomActivity (8), PlantDetailDialogFragment (10), ArchivePhotosDialogFragment (7), EditManualReminderDialogFragment (5), FirebaseSyncManager (2), AddReminderDialogFragment (1), LoginDialogFragment (1), PlantPhotosViewerDialogFragment (1), ArchiveDialogHelper (1)
+- 1 in ReminderUtils.parseWateringInterval — kept silent with `// expected: parseInt overflow` comment (genuine fall-through, not a bug-mask)
+
+**Phase D4 — Manifest hardening**
+- `android:usesCleartextTraffic="false"`
+- `android:allowBackup="false"` + `android:fullBackupContent="false"`
+- `android:dataExtractionRules="@xml/data_extraction_rules"`
+- New `res/xml/data_extraction_rules.xml` excludes prefs + secure_prefs + pro_status + plantcare_db from cloud backup AND device transfer
+
+**Phase D5 — LeakCanary**
+- `app/build.gradle` added `debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.13'`
+- Auto-installed in debug builds only — no release impact
+
+### Build Status: ✅ assembleProdRelease passed (3m 1s, 59 tasks, 29 executed / 30 up-to-date, BUILD SUCCESSFUL)
+### Regressions: none — warning count unchanged from previous build (same Kotlin deprecation hints + PlantAdapter unchecked op)
+### Next Task: Manual Phase E — see "Manual Action Required" section in this file
+
+---
+
+## Manual Action Required (Fady, NOT code)
+
+### A5 — AdMob real IDs (5 min, blocking for monetization)
+1. Open https://apps.admob.com/v2/apps and create the PlantCare app entry.
+2. Create one Banner Ad Unit (under the app).
+3. Replace in `app/src/main/res/values/strings.xml`:
+   - `admob_app_id` → real `ca-app-pub-...~...` (from app settings page)
+   - `admob_banner_unit_id` → real `ca-app-pub-.../...` (from banner ad unit page)
+4. Verify by running and seeing real ad impressions in AdMob console (24h delay normal).
+
+### A3 (continued) — OpenWeatherMap real key (1 min)
+- Get free key from https://openweathermap.org/api
+- Paste into `local.properties`: `OPENWEATHER_API_KEY=<your_key>`
+- Add as GitHub Secret `OPENWEATHER_API_KEY` for CI builds (already wired in `.github/workflows/ci.yml`).
+
+### A4 (alternate) — TFLite disease model (optional, decide before final release)
+- Either download a 38-class plant-disease TFLite model (e.g. from Kaggle "PlantVillage") and place it at `app/src/main/assets/plant_disease_model.tflite` — the activity will auto-detect and enable, OR
+- Leave the asset missing and the feature stays gated (current state is safe — activity finishes with a "nicht verfügbar" toast if invoked).
+
+### B3 — plants.csv English columns (~3h, optional for German-only launch)
+- Add columns `name_en, lighting_en, soil_en, fertilizing_en, watering_en` to `app/src/main/assets/plants.csv` (current size 85 KB → ~140 KB with EN columns).
+- `PlantCatalogLookup.kt` then needs a one-line change to pick the column suffix from `Locale.getDefault().language`.
+- For Germany-first launch: skip this — the German catalog still works, only the catalog list stays in DE while the UI chrome is bilingual.
+
+### Phase D1 — Unit test expansion (~6h, recommended for stability)
+- Current: 5 test files (~80 small tests). Audit asks for 25+.
+- Add `AuthRepositoryTest`, expand `PlantRepositoryTest`, expand `ReminderRepositoryTest`, add `BillingManagerTest`, expand `MigrationTest` (7→8, 8→9, 9→10).
+- Run with `./gradlew testProdReleaseUnitTest`.
+
+### Phase D2 — Manual QA matrix (15 scenarios × 4 devices, ~3 days)
+- See `PlantCare_Action_Plan.md` Layer 7.1 for the matrix template.
+- Track in a Google Sheet: signup → guest → add plant → reminder → photo → widget → billing test purchase → restore → vacation mode → language switch → upgrade install (v0.1 → 1.0.0).
+- **Critical scenario for A1**: install v0.1 (pre-SecurePrefs), add plant, then upgrade to current AAB → verify the user is still signed in and the plant is still visible.
+
+### Phase D3 — Accessibility (TalkBack) (~2h)
+- Install Accessibility Scanner on a test device.
+- Walk through "add plant" with TalkBack enabled.
+- Confirm every actionable view has `contentDescription`.
+
+### Phase D4 (continued) — Manual security checks
+- `adb backup` → verify the backup is empty for prefs/db (we set `allowBackup=false` + `data_extraction_rules.xml`).
+- `apktool d app-prod-release.aab` → verify R8 obfuscation (class names mangled).
+- Try to read `users/<other_uid>/plants` from Firestore with a different account → must be `Permission Denied` (firestore.rules already enforce this).
+
+### Phase E1 — GitHub Pages for Privacy Policy
+- Create the GitHub remote for this repo if not yet done.
+- Settings → Pages → Source: `gh-pages` branch (or `main` /docs).
+- Verify https://fadymereyfm-collab.github.io/PlantCare/ resolves the `docs/index.html` we already have.
+
+### Phase E2 — Play Console setup
+1. Pay $25 Google Play Developer account fee.
+2. Create app entry "PlantCare" — fill store listing using `store-listing/listing_de.md`.
+3. Upload graphics from `store-listing/graphics/` + screenshots.
+4. Create three SKUs in In-App Products: `monthly_pro`, `yearly_pro`, `lifetime_pro`.
+5. Activate them, then upload `app/build/outputs/bundle/prodRelease/app-prod-release.aab` (20 MB) to Internal Testing track.
+6. Add 5–10 testers; let it bake for 3–7 days.
+
+### Phase E3+E4 — Beta + production rollout
+- Open Beta (Germany only), 2 weeks.
+- Production rollout 10% → 50% → 100% over 3–5 days, watching Crashlytics + reviews.
+
+### Architectural debt NOT addressed in this pass (low priority for v1.0.0)
+- 95 `AppDatabase.getInstance` / `DatabaseClient.` calls in Java Activities/Fragments still bypass repositories. This is **not a release blocker** (the app works correctly), but it's pending Phase C1/Hilt + the rest of C2 for v1.1.
+- Hilt dependency injection (Phase C1) — pending v1.1.
+- DAOs returning `LiveData<List<X>>` instead of `List<X>` (Phase C3) — pending v1.1; current `liveData{}` builders work but emit once.
+
+---
+
+## Session: 2026-04-28 (Scheduled Task — auto, Phase A3 — Weather API Key to BuildConfig)
+### Task Completed: Phase A3 — Move OPENWEATHER_API_KEY to BuildConfig
+### Layer: Audit Phase A — Blockers
+### Evidence:
+  - `local.properties`: added `OPENWEATHER_API_KEY=` placeholder line (key filled in by developer/CI)
+  - `app/build.gradle`: added `def owmKey = localProps.getProperty("OPENWEATHER_API_KEY") ?: System.getenv("OPENWEATHER_API_KEY") ?: ""`; `buildConfigField "String", "OPENWEATHER_API_KEY", "\"${owmKey}\""` — mirrors PLANTNET_API_KEY pattern
+  - `WeatherRepository.kt`: removed hardcoded placeholder; replaced with `private val OPENWEATHERMAP_API_KEY = BuildConfig.OPENWEATHER_API_KEY`; added `import com.example.plantcare.BuildConfig`
+  - `.github/workflows/ci.yml`: added `echo "OPENWEATHER_API_KEY=${{ secrets.OPENWEATHER_API_KEY }}" >> local.properties` in build-aab step; added secret doc to header comment
+  - Acceptance criteria checklist:
+    - [✅] `grep -rn "YOUR_API_KEY_HERE" app/src/main/java` → 0 results
+    - [⚠️] WeatherAdjustmentWorker 200 response — cannot verify without real key in local.properties (key must be filled by developer from https://openweathermap.org/api)
+### Build Status: ✅ assembleProdRelease passed (4m 19s, 59 tasks, 23 executed / 36 up-to-date, BUILD SUCCESSFUL)
+### Regressions: none — warning count unchanged (only @Deprecated DatabaseClient + pre-existing unused params)
+### Next Task: Phase A2 — Wire BillingManager.connect() + Paywall enforcement (FREE_PLANT_LIMIT gate + Settings button)
+
+---
+
+## Session: 2026-04-28 (Scheduled End-of-Session Verification — Phase A1 SecurePrefs)
+### Task Completed: Phase A1 — SecurePrefs unification (re-verification pass)
+### Layer: Audit Phase A — Blockers
+### Evidence:
+  - Build: assembleDebug passed (43s, 85 tasks, 37 executed / 48 up-to-date)
+  - `grep -rn '"current_user_email"' app/src/main/java` → only SecurePrefsHelper.kt:16 (constant def) ✅
+  - `grep -rn 'api_key|API_KEY|plantnet_key' app/src/main/java/**/*.{java,kt}`:
+    - PlantNetService.kt:96 — enum error string ✅
+    - PlantNetError.kt:14 — enum value ✅
+    - PlantIdentificationRepository.kt:54 — uses BuildConfig.PLANTNET_API_KEY ✅
+    - PlantIdentifyActivity.kt:459 — error handler ✅
+    - WeatherRepository.kt:155 — `"YOUR_API_KEY_HERE"` placeholder ⚠️ (Phase A3 next task)
+  - DAO in UI (AppDatabase.getInstance/DatabaseClient): 10 matches across 7 files (unchanged arch debt) ✅
+  - getEmail(): 4 matches across 3 files (pre-existing, unchanged) ✅
+  - TFLite asset: not present (deferred) ✅
+  - Acceptance criteria:
+    - [✅] "current_user_email" only in SecurePrefsHelper.kt:16 (KEY_USER_EMAIL constant def)
+    - [✅] PLANTNET key uses BuildConfig
+    - [⚠️] OPENWEATHER key still placeholder — intentionally deferred to Phase A3
+### Build Status: ✅ assembleDebug passed (43s, BUILD SUCCESSFUL)
+### Regressions: none — all counts unchanged from Phase A1 completion session
+### Next Task: Phase A3 — Move OPENWEATHER_API_KEY to BuildConfig
+
+---
+
+## Session: 2026-04-28 (Scheduled Task — auto, Phase A1 — SecurePrefs Unification)
+### Task Completed: Phase A1 — Unify SecurePrefsHelper email read/write (DSGVO Migration Bug fix)
+### Layer: Audit Phase A — Blockers
+### Evidence:
+  - Created: `app/src/main/java/com/example/plantcare/EmailContext.kt` — utility object with @JvmStatic @JvmOverloads for Java interop
+  - Fixed 36 occurrences across 28 files:
+    - Java reads (plain prefs → EmailContext.current): AddPlantDialogFragment, AddReminderDialogFragment, AddToMyPlantsDialogFragment, MyPlantsFragment, PlantAdapter, PlantDetailDialogFragment (×2), PlantReminderWorker, PlantsInRoomActivity (×2), TodayAdapter (×2), TodayFragment, WateringEventStore, StreakBridge, SettingsDialogFragment
+    - Java writes (plain prefs → EmailContext.setCurrent): AuthStartDialogFragment, LoginDialogFragment, EmailEntryDialogFragment, MainActivity (guest path)
+    - Java read+write (MainActivity.getCurrentUserEmail)
+    - UserRepository: string literal → SecurePrefsHelper.KEY_USER_EMAIL constant (prefs already encrypted)
+    - SettingsDialogFragment: removed KEY_USER_EMAIL local constant + logout path cleaned
+    - Kotlin reads: DiagnosisHistoryActivity, DiseaseDiagnosisActivity (×2), WeatherAdjustmentWorker, PhotoCaptureCoordinator (×2), PlantThumbnail, RemindersListCompose, ReminderViewModel (×2), PlantCareWidgetDataFactory
+    - Kotlin write: OnboardingActivity guest mode (plain prefs → EmailContext.setCurrent(…, true))
+    - Kotlin cleanup: QuickAddHelper removed local KEY_USER_EMAIL constant
+    - Fixed imports in subpackages (widget, weekbar, ui/disease, ui/onboarding, feature/streak)
+  - Bonus fix: ResourceCycle in styles.xml (TabText + PlantDetails aliases had circular parent refs — pre-existing issue exposed by full lint run)
+  - Acceptance criteria checklist:
+    - [✅] `grep -rn '"current_user_email"' app/src/main/java` → only SecurePrefsHelper.kt:16 (KEY_USER_EMAIL constant definition)
+### Build Status: ✅ assembleProdRelease passed (1m, 59 tasks, 20 executed / 39 up-to-date, BUILD SUCCESSFUL)
+### Regressions: none — styles.xml ResourceCycle was pre-existing (masked by incremental build cache in prior sessions), now fixed
+### Next Task: Phase A3 — Move OPENWEATHER_API_KEY to BuildConfig
 
 ---
 

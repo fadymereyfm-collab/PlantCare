@@ -56,9 +56,9 @@ public class EmailEntryDialogFragment extends DialogFragment {
 
             String hash = PasswordUtils.hash(password);
 
-            // احفظ البريد في SharedPreferences
-            SharedPreferences prefs = requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
-            prefs.edit().putString("current_user_email", email).putString("current_user_name", name).apply();
+            EmailContext.setCurrent(requireContext(), email);
+            requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                    .edit().putString("current_user_name", name).apply();
 
             // احفظ في قاعدة البيانات إذا كان جديدًا
             FragmentBg.runIO(this, () -> {

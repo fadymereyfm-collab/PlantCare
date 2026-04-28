@@ -246,11 +246,9 @@ public class LoginDialogFragment extends DialogFragment {
 
     private void onAuthSuccess(String email, String name) {
         // حفظ في SharedPreferences
-        SharedPreferences prefs = requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        prefs.edit()
-                .putString("current_user_email", email)
-                .putString("current_user_name", name != null ? name : "")
-                .apply();
+        EmailContext.setCurrent(requireContext(), email);
+        requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                .edit().putString("current_user_name", name != null ? name : "").apply();
 
         // تأكيد وجود المستخدم محليًا في Room
         FragmentBg.runIO(this, () -> {
@@ -272,7 +270,7 @@ public class LoginDialogFragment extends DialogFragment {
         } else {
             Analytics.INSTANCE.logLogin(requireContext(), "email");
         }
-        try { DataChangeNotifier.notifyChange(); } catch (Exception ignored) {}
+        try { DataChangeNotifier.notifyChange(); } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
 
         // إغلاق AuthStartDialogFragment إن كان ظاهرًا
         closeAuthStartIfVisible();
