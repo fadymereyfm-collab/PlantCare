@@ -1,10 +1,51 @@
 # PlantCare Progress Tracker
-## Last Updated: 2026-04-28
-## Current Layer: Audit Phase D (QA) — code-side complete, manual QA pending
-## Completed Tasks: Task 0.1–0.6, 1.1–1.5, 2.1–2.5, 3.1–3.4, 4.1–4.5, 5.1–5.6, 6.3–6.7, Phase-A1, Phase-A3, Phase-A2, Phase-A4 (hide), Phase-B1, Phase-B2, Phase-B4, Phase-B5, Phase-B6, Phase-C2, Phase-C4, Phase-C5, Phase-D4, Phase-D5
+## Last Updated: 2026-04-29
+## Current Layer: Audit Phase D (QA) — code-side complete; M1 (OpenWeather) + M2 (AdMob real IDs) done; manual QA pending
+## Completed Tasks: Task 0.1–0.6, 1.1–1.5, 2.1–2.5, 3.1–3.4, 4.1–4.5, 5.1–5.6, 6.3–6.7, Phase-A1, Phase-A3, Phase-A2, Phase-A4 (hide), Phase-B1, Phase-B2, Phase-B4, Phase-B5, Phase-B6, Phase-C2, Phase-C4, Phase-C5, Phase-D4, Phase-D5, M1 (OpenWeather), M2 (AdMob real IDs), Weather-runtime-fix (location permission + one-shot worker + UI refresh)
 ## Deferred (manual): see "Manual Action Required" section below
-## Last Verified Task: Master pass A2→D5 — assembleProdRelease ✅ 3m 1s
-## Next Task: Manual Phase E — Play Console upload + AdMob real IDs + Privacy Policy Pages
+
+## ⏸️ Deferred by user decision — DO NOT prompt again until user reopens
+
+### Deferred to "end of development, just before release" (decision 2026-04-29)
+- **M3** — Google Play Developer account ($25) + Play Console setup + Store Listing + 3 SKU activation + AAB upload to Internal Testing track
+  - Reason: user wants to finish all in-app development first, treat Play Console as the very last step before publish
+  - Reminder trigger: when all M1–M2, M4–M6 done AND user explicitly says "ready to publish" or "moving to Play Store"
+
+### Deferred to post-development (decision 2026-04-29)
+- **M7** — Pro purchase flow test on License Tester (depends on M3 — Play Console SKUs must exist)
+- **M8** — Manual 10-scenario QA matrix on multiple devices
+- **M9** — TalkBack accessibility pass
+- **M10** — Final security checks (`adb backup`, `apktool` ProGuard verify, Firestore cross-account read test)
+  - Reason: user will run these as the final pre-release gate after all features are stable
+  - Reminder trigger: same as M3 — when user signals "ready to publish"
+
+### Still active (do remind / suggest these next)
+- **M4** — Publish firestore.rules to Firebase Console (2 min) — should be done soon, Cloud Sync depends on it
+- **M5** — Activate GitHub Pages for Privacy Policy (30 min) — DSGVO link needs to work
+- **M6** — Manual upgrade-scenario test (v0.1 → 1.0.0 install) — verifies Phase A1 SecurePrefs migration
+
+## Last Verified Task: M2 — AdMob real IDs (test IDs replaced with ca-app-pub-1100803679228908/...) — assembleDebug ✅ 3m 26s
+## Next Task: M4 — Publish firestore.rules to Firebase Console (2 min, manual). M3 + M7–M10 still deferred per user's 2026-04-29 decision.
+
+---
+
+## Session: 2026-04-29 (Scheduled End-of-Session Verification — M2 AdMob real IDs)
+### Task Completed: M2 — Replace AdMob test IDs with real production IDs
+### Layer: Manual Action (post Audit Phase A — monetization wiring)
+### Evidence:
+  - File: `app/src/main/res/values/strings.xml:294` → `admob_app_id` = `ca-app-pub-1100803679228908~5665289638` (was `ca-app-pub-3940256099942544~3347511713`)
+  - File: `app/src/main/res/values/strings.xml:295` → `admob_banner_unit_id` = `ca-app-pub-1100803679228908/8905471157` (was `ca-app-pub-3940256099942544/6300978111`)
+  - Verification: `grep -rn "ca-app-pub-3940256099942544" app/` → **0 matches** (test IDs fully removed)
+  - Verification: `grep -rn "ca-app-pub-1100803679228908" app/` → 2 matches in `strings.xml:294,295` only ✅
+  - Pre-release checklist (CLAUDE.md §7): "no `ca-app-pub-3940256099942544` (test AdMob) in strings.xml" → ✅ satisfied
+  - Acceptance criteria checklist:
+    - [✅] No test AdMob IDs (`ca-app-pub-3940256099942544`) anywhere in app/
+    - [✅] Real production IDs present in strings.xml only (translatable="false")
+    - [✅] Build passes with new IDs
+### Build Status: ✅ assembleDebug passed (3m 26s, 85 tasks, 52 executed / 33 up-to-date, BUILD SUCCESSFUL)
+### Regressions: none — warning count unchanged (same Kotlin deprecation hints + PlantAdapter unchecked op + WeekBarCompose unused params)
+### Note: MainActivity.java change in this working tree (location permission + one-shot WeatherAdjustmentWorker) is the previously-documented "Weather-runtime-fix" (already logged 2026-04-29) — not a new task.
+### Next Task: M4 — Publish firestore.rules to Firebase Console (manual, 2 min). After that: M5 (Privacy Policy GitHub Pages), M6 (manual upgrade-scenario test). M3 + M7–M10 deferred until user signals "ready to publish".
 
 ---
 
@@ -92,6 +133,12 @@
 
 ## Manual Action Required (Fady, NOT code)
 
+> **⏸️ User-deferred (2026-04-29):** M3 (Play Console / Phase E2 below) and M7–M10
+> (Pro purchase test, manual QA matrix, TalkBack pass, security checks) are
+> intentionally postponed until end of development, just before publish.
+> Do NOT push these in regular sessions. They re-activate only when the user
+> explicitly says "ready to publish" / "moving to Play Store" / equivalent.
+
 ### A5 — AdMob real IDs (5 min, blocking for monetization)
 1. Open https://apps.admob.com/v2/apps and create the PlantCare app entry.
 2. Create one Banner Ad Unit (under the app).
@@ -119,17 +166,17 @@
 - Add `AuthRepositoryTest`, expand `PlantRepositoryTest`, expand `ReminderRepositoryTest`, add `BillingManagerTest`, expand `MigrationTest` (7→8, 8→9, 9→10).
 - Run with `./gradlew testProdReleaseUnitTest`.
 
-### Phase D2 — Manual QA matrix (15 scenarios × 4 devices, ~3 days)
+### Phase D2 — Manual QA matrix (15 scenarios × 4 devices, ~3 days) — **[DEFERRED 2026-04-29 by user]**
 - See `PlantCare_Action_Plan.md` Layer 7.1 for the matrix template.
 - Track in a Google Sheet: signup → guest → add plant → reminder → photo → widget → billing test purchase → restore → vacation mode → language switch → upgrade install (v0.1 → 1.0.0).
 - **Critical scenario for A1**: install v0.1 (pre-SecurePrefs), add plant, then upgrade to current AAB → verify the user is still signed in and the plant is still visible.
 
-### Phase D3 — Accessibility (TalkBack) (~2h)
+### Phase D3 — Accessibility (TalkBack) (~2h) — **[DEFERRED 2026-04-29 by user]**
 - Install Accessibility Scanner on a test device.
 - Walk through "add plant" with TalkBack enabled.
 - Confirm every actionable view has `contentDescription`.
 
-### Phase D4 (continued) — Manual security checks
+### Phase D4 (continued) — Manual security checks — **[DEFERRED 2026-04-29 by user]**
 - `adb backup` → verify the backup is empty for prefs/db (we set `allowBackup=false` + `data_extraction_rules.xml`).
 - `apktool d app-prod-release.aab` → verify R8 obfuscation (class names mangled).
 - Try to read `users/<other_uid>/plants` from Firestore with a different account → must be `Permission Denied` (firestore.rules already enforce this).
@@ -139,7 +186,7 @@
 - Settings → Pages → Source: `gh-pages` branch (or `main` /docs).
 - Verify https://fadymereyfm-collab.github.io/PlantCare/ resolves the `docs/index.html` we already have.
 
-### Phase E2 — Play Console setup
+### Phase E2 — Play Console setup — **[DEFERRED 2026-04-29 by user — to end of development, just before publish]**
 1. Pay $25 Google Play Developer account fee.
 2. Create app entry "PlantCare" — fill store listing using `store-listing/listing_de.md`.
 3. Upload graphics from `store-listing/graphics/` + screenshots.
@@ -147,7 +194,7 @@
 5. Activate them, then upload `app/build/outputs/bundle/prodRelease/app-prod-release.aab` (20 MB) to Internal Testing track.
 6. Add 5–10 testers; let it bake for 3–7 days.
 
-### Phase E3+E4 — Beta + production rollout
+### Phase E3+E4 — Beta + production rollout — **[DEFERRED 2026-04-29 by user]**
 - Open Beta (Germany only), 2 weeks.
 - Production rollout 10% → 50% → 100% over 3–5 days, watching Crashlytics + reviews.
 

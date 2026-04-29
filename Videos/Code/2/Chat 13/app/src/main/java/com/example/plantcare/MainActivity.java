@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<String> requestCameraPermissionLauncher;
     private ActivityResultLauncher<Void> cameraPreviewLauncher;
     private ActivityResultLauncher<String> requestNotificationPermissionLauncher;
+    private ActivityResultLauncher<String[]> requestLocationPermissionLauncher;
 
     private Fragment allPlantsFragment;
     private Fragment myPlantsFragment;
@@ -129,6 +130,19 @@ public class MainActivity extends AppCompatActivity {
                 && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                    != PackageManager.PERMISSION_GRANTED) {
             requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+        }
+
+        // Request location permission for weather-based reminder adjustments.
+        // If already granted, kick off a one-shot weather fetch immediately
+        // so the user doesn't wait 12 hours for the periodic worker.
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermissionLauncher.launch(new String[] {
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            });
+        } else {
+            triggerWeatherFetchNow();
         }
 
         allPlantsFragment = new AllPlantsFragment();
@@ -265,6 +279,37 @@ public class MainActivity extends AppCompatActivity {
                 new ActivityResultContracts.RequestPermission(),
                 granted -> { /* User chose — we respect their decision */ }
         );
+
+        // Location permission launcher — on grant, fire a one-shot weather fetch.
+        requestLocationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(),
+                grants -> {
+                    Boolean coarse = grants.get(Manifest.permission.ACCESS_COARSE_LOCATION);
+                    if (Boolean.TRUE.equals(coarse)) triggerWeatherFetchNow();
+                }
+        );
+    }
+
+    /**
+     * Enqueues a one-time WeatherAdjustmentWorker so the weather card appears
+     * within seconds rather than waiting up to 12h for the periodic worker.
+     * Observes the worker so the UI re-reads cached weather once it's written.
+     */
+    private void triggerWeatherFetchNow() {
+        androidx.work.OneTimeWorkRequest req =
+                new androidx.work.OneTimeWorkRequest.Builder(WeatherAdjustmentWorker.class)
+                        .build();
+        androidx.work.WorkManager wm = androidx.work.WorkManager.getInstance(this);
+        wm.enqueueUniqueWork(
+                "weather_one_shot",
+                androidx.work.ExistingWorkPolicy.REPLACE,
+                req
+        );
+        wm.getWorkInfoByIdLiveData(req.getId()).observe(this, info -> {
+            if (info != null && info.getState().isFinished()) {
+                DataChangeNotifier.notifyChange();
+            }
+        });
     }
 
     private void seedDatabaseIfEmpty() {

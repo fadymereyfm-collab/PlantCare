@@ -291,6 +291,6 @@
     <string name="settings_language_en">English</string>
 
     <!-- AdMob — test IDs; replace with real IDs from AdMob console before release -->
-    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="admob_banner_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admob_app_id" translatable="false">ca-app-pub-1100803679228908~5665289638</string>
+    <string name="admob_banner_unit_id" translatable="false">ca-app-pub-1100803679228908/8905471157</string>
 </resources>
