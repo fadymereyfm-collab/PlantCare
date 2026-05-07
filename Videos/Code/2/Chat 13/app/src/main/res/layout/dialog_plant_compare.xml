@@ -31,7 +31,8 @@
             android:src="@drawable/ic_close"
             android:contentDescription="@string/close"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="@color/pc_onSurface" />
+            android:padding="12dp"
+            app:tint="@color/pc_onSurface" />
 
         <TextView
             android:id="@+id/txtComparePlantName"
@@ -48,15 +49,13 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCompareConfirm"
+            style="@style/PlantCare.Button.Filled"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
+            android:minHeight="36dp"
             android:text="@string/compare_confirm"
             android:textSize="13sp"
-            android:textColor="@color/pc_onPrimary"
-            app:backgroundTint="@color/pc_success"
-            app:cornerRadius="18dp"
             app:icon="@drawable/ic_check"
-            app:iconTint="@color/pc_onPrimary"
             app:iconSize="16dp"
             app:iconPadding="4dp" />
 
@@ -82,14 +81,14 @@
             android:layout_gravity="bottom|start"
             android:layout_margin="12dp"
             android:text="@string/compare_label_candidate"
-            android:textColor="#FFFFFF"
+            android:textColor="@android:color/white"
             android:textSize="13sp"
             android:textStyle="bold"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:background="#AA000000"
+            android:background="@color/pc_scrim_67"
             android:letterSpacing="0.04" />
 
     </FrameLayout>
@@ -120,14 +119,14 @@
             android:layout_gravity="bottom|start"
             android:layout_margin="12dp"
             android:text="@string/compare_label_photo"
-            android:textColor="#FFFFFF"
+            android:textColor="@android:color/white"
             android:textSize="13sp"
             android:textStyle="bold"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:background="#AA000000"
+            android:background="@color/pc_scrim_67"
             android:letterSpacing="0.04" />
 
     </FrameLayout>

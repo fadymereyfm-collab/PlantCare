@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    app:cardCornerRadius="22dp"
+    app:cardElevation="10dp"
+    app:cardBackgroundColor="@color/card_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.PlantCare.Title"
+            android:text="@string/item_plant_label"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/textLighting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
+            android:text="@string/today_reminder_lighting_placeholder"/>
+
+        <TextView
+            android:id="@+id/textSoil"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
+            android:text="@string/today_reminder_soil_placeholder"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/textWatering"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
+            android:text="@string/today_reminder_watering_placeholder"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:id="@+id/textFertilizing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
+            android:text="@string/today_reminder_fertilizing_placeholder"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonClose"
+            style="@style/PlantCare.Button.Text"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/close"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

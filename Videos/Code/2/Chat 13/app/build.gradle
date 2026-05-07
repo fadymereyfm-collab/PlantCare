@@ -34,6 +34,14 @@ android {
         def owmKey = localProps.getProperty("OPENWEATHER_API_KEY")
                 ?: System.getenv("OPENWEATHER_API_KEY") ?: ""
         buildConfigField "String", "OPENWEATHER_API_KEY", "\"${owmKey}\""
+
+        // Gemini (Google AI Studio) API key — disease diagnosis backend
+        // Free tier: 250 RPD / 10 RPM (Gemini 2.5 Flash). EU production
+        // requires switching the same key to paid via aistudio.google.com/app/billing
+        // — see R3 in PROGRESS.md.
+        def geminiKey = localProps.getProperty("GEMINI_API_KEY")
+                ?: System.getenv("GEMINI_API_KEY") ?: ""
+        buildConfigField "String", "GEMINI_API_KEY", "\"${geminiKey}\""
     }
 
     flavorDimensions "environment"
@@ -77,6 +85,12 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+        // 2026-05-05 cleanup: app uses java.time.* (LocalDate, YearMonth,
+        // DateTimeFormatter) extensively — those types didn't ship until
+        // API 26 (Android 8.0). With minSdk 24 this would NoClassDefFoundError
+        // on Android 7.0/7.1 devices. Core library desugaring rewrites the
+        // bytecode at build time to provide the missing classes on API 24+.
+        coreLibraryDesugaringEnabled true
     }
     kotlinOptions {
         jvmTarget = '17'
@@ -91,11 +105,6 @@ android {
         kotlinCompilerExtensionVersion = "1.5.14"
     }
 
-    // TFLite-Modelle NICHT komprimieren, sonst schlägt das Laden aus assets fehl.
-    androidResources {
-        noCompress 'tflite'
-    }
-
     sourceSets {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
@@ -106,6 +115,10 @@ ksp {
 }
 
 dependencies {
+    // 2026-05-05: required by `coreLibraryDesugaringEnabled` above so
+    // java.time.* and similar API-26+ classes work on minSdk 24/25.
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+
     // LeakCanary — debug-only memory leak detection (ships only in debug builds, no release impact)
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.13'
 
@@ -121,6 +134,11 @@ dependencies {
     // Add explicit Activity/Fragment KTX to ensure Activity Result works smoothly in fragments
     implementation 'androidx.activity:activity-ktx:1.9.3'
     implementation 'androidx.fragment:fragment-ktx:1.8.4'
+
+    // EXIF reader — used by PhotoCaptureCoordinator to apply orientation
+    // before downscaling so portrait camera shots don't end up sideways
+    // when re-encoded without their original EXIF header.
+    implementation 'androidx.exifinterface:exifinterface:1.3.7'
 
     // Google Sign-In
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
@@ -186,13 +204,14 @@ dependencies {
     // Google Play Billing
     implementation "com.android.billingclient:billing-ktx:6.2.0"
 
+    // Biometric authentication (Phase 4.1: fingerprint/face unlock for Settings + app open)
+    implementation "androidx.biometric:biometric:1.1.0"
+
     // Google Mobile Ads (AdMob) — banner for free tier
     implementation "com.google.android.gms:play-services-ads:23.4.0"
 
-    // TensorFlow Lite — Krankheitsdiagnose mit lokalem Modell
-    implementation "org.tensorflow:tensorflow-lite:2.14.0"
-    implementation "org.tensorflow:tensorflow-lite-support:0.4.4"
-    implementation "org.tensorflow:tensorflow-lite-metadata:0.4.4"
+    // (TensorFlow Lite removed 2026-05-01 — disease diagnosis now uses the
+    // PlantNet `/v2/diseases/identify` cloud endpoint via PlantNetDiseaseService.)
 
     // ── Unit Tests ────────────────────────────────────────────
     testImplementation 'junit:junit:4.13.2'
@@ -202,6 +221,7 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"
     testImplementation "com.google.truth:truth:1.4.2"
     testImplementation "org.robolectric:robolectric:4.11.1"
+    testImplementation "androidx.test:core:1.5.0"
 
     // ── Instrumentation Tests ────────────────────────────────
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

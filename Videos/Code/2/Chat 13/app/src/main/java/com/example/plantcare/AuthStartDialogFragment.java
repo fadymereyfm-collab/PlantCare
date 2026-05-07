@@ -50,6 +50,13 @@ public class AuthStartDialogFragment extends DialogFragment {
     private boolean canUseGoogleIdToken = false;
     private String webClientId = null;
 
+    // Phase 1.1 + 1.2: in-dialog progress + error TextView so the user can
+    // see what's happening during a Google Sign-In round-trip.
+    private android.widget.ProgressBar progress;
+    private android.widget.TextView errorView;
+    private MaterialButton btnGoogle;
+    private MaterialButton btnEmail;
+
     public static AuthStartDialogFragment newInstance() {
         return new AuthStartDialogFragment();
     }
@@ -65,10 +72,12 @@ public class AuthStartDialogFragment extends DialogFragment {
         setupGoogleLegacy();
 
         // الربط بالعناصر
-        MaterialButton btnGoogle = v.findViewById(R.id.btnGoogle);
-        MaterialButton btnEmail  = v.findViewById(R.id.btnEmail);
+        btnGoogle = v.findViewById(R.id.btnGoogle);
+        btnEmail  = v.findViewById(R.id.btnEmail);
         android.widget.TextView textHaveAcc = v.findViewById(R.id.textHaveAccount);
         View closeBtn = v.findViewById(R.id.buttonClose);
+        progress = v.findViewById(R.id.authStartProgress);
+        errorView = v.findViewById(R.id.authStartError);
 
         if (closeBtn != null) {
             closeBtn.setOnClickListener(x -> dismissAllowingStateLoss());
@@ -78,9 +87,10 @@ public class AuthStartDialogFragment extends DialogFragment {
             btnGoogle.setAlpha(canUseGoogleIdToken ? 1f : 0.6f);
             btnGoogle.setOnClickListener(view -> {
                 if (!canUseGoogleIdToken) {
-                    toast("Google Sign-In needs Firebase configuration.");
+                    showInlineError(getString(R.string.auth_google_not_configured));
                     return;
                 }
+                setLoading(true);
                 startOneTap(signUpRequest, true);
             });
         }
@@ -93,6 +103,30 @@ public class AuthStartDialogFragment extends DialogFragment {
 
         if (textHaveAcc != null) {
             textHaveAcc.setOnClickListener(view -> openLoginDialog(false)); // وضع تسجيل الدخول
+        }
+
+        // Phase 6.1: Apple Sign-In button.
+        MaterialButton btnApple = v.findViewById(R.id.btnApple);
+        if (btnApple != null) {
+            btnApple.setOnClickListener(view -> {
+                if (getActivity() == null) return;
+                setLoading(true);
+                AuthAppleSignIn.start(requireActivity(),
+                        (email, name) -> {
+                            setLoading(false);
+                            onSignedIn(email, name);
+                        },
+                        msg -> {
+                            setLoading(false);
+                            showInlineError(getString(R.string.auth_apple_failed, msg));
+                        });
+            });
+        }
+
+        // Phase 6.2: Magic Link button — passwordless email sign-in.
+        MaterialButton btnMagicLink = v.findViewById(R.id.btnMagicLink);
+        if (btnMagicLink != null) {
+            btnMagicLink.setOnClickListener(view -> showMagicLinkDialog());
         }
 
         AlertDialog dialog = new AlertDialog.Builder(requireContext(), getTheme())
@@ -174,13 +208,18 @@ public class AuthStartDialogFragment extends DialogFragment {
                             SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(result.getData());
                             String idToken = credential.getGoogleIdToken();
                             if (idToken == null || idToken.isEmpty()) {
-                                toast("Google One Tap failed: empty token");
+                                setLoading(false);
+                                showInlineError(getString(R.string.auth_google_one_tap_empty_token));
                                 return;
                             }
                             signInFirebaseWithIdToken(idToken, credential.getDisplayName(), credential.getId());
                         } catch (ApiException e) {
-                            toast("Google One Tap error: " + e.getMessage());
+                            setLoading(false);
+                            showInlineError(getString(R.string.auth_google_one_tap_error, e.getMessage()));
                         }
+                    } else {
+                        // user cancelled the chooser
+                        setLoading(false);
                     }
                 }
         );
@@ -194,14 +233,16 @@ public class AuthStartDialogFragment extends DialogFragment {
                                 new IntentSenderRequest.Builder(result.getPendingIntent().getIntentSender()).build();
                         oneTapLauncher.launch(isr);
                     } catch (Exception e) {
-                        toast("One Tap launch error: " + e.getMessage());
+                        setLoading(false);
+                        showInlineError(getString(R.string.auth_google_one_tap_launch_error, e.getMessage()));
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (fallbackToLegacyChooser && legacyGoogleClient != null) {
                         startLegacyGoogleChooser();
                     } else {
-                        toast("Google Sign-In unavailable: " + e.getMessage());
+                        setLoading(false);
+                        showInlineError(getString(R.string.auth_google_unavailable, e.getMessage()));
                     }
                 });
     }
@@ -224,16 +265,24 @@ public class AuthStartDialogFragment extends DialogFragment {
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
                         try {
                             GoogleSignInAccount acc = task.getResult(ApiException.class);
-                            if (acc == null) { toast("Google account is null"); return; }
+                            if (acc == null) {
+                                setLoading(false);
+                                showInlineError(getString(R.string.auth_google_account_null));
+                                return;
+                            }
                             String idToken = acc.getIdToken();
                             if (idToken == null || idToken.isEmpty()) {
-                                toast("No idToken from GoogleSignIn (check Firebase web client id / SHA-1).");
+                                setLoading(false);
+                                showInlineError(getString(R.string.auth_google_no_id_token));
                                 return;
                             }
                             signInFirebaseWithIdToken(idToken, acc.getDisplayName(), acc.getEmail());
                         } catch (ApiException e) {
-                            toast("Google chooser error: " + e.getMessage());
+                            setLoading(false);
+                            showInlineError(getString(R.string.auth_google_chooser_error, e.getMessage()));
                         }
+                    } else {
+                        setLoading(false);
                     }
                 }
         );
@@ -248,19 +297,27 @@ public class AuthStartDialogFragment extends DialogFragment {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         FirebaseAuth.getInstance().signInWithCredential(credential)
                 .addOnCompleteListener(t -> {
+                    setLoading(false);
                     if (t.isSuccessful()) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         String email = (user != null && user.getEmail() != null) ? user.getEmail() : emailFromCred;
                         onSignedIn(email, displayName);
                     } else {
-                        toast("Firebase Sign-In failed");
+                        showInlineError(getString(R.string.auth_firebase_signin_failed));
                     }
                 });
     }
 
     private void onSignedIn(String email, String name) {
         final String emailFinal = (email != null) ? email : "nouser@unknown";
-        final String nameFinal  = (name != null)  ? name  : "";
+        // Phase 0.3: fall back to email prefix if Google didn't supply a display name.
+        final String nameFinal  = AuthValidation.nameFromEmail(name, emailFinal);
+
+        // Audit fix #7 (2026-05-06): any successful sign-in clears the local
+        // rate limiter — otherwise a user who failed email/password 4 times
+        // then signed in via Google/Apple/Magic Link would still see the
+        // 30 s lockout when they next try email.
+        AuthRateLimiter.onSuccess(requireContext());
 
         EmailContext.setCurrent(requireContext(), emailFinal);
         requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
@@ -268,11 +325,12 @@ public class AuthStartDialogFragment extends DialogFragment {
 
         // إدخال المستخدم محلياً (إن لم يكن موجوداً)
         FragmentBg.runIO(this, () -> {
-            AppDatabase db = AppDatabase.getInstance(requireContext());
-            UserDao userDao = db.userDao();
-            User existing = userDao.getUserByEmail(emailFinal);
+            com.example.plantcare.data.repository.AuthRepository authRepo =
+                    com.example.plantcare.data.repository.AuthRepository
+                            .getInstance(requireContext());
+            User existing = authRepo.getUserByEmailBlocking(emailFinal);
             if (existing == null) {
-                userDao.insert(new User(emailFinal, nameFinal, ""));
+                authRepo.insertUserBlocking(new User(emailFinal, nameFinal, ""));
             }
         });
 
@@ -287,10 +345,62 @@ public class AuthStartDialogFragment extends DialogFragment {
         dismissAllowingStateLoss();
     }
 
+    /** Phase 6.2: ask for an email and send a Firebase magic link. */
+    private void showMagicLinkDialog() {
+        final android.widget.EditText input = new android.widget.EditText(requireContext());
+        input.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
+                android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        input.setHint(R.string.email);
+
+        android.widget.FrameLayout container = new android.widget.FrameLayout(requireContext());
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        container.setPadding(pad, pad / 2, pad, 0);
+        container.addView(input, new android.widget.FrameLayout.LayoutParams(
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT));
+
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle(R.string.auth_magic_link_label)
+                .setView(container)
+                .setPositiveButton(R.string.auth_magic_link_send, (d, w) -> {
+                    String email = input.getText() != null ? input.getText().toString().trim() : "";
+                    AuthMagicLink.start(requireContext(), email,
+                            () -> android.widget.Toast.makeText(requireContext(),
+                                    R.string.auth_magic_link_sent,
+                                    android.widget.Toast.LENGTH_LONG).show(),
+                            msg -> showInlineError(getString(R.string.auth_magic_link_failed, msg)));
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
     private void toast(String msg) {
         if (getContext() != null) {
             android.widget.Toast.makeText(requireContext(), msg, android.widget.Toast.LENGTH_LONG).show();
         }
+    }
+
+    /** Phase 1.1: spinner + disable buttons during Google round-trip. */
+    private void setLoading(boolean loading) {
+        if (progress != null) progress.setVisibility(loading ? View.VISIBLE : View.GONE);
+        if (btnGoogle != null) btnGoogle.setEnabled(!loading);
+        if (btnEmail != null) btnEmail.setEnabled(!loading);
+        if (loading && errorView != null) {
+            errorView.setVisibility(View.GONE);
+        }
+    }
+
+    /** Phase 1.2: persistent inline error in the dialog instead of a Toast
+     *  that disappears in 3 s. */
+    private void showInlineError(String msg) {
+        if (errorView == null) {
+            // Fallback if the layout was loaded from a stale cache without the
+            // new fields (shouldn't happen on a clean build).
+            toast(msg);
+            return;
+        }
+        errorView.setText(msg);
+        errorView.setVisibility(View.VISIBLE);
     }
 
     @Override

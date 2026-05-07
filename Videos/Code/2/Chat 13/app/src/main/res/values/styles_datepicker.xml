@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+        نمط حوار منتقي التاريخ (DatePickerDialog) المستخدم في:
+        AddPlantDialogFragment, AddReminderDialogFragment, AddToMyPlantsDialogFragment,
+        EditManualReminderDialogFragment, وغيرها عند إنشاء DatePickerDialog
+        عبر ContextThemeWrapper(requireContext(), R.style.PlantCareDatePicker)
+    -->
+    <style name="PlantCareDatePicker" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <item name="colorPrimary">@color/pc_success</item>
+        <item name="colorPrimaryVariant">@color/pc_primary</item>
+        <item name="colorOnPrimary">@color/pc_onPrimary</item>
+        <item name="colorAccent">@color/pc_success</item>
+        <item name="android:colorAccent">@color/pc_success</item>
+        <item name="colorSurface">@color/pc_surface</item>
+        <item name="colorOnSurface">@color/pc_onSurface</item>
+        <item name="android:textColorPrimary">@color/pc_onSurface</item>
+        <item name="android:fontFamily">@font/cairo</item>
+        <item name="android:backgroundDimAmount">0.25</item>
+        <item name="android:datePickerStyle">@style/PlantCareWidget.DatePicker</item>
+    </style>
+
+    <!-- DayNight DatePicker (was Light) — calendar follows system theme so
+         dates stay readable in dark mode. -->
+    <style name="PlantCareWidget.DatePicker" parent="@android:style/Widget.Material.DatePicker">
+        <item name="android:calendarViewShown">true</item>
+        <item name="android:spinnersShown">false</item>
+    </style>
+
+</resources>

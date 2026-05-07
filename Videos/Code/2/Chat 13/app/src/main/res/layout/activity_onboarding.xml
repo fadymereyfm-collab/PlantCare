@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="@color/pc_background">
+
+    <!-- ViewPager2 for onboarding pages -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Bottom section with controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@color/pc_background">
+
+        <!-- Dots indicator -->
+        <LinearLayout
+            android:id="@+id/dotsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:orientation="horizontal" />
+
+        <!-- Next and Skip buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSkip"
+                style="@style/PlantCare.Button.Outlined"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="@string/onboarding_skip"
+                android:layout_marginEnd="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNext"
+                style="@style/PlantCare.Button.Filled"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="@string/onboarding_next"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- Auth buttons container (hidden by default) -->
+        <LinearLayout
+            android:id="@+id/authButtonsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCreateAccount"
+                style="@style/PlantCare.Button.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/onboarding_create_account"
+                android:layout_marginBottom="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLogin"
+                style="@style/PlantCare.Button.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/onboarding_login"
+                android:layout_marginBottom="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGuestMode"
+                style="@style/PlantCare.Button.Text"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/onboarding_guest"
+                android:textColor="@color/pc_onSurfaceSecondary" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

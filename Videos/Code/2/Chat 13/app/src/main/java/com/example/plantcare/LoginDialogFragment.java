@@ -9,9 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * حوار تسجيل الدخول / إنشاء حساب بالبريد عبر FirebaseAuth.
@@ -48,6 +51,13 @@ public class LoginDialogFragment extends DialogFragment {
     private TextView textModeToggle;
     private MaterialButton buttonPrimary;
     private ProgressBar progress;
+
+    // Phase 1.3: strength meter views
+    private View strengthRow;
+    private View strengthBar1, strengthBar2, strengthBar3;
+    private TextView strengthLabel;
+    // Phase 2.2: forgot password link (added below buttonPrimary at runtime)
+    private TextView textForgotPassword;
 
     private boolean registerMode = false;
 
@@ -117,6 +127,10 @@ public class LoginDialogFragment extends DialogFragment {
         textModeToggle = v.findViewById(R.id.textModeToggle);
         buttonPrimary = v.findViewById(R.id.buttonPrimary);
         progress = v.findViewById(R.id.progress);
+        textForgotPassword = v.findViewById(R.id.textForgotPassword);
+        if (textForgotPassword != null) {
+            textForgotPassword.setOnClickListener(view -> showForgotPasswordDialog());
+        }
 
         if (editPassword != null) {
             editPassword.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
@@ -126,6 +140,48 @@ public class LoginDialogFragment extends DialogFragment {
             editConfirm.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
                     android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
         }
+
+        // Phase 1.3: strength meter — only shown in register mode.
+        strengthRow = v.findViewById(R.id.strengthRow);
+        strengthBar1 = v.findViewById(R.id.strengthBar1);
+        strengthBar2 = v.findViewById(R.id.strengthBar2);
+        strengthBar3 = v.findViewById(R.id.strengthBar3);
+        strengthLabel = v.findViewById(R.id.strengthLabel);
+        if (editPassword != null && strengthRow != null) {
+            editPassword.addTextChangedListener(new android.text.TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    updateStrengthMeter(s == null ? "" : s.toString());
+                }
+                @Override public void afterTextChanged(android.text.Editable s) {}
+            });
+        }
+    }
+
+    /** Phase 1.3: 3-bar strength meter, only meaningful in register mode. */
+    private void updateStrengthMeter(String password) {
+        if (strengthRow == null) return;
+        if (!registerMode || password.isEmpty()) {
+            strengthRow.setVisibility(View.GONE);
+            return;
+        }
+        strengthRow.setVisibility(View.VISIBLE);
+        int level = AuthValidation.passwordStrength(password);
+        int filled = level == 0 ? 1 : (level == 1 ? 2 : 3);
+        int colorActive = level == 0 ? getResources().getColor(R.color.pc_error, null)
+                          : level == 1 ? android.graphics.Color.parseColor("#E0A41A")
+                          : getResources().getColor(R.color.pc_primary, null);
+        int colorIdle = getResources().getColor(R.color.pc_outline, null);
+
+        strengthBar1.setBackgroundColor(filled >= 1 ? colorActive : colorIdle);
+        strengthBar2.setBackgroundColor(filled >= 2 ? colorActive : colorIdle);
+        strengthBar3.setBackgroundColor(filled >= 3 ? colorActive : colorIdle);
+
+        int labelRes = level == 0 ? R.string.auth_pw_strength_weak
+                       : level == 1 ? R.string.auth_pw_strength_medium
+                       : R.string.auth_pw_strength_strong;
+        strengthLabel.setText(labelRes);
+        strengthLabel.setTextColor(colorActive);
     }
 
     private void setupModeToggle() {
@@ -158,15 +214,64 @@ public class LoginDialogFragment extends DialogFragment {
             textTitle.setText(R.string.auth_sign_up);
             buttonPrimary.setText(R.string.onboarding_create_account);
             if (textModeToggle != null) textModeToggle.setText(R.string.login_already_have_account);
+            if (textForgotPassword != null) textForgotPassword.setVisibility(View.GONE);
         } else {
             layoutConfirm.setVisibility(View.GONE);
             textTitle.setText(R.string.auth_sign_in);
             buttonPrimary.setText(R.string.auth_sign_in);
             if (textModeToggle != null) textModeToggle.setText(R.string.login_new_user_register);
+            if (textForgotPassword != null) textForgotPassword.setVisibility(View.VISIBLE);
         }
         clearError();
+        if (strengthRow != null) strengthRow.setVisibility(View.GONE);
         if (editPassword != null) editPassword.setText(null);
         if (editConfirm != null) editConfirm.setText(null);
+    }
+
+    /** Phase 2.2: Firebase password reset — pre-fills the email field if
+     *  the user already typed it in. Friendly success toast, error in the
+     *  inline error view so it doesn't disappear. */
+    private void showForgotPasswordDialog() {
+        final EditText input = new EditText(requireContext());
+        input.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
+                android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        if (editEmail != null && editEmail.getText() != null) {
+            input.setText(editEmail.getText().toString().trim());
+        }
+
+        android.widget.FrameLayout container = new android.widget.FrameLayout(requireContext());
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        container.setPadding(pad, pad / 2, pad, 0);
+        container.addView(input, new android.widget.FrameLayout.LayoutParams(
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT));
+
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle(R.string.auth_forgot_password_title)
+                .setMessage(R.string.auth_forgot_password_message)
+                .setView(container)
+                .setPositiveButton(R.string.auth_forgot_password_send, (d, w) -> {
+                    String email = input.getText() != null ? input.getText().toString().trim() : "";
+                    if (!AuthValidation.isEmailValid(email)) {
+                        showError(getString(R.string.auth_error_email_invalid));
+                        return;
+                    }
+                    com.google.firebase.auth.FirebaseAuth.getInstance()
+                            .sendPasswordResetEmail(email)
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(requireContext(),
+                                            R.string.auth_forgot_password_sent,
+                                            Toast.LENGTH_LONG).show();
+                                } else {
+                                    String err = task.getException() != null
+                                            ? task.getException().getMessage() : "?";
+                                    showError(getString(R.string.auth_forgot_password_failed, err));
+                                }
+                            });
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     private boolean validateInputs() {
@@ -175,24 +280,24 @@ public class LoginDialogFragment extends DialogFragment {
         String pass2 = editConfirm.getText() != null ? editConfirm.getText().toString() : "";
 
         if (TextUtils.isEmpty(email)) {
-            showError("Bitte E‑Mail eingeben");
+            showError(getString(R.string.auth_error_email_required));
             return false;
         }
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            showError("E‑Mail Adresse ungültig");
+        if (!AuthValidation.isEmailValid(email)) {
+            showError(getString(R.string.auth_error_email_invalid));
             return false;
         }
-        if (TextUtils.isEmpty(pass) || pass.length() < 6) {
-            showError("Passwort mindestens 6 Zeichen");
+        if (AuthValidation.passwordTooShort(pass)) {
+            showError(AuthValidation.passwordTooShortMessage(requireContext()));
             return false;
         }
         if (registerMode) {
             if (TextUtils.isEmpty(pass2)) {
-                showError("Bitte Bestätigung eingeben");
+                showError(getString(R.string.auth_error_password_confirm_required));
                 return false;
             }
             if (!pass.equals(pass2)) {
-                showError("Passwörter stimmen nicht überein");
+                showError(getString(R.string.auth_error_password_mismatch));
                 return false;
             }
         }
@@ -200,6 +305,15 @@ public class LoginDialogFragment extends DialogFragment {
     }
 
     private void performAuth() {
+        // Phase 2.3: client-side rate limit. Sign-up is exempt because
+        // there's nothing to brute-force.
+        if (!registerMode) {
+            int waitSec = AuthRateLimiter.secondsUntilUnlocked(requireContext());
+            if (waitSec > 0) {
+                showError(getString(R.string.auth_rate_limited, waitSec));
+                return;
+            }
+        }
         setLoading(true);
 
         String email = editEmail.getText() != null ? editEmail.getText().toString().trim() : "";
@@ -211,6 +325,19 @@ public class LoginDialogFragment extends DialogFragment {
                     .addOnCompleteListener(task -> {
                         setLoading(false);
                         if (task.isSuccessful()) {
+                            // Phase 3.2: kick off a verification email so the
+                            // signup is provable. We don't gate further use
+                            // on it for v1.0 — the Settings badge does.
+                            // Audit fix #3 (2026-05-06): sendEmailVerification
+                            // is async — the previous try/catch never caught
+                            // anything. Use addOnFailureListener instead so
+                            // we actually log delivery failures.
+                            FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+                            if (u != null) {
+                                u.sendEmailVerification()
+                                        .addOnFailureListener(t ->
+                                                CrashReporter.INSTANCE.log(t));
+                            }
                             onAuthSuccess(email, /*name*/"");
                         } else {
                             handleAuthError(task.getException());
@@ -222,8 +349,10 @@ public class LoginDialogFragment extends DialogFragment {
                     .addOnCompleteListener(task -> {
                         setLoading(false);
                         if (task.isSuccessful()) {
+                            AuthRateLimiter.onSuccess(requireContext());
                             onAuthSuccess(email, /*name*/"");
                         } else {
+                            AuthRateLimiter.onFailure(requireContext());
                             handleAuthError(task.getException());
                         }
                     });
@@ -231,13 +360,13 @@ public class LoginDialogFragment extends DialogFragment {
     }
 
     private void handleAuthError(Exception e) {
-        String msg = "Anmeldung fehlgeschlagen";
+        String msg = getString(R.string.auth_error_generic_failed);
         if (e instanceof FirebaseAuthUserCollisionException) {
-            msg = "E‑Mail bereits registriert";
+            msg = getString(R.string.auth_error_email_collision);
         } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
-            msg = "E‑Mail oder Passwort ungültig";
+            msg = getString(R.string.auth_error_invalid_credentials);
         } else if (e instanceof FirebaseAuthInvalidUserException) {
-            msg = "Benutzer nicht gefunden";
+            msg = getString(R.string.auth_error_user_not_found);
         } else if (e != null && e.getMessage() != null) {
             msg = e.getMessage();
         }
@@ -245,18 +374,24 @@ public class LoginDialogFragment extends DialogFragment {
     }
 
     private void onAuthSuccess(String email, String name) {
+        // Phase 0.3: fall back to email prefix if no name was supplied so the
+        // settings screen always has something to show.
+        String displayName = AuthValidation.nameFromEmail(name, email);
+
         // حفظ في SharedPreferences
         EmailContext.setCurrent(requireContext(), email);
         requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
-                .edit().putString("current_user_name", name != null ? name : "").apply();
+                .edit().putString("current_user_name", displayName).apply();
 
         // تأكيد وجود المستخدم محليًا في Room
+        final String finalDisplayName = displayName;
         FragmentBg.runIO(this, () -> {
-            AppDatabase db = AppDatabase.getInstance(requireContext());
-            UserDao userDao = db.userDao();
-            User existing = userDao.getUserByEmail(email);
+            com.example.plantcare.data.repository.AuthRepository authRepo =
+                    com.example.plantcare.data.repository.AuthRepository
+                            .getInstance(requireContext());
+            User existing = authRepo.getUserByEmailBlocking(email);
             if (existing == null) {
-                userDao.insert(new User(email, name != null ? name : "", ""));
+                authRepo.insertUserBlocking(new User(email, finalDisplayName, ""));
             }
         });
 

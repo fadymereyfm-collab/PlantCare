@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="20dp"
+    android:background="@color/pc_surface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,86 +13,142 @@
 
         <TextView
             android:id="@+id/textPlantName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Name"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingBottom="8dp" />
+            android:text="@string/detail_placeholder_name"
+            android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+            android:gravity="center"
+            android:paddingBottom="12dp" />
 
         <ImageView
             android:id="@+id/plantDetailImageView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="220dp"
             android:scaleType="centerCrop"
             android:contentDescription="@string/cd_plant_photo"
             android:visibility="gone"
             android:layout_marginBottom="16dp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/pc_outlineVariant"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_label_lighting"
+            style="@style/PlantCareFieldLabel" />
+
         <TextView
             android:id="@+id/textLighting"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Licht:" />
+            android:text="@string/detail_placeholder_dash"
+            style="@style/PlantCareFieldValue"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_label_soil"
+            style="@style/PlantCareFieldLabel" />
 
         <TextView
             android:id="@+id/textSoilType"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Boden:" />
+            android:text="@string/detail_placeholder_dash"
+            style="@style/PlantCareFieldValue"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_label_watering"
+            style="@style/PlantCareFieldLabel" />
 
         <TextView
             android:id="@+id/textWatering"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Bewässerung:" />
+            android:text="@string/detail_placeholder_dash"
+            style="@style/PlantCareFieldValue"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_label_fertilizing"
+            style="@style/PlantCareFieldLabel" />
 
         <TextView
             android:id="@+id/textFertilizing"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Düngung:" />
+            android:text="@string/detail_placeholder_dash"
+            style="@style/PlantCareFieldValue"
+            android:layout_marginBottom="20dp" />
 
         <!-- الأزرار -->
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/addToMyPlantsButton"
+            style="@style/PlantCare.Button.Filled"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Zu Meine Pflanzen hinzufügen"
-            android:layout_marginTop="12dp" />
+            android:layout_height="48dp"
+            android:text="@string/detail_action_add_to_my_plants"
+            android:layout_marginTop="4dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/deleteButton"
+            style="@style/PlantCare.Button.Outlined"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Entfernen"
+            android:layout_height="48dp"
+            android:text="@string/detail_action_remove"
             android:layout_marginTop="8dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonRename"
+            style="@style/PlantCare.Button.Outlined"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Umbenennen"
+            android:layout_height="48dp"
+            android:text="@string/detail_action_rename"
             android:layout_marginTop="8dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/takePhotoButton"
+            style="@style/PlantCare.Button.Outlined"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Foto aufnehmen"
+            android:layout_height="48dp"
+            android:text="@string/detail_action_take_photo"
+            app:icon="@drawable/ic_camera"
             android:layout_marginTop="8dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonViewPhotos"
+            style="@style/PlantCare.Button.Outlined"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="📷 Bilder ansehen" />
+            android:layout_height="48dp"
+            android:text="@string/detail_action_view_photos"
+            app:icon="@drawable/ic_gallery"
+            android:layout_marginTop="8dp" />
 
-        <Button
-            android:id="@+id/buttonClose"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonDiseaseCheck"
+            style="@style/PlantCare.Button.Outlined"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Schließen"
+            android:layout_height="48dp"
+            android:text="@string/disease_check_this_plant"
+            app:icon="@drawable/ic_disease"
+            android:layout_marginTop="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonClose"
+            style="@style/PlantCare.Button.Text"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/detail_action_close"
             android:layout_marginTop="12dp" />
     </LinearLayout>
 </ScrollView>

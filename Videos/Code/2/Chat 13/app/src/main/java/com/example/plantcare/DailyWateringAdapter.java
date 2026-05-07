@@ -26,6 +26,13 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final List<Object> items = new ArrayList<>(); // RoomHeader or WateringReminder
     private final Context context;
     private final String userEmail;
+    /**
+     * Per-refresh cache from plant display name → resolved Plant. Without
+     * this, every onBindViewHolder fires 3 DB queries (name, nickname, fallback)
+     * AND openPlantDetails fires another 3 — a 30-row Today screen could hit
+     * the DB 180 times on a single bind cycle.
+     */
+    private final java.util.Map<String, Plant> plantCache = new java.util.concurrent.ConcurrentHashMap<>();
 
     /**
      * يمثّل عنوان الغرفة في القائمة
@@ -54,6 +61,9 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
      */
     public void setGroupedItems(List<RoomHeader> roomGroups) {
         items.clear();
+        // Invalidate the per-refresh plant cache so renames/edits done since
+        // last bind aren't served stale from cache.
+        plantCache.clear();
         for (RoomHeader group : roomGroups) {
             items.add(group);
             // ترتيب: غير المنجز أولاً، ثم المتأخر أكثر
@@ -79,6 +89,7 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private void setItemsFlat(List<WateringReminder> reminderList) {
         items.clear();
+        plantCache.clear();
         if (reminderList != null) {
             List<WateringReminder> sorted = new ArrayList<>(reminderList);
             Collections.sort(sorted, (a, b) -> {
@@ -154,15 +165,16 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .setMessage(context.getString(R.string.dialog_water_all_message, header.roomName))
                 .setPositiveButton(R.string.action_yes, (dialog, which) -> {
                     com.example.plantcare.util.BgExecutor.io(() -> {
-                        ReminderDao reminderDao = DatabaseClient.getInstance(context)
-                                .getAppDatabase().reminderDao();
+                        com.example.plantcare.data.repository.ReminderRepository reminderRepo =
+                                com.example.plantcare.data.repository.ReminderRepository
+                                        .getInstance(context);
                         boolean anyMarkedDone = false;
                         for (WateringReminder r : header.reminders) {
                             if (!r.done) {
                                 r.done = true;
                                 r.completedDate = new Date();
                                 r.wateredBy = userEmail;
-                                reminderDao.update(r);
+                                reminderRepo.updateBlocking(r);
                                 anyMarkedDone = true;
                             }
                         }
@@ -177,7 +189,7 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                         });
                     });
                 })
-                .setNegativeButton("Nein", null)
+                .setNegativeButton(R.string.action_no, null)
                 .show();
     }
 
@@ -186,6 +198,7 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
         ImageView imageThumb;
         TextView plantName;
         TextView textOverdue;
+        TextView textDueDate;
         ImageView typeIcon;
 
         ReminderViewHolder(@NonNull View itemView) {
@@ -194,6 +207,7 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
             imageThumb = itemView.findViewById(R.id.imagePlantThumb);
             plantName = itemView.findViewById(R.id.textPlantName);
             textOverdue = itemView.findViewById(R.id.textOverdue);
+            textDueDate = itemView.findViewById(R.id.textDueDate);
             typeIcon = itemView.findViewById(R.id.imageTypeIcon);
         }
 
@@ -218,6 +232,19 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                 textOverdue.setVisibility(View.VISIBLE);
             } else {
                 textOverdue.setVisibility(View.GONE);
+            }
+
+            // Locale-formatted due date (e.g. "12. Mai" / "May 12") so the
+            // user can see WHEN, not just whether it's overdue. The overdue
+            // badge above is relative; the date here is absolute.
+            if (textDueDate != null) {
+                String formatted = formatReminderDate(reminder.date);
+                if (formatted == null) {
+                    textDueDate.setVisibility(View.GONE);
+                } else {
+                    textDueDate.setVisibility(View.VISIBLE);
+                    textDueDate.setText(formatted);
+                }
             }
 
             // أيقونة السقاية: تظهر فقط للتذكيرات التلقائية
@@ -253,37 +280,68 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                 }
             });
 
-            // نقرة طويلة: إدارة التذكير
+            // Long-press: manage manual reminders (edit/delete). Auto
+            // reminders open plant details instead — they're regenerated
+            // by ReminderTopUpWorker every 24 h based on the plant's
+            // watering interval, so a "Delete" here would silently come
+            // back the next day. The right way to stop auto reminders is
+            // to clear `wateringInterval` on the plant itself.
             itemView.setOnLongClickListener(v -> {
                 if (isManual) {
-                    new AlertDialog.Builder(context)
-                            .setTitle("Erinnerung verwalten")
-                            .setItems(new CharSequence[]{"Bearbeiten", "Löschen"}, (dialog, which) -> {
-                                if (which == 0) {
-                                    EditManualReminderDialogFragment dialogFragment =
-                                            EditManualReminderDialogFragment.newInstance(reminder);
-                                    dialogFragment.show(((MainActivity) context).getSupportFragmentManager(),
-                                            "edit_manual_reminder");
-                                } else if (which == 1) {
-                                    com.example.plantcare.util.BgExecutor.io(() -> {
-                                        DatabaseClient.getInstance(context).getAppDatabase().reminderDao().delete(reminder);
-                                        ((MainActivity) context).runOnUiThread(() -> {
-                                            items.remove(position);
-                                            notifyDataSetChanged();
-                                            DataChangeNotifier.notifyChange();
-                                        });
-                                    });
-                                }
-                            })
-                            .setNegativeButton("Abbrechen", null)
-                            .show();
+                    showManualReminderActions(reminder, position);
                 } else {
-                    // التذكيرات التلقائية: افتح تفاصيل النبات (نفس سلوك نقرة الصورة).
                     openPlantDetails(reminder);
                 }
                 return true;
             });
         }
+    }
+
+    private void showManualReminderActions(WateringReminder reminder, int position) {
+        CharSequence[] actions = new CharSequence[]{
+                context.getString(R.string.reminder_action_edit),
+                context.getString(R.string.reminder_action_delete)
+        };
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.reminder_manage_title)
+                .setItems(actions, (dialog, which) -> {
+                    if (which == 0) {
+                        EditManualReminderDialogFragment dialogFragment =
+                                EditManualReminderDialogFragment.newInstance(reminder);
+                        dialogFragment.show(((MainActivity) context).getSupportFragmentManager(),
+                                "edit_manual_reminder");
+                    } else {
+                        deleteReminderInline(reminder, position);
+                    }
+                })
+                .setNegativeButton(R.string.action_cancel, null)
+                .show();
+    }
+
+    /**
+     * Inline delete with safer adapter mutation: notifyItemRemoved instead
+     * of the previous notifyDataSetChanged + items.remove(position) combo,
+     * which could fall out of sync when other binds happened in parallel.
+     * Manual-only — auto reminders are gated above because the top-up
+     * worker would resurrect them within 24 h.
+     */
+    private void deleteReminderInline(WateringReminder reminder, int position) {
+        com.example.plantcare.util.BgExecutor.io(() -> {
+            com.example.plantcare.data.repository.ReminderRepository
+                    .getInstance(context).deleteBlocking(reminder);
+            try { FirebaseSyncManager.get().deleteReminder(reminder); }
+            catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
+            ((MainActivity) context).runOnUiThread(() -> {
+                if (position >= 0 && position < items.size()
+                        && items.get(position) == reminder) {
+                    items.remove(position);
+                    notifyItemRemoved(position);
+                } else {
+                    notifyDataSetChanged();
+                }
+                DataChangeNotifier.notifyChange();
+            });
+        });
     }
 
     /**
@@ -296,23 +354,11 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
     private void openPlantDetails(WateringReminder reminder) {
         if (reminder == null || reminder.plantName == null) return;
         com.example.plantcare.util.BgExecutor.io(() -> {
-            PlantDao plantDao = DatabaseClient.getInstance(context).plantDao();
-
-            Plant foundPlant = null;
-            List<Plant> allUserCopies =
-                    plantDao.getAllUserPlantsWithNameAndUser(reminder.plantName, userEmail);
-            if (!allUserCopies.isEmpty()) {
-                foundPlant = plantDao.findById(allUserCopies.get(0).id);
-            } else {
-                foundPlant = plantDao.findByNickname(reminder.plantName);
-                if (foundPlant == null) foundPlant = plantDao.findByName(reminder.plantName);
-            }
-
-            final Plant finalPlant = foundPlant;
-            if (finalPlant != null && context instanceof MainActivity) {
+            Plant foundPlant = resolvePlantCached(reminder.plantName);
+            if (foundPlant != null && context instanceof MainActivity) {
                 ((MainActivity) context).runOnUiThread(() -> {
                     PlantDetailDialogFragment dialog =
-                            PlantDetailDialogFragment.newInstance(finalPlant, true);
+                            PlantDetailDialogFragment.newInstance(foundPlant, true);
                     dialog.setReadOnlyMode(true);
                     dialog.show(((MainActivity) context).getSupportFragmentManager(),
                             "plant_detail_popup");
@@ -323,21 +369,7 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private void loadPlantThumbAsync(WateringReminder reminder, ImageView target) {
         com.example.plantcare.util.BgExecutor.io(() -> {
-            PlantDao plantDao = DatabaseClient.getInstance(context).plantDao();
-            Plant plant = null;
-
-            List<Plant> copiesByName = plantDao.getAllUserPlantsWithNameAndUser(reminder.plantName, userEmail);
-            if (!copiesByName.isEmpty()) {
-                plant = plantDao.findById(copiesByName.get(0).id);
-            }
-            if (plant == null) {
-                plant = plantDao.findByNickname(reminder.plantName);
-            }
-            if (plant == null) {
-                plant = plantDao.findByName(reminder.plantName);
-            }
-
-            final Plant p = plant;
+            final Plant p = resolvePlantCached(reminder.plantName);
             ((MainActivity) context).runOnUiThread(() -> {
                 if (p != null) {
                     PlantImageLoader.loadInto(context, target, (long) p.id, p.name, userEmail);
@@ -351,9 +383,54 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
         });
     }
 
+    /**
+     * Single resolution path used by both thumbnail loader and detail dialog
+     * opener. Backed by a per-refresh cache so a 30-row Today screen issues
+     * at most ~30 plant lookups instead of 180. Identical fallback chain
+     * (user plant by name → by nickname → any catalog match) so behaviour
+     * is unchanged.
+     */
+    private Plant resolvePlantCached(String plantName) {
+        if (plantName == null) return null;
+        Plant cached = plantCache.get(plantName);
+        if (cached != null) return cached;
+        com.example.plantcare.data.repository.PlantRepository plantRepo =
+                com.example.plantcare.data.repository.PlantRepository.getInstance(context);
+        Plant plant = null;
+        List<Plant> userCopies = plantRepo.getAllUserPlantsWithNameAndUserBlocking(plantName, userEmail);
+        if (!userCopies.isEmpty()) {
+            plant = plantRepo.findByIdBlocking(userCopies.get(0).id);
+        }
+        if (plant == null) plant = plantRepo.findByNicknameBlocking(plantName);
+        if (plant == null) plant = plantRepo.findByNameBlocking(plantName);
+        if (plant != null) plantCache.put(plantName, plant);
+        return plant;
+    }
+
+    /**
+     * Format a yyyy-MM-dd reminder date for display. Returns null on parse
+     * failure so the caller can hide the field instead of showing junk.
+     * Uses the system's medium date format which respects German formatting
+     * ("12. Mai 2026") while staying readable.
+     */
+    private String formatReminderDate(String iso) {
+        if (iso == null || iso.isEmpty()) return null;
+        try {
+            java.text.SimpleDateFormat src =
+                    new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+            Date d = src.parse(iso);
+            if (d == null) return null;
+            return java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM,
+                    java.util.Locale.getDefault()).format(d);
+        } catch (java.text.ParseException e) {
+            return null;
+        }
+    }
+
     private void updateReminderAndNotify(WateringReminder reminder) {
         com.example.plantcare.util.BgExecutor.io(() -> {
-            DatabaseClient.getInstance(context).getAppDatabase().reminderDao().update(reminder);
+            com.example.plantcare.data.repository.ReminderRepository
+                    .getInstance(context).updateBlocking(reminder);
             ((MainActivity) context).runOnUiThread(() -> {
                 notifyDataSetChanged();
                 DataChangeNotifier.notifyChange();

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:background="@color/pc_background">
 
     <!-- Top Bar -->
@@ -23,21 +24,30 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_arrow_back"
             android:contentDescription="@string/close"
-            android:tint="@color/pc_onSurface"
-            android:padding="8dp" />
+            app:tint="@color/pc_onSurface"
+            android:padding="12dp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/disease_title"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:textColor="@color/pc_onSurface"
+            android:textAppearance="@style/TextAppearance.PlantCare.Title"
             android:layout_marginStart="8dp" />
+
+        <ImageButton
+            android:id="@+id/btnHistoryToolbar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_history"
+            android:contentDescription="@string/disease_open_history"
+            app:tint="@color/pc_onSurface"
+            android:padding="12dp" />
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/diseaseScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -75,7 +85,7 @@
                             android:layout_width="64dp"
                             android:layout_height="64dp"
                             android:src="@drawable/ic_disease"
-                            android:tint="@color/pc_onSurfaceSecondary"
+                            app:tint="@color/pc_onSurfaceSecondary"
                             android:contentDescription="@null" />
 
                         <TextView
@@ -106,55 +116,44 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCamera"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/PlantCare.Button.Outlined"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="6dp"
                     android:text="@string/identify_camera"
-                    android:textColor="@color/pc_onSurface"
-                    app:icon="@drawable/ic_camera"
-                    app:iconTint="@color/pc_onSurface"
-                    app:cornerRadius="12dp"
-                    app:strokeColor="@color/pc_outline" />
+                    app:icon="@drawable/ic_camera" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnGallery"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/PlantCare.Button.Outlined"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
                     android:text="@string/identify_gallery"
-                    android:textColor="@color/pc_onSurface"
-                    app:icon="@drawable/ic_gallery"
-                    app:iconTint="@color/pc_onSurface"
-                    app:cornerRadius="12dp"
-                    app:strokeColor="@color/pc_outline" />
+                    app:icon="@drawable/ic_gallery" />
             </LinearLayout>
 
             <!-- Analyze -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAnalyze"
+                style="@style/PlantCare.Button.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:text="@string/disease_analyze_button"
                 android:textSize="16sp"
                 android:enabled="false"
-                app:cornerRadius="12dp"
-                android:backgroundTint="@color/pc_success"
-                android:textColor="@color/pc_onPrimary"
                 android:layout_marginBottom="12dp" />
 
             <!-- Historie öffnen -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnHistory"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/PlantCare.Button.Text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/disease_open_history"
                 app:icon="@drawable/ic_history"
-                android:textColor="@color/pc_onSurface"
                 android:layout_marginBottom="4dp" />
 
             <!-- Loading -->
@@ -167,7 +166,8 @@
                 android:indeterminateTint="@color/pc_primary"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Fehler / Keine Ergebnisse -->
+            <!-- Fehler / Keine Ergebnisse — selectable so the user can copy
+                 the diagnostic suffix (HTTP code / body preview) without adb. -->
             <TextView
                 android:id="@+id/txtMessage"
                 android:layout_width="match_parent"
@@ -175,6 +175,7 @@
                 android:textColor="@color/pc_onSurfaceSecondary"
                 android:textSize="14sp"
                 android:gravity="center"
+                android:textIsSelectable="true"
                 android:visibility="gone"
                 android:layout_marginBottom="16dp" />
 
@@ -193,41 +194,90 @@
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@color/pc_onSurface"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/disease_results_subtitle"
+                    android:textColor="@color/pc_onSurfaceSecondary"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="10dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardPlantSpecies"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/pc_outline"
+                    app:strokeWidth="1dp"
+                    app:cardBackgroundColor="@color/pc_surfaceVariant">
+
+                    <TextView
+                        android:id="@+id/txtPlantSpecies"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:textSize="13sp"
+                        android:textColor="@color/pc_onSurface"
+                        android:textIsSelectable="true"
+                        android:drawablePadding="6dp" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/resultsRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginBottom="8dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNoneMatch"
+                    style="@style/PlantCare.Button.Outlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/disease_none_match"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/txtSelectedCandidate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/pc_primary"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="6dp" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSave"
+                style="@style/PlantCare.Button.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="@string/disease_save_button"
-                android:textSize="15sp"
-                android:visibility="gone"
-                app:cornerRadius="12dp"
-                android:backgroundTint="@color/pc_primary"
-                android:textColor="@color/pc_onPrimary" />
+                android:text="@string/disease_save_to_history"
+                android:visibility="gone" />
 
             <!-- Feature 5: Behandlungsplan aus Diagnose erzeugen.
                  Nur sichtbar nach erfolgreicher Diagnose, und nur wenn die
                  Top-Klasse nicht "healthy" ist und eine Ziel-Pflanze gewählt wurde. -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTreatmentPlan"
+                style="@style/PlantCare.Button.Tonal"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/treatment_plan_button"
-                android:textSize="15sp"
-                android:visibility="gone"
-                app:cornerRadius="12dp"
-                android:backgroundTint="@color/pc_secondary"
-                android:textColor="@color/pc_onPrimary" />
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>

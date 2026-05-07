@@ -12,7 +12,7 @@
     <string name="disease_no_results">Keine passende Krankheit erkannt. Bitte ein klareres Blattfoto verwenden.</string>
     <string name="disease_error">Fehler: %1$s</string>
     <string name="disease_healthy_label">%1$s — Gesund</string>
-    <string name="disease_confidence_percent">%1$.1f %%</string>
+    <string name="disease_confidence_percent">%1$.0f %%</string>
     <string name="disease_no_advice">Keine spezifischen Hinweise verfügbar.</string>
     <string name="disease_saved">Diagnose gespeichert</string>
 
@@ -24,6 +24,24 @@
 
     <!-- Button im Hauptbildschirm -->
     <string name="disease_button_tooltip">Krankheit erkennen</string>
+    <string name="disease_check_this_plant">🩺 Krankheits-Check</string>
+    <string name="disease_history_open">📋 Diagnose-Verlauf</string>
+    <string name="disease_save_to_history">Im Verlauf speichern</string>
+    <string name="disease_retry">Erneut versuchen</string>
+    <string name="disease_camera_permission_settings">Berechtigung in den Einstellungen aktivieren</string>
+    <string name="disease_history_detail_title">Diagnose-Detail</string>
+    <string name="disease_history_detail_advice_label">Hinweis</string>
+    <string name="disease_history_detail_plant_label">Pflanze</string>
+    <string name="disease_history_detail_no_plant">— allgemein, keiner Pflanze zugeordnet —</string>
+    <string name="disease_history_detail_share">Teilen</string>
+    <string name="disease_share_subject">PlantCare-Diagnose</string>
+    <string name="disease_share_body">%1$s\nKonfidenz: %2$.0f %%\n\n%3$s</string>
+
+    <!-- Kalender Quick-Action: nach Foto-Aufnahme Chooser zwischen Archiv und Diagnose -->
+    <string name="calendar_photo_action_title">Foto erfasst</string>
+    <string name="calendar_photo_action_message">Was möchtest du mit dem Foto tun?</string>
+    <string name="calendar_photo_action_archive">📷 Archivieren</string>
+    <string name="calendar_photo_action_diagnose">🩺 Krankheits-Check</string>
     <string name="disease_feature_unavailable">Diese Funktion ist in dieser Version nicht verfügbar.</string>
 
     <!-- Pflanzen­auswahl beim Speichern einer Diagnose -->
@@ -32,4 +50,60 @@
     <string name="disease_pick_plant_none">Keine Pflanze — allgemein speichern</string>
     <string name="disease_pick_plant_empty">Noch keine Pflanzen in deiner Sammlung. Die Diagnose wird allgemein gespeichert.</string>
     <string name="disease_pick_plant_cancel">Abbrechen</string>
+
+    <!-- DSGVO-Einwilligung beim ersten Start der Krankheitsdiagnose -->
+    <string name="disease_consent_title">Krankheitsdiagnose aktivieren?</string>
+    <string name="disease_consent_message">Zur Diagnose wird das aufgenommene Foto an den KI-Dienst Google Gemini übermittelt und dort verarbeitet. Es werden keine personenbezogenen Daten oder Standortinformationen mitgeschickt. Die Verarbeitung erfolgt nach Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung).\n\nNach der Diagnose werden zum visuellen Vergleich Referenzbilder von Wikipedia/Wikimedia Commons, iNaturalist und PlantVillage geladen. Dabei kann deine IP-Adresse von diesen Diensten erfasst werden — dein Foto wird NICHT an diese Dienste gesendet.\n\nDatenschutz: https://fadymereyfm-collab.github.io/plantcare-privacy/</string>
+    <string name="disease_consent_accept">Akzeptieren und fortfahren</string>
+    <string name="disease_consent_decline">Abbrechen</string>
+    <string name="disease_consent_declined_toast">Diagnose abgebrochen — es wurden keine Daten gesendet.</string>
+
+    <!-- KI hat keine Pflanze auf dem Foto erkannt -->
+    <string name="disease_no_plant_detected">Auf dem Foto wurde keine Pflanze erkannt. Bitte ein klares Bild eines Blattes oder einer Pflanze aufnehmen.</string>
+
+    <!-- Vorab-Dialog: allgemeine Diagnose oder bestimmte Pflanze -->
+    <string name="disease_chooser_title">Krankheits-Check</string>
+    <string name="disease_chooser_message">Möchtest du allgemein eine Pflanze auf Krankheiten prüfen oder eine bestimmte Pflanze aus deiner Sammlung untersuchen?</string>
+    <string name="disease_chooser_general">Allgemeine Diagnose</string>
+    <string name="disease_chooser_specific">Eigene Pflanze prüfen</string>
+    <string name="disease_chooser_no_plants">Du hast noch keine Pflanzen in deiner Sammlung. Eine bestimmte Pflanze kann erst nach dem Hinzufügen ausgewählt werden.</string>
+    <string name="disease_chooser_pick_plant_title">Welche Pflanze soll geprüft werden?</string>
+
+    <!-- Nach erfolgreicher Diagnose: Foto + Krankheitshinweis ins Pflanzen-Archiv übernehmen -->
+    <string name="disease_archive_prompt_title">Foto im Pflanzen-Archiv speichern?</string>
+    <string name="disease_archive_prompt_message">Möchtest du dieses Foto und den Hinweis „%1$s\" zum Foto-Archiv von %2$s hinzufügen?</string>
+    <string name="disease_archive_prompt_yes">Ja, speichern</string>
+    <string name="disease_archive_prompt_no">Nein, danke</string>
+    <!-- Generic fallback when the plant lookup fails — used in the archive
+         prompt instead of leaking the picker dialog title as the plant name. -->
+    <string name="disease_archive_prompt_plant_fallback">der Pflanze</string>
+    <string name="disease_archive_saved">Foto im Archiv gespeichert</string>
+    <string name="disease_archive_save_failed">Foto konnte nicht ins Archiv gespeichert werden</string>
+    <string name="disease_archive_inspection_label">🩺 %1$s</string>
+
+    <!-- Differential-Diagnose-UI: Vergleichsbilder + Auswahl -->
+    <string name="disease_results_subtitle">Tippe „Passt zu meinem Foto" auf der Diagnose, deren Referenzbilder am ehesten zu deinem Foto passen.</string>
+    <string name="disease_reference_section_label">Vergleichsbilder</string>
+    <string name="disease_reference_none">Keine Referenzbilder verfügbar.</string>
+    <string name="disease_reference_attribution">Quelle: %1$s</string>
+    <string name="disease_reference_image_cd">Vergleichsfoto eines kranken Blattes</string>
+    <string name="disease_candidate_match">Passt zu meinem Foto</string>
+    <string name="disease_candidate_selected">Ausgewählt ✓</string>
+    <string name="disease_none_match">Keine passt — Alternativen vorschlagen</string>
+    <string name="disease_selected_candidate_label">Ausgewählt: %1$s</string>
+    <string name="disease_plant_species_label">🌿 Erkannte Pflanze: %1$s</string>
+
+    <!-- Spezies-Konflikt-Warnung beim Speichern -->
+    <string name="disease_species_mismatch_title">Pflanze passt nicht zur KI-Erkennung</string>
+    <string name="disease_species_mismatch_message">Die KI hat auf dem Foto „%1$s\" erkannt, aber du speicherst die Diagnose unter deiner Pflanze „%2$s\". \n\nMöchtest du trotzdem speichern? Wenn du das falsche Foto hochgeladen hast, brich ab und wähle ein neues.</string>
+    <string name="disease_species_mismatch_proceed">Trotzdem speichern</string>
+    <string name="disease_species_mismatch_cancel">Abbrechen</string>
+
+    <!-- Klassifizierte Fehlermeldungen aus dem KI-Backend -->
+    <string name="disease_error_no_internet">Keine Internetverbindung. Bitte WLAN oder mobile Daten prüfen.</string>
+    <string name="disease_error_quota_exceeded">Tageskontingent erreicht. Bitte morgen erneut versuchen.</string>
+    <string name="disease_error_invalid_key">API-Schlüssel ungültig. Bitte App-Update installieren.</string>
+    <string name="disease_error_timeout">Server antwortet nicht. Bitte später erneut versuchen.</string>
+    <string name="disease_error_server">KI-Modell ist gerade stark ausgelastet. Bitte in 1–2 Minuten erneut versuchen.</string>
+    <string name="disease_error_unknown">Unbekannter Fehler. Bitte erneut versuchen.</string>
 </resources>

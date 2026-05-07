@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "957160268378",
+    "project_id": "plantcare-f5fb2",
+    "storage_bucket": "plantcare-f5fb2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:957160268378:android:e3a8c63c442be5323b2e63",
+        "android_client_info": {
+          "package_name": "com.fadymerey.plantcare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "957160268378-fk7235oa00goi7boemet3r9lnch5gn5p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fadymerey.plantcare",
+            "certificate_hash": "7d928bf4ab2bbde363340477a2b28c932663f033"
+          }
+        },
+        {
+          "client_id": "957160268378-6757e4bm65e72l2d51cjaf9f5c0vp839.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZp_TPhIqDEviN-OcMhEZonyK2c0mlBpk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "957160268378-6757e4bm65e72l2d51cjaf9f5c0vp839.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

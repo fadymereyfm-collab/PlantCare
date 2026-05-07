@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  AlertDialog background — was hardcoded @android:color/white, which made
+  every dialog (DSGVO consent, plant picker, save confirmations, …) pop as
+  a bright white sheet in dark mode. pc_surface auto-flips to the dark
+  surface (#1A1F1C) in values-night/colors.xml.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/pc_surface"/>
+    <corners android:radius="28dp"/>
+</shape>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="1dp"
+    app:strokeColor="@color/pc_outline"
+    app:strokeWidth="1dp"
+    android:layout_marginBottom="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <!-- Top row: thumbnail + name + confidence -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Reference image from PlantNet for this suggestion. Shown so the
+                 user can visually confirm which candidate matches their photo.
+                 Falls back to the generic plant placeholder when PlantNet didn't
+                 return a related image. -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgSuggestion"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginEnd="12dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/identify_suggestion_image_desc"
+                android:src="@drawable/ic_plant_placeholder"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.PlantCare.IdentifyThumb"
+                app:strokeColor="@color/pc_outline"
+                app:strokeWidth="1dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtCommonName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/pc_onSurface" />
+
+                <TextView
+                    android:id="@+id/txtScientificName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/pc_onSurfaceSecondary"
+                    android:fontFamily="serif"
+                    android:textStyle="italic" />
+            </LinearLayout>
+
+            <!-- Confidence badge -->
+            <TextView
+                android:id="@+id/txtConfidence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/badge_confidence"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/pc_onPrimary" />
+        </LinearLayout>
+
+        <!-- Family -->
+        <TextView
+            android:id="@+id/txtFamily"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/pc_onSurfaceSecondary"
+            android:layout_marginTop="4dp"
+            android:visibility="gone" />
+
+        <!-- Confidence bar -->
+        <ProgressBar
+            android:id="@+id/confidenceBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            android:progressTint="@color/pc_success"
+            android:progressBackgroundTint="@color/pc_surfaceVariant" />
+
+        <!-- Add to my plants button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddPlant"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_gravity="end"
+            android:text="@string/identify_add_plant"
+            android:textColor="@color/pc_success"
+            android:textSize="13sp"
+            app:icon="@drawable/ic_add"
+            app:iconTint="@color/pc_success"
+            app:rippleColor="@color/pc_surfaceVariant"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

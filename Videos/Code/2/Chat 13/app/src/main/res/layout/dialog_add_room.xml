@@ -1,0 +1,71 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    app:cardCornerRadius="28dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@color/card_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="28dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_room_dialog_title"
+            android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+            android:textSize="22sp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"/>
+
+        <!-- Outlined الصحيح + حدود أوضح -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/pc_outline"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            android:layout_marginBottom="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editRoomName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_room_name"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:background="@android:color/transparent"
+                android:inputType="textCapWords"
+                android:maxLines="1"
+                android:maxLength="40"
+                android:imeOptions="actionDone"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonAddRoomConfirm"
+            style="@style/PlantCare.Button.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/action_add_short"
+            android:layout_marginBottom="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonCancelAddRoom"
+            style="@style/PlantCare.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/action_cancel"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

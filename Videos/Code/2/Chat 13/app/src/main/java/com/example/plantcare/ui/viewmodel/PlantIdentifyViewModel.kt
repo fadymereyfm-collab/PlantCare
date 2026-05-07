@@ -5,24 +5,25 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.plantcare.Plant
 import com.example.plantcare.data.plantnet.IdentificationResult
 import com.example.plantcare.data.plantnet.PlantNetError
 import com.example.plantcare.data.repository.PlantIdentificationRepository
-import com.example.plantcare.data.repository.PlantRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
-import java.util.Date
 
 /**
- * ViewModel for plant identification screen.
- * Manages the identification state and adding identified plants to the user's collection.
+ * ViewModel for plant identification screen. Holds the PlantNet result list,
+ * the current UI state, and the selected image path. Plant insertion goes
+ * through `AddToMyPlantsDialogFragment` (driven by
+ * `PlantIdentifyActivity.enrichAndOpenDialog`) — this ViewModel intentionally
+ * does NOT own that flow; an earlier `addPlantToMyPlants` method existed
+ * but was never wired to any UI and shipped with a hardcoded
+ * `wateringInterval = 3` plus empty care fields, so removing it eliminates
+ * a footgun for future contributors.
  */
 class PlantIdentifyViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = PlantIdentificationRepository.getInstance(application)
-    private val plantRepo = PlantRepository.getInstance(application)
 
     /** Current UI state */
     private val _uiState = MutableLiveData<IdentifyUiState>(IdentifyUiState.Idle)
@@ -35,13 +36,6 @@ class PlantIdentifyViewModel(application: Application) : AndroidViewModel(applic
     /** Selected image file path for display */
     private val _selectedImagePath = MutableLiveData<String?>()
     val selectedImagePath: LiveData<String?> = _selectedImagePath
-
-    /** Plant added event (one-shot) */
-    private val _plantAdded = MutableLiveData<Boolean>()
-    val plantAdded: LiveData<Boolean> = _plantAdded
-
-    /** منع الإضافة المكررة: true أثناء تنفيذ addPlantToMyPlants */
-    @Volatile private var isAdding: Boolean = false
 
     /**
      * Set the selected image file path (for preview).
@@ -77,54 +71,8 @@ class PlantIdentifyViewModel(application: Application) : AndroidViewModel(applic
                 }
             } catch (e: Exception) {
                 // Sicherheitsnetz — der Repository‑Pfad fängt normalerweise bereits alles ab.
-                e.printStackTrace()
+                com.example.plantcare.CrashReporter.log(e)
                 _uiState.postValue(IdentifyUiState.Error(PlantNetError.UNKNOWN))
-            }
-        }
-    }
-
-    /**
-     * Add the identified plant to the user's collection (MyPlants).
-     *
-     * @param result The identification result to add
-     * @param userEmail Current user's email
-     * @param imageUri Optional image URI to use as the plant's profile image
-     * @param roomId Target room id (0 = nicht zugeordnet)
-     */
-    fun addPlantToMyPlants(
-        result: IdentificationResult,
-        userEmail: String,
-        imageUri: String?,
-        roomId: Int
-    ) {
-        // Guard: ignore duplicate taps while an insert is already in flight
-        if (isAdding) return
-        isAdding = true
-
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val plant = Plant().apply {
-                    name = result.commonName ?: result.scientificName
-                    nickname = ""
-                    startDate = Date()
-                    wateringInterval = 3 // Default: every 3 days
-                    isUserPlant = true
-                    lighting = ""
-                    soil = ""
-                    fertilizing = ""
-                    watering = ""
-                    this.imageUri = imageUri
-                    isFavorite = false
-                    personalNote = "Wissenschaftlicher Name: ${result.scientificName}" +
-                            (result.family?.let { "\nFamilie: $it" } ?: "")
-                    this.userEmail = userEmail
-                    this.roomId = roomId
-                }
-                plantRepo.insertPlant(plant)
-                _plantAdded.postValue(true)
-            } finally {
-                // لا تُعِد isAdding إلى false: بعد النجاح يُغلق النشاط على أي حال.
-                // ولو فشل الإدراج في رمي استثناء، سيرفع Crash أو يُسجّل؛ نحافظ على قفل الحماية.
             }
         }
     }
@@ -136,8 +84,6 @@ class PlantIdentifyViewModel(application: Application) : AndroidViewModel(applic
         _uiState.value = IdentifyUiState.Idle
         _results.value = emptyList()
         _selectedImagePath.value = null
-        _plantAdded.value = false
-        isAdding = false
     }
 }
 

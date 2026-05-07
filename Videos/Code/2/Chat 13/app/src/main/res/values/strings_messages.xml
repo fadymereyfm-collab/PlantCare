@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Toast/Status messages -->
+    <string name="msg_saved">Änderungen gespeichert</string>
+    <string name="msg_deleted">Erfolgreich gelöscht</string>
+    <string name="msg_moved">Erfolgreich verschoben</string>
+
+    <!-- Delete confirmation -->
+    <string name="confirm_delete_plant_title">Pflanze löschen?</string>
+    <string name="confirm_delete_plant_message">Möchten Sie diese Pflanze wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="action_delete">Löschen</string>
+    <string name="action_cancel">Abbrechen</string>
+
+    <!-- Room edit / delete (long-press menu) -->
+    <string name="room_action_rename">Umbenennen</string>
+    <string name="room_action_reorder">Verschieben</string>
+    <string name="room_action_delete">Raum löschen</string>
+    <string name="room_rename_dialog_title">Raum umbenennen</string>
+    <string name="room_delete_blocked_title">Raum nicht leer</string>
+    <string name="room_delete_blocked_message">Dieser Raum enthält %1$d Pflanze(n). Verschieben oder löschen Sie sie zuerst.</string>
+    <string name="room_delete_confirm_title">Raum löschen?</string>
+    <string name="room_delete_confirm_message">"%1$s" wirklich entfernen?</string>
+    <string name="room_renamed">Raum umbenannt</string>
+    <string name="room_deleted">Raum gelöscht</string>
+    <string name="room_rename_duplicate">Ein Raum mit diesem Namen existiert bereits.</string>
+
+    <!-- Reminder management bottom-sheet (long-press on a reminder row) -->
+    <string name="reminder_manage_title">Erinnerung verwalten</string>
+    <string name="reminder_action_edit">Bearbeiten</string>
+    <string name="reminder_action_delete">Löschen</string>
+    <string name="reminder_save_failed">Erinnerung konnte nicht gespeichert werden</string>
+    <string name="reminder_count_cap_warning">Maximum 365 Erinnerungen pro Eintrag.</string>
+
+    <!-- Archive screen title format: "Wohnzimmer • Archiv" -->
+    <string name="archive_title_format">%1$s • Archiv</string>
+</resources>

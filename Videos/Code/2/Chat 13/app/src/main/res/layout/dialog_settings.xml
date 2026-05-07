@@ -18,7 +18,9 @@
             android:layout_height="48dp"
             android:layout_gravity="end"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:src="@drawable/ic_close"
+            app:tint="@color/pc_onSurfaceSecondary"
+            android:padding="12dp"
             android:contentDescription="@string/close" />
 
         <!-- Konto -->
@@ -244,6 +246,39 @@
                         android:text="@string/settings_set_password"
                         android:textAllCaps="false" />
                 </LinearLayout>
+
+                <!-- Phase 4.1: biometric login toggle -->
+                <LinearLayout
+                    android:id="@+id/groupBiometric"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="14dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/auth_biometric_toggle_label"
+                        android:textColor="@color/pc_onSurface"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchBiometric"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <!-- Phase 6.4: sign out from all devices -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonSignOutAll"
+                    style="@style/Button.Secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/auth_sessions_logout_all"
+                    android:textAllCaps="false" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -592,13 +627,13 @@
                     android:text="@string/settings_section_danger"
                     android:textStyle="bold"
                     android:textSize="17sp"
-                    android:textColor="#D32F2F"
+                    android:textColor="@color/pc_error"
                     android:includeFontPadding="false" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#F2B7B7"
+                    android:background="@color/pc_errorContainer"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="12dp" />
 

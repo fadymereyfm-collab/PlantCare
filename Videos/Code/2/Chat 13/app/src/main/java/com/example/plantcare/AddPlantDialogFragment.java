@@ -129,13 +129,14 @@ public class AddPlantDialogFragment extends DialogFragment {
     private void loadRooms() {
         final String userEmail = getUserEmail();
         FragmentBg.<List<RoomCategory>>runWithResult(this,
-                () -> AppDatabase.getInstance(requireContext())
-                        .roomCategoryDao().getAllRoomsForUser(userEmail),
+                () -> com.example.plantcare.data.repository.RoomCategoryRepository
+                        .getInstance(requireContext())
+                        .getAllRoomsForUserBlocking(userEmail),
                 loaded -> {
                     rooms = loaded;
                     List<String> roomNames = new ArrayList<>();
                     for (RoomCategory room : rooms) roomNames.add(room.name);
-                    roomNames.add("إضافة غرفة جديدة...");
+                    roomNames.add(getString(R.string.spinner_add_new_room));
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, roomNames);
                     spinnerRooms.setAdapter(adapter);
 
@@ -159,10 +160,11 @@ public class AddPlantDialogFragment extends DialogFragment {
         final String userEmail = getUserEmail();
         final int roomId = selectedRoomId;
         FragmentBg.<Integer>runWithResult(this,
-                () -> AppDatabase.getInstance(requireContext())
-                        .plantDao().countPlantsByRoom(roomId, userEmail),
+                () -> com.example.plantcare.data.repository.PlantRepository
+                        .getInstance(requireContext())
+                        .countPlantsByRoomBlocking(roomId, userEmail),
                 count -> {
-                    String baseName = "نبتة";
+                    String baseName = getString(R.string.default_plant_base);
                     String suggestion = baseName + " " + String.format(Locale.getDefault(), "%02d", count + 1);
                     editPlantName.setText(suggestion);
                 });
@@ -171,11 +173,27 @@ public class AddPlantDialogFragment extends DialogFragment {
     private void showAddRoomDialog() {
         AddRoomDialogFragment dialog = new AddRoomDialogFragment();
         dialog.setOnRoomAddedListener(roomName -> {
-            RoomCategory room = new RoomCategory();
-            room.name = roomName;
-            room.userEmail = getUserEmail();
+            if (TextUtils.isEmpty(roomName)) return;
+            final String name = roomName.trim();
+            final String email = getUserEmail();
+            final android.content.Context appCtx = requireContext().getApplicationContext();
             FragmentBg.runIO(this, () -> {
-                AppDatabase.getInstance(requireContext()).roomCategoryDao().insert(room);
+                com.example.plantcare.data.repository.RoomCategoryRepository repo =
+                        com.example.plantcare.data.repository.RoomCategoryRepository.getInstance(appCtx);
+                // Skip case-insensitive duplicate so retries don't pile up.
+                List<RoomCategory> existing = repo.getAllRoomsForUserBlocking(email);
+                if (existing != null) {
+                    for (RoomCategory r : existing) {
+                        if (r.name != null && r.name.equalsIgnoreCase(name)) return;
+                    }
+                }
+                RoomCategory room = new RoomCategory();
+                room.name = name;
+                room.userEmail = email;
+                long newId = repo.insertBlocking(room);
+                room.id = (int) newId;
+                try { FirebaseSyncManager.get().syncRoom(room); }
+                catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
                 loadRooms();
             });
         });
@@ -191,6 +209,13 @@ public class AddPlantDialogFragment extends DialogFragment {
                     selectedDate = calendar.getTime();
                     editStartDate.setText(android.text.format.DateFormat.format("yyyy-MM-dd", selectedDate));
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        // Bound to ±1 year — same reasoning as AddToMyPlantsDialogFragment.
+        Calendar min = Calendar.getInstance();
+        min.add(Calendar.YEAR, -1);
+        Calendar max = Calendar.getInstance();
+        max.add(Calendar.YEAR, 1);
+        dialog.getDatePicker().setMinDate(min.getTimeInMillis());
+        dialog.getDatePicker().setMaxDate(max.getTimeInMillis());
         dialog.show();
     }
 
@@ -213,14 +238,19 @@ public class AddPlantDialogFragment extends DialogFragment {
         final android.content.Context appCtx = requireContext().getApplicationContext();
         FragmentBg.<Boolean>runWithResult(this,
                 () -> {
+                    com.example.plantcare.data.repository.PlantRepository plantRepo =
+                            com.example.plantcare.data.repository.PlantRepository.getInstance(appCtx);
+                    com.example.plantcare.data.repository.ReminderRepository reminderRepo =
+                            com.example.plantcare.data.repository.ReminderRepository.getInstance(appCtx);
+
                     if (!com.example.plantcare.billing.ProStatusManager.isPro(appCtx)) {
-                        int currentCount = AppDatabase.getInstance(appCtx).plantDao()
-                                .countUserPlants(userEmail);
+                        int currentCount = plantRepo.countUserPlantsBlocking(userEmail);
                         if (currentCount >= com.example.plantcare.billing.ProStatusManager.FREE_PLANT_LIMIT) {
                             return Boolean.FALSE;
                         }
                     }
                     Plant plant = new Plant();
+                    plant.name = name;
                     plant.nickname = name;
                     plant.roomId = selectedRoomId;
                     plant.lighting = editLighting.getText().toString();
@@ -231,7 +261,29 @@ public class AddPlantDialogFragment extends DialogFragment {
                     plant.isUserPlant = true;
                     plant.userEmail = userEmail;
                     plant.imageUri = imgUri;
-                    AppDatabase.getInstance(appCtx).plantDao().insert(plant);
+                    int interval = ReminderUtils.parseWateringInterval(plant.watering);
+                    plant.wateringInterval = interval > 0 ? interval : 5;
+
+                    long id = plantRepo.insertBlocking(plant);
+                    plant.setId((int) id);
+
+                    try {
+                        FirebaseSyncManager.get().syncPlant(plant);
+                    } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
+
+                    java.util.List<WateringReminder> reminders = ReminderUtils.generateReminders(plant);
+                    if (reminders != null) {
+                        for (WateringReminder r : reminders) {
+                            r.userEmail = userEmail;
+                            reminderRepo.insertBlocking(r);
+                            try {
+                                FirebaseSyncManager.get().syncReminder(r);
+                            } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
+                        }
+                    }
+
+                    com.example.plantcare.ui.util.QuickAddHelper
+                            .rememberLastUsedRoom(appCtx, userEmail, selectedRoomId);
                     return Boolean.TRUE;
                 },
                 inserted -> {
@@ -241,6 +293,8 @@ public class AddPlantDialogFragment extends DialogFragment {
                                 com.example.plantcare.billing.PaywallDialogFragment.TAG);
                         return;
                     }
+                    Analytics.INSTANCE.logPlantAdded(appCtx);
+                    DataChangeNotifier.notifyChange();
                     Toast.makeText(requireContext(), R.string.plant_added, Toast.LENGTH_SHORT).show();
                     if (onPlantAdded != null) onPlantAdded.run();
                     dismiss();

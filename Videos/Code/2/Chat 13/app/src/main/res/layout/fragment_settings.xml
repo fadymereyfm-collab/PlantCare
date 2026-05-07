@@ -1,0 +1,92 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@color/pc_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/pc_background">
+
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="@string/settings_hint_new_name"
+            android:background="@drawable/bg_edittext_themed"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
+            android:layout_marginBottom="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSaveName"
+            style="@style/PlantCare.Button.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/settings_button_update_name"
+            android:layout_marginBottom="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/pc_outlineVariant"
+            android:layout_marginVertical="16dp" />
+
+        <EditText
+            android:id="@+id/editOldPassword"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="@string/settings_hint_old_password"
+            android:inputType="textPassword|numberPassword"
+            android:background="@drawable/bg_edittext_themed"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
+            android:layout_marginBottom="12dp" />
+
+        <EditText
+            android:id="@+id/editNewPassword"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="@string/settings_hint_new_password"
+            android:inputType="textPassword|numberPassword"
+            android:background="@drawable/bg_edittext_themed"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
+            android:layout_marginBottom="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonChangePassword"
+            style="@style/PlantCare.Button.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/settings_button_change_password_short"
+            android:layout_marginBottom="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/pc_outlineVariant"
+            android:layout_marginVertical="16dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonLogout"
+            style="@style/PlantCare.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/settings_button_logout_short"
+            android:layout_marginBottom="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonDeleteAccount"
+            style="@style/PlantCare.Button.Danger"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/settings_button_delete_account_short" />
+    </LinearLayout>
+</ScrollView>

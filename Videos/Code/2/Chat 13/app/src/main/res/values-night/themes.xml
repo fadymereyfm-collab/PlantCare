@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- ============================================================
+         PlantCare — Night theme override
+         Mirrors Theme.PlantCareApp from values/themes.xml but flips
+         status-bar / navigation-bar light flags so system icons stay
+         readable on the dark sage-charcoal background.
+         All color values themselves come from values-night/colors.xml
+         via @color/pc_* references — no need to redeclare them here.
+         All widget defaults (materialButtonStyle / floatingActionButtonStyle /
+         materialCardViewStyle / chipStyle / toolbarStyle) and all
+         textAppearance defaults inherit from values/themes.xml.
+         ============================================================ -->
+
+    <style name="Theme.PlantCareApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary Material roles -->
+        <item name="colorPrimary">@color/pc_primary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/pc_onPrimary</item>
+
+        <!-- Secondary roles -->
+        <item name="colorSecondary">@color/pc_tertiary</item>
+        <item name="colorSecondaryVariant">@color/pc_accent2</item>
+        <item name="colorOnSecondary">@color/pc_onTertiary</item>
+
+        <!-- Unified backgrounds and surfaces -->
+        <item name="android:windowBackground">@color/pc_background</item>
+        <item name="android:colorBackground">@color/pc_background</item>
+        <item name="colorSurface">@color/pc_surface</item>
+        <item name="colorOnSurface">@color/pc_onSurface</item>
+
+        <!-- Status bar — dark surface in night theme so system icons
+             render light. -->
+        <item name="android:statusBarColor">@color/pc_background</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:navigationBarColor">@color/pc_background</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorTertiary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
+        <item name="android:textColorPrimaryInverse">@color/pc_onPrimary</item>
+
+        <!-- Error roles -->
+        <item name="colorError">@color/pc_error</item>
+        <item name="colorOnError">@color/pc_onError</item>
+
+        <!-- Dialog themes -->
+        <item name="alertDialogTheme">@style/PlantCare.AlertDialog</item>
+        <item name="materialAlertDialogTheme">@style/PlantCare.MaterialAlertDialog</item>
+        <item name="android:alertDialogTheme">@style/PlantCare.AlertDialog</item>
+        <item name="android:datePickerDialogTheme">@style/PlantCare.DatePickerDialog</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialog.Modern</item>
+
+        <!-- Fonts -->
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="fontFamily">@font/nunito</item>
+
+        <!-- Typography defaults -->
+        <item name="textAppearanceHeadline5">@style/TextAppearance.PlantCare.Headline</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.PlantCare.Title</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.PlantCare.Subtitle</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.PlantCare.Body</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.PlantCare.BodySmall</item>
+        <item name="textAppearanceButton">@style/TextAppearance.PlantCare.Button</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.PlantCare.Caption</item>
+
+        <!-- Default widget styles -->
+        <item name="materialButtonStyle">@style/PlantCare.Button.Filled</item>
+        <item name="floatingActionButtonStyle">@style/PlantCare.Fab</item>
+        <item name="materialCardViewStyle">@style/PlantCare.Card</item>
+        <item name="chipStyle">@style/PlantCare.Chip</item>
+        <item name="toolbarStyle">@style/PlantCare.Toolbar</item>
+
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
+</resources>

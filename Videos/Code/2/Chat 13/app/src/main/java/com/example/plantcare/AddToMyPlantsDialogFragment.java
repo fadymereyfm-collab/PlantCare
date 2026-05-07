@@ -50,10 +50,6 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
     private String cachedUserEmail = null;
     private boolean guestMode = false;
 
-    private static final String[] DEFAULT_ROOMS = {
-            "Wohnzimmer", "Schlafzimmer", "Flur", "Bad", "Toilette"
-    };
-
     public static AddToMyPlantsDialogFragment newInstance(Plant p) {
         AddToMyPlantsDialogFragment f = new AddToMyPlantsDialogFragment();
         Bundle b = new Bundle();
@@ -84,11 +80,18 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
         cachedUserEmail = EmailContext.current(requireContext());
         guestMode = (cachedUserEmail == null);
 
-        String fallback = (plant != null && !TextUtils.isEmpty(plant.name)) ? plant.name : "Pflanze";
+        String fallback = (plant != null && !TextUtils.isEmpty(plant.name))
+                ? plant.name
+                : getString(R.string.default_plant_base);
+        // Initial draft — "<species> 1" while we resolve the real next index
+        // off the main thread. Replaced below with "<species> N" where N is
+        // count(existing siblings)+1 so a 6th Einblatt becomes "Einblatt 6"
+        // instead of always "Einblatt 1".
         editName.setText(fallback + " 1");
+        if (!guestMode) suggestNicknameForPlant(fallback);
 
         if (guestMode) {
-            populateSpinnerWithRoomNames(Arrays.asList(DEFAULT_ROOMS));
+            populateSpinnerWithRoomNames(com.example.plantcare.ui.util.DefaultRooms.get(requireContext()));
         } else {
             ensureDefaultsThenLoadRooms();
         }
@@ -107,11 +110,14 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
                 } else {
                     final Context appCtx = requireContext().getApplicationContext();
                     FragmentBg.runIO(this, () -> {
-                        AppDatabase db = AppDatabase.getInstance(appCtx);
                         RoomCategory rc = new RoomCategory();
                         rc.name = roomName;
                         rc.userEmail = cachedUserEmail;
-                        db.roomCategoryDao().insert(rc);
+                        long newId = com.example.plantcare.data.repository.RoomCategoryRepository
+                                .getInstance(appCtx).insertBlocking(rc);
+                        rc.id = (int) newId;
+                        try { FirebaseSyncManager.get().syncRoom(rc); }
+                        catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
                         reloadRooms();
                     });
                 }
@@ -183,25 +189,38 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
         return 0;
     }
 
+    private void suggestNicknameForPlant(String baseName) {
+        if (TextUtils.isEmpty(cachedUserEmail)) return;
+        final Context appCtx = requireContext().getApplicationContext();
+        final String email = cachedUserEmail;
+        FragmentBg.<Integer>runWithResult(this,
+                () -> {
+                    java.util.List<Plant> existing = com.example.plantcare.data.repository
+                            .PlantRepository.getInstance(appCtx)
+                            .getAllUserPlantsWithNameAndUserBlocking(baseName, email);
+                    return (existing != null ? existing.size() : 0) + 1;
+                },
+                next -> {
+                    if (next == null || editName == null) return;
+                    String suggestion = baseName + " " + next;
+                    // Don't clobber a value the user has already started typing.
+                    String current = editName.getText() != null ? editName.getText().toString() : "";
+                    if (current.isEmpty() || current.equals(baseName + " 1")) {
+                        editName.setText(suggestion);
+                    }
+                });
+    }
+
     private void ensureDefaultsThenLoadRooms() {
         final Context appCtx = requireContext().getApplicationContext();
         FragmentBg.runIO(this, () -> {
-            AppDatabase db = AppDatabase.getInstance(appCtx);
-            db.runInTransaction(() -> {
-                List<RoomCategory> current = db.roomCategoryDao().getAllRoomsForUser(cachedUserEmail);
-                Set<String> existing = new HashSet<>();
-                if (current != null) {
-                    for (RoomCategory r : current) existing.add(r.name);
-                }
-                for (String def : DEFAULT_ROOMS) {
-                    if (!existing.contains(def)) {
-                        RoomCategory rc = new RoomCategory();
-                        rc.name = def;
-                        rc.userEmail = cachedUserEmail;
-                        db.roomCategoryDao().insert(rc);
-                    }
-                }
-            });
+            // Sprint-3 cleanup: delegate to the synchronized Repo helper so a
+            // second simultaneous open of this dialog can't insert duplicate
+            // default rooms.
+            com.example.plantcare.data.repository.RoomCategoryRepository
+                    .getInstance(appCtx)
+                    .ensureDefaultsForUserBlocking(cachedUserEmail,
+                            com.example.plantcare.ui.util.DefaultRooms.get(appCtx));
             reloadRooms();
         });
     }
@@ -209,15 +228,17 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
     private void reloadRooms() {
         final Context appCtx = requireContext().getApplicationContext();
         FragmentBg.<List<RoomCategory>>runWithResult(this,
-                () -> AppDatabase.getInstance(appCtx)
-                        .roomCategoryDao()
-                        .getAllRoomsForUser(cachedUserEmail),
+                () -> com.example.plantcare.data.repository.RoomCategoryRepository
+                        .getInstance(appCtx)
+                        .getAllRoomsForUserBlocking(cachedUserEmail),
                 loaded -> {
                     rooms.clear();
                     if (loaded != null) rooms.addAll(loaded);
                     List<String> names = new ArrayList<>();
                     for (RoomCategory r : rooms) names.add(r.name);
-                    if (names.isEmpty()) names.addAll(Arrays.asList(DEFAULT_ROOMS));
+                    if (names.isEmpty()) {
+                        names.addAll(com.example.plantcare.ui.util.DefaultRooms.get(requireContext()));
+                    }
                     populateSpinnerWithRoomNames(names);
                 });
     }
@@ -245,7 +266,8 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
 
                     if (!com.example.plantcare.billing.ProStatusManager.isPro(appCtx)) {
                         FragmentBg.<Integer>runWithResult(this,
-                                () -> AppDatabase.getInstance(appCtx).plantDao().countUserPlants(email),
+                                () -> com.example.plantcare.data.repository.PlantRepository
+                                        .getInstance(appCtx).countUserPlantsBlocking(email),
                                 count -> {
                                     if (count != null && count >= com.example.plantcare.billing.ProStatusManager.FREE_PLANT_LIMIT) {
                                         new com.example.plantcare.billing.PaywallDialogFragment().show(
@@ -259,13 +281,32 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
                     }
                     actuallyAddPlant(appCtx, email, nickname, roomId, startDate);
                 }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        applyPlantStartDateBounds(picker);
         picker.show();
+    }
+
+    /**
+     * Reminders generate forward from the plant's startDate, so picking a
+     * far-past date floods the calendar with backfilled rows and a far-future
+     * date silences the plant for years. Clamp the picker to ±1 year — covers
+     * "I bought this plant a few months ago" without inviting typos like 1900.
+     */
+    private static void applyPlantStartDateBounds(DatePickerDialog picker) {
+        Calendar min = Calendar.getInstance();
+        min.add(Calendar.YEAR, -1);
+        Calendar max = Calendar.getInstance();
+        max.add(Calendar.YEAR, 1);
+        picker.getDatePicker().setMinDate(min.getTimeInMillis());
+        picker.getDatePicker().setMaxDate(max.getTimeInMillis());
     }
 
     private void actuallyAddPlant(Context appCtx, String email, String nickname, int roomId, Date startDate) {
                     FragmentBg.runIO(this,
                             () -> {
-                                AppDatabase db = AppDatabase.getInstance(appCtx);
+                                com.example.plantcare.data.repository.PlantRepository plantRepo =
+                                        com.example.plantcare.data.repository.PlantRepository.getInstance(appCtx);
+                                com.example.plantcare.data.repository.ReminderRepository reminderRepo =
+                                        com.example.plantcare.data.repository.ReminderRepository.getInstance(appCtx);
 
                                 Plant newPlant = new Plant();
                                 if (plant != null) {
@@ -292,10 +333,16 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
                                 newPlant.userEmail = email;
                                 newPlant.roomId = roomId;
 
-                                int interval = ReminderUtils.parseWateringInterval(newPlant.watering);
+                                // Reihenfolge: Draft (PlantNet hat Familien-Default schon
+                                // gesetzt) → Text-Parsing → Hardcoded-Fallback. Vor F5 wurde
+                                // der Draft-Wert ignoriert und alle PlantNet-Pflanzen landeten
+                                // bei 5 Tagen (Functional Report §1.4).
+                                int interval = newPlant.wateringInterval > 0
+                                        ? newPlant.wateringInterval
+                                        : ReminderUtils.parseWateringInterval(newPlant.watering);
                                 newPlant.wateringInterval = interval > 0 ? interval : 5;
 
-                                long id = db.plantDao().insert(newPlant);
+                                long id = plantRepo.insertBlocking(newPlant);
                                 newPlant.setId((int) id);
 
                                 try {
@@ -305,7 +352,7 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
                                 List<WateringReminder> reminders = ReminderUtils.generateReminders(newPlant);
                                 for (WateringReminder r : reminders) {
                                     r.userEmail = email;
-                                    db.reminderDao().insert(r);
+                                    reminderRepo.insertBlocking(r);
                                     try {
                                         FirebaseSyncManager.get().syncReminder(r);
                                     } catch (Throwable e) { CrashReporter.INSTANCE.log(e); }

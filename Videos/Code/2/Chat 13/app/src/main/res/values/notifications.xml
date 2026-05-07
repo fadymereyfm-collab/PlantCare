@@ -6,6 +6,9 @@
     <string name="notif_welcome_back_title">Willkommen bald zurück! 🌱</string>
     <string name="notif_welcome_back_body">Deine Pflanzen haben deine Rückkehr gespürt.\nMorgen wartet eine frische Gießrunde auf dich 💧</string>
 
+    <!-- One-tap action button on the daily reminder notification. -->
+    <string name="notif_action_mark_all_watered">Alle gegossen</string>
+
     <plurals name="notif_pending_count">
         <item quantity="one">\n🔔 Du hast 1 Erinnerung heute!</item>
         <item quantity="other">\n🔔 Du hast %d Erinnerungen heute!</item>
@@ -97,4 +100,18 @@
         <item>Aufgabenfreier Tag… Aber vergiss nicht, dass deine Pflanzen dich lieben! 💚🌷</item>
         <item>Heute nichts zu tun… Aber ein liebevoller Blick kostet nichts! 😍🌵</item>
     </string-array>
+
+    <!-- F8 — Weather adjustment summary notification -->
+    <string name="notif_weather_shift_title">Gießplan dem Wetter angepasst 🌦️</string>
+    <string name="notif_weather_shift_default_reason">Wetterlage</string>
+
+    <plurals name="notif_weather_shift_body_postponed">
+        <item quantity="one">1 Erinnerung um %2$d Tag verschoben (%3$s).</item>
+        <item quantity="other">%1$d Erinnerungen um %2$d Tage verschoben (%3$s).</item>
+    </plurals>
+
+    <plurals name="notif_weather_shift_body_advanced">
+        <item quantity="one">1 Erinnerung um %2$d Tag vorgezogen (%3$s).</item>
+        <item quantity="other">%1$d Erinnerungen um %2$d Tage vorgezogen (%3$s).</item>
+    </plurals>
 </resources>

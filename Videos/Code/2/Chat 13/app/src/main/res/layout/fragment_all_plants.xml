@@ -25,12 +25,13 @@
             android:id="@+id/editSearch"
             android:layout_width="match_parent"
             android:layout_height="44dp"
-            android:background="@android:color/white"
-            android:hint="Suche Pflanzen..."
+            android:background="@drawable/bg_edittext_themed"
+            android:hint="@string/search_hint"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:drawableStart="@android:drawable/ic_menu_search"
+            android:drawableStart="@drawable/ic_search"
             android:drawablePadding="8dp"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
             android:elevation="2dp" />
     </LinearLayout>
 
@@ -79,9 +80,9 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="18dp"
             android:contentDescription="@string/cd_fab_add_plant"
-            android:tint="@android:color/white"
-            app:backgroundTint="@color/pc_success"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            app:tint="@color/pc_onPrimary"
+            app:backgroundTint="@color/pc_primary"
+            app:srcCompat="@drawable/ic_add" />
     </FrameLayout>
 
 </LinearLayout>

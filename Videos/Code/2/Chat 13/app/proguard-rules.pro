@@ -72,9 +72,33 @@
 -keep class com.example.plantcare.WateringReminder { *; }
 -keep class com.example.plantcare.RoomCategory { *; }
 -keep class com.example.plantcare.User { *; }
+# Plant Journal (F10.3): JournalMemo is mirrored to Firestore at
+# users/{uid}/memos/{id}. R8 must not rename its fields/getters or
+# `doc.toObject(JournalMemo.class)` returns an object full of defaults
+# on cloud restore — the user sees zero memos despite having them in
+# Firestore. Same reason every other Firestore entity is kept above.
+-keep class com.example.plantcare.data.journal.JournalMemo { *; }
+# Vacation cloud doc — same reasoning as JournalMemo.
+-keep class com.example.plantcare.feature.vacation.VacationDoc { *; }
+# Gamification cloud docs (streak + challenges) — same reasoning.
+# Without these R8 renames the fields, doc.toObject returns a defaults
+# shell, and a user's 100-day streak silently disappears on cloud
+# restore in prodRelease.
+-keep class com.example.plantcare.feature.streak.StreakDoc { *; }
+-keep class com.example.plantcare.feature.streak.ChallengesDoc { *; }
+-keep class com.example.plantcare.feature.streak.ChallengeProgressDto { *; }
+# Pro status cloud doc — same reasoning. R8 must not rename
+# isPro/lastUpdatedMs or doc.toObject returns a defaults shell and
+# the cross-device Pro restore silently does nothing.
+-keep class com.example.plantcare.billing.ProStatusDoc { *; }
 
-# ── Disease Diagnosis (Room Entity + TFLite result model) ────
+# ── Disease Diagnosis (Room Entity + Gemini Gson DTOs) ───────
+# data.disease.**  : Room entity DiseaseDiagnosis + DiseaseResult (UI model)
+# data.gemini.**   : Gson-serialized Gemini API request/response shapes.
+#                    Without this rule R8 may rename or strip fields and
+#                    silently break JSON parsing in release builds.
 -keep class com.example.plantcare.data.disease.** { *; }
+-keep class com.example.plantcare.data.gemini.** { *; }
 
 # ── Retrofit + OkHttp ───────────────────────────────────────
 -keep class retrofit2.** { *; }
@@ -96,13 +120,6 @@
 # ── CalendarView (JitPack) ──────────────────────────────────
 -dontwarn com.prolificinteractive.materialcalendarview.**
 -keep class com.prolificinteractive.materialcalendarview.** { *; }
-
-# ── TensorFlow Lite ─────────────────────────────────────────
-# Interpreter and support library use reflection internally
--keep class org.tensorflow.lite.** { *; }
--keep class org.tensorflow.lite.support.** { *; }
--keep class org.tensorflow.lite.gpu.** { *; }
--dontwarn org.tensorflow.**
 
 # ── EncryptedSharedPreferences (security-crypto) ─────────────
 # Library ships its own consumer rules; dontwarn for internal deps

@@ -4,10 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="24dp"
-    app:cardCornerRadius="22dp"
-    app:cardElevation="10dp"
-    app:cardBackgroundColor="@color/card_bg">
+    android:layout_margin="20dp"
+    app:cardCornerRadius="28dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@color/pc_surface">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -35,17 +35,17 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/paywall_title"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:textColor="@color/text_primary"
-                    android:fontFamily="@font/playfair_display"/>
+                    android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+                    android:textSize="22sp" />
 
                 <ImageButton
                     android:id="@+id/btnPaywallClose"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/pc_onSurfaceSecondary"
+                    android:padding="10dp"
                     android:contentDescription="@string/close"/>
             </LinearLayout>
 
@@ -54,8 +54,7 @@
                 android:id="@+id/txtPaywallContext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp"
+                android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
                 android:layout_marginBottom="16dp"
                 android:visibility="gone"/>
 
@@ -64,105 +63,123 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/paywall_comparison"
-                android:textColor="@color/text_secondary"
-                android:textSize="13sp"
+                android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
                 android:layout_marginBottom="16dp"/>
 
             <!-- Monthly option -->
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card_outline"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/pc_outlineVariant"
+                app:strokeWidth="1dp"
+                app:cardBackgroundColor="@color/pc_surfaceContainerLow">
 
-                <TextView
-                    android:id="@+id/txtMonthlyPrice"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/paywall_monthly_label"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:textSize="15sp"/>
+                    android:orientation="vertical"
+                    android:padding="14dp">
 
-                <Button
-                    android:id="@+id/btnMonthly"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/paywall_subscribe"
-                    android:backgroundTint="@color/pc_primary"
-                    android:textColor="@color/pc_onPrimary"
-                    android:enabled="false"/>
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/txtMonthlyPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/paywall_monthly_label"
+                        android:textAppearance="@style/TextAppearance.PlantCare.Subtitle" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnMonthly"
+                        style="@style/PlantCare.Button.Tonal"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/paywall_subscribe"
+                        android:enabled="false"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Yearly option (recommended) -->
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card_outline"
-                android:padding="12dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/pc_primary"
+                app:strokeWidth="2dp"
+                app:cardBackgroundColor="@color/pc_primaryContainer">
 
-                <TextView
-                    android:id="@+id/txtYearlyPrice"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/paywall_yearly_label"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:textSize="15sp"/>
+                    android:orientation="vertical"
+                    android:padding="14dp">
 
-                <Button
-                    android:id="@+id/btnYearly"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/paywall_subscribe_recommended"
-                    android:backgroundTint="@color/pc_success"
-                    android:textColor="@color/pc_onPrimary"
-                    android:enabled="false"/>
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/txtYearlyPrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/paywall_yearly_label"
+                        android:textAppearance="@style/TextAppearance.PlantCare.Subtitle"
+                        android:textColor="@color/pc_onPrimaryContainer" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnYearly"
+                        style="@style/PlantCare.Button.Filled"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/paywall_subscribe_recommended"
+                        android:enabled="false"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Lifetime option -->
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_card_outline"
-                android:padding="12dp"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/pc_outlineVariant"
+                app:strokeWidth="1dp"
+                app:cardBackgroundColor="@color/pc_surfaceContainerLow">
 
-                <TextView
-                    android:id="@+id/txtLifetimePrice"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/paywall_lifetime_label"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:textSize="15sp"/>
+                    android:orientation="vertical"
+                    android:padding="14dp">
 
-                <Button
-                    android:id="@+id/btnLifetime"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/paywall_buy_lifetime"
-                    android:backgroundTint="@color/text_secondary"
-                    android:textColor="@color/pc_onPrimary"
-                    android:enabled="false"/>
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/txtLifetimePrice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/paywall_lifetime_label"
+                        android:textAppearance="@style/TextAppearance.PlantCare.Subtitle" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnLifetime"
+                        style="@style/PlantCare.Button.Outlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/paywall_buy_lifetime"
+                        android:enabled="false"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Restore purchases -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRestorePurchases"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/PlantCare.Button.Text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/paywall_restore"
-                android:textColor="@color/text_secondary"/>
+                android:textColor="@color/pc_onSurfaceSecondary"/>
 
         </LinearLayout>
     </ScrollView>

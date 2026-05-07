@@ -113,7 +113,8 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
                                 dialogFragment.show(((MainActivity) context).getSupportFragmentManager(), "edit_manual_reminder");
                             } else if (which == 1) {
                                 com.example.plantcare.util.BgExecutor.io(() -> {
-                                    DatabaseClient.getInstance(context).getAppDatabase().reminderDao().delete(r);
+                                    com.example.plantcare.data.repository.ReminderRepository
+                                            .getInstance(context).deleteBlocking(r);
                                     ((MainActivity) context).runOnUiThread(() -> {
                                         reminders.remove(position);
                                         notifyDataSetChanged();
@@ -126,17 +127,18 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
                         .show();
             } else {
                 com.example.plantcare.util.BgExecutor.io(() -> {
-                    PlantDao plantDao = DatabaseClient.getInstance(context).plantDao();
+                    com.example.plantcare.data.repository.PlantRepository plantRepo =
+                            com.example.plantcare.data.repository.PlantRepository.getInstance(context);
                     Plant foundPlant = null;
 
                     String userEmail = EmailContext.current(context);
-                    List<Plant> allUserCopies = plantDao.getAllUserPlantsWithNameAndUser(r.plantName, userEmail);
+                    List<Plant> allUserCopies = plantRepo.getAllUserPlantsWithNameAndUserBlocking(r.plantName, userEmail);
                     if (!allUserCopies.isEmpty()) {
-                        foundPlant = plantDao.findById(allUserCopies.get(0).id);
+                        foundPlant = plantRepo.findByIdBlocking(allUserCopies.get(0).id);
                     }
                     if (foundPlant == null) {
-                        foundPlant = plantDao.findByNickname(r.plantName);
-                        if (foundPlant == null) foundPlant = plantDao.findByName(r.plantName);
+                        foundPlant = plantRepo.findByNicknameBlocking(r.plantName);
+                        if (foundPlant == null) foundPlant = plantRepo.findByNameBlocking(r.plantName);
                     }
 
                     final Plant finalPlant = foundPlant;
@@ -157,7 +159,8 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
 
     private void updateReminder(Context context, WateringReminder reminder) {
         com.example.plantcare.util.BgExecutor.io(() -> {
-            DatabaseClient.getInstance(context).getAppDatabase().reminderDao().update(reminder);
+            com.example.plantcare.data.repository.ReminderRepository
+                    .getInstance(context).updateBlocking(reminder);
             ((MainActivity) context).runOnUiThread(() -> {
                 notifyDataSetChanged();
                 DataChangeNotifier.notifyChange();
@@ -209,21 +212,22 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
 
     private void loadPlantThumbAsync(Context context, WateringReminder reminder, ImageView target) {
         com.example.plantcare.util.BgExecutor.io(() -> {
-            PlantDao plantDao = DatabaseClient.getInstance(context).plantDao();
+            com.example.plantcare.data.repository.PlantRepository plantRepo =
+                    com.example.plantcare.data.repository.PlantRepository.getInstance(context);
             Plant plant = null;
 
             String userEmail = EmailContext.current(context);
 
-            List<Plant> copiesByNameAndUser = plantDao.getAllUserPlantsWithNameAndUser(reminder.plantName, userEmail);
+            List<Plant> copiesByNameAndUser = plantRepo.getAllUserPlantsWithNameAndUserBlocking(reminder.plantName, userEmail);
             if (!copiesByNameAndUser.isEmpty()) {
-                plant = plantDao.findById(copiesByNameAndUser.get(0).id);
+                plant = plantRepo.findByIdBlocking(copiesByNameAndUser.get(0).id);
             }
             if (plant == null) {
-                List<Plant> byNick = plantDao.getAllUserPlantsWithNicknameAndUser(reminder.plantName, userEmail);
-                if (!byNick.isEmpty()) plant = plantDao.findById(byNick.get(0).id);
+                List<Plant> byNick = plantRepo.getAllUserPlantsWithNicknameAndUserBlocking(reminder.plantName, userEmail);
+                if (!byNick.isEmpty()) plant = plantRepo.findByIdBlocking(byNick.get(0).id);
             }
-            if (plant == null) plant = plantDao.findByNickname(reminder.plantName);
-            if (plant == null) plant = plantDao.findByName(reminder.plantName);
+            if (plant == null) plant = plantRepo.findByNicknameBlocking(reminder.plantName);
+            if (plant == null) plant = plantRepo.findByNameBlocking(reminder.plantName);
 
             final Plant p = plant;
             ((MainActivity) context).runOnUiThread(() -> {

@@ -1,0 +1,79 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pc_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/pc_background">
+
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mcv_showOtherDates="all"
+            app:mcv_selectionColor="@color/calendar_selected_day"
+            app:mcv_headerTextAppearance="@style/CalendarHeaderTextAppearance"
+            app:mcv_weekDayTextAppearance="@style/CalendarWeekDayTextAppearance"
+            app:mcv_dateTextAppearance="@style/CalendarDateTextAppearance" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewReminders"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            android:paddingBottom="120dp"
+            android:clipToPadding="false"
+            android:background="@color/pc_background" />
+
+        <TextView
+            android:id="@+id/textEmptyCalendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_reminders"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
+            android:textColor="@color/pc_onSurfaceSecondary"
+            android:layout_gravity="center"
+            android:padding="32dp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonToday"
+        style="@style/PlantCare.Button.Tonal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/go_to_today"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="90dp"
+        android:paddingHorizontal="20dp"
+        android:visibility="gone" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add"
+        android:contentDescription="@string/cd_fab_add_plant"
+        app:backgroundTint="@color/pc_primary"
+        app:tint="@color/pc_onPrimary" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_camera"
+        android:contentDescription="@string/take_photo"
+        app:backgroundTint="@color/pc_secondaryContainer"
+        app:tint="@color/pc_onSecondaryContainer" />
+
+</FrameLayout>

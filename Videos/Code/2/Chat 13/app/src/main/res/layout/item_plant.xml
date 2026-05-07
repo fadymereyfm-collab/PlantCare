@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
@@ -38,21 +39,17 @@
                 android:id="@+id/textPlantName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Aloe Vera"
-                android:textColor="@color/pc_onSurface"
+                android:textAppearance="@style/TextAppearance.PlantCare.Subtitle"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:fontFamily="@font/cairo"/>
+                tools:text="Aloe Vera" />
 
             <!-- سيُملأ من المهايئ بقيمة السقاية -->
             <TextView
                 android:id="@+id/textPlantType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bewässerung: —"
-                android:textColor="@color/pc_onSurfaceSecondary"
-                android:textSize="13sp"
-                android:fontFamily="@font/cairo"/>
+                android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+                tools:text="Bewässerung: —" />
         </LinearLayout>
 
         <ImageView
@@ -62,6 +59,6 @@
             android:layout_marginStart="8dp"
             android:src="@drawable/ic_star_outline"
             android:contentDescription="@string/add_to_favorites"
-            android:tint="@color/modern_accent"/>
+            app:tint="@color/pc_tertiary"/>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

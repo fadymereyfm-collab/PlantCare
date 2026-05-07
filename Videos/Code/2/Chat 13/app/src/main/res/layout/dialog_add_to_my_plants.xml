@@ -1,0 +1,111 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    app:cardCornerRadius="22dp"
+    app:cardElevation="10dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@color/card_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="28dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+            android:textSize="20sp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/subTitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.PlantCare.Subtitle"
+            android:textSize="15sp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"/>
+
+        <EditText
+            android:id="@+id/editSuggestedName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/add_to_my_plants_hint_name"
+            android:background="@android:color/transparent"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
+            android:paddingBottom="8dp"
+            android:layout_marginBottom="14dp"
+            android:inputType="textCapSentences"
+            android:maxLines="1"
+            android:maxLength="60"/>
+
+        <TextView
+            android:id="@+id/labelRooms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_to_my_plants_pick_room"
+            android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/roomsInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false"
+            app:endIconMode="dropdown_menu"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/pc_outline"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+            app:boxCornerRadiusTopStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusBottomEnd="14dp"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/spinnerRooms"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint=""
+                android:inputType="none"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+                android:textSize="16sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonAddRoom"
+            style="@style/PlantCare.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/add_to_my_plants_add_room"
+            app:icon="@drawable/ic_add"
+            android:layout_marginBottom="24dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonClose"
+            style="@style/PlantCare.Button.Text"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/action_cancel"
+            android:layout_marginBottom="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonNext"
+            style="@style/PlantCare.Button.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/forward"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

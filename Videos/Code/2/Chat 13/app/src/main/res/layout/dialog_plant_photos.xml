@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- غيّرنا المعرّف ليتوافق مع الكود -->
+    <TextView
+        android:id="@+id/textPlantName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="📅 Aufnahmen vom..."
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingBottom="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerPhotos"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
+</LinearLayout>

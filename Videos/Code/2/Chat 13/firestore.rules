@@ -1,0 +1,103 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: caller is authenticated and owns the resource
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Helper: incoming data doesn't exceed reasonable size limits.
+    // Only valid for create / update — for delete the caller has no
+    // request.resource so the expression would fail. Always wrap
+    // validSize in a create+update gate, never on a generic write.
+    function validSize(fields, maxFields) {
+      return request.resource.data.size() <= maxFields;
+    }
+
+    // ── Per-user data ─────────────────────────────────────────
+    //
+    // CS1 fix: each subcollection splits the verbs into
+    //   read, delete  → isOwner only (no request.resource at delete)
+    //   create, update → isOwner + validSize
+    //
+    // The previous shape `allow read, write: if isOwner && validSize`
+    // silently rejected every delete because `write` includes delete
+    // and `request.resource` is null on that operation. Result: the
+    // Firestore-side cleanup paths in FirebaseSyncManager
+    // (deleteJournalMemo, clearVacationCloud, deletePlant photo
+    // cascade, deleteReminder, etc.) all returned PermissionDenied —
+    // local rows were dropped but the cloud copy persisted forever
+    // as orphan data. This is the bug class that motivated
+    // DEFERRED_ISSUES #2 (account deletion orphans).
+
+    match /users/{userId} {
+      allow read, delete: if isOwner(userId);
+      allow create, update: if isOwner(userId);
+
+      match /plants/{plantId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 30);
+      }
+
+      match /reminders/{reminderId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 20);
+      }
+
+      match /rooms/{roomId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 10);
+      }
+
+      match /photos/{photoId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 15);
+      }
+
+      // F10.3 Plant Journal memos. Field count = 6
+      // (id, plantId, userEmail, text, createdAt, updatedAt); cap at 10
+      // for a small headroom. Without this rule the catch-all at the
+      // bottom denies every memo write — and the app silently looks
+      // like it's syncing while Firestore returns PermissionDenied.
+      match /memos/{memoId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 10);
+      }
+
+      // V2 Vacation mode: single fixed doc id "current" per user.
+      // Field count = 3 (start, end, welcomeFired); cap at 5.
+      match /vacation/{vacationDocId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 5);
+      }
+
+      // C3 Gamification (streak + challenges): two fixed docs per user.
+      // streak doc: 3 fields. challenges doc: 3 nested entries × 3
+      // fields each = 9 logical fields but only 3 top-level. Cap at
+      // 10 to leave room for future challenge ids.
+      match /gamification/{docId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 10);
+      }
+
+      // B7 Pro status: single fixed doc id "proStatus" per user.
+      // Field count = 2 (isPro, lastUpdatedMs); cap at 5.
+      match /billing/{docId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 5);
+      }
+    }
+
+    // ── Public plant catalog (read-only for authenticated users) ─
+    match /plantCatalog/{plantId} {
+      allow read:  if request.auth != null;
+      allow write: if false; // admin via Console only
+    }
+
+    // ── Deny everything else ──────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

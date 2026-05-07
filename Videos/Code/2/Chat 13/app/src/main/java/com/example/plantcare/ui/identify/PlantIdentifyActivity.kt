@@ -1,12 +1,10 @@
 package com.example.plantcare.ui.identify
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -26,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.plantcare.AddToMyPlantsDialogFragment
 import com.example.plantcare.Analytics
-import com.example.plantcare.DataChangeNotifier
 import com.example.plantcare.Plant
 import com.example.plantcare.R
 import com.example.plantcare.data.plantnet.PlantNetError
@@ -37,12 +34,10 @@ import com.example.plantcare.data.plantnet.PlantEnrichmentService
 import com.example.plantcare.ui.viewmodel.IdentifyUiState
 import com.example.plantcare.ui.viewmodel.PlantIdentifyViewModel
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -61,8 +56,6 @@ import java.util.Locale
 class PlantIdentifyActivity : AppCompatActivity() {
 
     companion object {
-        /** Intent extra — Room id to which an added plant should be assigned (0 = nicht zugeordnet). */
-        const val EXTRA_ROOM_ID = "com.example.plantcare.extra.ROOM_ID"
         /** Tag for the AddToMyPlantsDialogFragment shown from identify flow. */
         private const val DIALOG_TAG = "identify_add_to_my_plants"
         /** Tag for the split-screen comparison dialog. */
@@ -70,9 +63,6 @@ class PlantIdentifyActivity : AppCompatActivity() {
     }
 
     private lateinit var viewModel: PlantIdentifyViewModel
-
-    /** Room id passed via Intent; defaults to 0 when caller didn't supply one. */
-    private var targetRoomId: Int = 0
 
     /** Guard against double-tap on "Hinzufügen" while an insert is in flight. */
     private var addInProgress: Boolean = false
@@ -105,9 +95,6 @@ class PlantIdentifyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_plant_identify)
-
-        // Read the target room id passed by the caller (0 means unassigned).
-        targetRoomId = intent?.getIntExtra(EXTRA_ROOM_ID, 0) ?: 0
 
         viewModel = ViewModelProvider(this)[PlantIdentifyViewModel::class.java]
 
@@ -191,9 +178,15 @@ class PlantIdentifyActivity : AppCompatActivity() {
     private fun setupLaunchers() {
         // Camera launcher using TakePicture contract
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if (success && photoFile != null) {
-                showImagePreview(photoFile!!.absolutePath)
-                viewModel.setImagePath(photoFile!!.absolutePath)
+            val captured = photoFile
+            if (success && captured != null) {
+                // Snapshot+clear the raw capture pointer immediately so a
+                // rapid second capture (which would overwrite `photoFile`)
+                // can't get its result aliased back to the previous BG
+                // launch. The closure already captured `captured` as a
+                // local val so the BG work is unaffected.
+                photoFile = null
+                runPrepareAndApply(Uri.fromFile(captured), rawCaptureToDelete = captured)
             }
         }
 
@@ -208,6 +201,52 @@ class PlantIdentifyActivity : AppCompatActivity() {
         ) { granted ->
             if (granted) launchCamera()
             else Toast.makeText(this, R.string.camera_permission_required, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
+     * Shared prepare-and-apply pipeline used by both the camera and the
+     * gallery flow. Shows the progress bar, runs [prepareImageForIdentify]
+     * on IO, then on Main either commits the prepared file to the
+     * ViewModel + previews it OR restores the placeholder + toasts.
+     *
+     * On success, optionally deletes the raw capture file (camera path
+     * passes the captured `File`; gallery path leaves it null because we
+     * don't own the picked URI).
+     *
+     * Restoring the placeholder on failure is important: the previous
+     * implementation set `imagePreview` visible and `placeholderContainer`
+     * gone BEFORE the prepare started, so a failure left the user
+     * staring at a blank ImageView with only a toast for diagnosis.
+     */
+    private fun runPrepareAndApply(source: Uri, rawCaptureToDelete: File? = null) {
+        placeholderContainer.visibility = View.GONE
+        imagePreview.visibility = View.VISIBLE
+        progressBar.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            val prepared = prepareImageForIdentify(source)
+            progressBar.visibility = View.GONE
+            if (prepared == null) {
+                // Restore the placeholder so the user sees the upload
+                // affordance again instead of a blank rectangle.
+                imagePreview.visibility = View.GONE
+                placeholderContainer.visibility = View.VISIBLE
+                Toast.makeText(
+                    this@PlantIdentifyActivity,
+                    R.string.camera_file_create_error,
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@launch
+            }
+            // Tidy up the raw camera capture — we now have the resized
+            // version; the original 12 MB file would just sit on disk
+            // until the daily prune ran.
+            if (rawCaptureToDelete != null
+                    && rawCaptureToDelete.absolutePath != prepared.absolutePath) {
+                runCatching { rawCaptureToDelete.delete() }
+            }
+            showImagePreview(prepared.absolutePath)
+            viewModel.setImagePath(prepared.absolutePath)
         }
     }
 
@@ -287,16 +326,6 @@ class PlantIdentifyActivity : AppCompatActivity() {
         viewModel.selectedImagePath.observe(this) { path ->
             btnIdentify.isEnabled = !path.isNullOrEmpty()
         }
-
-        viewModel.plantAdded.observe(this) { added ->
-            if (added == true) {
-                Toast.makeText(this, R.string.identify_plant_added, Toast.LENGTH_SHORT).show()
-                // Notify other fragments about data change
-                DataChangeNotifier.notifyChange()
-                // إغلاق الشاشة بعد الإضافة مباشرة حتى لا يُكرَّر الإدراج
-                finish()
-            }
-        }
     }
 
     private fun launchCamera() {
@@ -308,27 +337,17 @@ class PlantIdentifyActivity : AppCompatActivity() {
                 photoFile!!
             )
             cameraLauncher.launch(photoUri!!)
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (e: Throwable) {
+            com.example.plantcare.CrashReporter.log(e)
             Toast.makeText(this, R.string.camera_file_create_error, Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun handleGalleryResult(uri: Uri) {
-        try {
-            // Copy the image to a local file for upload
-            val file = createImageFile()
-            contentResolver.openInputStream(uri)?.use { input ->
-                FileOutputStream(file).use { output ->
-                    input.copyTo(output)
-                }
-            }
-            showImagePreview(file.absolutePath)
-            viewModel.setImagePath(file.absolutePath)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, R.string.camera_file_create_error, Toast.LENGTH_SHORT).show()
-        }
+        // Off-load to lifecycleScope IO so the bitmap decode + recompress
+        // doesn't block the gallery picker callback's main-thread dispatch.
+        // Failure path restores the placeholder — see runPrepareAndApply.
+        runPrepareAndApply(uri, rawCaptureToDelete = null)
     }
 
     private fun showImagePreview(imagePath: String) {
@@ -340,10 +359,184 @@ class PlantIdentifyActivity : AppCompatActivity() {
             .into(imagePreview)
     }
 
+    /**
+     * Captures (and prepared images) live under
+     * `getExternalFilesDir(Pictures)/identify/` so they don't pollute the
+     * top-level Pictures dir alongside cover/archive photos. Old files are
+     * cleaned by [pruneOldIdentifyFiles] on each new capture (older than
+     * 7 days drop out — that's the same TTL as the PlantNet cache).
+     */
     private fun createImageFile(): File {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile("IDENTIFY_${timeStamp}_", ".jpg", storageDir)
+        val baseDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val identifyDir = File(baseDir, "identify").apply { mkdirs() }
+        pruneOldIdentifyFiles(identifyDir)
+        return File.createTempFile("IDENTIFY_${timeStamp}_", ".jpg", identifyDir)
+    }
+
+    /**
+     * Best-effort cleanup of identify captures older than 7 days. PlantNet
+     * cache TTL is also 7 days — keeping local files past that point just
+     * accumulates storage with no recall value. Pure file system work, no
+     * recursion, swallows all errors so a corrupted file doesn't block
+     * future captures.
+     *
+     * Also walks the Pictures/ root once to delete legacy `IDENTIFY_*.jpg`
+     * captures from before this subdir was introduced. Old installs would
+     * otherwise carry those forever.
+     */
+    private fun pruneOldIdentifyFiles(dir: File) {
+        try {
+            val cutoff = System.currentTimeMillis() - 7L * 24 * 60 * 60 * 1000
+            dir.listFiles()?.forEach { f ->
+                if (f.isFile && f.lastModified() < cutoff) {
+                    runCatching { f.delete() }
+                }
+            }
+            // Legacy: pre-subdir captures lived directly in Pictures/.
+            // Match the same `IDENTIFY_*.jpg` prefix our older builds used,
+            // and only touch files (not directories) so we never wipe the
+            // new identify/ subdir or anything from PhotoCaptureCoordinator.
+            dir.parentFile?.listFiles()?.forEach { f ->
+                if (f.isFile
+                        && f.name.startsWith("IDENTIFY_")
+                        && f.name.endsWith(".jpg")) {
+                    runCatching { f.delete() }
+                }
+            }
+        } catch (t: Throwable) {
+            com.example.plantcare.CrashReporter.log(t)
+        }
+    }
+
+    /**
+     * Read source URI, apply EXIF orientation, downscale to a 2048-px long
+     * edge, recompress as JPEG 85, and write to a fresh `IDENTIFY_*.jpg`.
+     * Runs entirely on Dispatchers.IO via the suspend wrapper.
+     *
+     * Why bother:
+     *   - **EXIF**: Camera captures store orientation in EXIF; raw bitmap
+     *     pixels remain landscape. The PlantNet API doesn't honour client-
+     *     side EXIF on multipart uploads — it scores recognition on the
+     *     pixel data. A portrait shot uploaded sideways would simply hit
+     *     a different match because the leaf orientation was wrong.
+     *   - **Downscale**: A 12 MP camera frame is a 4-8 MB upload. PlantNet
+     *     internally downsamples for analysis; sending the original wastes
+     *     bandwidth, slows the request by seconds on weak connections, and
+     *     burns the user's free 500-req/day quota faster than necessary.
+     *     2048 px is the long-edge sweet spot — large enough that PlantNet
+     *     doesn't lose detail, small enough that JPEG 85 lands ~600 KB.
+     *
+     * Returns null on any failure; caller falls back to surfacing the
+     * generic camera-file-create-error toast.
+     */
+    private suspend fun prepareImageForIdentify(source: Uri): File? =
+        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            try {
+                val cr = contentResolver
+
+                // Phase 1: bounded decode — read JPEG header only, so a 50 MP
+                // photo doesn't OOM us before we even start scaling.
+                val bounds = android.graphics.BitmapFactory.Options().apply {
+                    inJustDecodeBounds = true
+                }
+                cr.openInputStream(source)?.use {
+                    android.graphics.BitmapFactory.decodeStream(it, null, bounds)
+                }
+                val maxEdge = 2048
+                val srcLong = maxOf(bounds.outWidth, bounds.outHeight)
+                if (srcLong <= 0) return@withContext null
+
+                // Pick largest sample that still leaves us above maxEdge so
+                // the final scale step lands cleanly at maxEdge (mirrors
+                // the algorithm in PhotoCaptureCoordinator.downscaleAndPersist).
+                var sample = 1
+                while (srcLong / (sample * 2) >= maxEdge) sample *= 2
+
+                // Phase 2: real decode at the chosen sample size.
+                val decode = android.graphics.BitmapFactory.Options().apply {
+                    inSampleSize = sample
+                    inPreferredConfig = android.graphics.Bitmap.Config.ARGB_8888
+                }
+                var bmp = cr.openInputStream(source)?.use {
+                    android.graphics.BitmapFactory.decodeStream(it, null, decode)
+                } ?: return@withContext null
+
+                // Phase 3: bake EXIF rotation into the pixel data so PlantNet
+                // analyses the photo right-way-up.
+                val orientation = readExifOrientation(cr, source)
+                if (orientation != androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+                        && orientation != androidx.exifinterface.media.ExifInterface.ORIENTATION_UNDEFINED) {
+                    val matrix = android.graphics.Matrix()
+                    when (orientation) {
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.postScale(-1f, 1f)
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_FLIP_VERTICAL -> matrix.postScale(1f, -1f)
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSPOSE -> {
+                            matrix.postRotate(90f); matrix.postScale(-1f, 1f)
+                        }
+                        androidx.exifinterface.media.ExifInterface.ORIENTATION_TRANSVERSE -> {
+                            matrix.postRotate(270f); matrix.postScale(-1f, 1f)
+                        }
+                    }
+                    val rotated = android.graphics.Bitmap.createBitmap(
+                        bmp, 0, 0, bmp.width, bmp.height, matrix, true
+                    )
+                    if (rotated !== bmp) runCatching { bmp.recycle() }
+                    bmp = rotated
+                }
+
+                // Phase 4: final scale to honour maxEdge exactly.
+                val longEdge = maxOf(bmp.width, bmp.height)
+                val finalBmp = if (longEdge > maxEdge) {
+                    val ratio = maxEdge.toFloat() / longEdge
+                    val w = (bmp.width * ratio).toInt()
+                    val h = (bmp.height * ratio).toInt()
+                    val scaled = android.graphics.Bitmap.createScaledBitmap(bmp, w, h, true)
+                    if (scaled !== bmp) runCatching { bmp.recycle() }
+                    scaled
+                } else bmp
+
+                // Phase 5: write to fresh IDENTIFY_*.jpg under our subdir.
+                // Wrap in try/finally so a thrown IOException from
+                // createImageFile() or compress() doesn't leak the working
+                // bitmap (8 MB+ at the working resolution). The outer
+                // try/catch returns null to the caller anyway.
+                try {
+                    val outFile = createImageFile()
+                    java.io.FileOutputStream(outFile).use { out ->
+                        finalBmp.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, out)
+                    }
+                    outFile
+                } finally {
+                    runCatching { finalBmp.recycle() }
+                }
+            } catch (t: Throwable) {
+                com.example.plantcare.CrashReporter.log(t)
+                null
+            }
+        }
+
+    /**
+     * Defensive EXIF reader — opens its own stream, returns ORIENTATION_NORMAL
+     * on any failure so the caller skips rotation rather than crashing.
+     */
+    private fun readExifOrientation(
+        cr: android.content.ContentResolver,
+        source: Uri
+    ): Int {
+        return try {
+            cr.openInputStream(source)?.use { stream ->
+                androidx.exifinterface.media.ExifInterface(stream).getAttributeInt(
+                    androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION,
+                    androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+                )
+            } ?: androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+        } catch (_: Throwable) {
+            androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL
+        }
     }
 
     private fun getSelectedOrgan(): String {
@@ -437,6 +630,12 @@ class PlantIdentifyActivity : AppCompatActivity() {
                 soil        = care?.soil        ?: defaults.soil
                 fertilizing = care?.fertilizing ?: defaults.fertilizing
                 watering    = care?.watering    ?: defaults.watering
+                // Bewässerungs-Intervall (Tage) explizit setzen — sonst greift in
+                // AddToMyPlantsDialogFragment der Hardcoded-Fallback von 5 Tagen,
+                // weil der watering-Text der Familien-Defaults keine Zahl enthält
+                // (Functional Report §1.4).
+                wateringInterval = (care?.wateringIntervalDays ?: 0).takeIf { it > 0 }
+                    ?: defaults.wateringIntervalDays
                 imageUri    = finalImage
                 personalNote = notesBuilder.toString()
                 // NB: isUserPlant سيُعيَّن = true داخل AddToMyPlantsDialogFragment

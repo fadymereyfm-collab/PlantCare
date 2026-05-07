@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/imagePlantPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:background="@color/pc_surfaceVariant"
+        android:contentDescription="@string/app_name"/>
+
+    <TextView
+        android:id="@+id/textPhotoDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+        android:gravity="end"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"
+        tools:text="📅 Datum" />
+
+    <TextView
+        android:id="@+id/textPhotoPlantName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+        android:textStyle="bold"
+        android:textColor="@color/pc_primary"
+        android:gravity="start"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"
+        tools:text="@string/item_plant_name_placeholder" />
+
+    <TextView
+        android:id="@+id/textPhotoInspectionLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/pc_tertiary"
+        android:gravity="start"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/textPhotoInspectionNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/pc_onSurfaceSecondary"
+        android:gravity="start"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"/>
+</LinearLayout>

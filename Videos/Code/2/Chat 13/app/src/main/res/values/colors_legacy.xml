@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- جسور لأسماء ألوان قديمة مستخدمة في أنماط طرف ثالث أو كود منسوخ -->
+    <!-- إذا لم يكن لديك pc_primary_dark يمكنك تركه نفس pc_primary أو ضع قيمة HEX حسب تدرجك -->
+    <color name="colorPrimary">@color/pc_primary</color>
+    <color name="colorPrimaryDark">@color/pc_primary</color>
+    <color name="colorAccent">@color/pc_accent</color>
+</resources>

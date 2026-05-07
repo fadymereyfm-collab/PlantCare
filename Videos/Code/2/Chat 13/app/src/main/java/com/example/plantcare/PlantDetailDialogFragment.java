@@ -32,7 +32,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
-import com.example.plantcare.feature.memoir.GrowthMemoirBuilder;
 import com.example.plantcare.feature.share.FamilyShareManager;
 import com.example.plantcare.media.PhotoStorage;
 import com.example.plantcare.media.CoverCloudSync;
@@ -48,6 +47,8 @@ import kotlin.Unit;
 public class PlantDetailDialogFragment extends DialogFragment {
 
     private static final String TAG = "PlantCover";
+    private static final String ARG_PLANT = "plant";
+    private static final String ARG_IS_USER_PLANT = "is_user_plant";
 
     private Plant plant;
     private boolean isUserPlant;
@@ -67,8 +68,9 @@ public class PlantDetailDialogFragment extends DialogFragment {
             if (getContext() == null || plant == null) return;
             FragmentBg.runIO(PlantDetailDialogFragment.this, () -> {
                 try {
-                    AppDatabase db = AppDatabase.getInstance(requireContext().getApplicationContext());
-                    Plant updated = db.plantDao().findById((int) plant.id);
+                    Plant updated = com.example.plantcare.data.repository.PlantRepository
+                            .getInstance(requireContext().getApplicationContext())
+                            .findByIdBlocking((int) plant.id);
                     if (updated != null) {
                         plant = updated;
                     }
@@ -79,6 +81,13 @@ public class PlantDetailDialogFragment extends DialogFragment {
 
     public static PlantDetailDialogFragment newInstance(Plant plant, boolean isUserPlant) {
         PlantDetailDialogFragment fragment = new PlantDetailDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_PLANT, plant);
+        args.putBoolean(ARG_IS_USER_PLANT, isUserPlant);
+        fragment.setArguments(args);
+        // Mirror into fields so callers using a freshly-constructed instance
+        // (without going through getArguments) still see them. onCreate
+        // resolves from the Bundle for restored fragments.
         fragment.plant = plant;
         fragment.isUserPlant = isUserPlant;
         return fragment;
@@ -91,6 +100,16 @@ public class PlantDetailDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Restore from arguments after rotation / process death — without this,
+        // newInstance's field-set is lost and refreshCoverImage / button click
+        // handlers crash with NPE on `plant.id`.
+        if (plant == null && getArguments() != null) {
+            try {
+                plant = (Plant) getArguments().getSerializable(ARG_PLANT);
+            } catch (Throwable __ce) { CrashReporter.INSTANCE.log(__ce); }
+            isUserPlant = getArguments().getBoolean(ARG_IS_USER_PLANT, false);
+        }
 
         takePictureLauncher = registerForActivityResult(
                 new ActivityResultContracts.TakePicture(),
@@ -113,8 +132,9 @@ public class PlantDetailDialogFragment extends DialogFragment {
 
                         FragmentBg.runIO(this, () -> {
                             try {
-                                AppDatabase db = AppDatabase.getInstance(requireContext().getApplicationContext());
-                                db.plantDao().updateProfileImage((int) plant.id, capturedUri.toString());
+                                com.example.plantcare.data.repository.PlantRepository
+                                        .getInstance(requireContext().getApplicationContext())
+                                        .updateProfileImageBlocking((int) plant.id, capturedUri.toString());
                                 Log.d(TAG, "DB updated imageUri for plant " + plant.id + " (local content uri)");
                             } catch (Throwable t) {
                                 Log.e(TAG, "Failed to update DB imageUri", t);
@@ -137,8 +157,9 @@ public class PlantDetailDialogFragment extends DialogFragment {
                                     plant.imageUri = url;
                                     FragmentBg.runIO(this, () -> {
                                         try {
-                                            AppDatabase db = AppDatabase.getInstance(requireContext().getApplicationContext());
-                                            db.plantDao().updateProfileImage((int) plant.id, url);
+                                            com.example.plantcare.data.repository.PlantRepository
+                                                    .getInstance(requireContext().getApplicationContext())
+                                                    .updateProfileImageBlocking((int) plant.id, url);
                                             Log.d(TAG, "DB updated imageUri for plant " + plant.id + " (cloud url)");
                                         } catch (Throwable t) {
                                             Log.e(TAG, "Failed to persist cloud URL", t);
@@ -225,13 +246,21 @@ public class PlantDetailDialogFragment extends DialogFragment {
         Button buttonDelete     = findButton(view, R.id.buttonDeletePlant);
         Button buttonCamera     = findButton(view, R.id.buttonCamera);
         Button buttonViewPhotos = findButton(view, R.id.buttonViewPhotos);
+        Button buttonDiseaseCheck = findButton(view, R.id.buttonDiseaseCheck);
+        Button buttonOpenJournal = findButton(view, R.id.buttonOpenJournal);
         Button buttonMoveRoom   = findButton(view, R.id.buttonMoveToRoom);
         Button buttonMemoir     = findButton(view, R.id.buttonGrowthMemoir);
         Button buttonShare      = findButton(view, R.id.buttonFamilyShare);
 
         if (readOnlyMode) {
-            hide(buttonAdd, buttonQuickAdd, buttonEdit, buttonDelete, buttonCamera, buttonViewPhotos, buttonMoveRoom, buttonMemoir, buttonShare);
+            hide(buttonAdd, buttonQuickAdd, buttonEdit, buttonDelete, buttonCamera, buttonViewPhotos, buttonDiseaseCheck, buttonOpenJournal, buttonMoveRoom, buttonMemoir, buttonShare);
             show(buttonClose);
+        }
+        // Disease-Check Shortcut: nur sichtbar bei eigenen Pflanzen — bei
+        // Katalog-Pflanzen kann es noch keine plantId geben, an die wir die
+        // Diagnose binden würden.
+        if (buttonDiseaseCheck != null && !isUserPlant) {
+            buttonDiseaseCheck.setVisibility(View.GONE);
         }
 
         if (!isUserPlant && buttonAdd != null && !readOnlyMode) {
@@ -303,6 +332,22 @@ public class PlantDetailDialogFragment extends DialogFragment {
             });
         }
 
+        // Plant Journal — only meaningful for user plants (catalog rows have no
+        // history). Hidden in read-only mode and for non-user plants.
+        if (buttonOpenJournal != null) {
+            if (!readOnlyMode && isUserPlant && plant != null && plant.id > 0) {
+                buttonOpenJournal.setVisibility(View.VISIBLE);
+                buttonOpenJournal.setOnClickListener(v -> {
+                    com.example.plantcare.ui.journal.PlantJournalDialogFragment journal =
+                            com.example.plantcare.ui.journal.PlantJournalDialogFragment.newInstance(plant.id);
+                    journal.show(getParentFragmentManager(),
+                            com.example.plantcare.ui.journal.PlantJournalDialogFragment.TAG);
+                });
+            } else {
+                buttonOpenJournal.setVisibility(View.GONE);
+            }
+        }
+
         if (buttonMoveRoom != null && !readOnlyMode) {
             buttonMoveRoom.setOnClickListener(v -> {
                 if (getActivity() instanceof PlantRoomHandler) {
@@ -317,6 +362,23 @@ public class PlantDetailDialogFragment extends DialogFragment {
 
         if (buttonShare != null && !readOnlyMode) {
             buttonShare.setOnClickListener(v -> showFamilyShareDialog());
+        }
+
+        // Disease-Check Shortcut: öffnet die Diagnose-Activity direkt mit der
+        // plantId dieser Pflanze. Das umgeht den Vorab-Dialog (general/specific)
+        // im MainActivity-Flow und verbindet die spätere Diagnose automatisch
+        // mit dieser Pflanze inkl. Foto-Archiv-Vorschlag und Behandlungsplan.
+        if (buttonDiseaseCheck != null && isUserPlant && !readOnlyMode) {
+            buttonDiseaseCheck.setOnClickListener(v -> {
+                android.content.Intent intent = new android.content.Intent(
+                        requireContext(),
+                        com.example.plantcare.ui.disease.DiseaseDiagnosisActivity.class);
+                intent.putExtra(
+                        com.example.plantcare.ui.disease.DiseaseDiagnosisActivity.EXTRA_PLANT_ID,
+                        plant.id);
+                startActivity(intent);
+                dismiss();
+            });
         }
 
         if (buttonClose != null) buttonClose.setOnClickListener(v -> dismiss());
@@ -443,23 +505,28 @@ public class PlantDetailDialogFragment extends DialogFragment {
     private void generateAndShareGrowthMemoir() {
         if (plant == null || getContext() == null || !isAdded()) return;
         final android.content.Context ctx = requireContext().getApplicationContext();
-        final long plantId = plant.id;
+        final int plantId = plant.id;
         final String plantName = plant.getNickname() != null && !plant.getNickname().isEmpty()
                 ? plant.getNickname() : plant.name;
-        final String email = EmailContext.current(ctx) != null ? EmailContext.current(ctx) : "local";
+        final String email = EmailContext.current(ctx);
 
         Toast.makeText(ctx, R.string.memoir_generating, Toast.LENGTH_SHORT).show();
 
+        // F15 (Sprint 2): replaced the legacy PNG collage with a multi-page PDF
+        // growth report that includes summary stats + the full Plant Journal
+        // timeline + a photo grid. Same Intent.ACTION_SEND chooser; mime type
+        // flips to application/pdf so the OS routes to PDF-aware apps first.
         com.example.plantcare.util.BgExecutor.io(() -> {
-            GrowthMemoirBuilder.Result result = null;
+            com.example.plantcare.feature.memoir.MemoirPdfBuilder.Result result = null;
             Throwable err = null;
             try {
-                result = GrowthMemoirBuilder.build(ctx, email, plantId, plantName);
+                result = com.example.plantcare.feature.memoir.MemoirPdfBuilder
+                        .build(ctx, email, plantId, plantName);
             } catch (Throwable t) {
                 err = t;
-                Log.e(TAG, "GrowthMemoir build failed", t);
+                Log.e(TAG, "MemoirPdf build failed", t);
             }
-            final GrowthMemoirBuilder.Result finalResult = result;
+            final com.example.plantcare.feature.memoir.MemoirPdfBuilder.Result finalResult = result;
             final Throwable finalErr = err;
             if (getActivity() == null) return;
             getActivity().runOnUiThread(() -> {
@@ -473,12 +540,12 @@ public class PlantDetailDialogFragment extends DialogFragment {
                     return;
                 }
                 Intent share = new Intent(Intent.ACTION_SEND)
-                        .setType("image/png")
+                        .setType("application/pdf")
                         .putExtra(Intent.EXTRA_STREAM, finalResult.getUri())
                         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 try {
                     startActivity(Intent.createChooser(share,
-                            getString(R.string.memoir_share_chooser)));
+                            getString(R.string.memoir_pdf_share_chooser)));
                 } catch (Throwable t) {
                     Toast.makeText(ctx, R.string.memoir_build_failed, Toast.LENGTH_SHORT).show();
                 }
@@ -588,8 +655,9 @@ public class PlantDetailDialogFragment extends DialogFragment {
 
         FragmentBg.runIO(this, () -> {
             try {
-                AppDatabase db = AppDatabase.getInstance(requireContext().getApplicationContext());
-                Plant p = db.plantDao().findById((int) plant.id);
+                Plant p = com.example.plantcare.data.repository.PlantRepository
+                        .getInstance(requireContext().getApplicationContext())
+                        .findByIdBlocking((int) plant.id);
                 Uri dbUri = (p != null && p.imageUri != null && !p.imageUri.trim().isEmpty()) ? Uri.parse(p.imageUri) : null;
                 Log.d(TAG, "refreshCoverImage() DB uri=" + dbUri);
 
@@ -647,8 +715,9 @@ public class PlantDetailDialogFragment extends DialogFragment {
                             String imageUrl = WikiImageHelper.fetchImageUrl(plant.name);
                             if (imageUrl != null && !imageUrl.isEmpty()) {
                                 // Store in DB for future use
-                                AppDatabase db2 = AppDatabase.getInstance(requireContext().getApplicationContext());
-                                db2.plantDao().updateProfileImage(plant.id, imageUrl);
+                                com.example.plantcare.data.repository.PlantRepository
+                                        .getInstance(requireContext().getApplicationContext())
+                                        .updateProfileImageBlocking(plant.id, imageUrl);
                                 plant.imageUri = imageUrl;
                                 Uri wikiUri = Uri.parse(imageUrl);
                                 Log.d(TAG, "refreshCoverImage() Wikipedia image found: " + imageUrl);

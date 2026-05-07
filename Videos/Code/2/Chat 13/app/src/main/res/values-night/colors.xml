@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============================================================
+         PlantCare — Sage Garden palette (Dark)
+         Mirror of values/colors.xml, Material-3-tone-shifted.
+         Every M3 role here matches the same name in values/.
+         ============================================================ -->
+
+    <!-- ============================================================
+         M3 Color Roles (Dark)
+         ============================================================ -->
+
+    <!-- Primary -->
+    <color name="pc_primary">#ABCEBE</color>
+    <color name="pc_onPrimary">#1B3528</color>
+    <color name="pc_primaryContainer">#305546</color>
+    <color name="pc_onPrimaryContainer">#C5E1D3</color>
+
+    <!-- Secondary -->
+    <color name="pc_secondary">#B6CDC0</color>
+    <color name="pc_onSecondary">#213830</color>
+    <color name="pc_secondaryContainer">#374E45</color>
+    <color name="pc_onSecondaryContainer">#D2E9DC</color>
+
+    <!-- Tertiary -->
+    <color name="pc_tertiary">#FFB597</color>
+    <color name="pc_onTertiary">#5C2400</color>
+    <color name="pc_tertiaryContainer">#823A18</color>
+    <color name="pc_onTertiaryContainer">#FFD6C2</color>
+
+    <!-- Error -->
+    <color name="pc_error">#FFB4AB</color>
+    <color name="pc_onError">#690005</color>
+    <color name="pc_errorContainer">#93000A</color>
+    <color name="pc_onErrorContainer">#FFDAD6</color>
+
+    <!-- Background / Surface -->
+    <color name="pc_background">#1A1F1C</color>
+    <color name="pc_onBackground">#EAF1EC</color>
+    <color name="pc_surface">#1A1F1C</color>
+    <color name="pc_onSurface">#EAF1EC</color>
+    <color name="pc_surfaceVariant">#404943</color>
+    <color name="pc_onSurfaceVariant">#BFC9C2</color>
+
+    <!-- Surface containers -->
+    <color name="pc_surfaceContainerLowest">#0E1411</color>
+    <color name="pc_surfaceContainerLow">#22272A</color>
+    <color name="pc_surfaceContainer">#262B27</color>
+    <color name="pc_surfaceContainerHigh">#303530</color>
+    <color name="pc_surfaceContainerHighest">#3B403B</color>
+
+    <!-- Outlines -->
+    <color name="pc_outline">#899390</color>
+    <color name="pc_outlineVariant">#404943</color>
+
+    <!-- Inverse -->
+    <color name="pc_inverseSurface">#EAF1EC</color>
+    <color name="pc_inverseOnSurface">#2F3933</color>
+    <color name="pc_inversePrimary">#6B9080</color>
+
+    <!-- Scrim -->
+    <color name="pc_scrim">#000000</color>
+
+    <!-- ============================================================
+         Semantic role aliases (dark equivalents)
+         ============================================================ -->
+
+    <color name="pc_onSurfaceSecondary">#BFC9C2</color>
+    <color name="pc_accent">#FFB597</color>
+    <color name="pc_accent2">#E5C475</color>
+    <color name="modern_accent">#FFB597</color>
+    <color name="pc_success">#ABCEBE</color>
+    <color name="colorPrimaryVariant">#7A9E8E</color>
+
+    <!-- ============================================================
+         Backgrounds (legacy aliases)
+         ============================================================ -->
+    <color name="bg_light">#1A1F1C</color>
+    <color name="creamy_background">#1A1F1C</color>
+    <color name="ultra_light_gray">#1A1F1C</color>
+    <color name="gray_very_light">#252B27</color>
+    <color name="backgroundLight">#1A1F1C</color>
+    <color name="card_bg">#262B27</color>
+    <color name="border_soft">#404943</color>
+
+    <!-- True white/black — DO NOT override; widgets and scrims need
+         these constant. Defined in values/colors.xml only. -->
+
+    <!-- ============================================================
+         Text colors (dark equivalents)
+         ============================================================ -->
+    <color name="text_primary">#EAF1EC</color>
+    <color name="text_secondary">#BFC9C2</color>
+    <color name="title_text">#EAF1EC</color>
+
+    <!-- Custom semantic text -->
+    <color name="manual_reminder_text">#E0CDB8</color>
+    <color name="auto_reminder_text">#ABCEBE</color>
+
+    <!-- ============================================================
+         Tabs
+         ============================================================ -->
+    <color name="tab_active_bg">#6B9080</color>
+    <color name="tab_inactive_bg">#2F3631</color>
+    <color name="tab_inactive_stroke">#404943</color>
+    <color name="tab_active_text">#FFFFFF</color>
+    <color name="tab_inactive_text">#BFC9C2</color>
+    <color name="tab_shadow">#33000000</color>
+
+    <!-- Card shadow -->
+    <color name="card_shadow">#40000000</color>
+
+    <!-- ============================================================
+         Calendar
+         ============================================================ -->
+    <color name="calendar_selected_day">#A8C5B8</color>
+    <color name="calendar_today_circle">#6B9080</color>
+    <color name="calendar_event_day">#FFB597</color>
+    <color name="calendar_text">#EAF1EC</color>
+    <color name="calendar_text_disabled">#404943</color>
+    <color name="calendar_background">#1A1F1C</color>
+
+    <!-- ============================================================
+         Widget legacy aliases — kept for widget compat
+         ============================================================ -->
+    <color name="gray_500">#7A9E8E</color>
+    <color name="gray_400">#5A6E64</color>
+    <color name="green_500">#A8C5B8</color>
+    <color name="blue_500">#7A9E8E</color>
+
+    <!-- ============================================================
+         Room icon palette (Dark) — lifted ~15-20% lightness so the
+         colored circles still pop against the dark surface
+         ============================================================ -->
+    <color name="room_living">#E5957A</color>
+    <color name="room_bedroom">#9DAACE</color>
+    <color name="room_bathroom">#7CB8CE</color>
+    <color name="room_toilet">#7CB8AB</color>
+    <color name="room_hallway">#E5BD6E</color>
+    <color name="room_kitchen">#E59682</color>
+    <color name="room_office">#AB99CE</color>
+    <color name="room_balcony">#E5BB6A</color>
+    <color name="room_garden">#8FAEA0</color>
+    <color name="room_kids">#E599BB</color>
+    <color name="room_dining">#C77B6B</color>
+    <color name="room_default">#A8BFB7</color>
+</resources>

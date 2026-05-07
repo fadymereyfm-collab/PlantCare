@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:background="@color/pc_background">
 
     <!-- Top Bar -->
@@ -23,17 +24,15 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_arrow_back"
             android:contentDescription="@string/close"
-            android:tint="@color/pc_onSurface"
-            android:padding="8dp" />
+            app:tint="@color/pc_onSurface"
+            android:padding="12dp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/identify_title"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:textColor="@color/pc_onSurface"
+            android:textAppearance="@style/TextAppearance.PlantCare.Title"
             android:layout_marginStart="8dp" />
     </LinearLayout>
 
@@ -76,7 +75,7 @@
                             android:layout_width="64dp"
                             android:layout_height="64dp"
                             android:src="@drawable/ic_camera"
-                            android:tint="@color/pc_onSurfaceSecondary"
+                            app:tint="@color/pc_onSurfaceSecondary"
                             android:contentDescription="@null" />
 
                         <TextView
@@ -109,31 +108,23 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCamera"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/PlantCare.Button.Outlined"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="6dp"
                     android:text="@string/identify_camera"
-                    android:textColor="@color/pc_onSurface"
-                    app:icon="@drawable/ic_camera"
-                    app:iconTint="@color/pc_onSurface"
-                    app:cornerRadius="12dp"
-                    app:strokeColor="@color/pc_outline" />
+                    app:icon="@drawable/ic_camera" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnGallery"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/PlantCare.Button.Outlined"
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
                     android:layout_marginStart="6dp"
                     android:text="@string/identify_gallery"
-                    android:textColor="@color/pc_onSurface"
-                    app:icon="@drawable/ic_gallery"
-                    app:iconTint="@color/pc_onSurface"
-                    app:cornerRadius="12dp"
-                    app:strokeColor="@color/pc_outline" />
+                    app:icon="@drawable/ic_gallery" />
             </LinearLayout>
 
             <!-- Organ selector (Blatt, Blüte, Frucht, Rinde) -->
@@ -185,14 +176,12 @@
             <!-- Identify Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnIdentify"
+                style="@style/PlantCare.Button.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:text="@string/identify_button"
                 android:textSize="16sp"
                 android:enabled="false"
-                app:cornerRadius="12dp"
-                android:backgroundTint="@color/pc_success"
-                android:textColor="@color/pc_onPrimary"
                 android:layout_marginBottom="16dp" />
 
             <!-- Loading indicator -->
@@ -241,13 +230,12 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnNoneCorrect"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    style="@style/PlantCare.Button.Text"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginTop="8dp"
                     android:text="@string/identify_none_correct"
-                    android:textColor="@color/pc_onSurfaceSecondary"
-                    app:cornerRadius="12dp" />
+                    android:textColor="@color/pc_onSurfaceSecondary" />
             </LinearLayout>
 
         </LinearLayout>

@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -54,6 +55,10 @@ public class SettingsDialogFragment extends DialogFragment {
     private EditText editNewPasswordOnly, editConfirmPasswordOnly;
     private Button buttonSetPassword;
 
+    // Phase 4.1 + 6.4: biometric toggle + sign-out-all button
+    private SwitchMaterial switchBiometric;
+    private Button buttonSignOutAll;
+
     private RadioGroup themeRadioGroup;
     private RadioButton radioSystem, radioLight, radioDark;
 
@@ -68,7 +73,7 @@ public class SettingsDialogFragment extends DialogFragment {
     @Nullable private LocalDate pendingVacationEnd;
 
     private SharedPreferences prefs;
-    private UserDao userDao;
+    private com.example.plantcare.data.repository.AuthRepository authRepo;
     private String email;
     private String displayName;
     private volatile boolean providerGoogle;
@@ -88,7 +93,8 @@ public class SettingsDialogFragment extends DialogFragment {
         email = EmailContext.current(requireContext());
         displayName = prefs.getString(KEY_USER_NAME, "");
 
-        userDao = AppDatabase.getInstance(requireContext().getApplicationContext()).userDao();
+        authRepo = com.example.plantcare.data.repository.AuthRepository
+                .getInstance(requireContext().getApplicationContext());
 
         bindViews(view);
         wireActions();
@@ -135,6 +141,41 @@ public class SettingsDialogFragment extends DialogFragment {
         editNewPasswordOnly = view.findViewById(R.id.editNewPasswordOnly);
         editConfirmPasswordOnly = view.findViewById(R.id.editConfirmPasswordOnly);
         buttonSetPassword = view.findViewById(R.id.buttonSetPassword);
+
+        // Phase 4.1: biometric toggle.
+        switchBiometric = view.findViewById(R.id.switchBiometric);
+        if (switchBiometric != null) {
+            boolean available = AuthBiometric.isAvailable(requireContext());
+            switchBiometric.setEnabled(available);
+            switchBiometric.setChecked(available && AuthBiometric.isEnabled(requireContext()));
+            switchBiometric.setOnCheckedChangeListener((btn, checked) -> {
+                if (checked && !available) {
+                    btn.setChecked(false);
+                    toast(getString(R.string.auth_biometric_unavailable));
+                    return;
+                }
+                AuthBiometric.setEnabled(requireContext(), checked);
+            });
+        }
+
+        // Phase 6.4: sign out from every device.
+        buttonSignOutAll = view.findViewById(R.id.buttonSignOutAll);
+        if (buttonSignOutAll != null) {
+            buttonSignOutAll.setOnClickListener(v -> {
+                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                        .setMessage(R.string.auth_sessions_logout_all_confirm)
+                        .setPositiveButton(R.string.auth_sessions_logout_all, (d, w) -> {
+                            AuthSessions.signOutAllDevices(requireContext(),
+                                    () -> {
+                                        toast(getString(R.string.auth_sessions_logout_all_done));
+                                        if (getActivity() != null) getActivity().recreate();
+                                    },
+                                    msg -> toast(msg));
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show();
+            });
+        }
 
         themeRadioGroup = view.findViewById(R.id.themeRadioGroup);
         radioSystem = view.findViewById(R.id.radioSystem);
@@ -184,6 +225,11 @@ public class SettingsDialogFragment extends DialogFragment {
                 cal.get(Calendar.MONTH),
                 cal.get(Calendar.DAY_OF_MONTH)
         );
+        // Vacation in the past is meaningless — the worker would never gate
+        // any future reminder. Disable selecting yesterday-or-earlier so the
+        // user can't accidentally save a no-op range. Calendar millis (not
+        // LocalDate) — DatePicker only understands the legacy API.
+        dlg.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         dlg.show();
     }
 
@@ -290,8 +336,10 @@ public class SettingsDialogFragment extends DialogFragment {
     private void wireActions() {
         buttonSaveName.setOnClickListener(v -> onSaveName());
         buttonManageGoogle.setOnClickListener(v -> openGoogleAccount());
-        buttonChangePassword.setOnClickListener(v -> { /* placeholder */ });
-        buttonSetPassword.setOnClickListener(v -> { /* placeholder */ });
+        buttonChangePassword.setOnClickListener(v ->
+                AuthPasswordDialogs.showChangePassword(requireContext()));
+        buttonSetPassword.setOnClickListener(v ->
+                AuthPasswordDialogs.showSetPassword(requireContext()));
         buttonLogout.setOnClickListener(v -> onLogout());
         buttonDeleteAccount.setOnClickListener(v -> onDeleteAccount());
         wireProSection();
@@ -368,11 +416,37 @@ public class SettingsDialogFragment extends DialogFragment {
         }
 
         editName.setText(displayName);
-        textEmail.setText(email != null ? email : "-");
+        // Phase 3.2: append a verification badge after the email so the user
+        // sees the state at a glance + can resend the verification mail.
+        FirebaseUser fbUserCheck = FirebaseAuth.getInstance().getCurrentUser();
+        if (fbUserCheck != null && email != null) {
+            String badge = fbUserCheck.isEmailVerified()
+                    ? getString(R.string.auth_email_verified_badge)
+                    : getString(R.string.auth_email_unverified_badge);
+            textEmail.setText(email + "  (" + badge + ")");
+            // Long-press email row to resend verification email if still unverified.
+            if (!fbUserCheck.isEmailVerified()) {
+                textEmail.setOnLongClickListener(v -> {
+                    fbUserCheck.sendEmailVerification()
+                            .addOnCompleteListener(t -> {
+                                if (t.isSuccessful()) {
+                                    toast(getString(R.string.auth_email_verify_sent));
+                                } else {
+                                    String m = t.getException() != null
+                                            ? t.getException().getMessage() : "?";
+                                    toast(getString(R.string.auth_email_verify_failed, m));
+                                }
+                            });
+                    return true;
+                });
+            }
+        } else {
+            textEmail.setText(email != null ? email : "-");
+        }
 
         FragmentBg.runIO(this,
                 () -> {
-                    User localUser = (email != null) ? userDao.getUserByEmail(email) : null;
+                    User localUser = (email != null) ? authRepo.getUserByEmailBlocking(email) : null;
                     hasLocalPassword = (localUser != null && localUser.passwordHash != null && !localUser.passwordHash.trim().isEmpty());
                 },
                 () -> {
@@ -406,7 +480,7 @@ public class SettingsDialogFragment extends DialogFragment {
         }
         prefs.edit().putString(KEY_USER_NAME, newName).apply();
         FragmentBg.runIO(this, () -> {
-            if (email != null) userDao.updateUserName(email, newName);
+            if (email != null) authRepo.updateUserNameBlocking(email, newName);
         });
         try {
             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -429,41 +503,206 @@ public class SettingsDialogFragment extends DialogFragment {
     }
 
     private void onLogout() {
+        // Phase 1.4: confirm before sign-out — accidental taps used to dump
+        // the user back to the auth dialog with no recovery.
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle(R.string.auth_logout_confirm_title)
+                .setMessage(R.string.auth_logout_confirm_message)
+                .setPositiveButton(R.string.auth_logout_confirm_yes, (d, w) -> doLogout())
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void doLogout() {
         Analytics.INSTANCE.logLogout(requireContext());
         try { FirebaseAuth.getInstance().signOut(); } catch (Exception e) { CrashReporter.INSTANCE.log(e); }
         prefs.edit().remove(KEY_USER_NAME).apply();
         UserRepository.get(requireContext()).logout();
+        // Wipe BOTH weather state files. weather_prefs holds the cached
+        // tip/city/temp (UI-visible immediately); weather_cache holds the
+        // raw API response keyed by rounded lat/lon (privacy-sensitive —
+        // it's the previous user's home coordinates). Otherwise User A
+        // signs out (in Berlin) and User B signs in (in Munich) and
+        // sees Berlin's tip until the worker's next 12h cycle, plus
+        // weather_cache exposes A's home location to B if they share the
+        // device.
+        try {
+            requireContext()
+                    .getSharedPreferences("weather_prefs", android.content.Context.MODE_PRIVATE)
+                    .edit().clear().apply();
+        } catch (Exception e) { CrashReporter.INSTANCE.log(e); }
+        try {
+            requireContext()
+                    .getSharedPreferences("weather_cache", android.content.Context.MODE_PRIVATE)
+                    .edit().clear().apply();
+        } catch (Exception e) { CrashReporter.INSTANCE.log(e); }
+        // C13: streak + challenge state is per-email, but a shared
+        // device handed off to a different user keeps the prior
+        // user's "30-day streak" and "5 plants added" trophy on
+        // screen until they happen to add a 6th plant. Wipe the
+        // signed-out user's entries explicitly so the next account
+        // starts clean.
+        if (email != null && !email.isEmpty()) {
+            try {
+                com.example.plantcare.feature.streak.StreakTracker
+                        .reset(requireContext(), email);
+            } catch (Exception e) { CrashReporter.INSTANCE.log(e); }
+            try {
+                com.example.plantcare.feature.streak.ChallengeRegistry
+                        .reset(requireContext(), email);
+            } catch (Exception e) { CrashReporter.INSTANCE.log(e); }
+        }
         if (getActivity() != null) getActivity().recreate();
     }
 
     private void onDeleteAccount() {
+        // Phase 2.1: Firebase requires a recent login to delete the user. If
+        // the existing session is older than ~5 minutes the call will fail
+        // with FirebaseAuthRecentLoginRequiredException and the user sees
+        // nothing happen. We pre-empt that by re-authenticating *before*
+        // the destructive cascade runs.
         new androidx.appcompat.app.AlertDialog.Builder(requireContext())
                 .setTitle(getString(R.string.settings_delete_account))
                 .setMessage(getString(R.string.settings_delete_confirm))
-                .setPositiveButton(getString(R.string.delete), (d, w) -> {
-                    FragmentBg.runIO(this,
-                            () -> {
-                                if (email != null) {
-                                    // Remote photo deletion first (to prevent orphaned cloud data)
-                                    try { FirebaseSyncManager.get().deleteAllPhotosForUser(email); } catch (Throwable e) { CrashReporter.INSTANCE.log(e); }
-                                    AppDatabase db = AppDatabase.getInstance(requireContext().getApplicationContext());
-                                    db.reminderDao().deleteAllRemindersForUser(email);
-                                    db.plantDao().deleteAllUserPlantsForUser(email);
-                                    db.plantPhotoDao().deleteAllPhotosForUser(email);
-                                    db.userDao().deleteUserByEmail(email);
-                                }
-                            },
-                            () -> {
-                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                if (user != null) {
-                                    user.delete().addOnCompleteListener(t -> finishDelete());
-                                } else {
-                                    finishDelete();
-                                }
-                            });
-                })
+                .setPositiveButton(getString(R.string.delete), (d, w) -> requestReauthThenDelete())
                 .setNegativeButton(getString(R.string.close), null)
                 .show();
+    }
+
+    /**
+     * Phase 2.1: gate the destructive flow behind a re-authentication step.
+     * Three branches:
+     *   1. No Firebase user (legacy local-only) → cascade local delete only.
+     *   2. Email/password provider → prompt for current password.
+     *   3. Google provider → re-launch a Google credential picker.
+     */
+    private void requestReauthThenDelete() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            performLocalDelete();
+            return;
+        }
+
+        // Pick the strongest available provider. If the user has both,
+        // prefer password since it's a single in-app dialog.
+        boolean hasPassword = false;
+        boolean hasGoogle = false;
+        for (UserInfo info : user.getProviderData()) {
+            if ("password".equals(info.getProviderId())) hasPassword = true;
+            else if ("google.com".equals(info.getProviderId())) hasGoogle = true;
+        }
+
+        if (hasPassword) {
+            promptPasswordReauth(user);
+        } else if (hasGoogle) {
+            // Audit fix #2 (2026-05-06): Google reauth previously fell straight
+            // into performFirebaseDelete — which would throw
+            // FirebaseAuthRecentLoginRequiredException on any session older
+            // than ~5 min. Replaced with the standard Google credential
+            // re-prompt: sign the user out, send them to the auth chooser
+            // with a flag so we can resume the delete after they re-sign-in.
+            //
+            // Implementation: persist a "pending delete" marker in
+            // SecurePrefs, sign out (which kicks them to AuthStartDialog
+            // on next start), and the next time they sign in via Google we
+            // resume the delete from MainActivity.onCreate.
+            persistPendingDelete();
+            toast(getString(R.string.auth_reauth_google_required));
+            try { FirebaseAuth.getInstance().signOut(); } catch (Exception e) { CrashReporter.INSTANCE.log(e); }
+            if (getActivity() != null) getActivity().recreate();
+        } else {
+            // No known provider (legacy local-only) — local cascade only.
+            performLocalDelete();
+        }
+    }
+
+    /** Audit fix #2: write a "delete pending re-auth" marker to SecurePrefs.
+     *  MainActivity.onCreate checks it after every successful sign-in and
+     *  resumes the delete if the same email signs in. */
+    private void persistPendingDelete() {
+        if (email == null) return;
+        SecurePrefsHelper.INSTANCE.get(requireContext()).edit()
+                .putString("pending_delete_email", email)
+                .apply();
+    }
+
+    private void promptPasswordReauth(FirebaseUser user) {
+        final EditText input = new EditText(requireContext());
+        input.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
+                android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setHint(R.string.auth_reauth_password_hint);
+
+        FrameLayout container = new FrameLayout(requireContext());
+        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        container.setPadding(pad, pad / 2, pad, 0);
+        container.addView(input, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT));
+
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle(R.string.auth_reauth_required_title)
+                .setMessage(R.string.auth_reauth_required_message)
+                .setView(container)
+                .setPositiveButton(R.string.auth_reauth_confirm, (d, w) -> {
+                    String pwd = input.getText() != null ? input.getText().toString() : "";
+                    if (pwd.isEmpty() || user.getEmail() == null) {
+                        toast(getString(R.string.auth_reauth_failed));
+                        return;
+                    }
+                    com.google.firebase.auth.AuthCredential cred =
+                            com.google.firebase.auth.EmailAuthProvider
+                                    .getCredential(user.getEmail(), pwd);
+                    user.reauthenticate(cred).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            performFirebaseDelete(user);
+                        } else {
+                            toast(getString(R.string.auth_reauth_failed));
+                        }
+                    });
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void performFirebaseDelete(FirebaseUser user) {
+        FragmentBg.runIO(this,
+                () -> {
+                    if (email != null) {
+                        try { FirebaseSyncManager.get().deleteAllPhotosForUser(email); } catch (Throwable e) { CrashReporter.INSTANCE.log(e); }
+                        Context appCtx = requireContext().getApplicationContext();
+                        com.example.plantcare.data.repository.ReminderRepository
+                                .getInstance(appCtx).deleteAllRemindersForUserBlocking(email);
+                        com.example.plantcare.data.repository.PlantRepository
+                                .getInstance(appCtx).deleteAllUserPlantsForUserBlocking(email);
+                        com.example.plantcare.data.repository.PlantPhotoRepository
+                                .getInstance(appCtx).deleteAllPhotosForUserBlocking(email);
+                        authRepo.deleteUserByEmailBlocking(email);
+                    }
+                },
+                () -> user.delete().addOnCompleteListener(t -> {
+                    if (t.isSuccessful()) {
+                        finishDelete();
+                    } else {
+                        toast(getString(R.string.auth_reauth_failed));
+                    }
+                }));
+    }
+
+    private void performLocalDelete() {
+        FragmentBg.runIO(this,
+                () -> {
+                    if (email != null) {
+                        Context appCtx = requireContext().getApplicationContext();
+                        com.example.plantcare.data.repository.ReminderRepository
+                                .getInstance(appCtx).deleteAllRemindersForUserBlocking(email);
+                        com.example.plantcare.data.repository.PlantRepository
+                                .getInstance(appCtx).deleteAllUserPlantsForUserBlocking(email);
+                        com.example.plantcare.data.repository.PlantPhotoRepository
+                                .getInstance(appCtx).deleteAllPhotosForUserBlocking(email);
+                        authRepo.deleteUserByEmailBlocking(email);
+                    }
+                },
+                this::finishDelete);
     }
 
     private void finishDelete() {

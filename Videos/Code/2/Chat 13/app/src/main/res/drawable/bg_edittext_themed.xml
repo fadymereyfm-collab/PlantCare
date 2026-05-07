@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Theme-aware EditText background. Replaces hardcoded `@android:color/white`
+  on EditText backgrounds — pc_surfaceContainerHigh and pc_outline both
+  carry day/night variants in values-night/colors.xml so the field stays
+  readable in both modes (was: white-on-white invisible text in dark mode).
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/pc_surfaceContainerHigh" />
+    <corners android:radius="8dp" />
+    <stroke
+        android:width="1dp"
+        android:color="@color/pc_outlineVariant" />
+</shape>

@@ -148,10 +148,11 @@ public class EditManualReminderDialogFragment extends DialogFragment {
             }
 
             FragmentBg.runIO(this, () -> {
-                AppDatabase db = AppDatabase.getInstance(requireContext());
-                ReminderDao reminderDao = db.reminderDao();
+                com.example.plantcare.data.repository.ReminderRepository reminderRepo =
+                        com.example.plantcare.data.repository.ReminderRepository
+                                .getInstance(requireContext());
 
-                reminderDao.deleteFutureManualRepeats(
+                reminderRepo.deleteFutureManualRepeatsBlocking(
                         reminder.plantId,
                         reminder.userEmail,
                         reminder.date,
@@ -163,7 +164,7 @@ public class EditManualReminderDialogFragment extends DialogFragment {
                 reminder.description = newDesc;
                 reminder.date = newDate;
                 reminder.repeat = newRepeat;
-                reminderDao.update(reminder);
+                reminderRepo.updateBlocking(reminder);
                 FirebaseSyncManager.get().syncReminder(reminder);
 
                 int repeatDays = 0;
@@ -187,8 +188,12 @@ public class EditManualReminderDialogFragment extends DialogFragment {
                         }
                     }
 
-                    int i = 1;
-                    for (; i < 365*2; i++) {
+                    // Hard cap matches AddReminderDialogFragment: at most
+                    // 365 manual repeats per series so a daily cadence
+                    // doesn't inflate to 730 rows + 730 Firestore writes.
+                    final int MAX_REMINDERS = 365;
+                    int created = 0;
+                    for (int i = 1; i < 365 * 2 && created < MAX_REMINDERS; i++) {
                         cal.add(Calendar.DAY_OF_YEAR, repeatDays);
                         if (endCal != null && cal.after(endCal)) {
                             break;
@@ -204,14 +209,27 @@ public class EditManualReminderDialogFragment extends DialogFragment {
                         r.description = newDesc;
                         r.date = nextDate;
                         r.repeat = newRepeat;
-                        reminderDao.insert(r);
+                        reminderRepo.insertBlocking(r);
                         FirebaseSyncManager.get().syncReminder(r);
+                        created++;
                     }
                 }
 
+                // #4 fix: the recurring-save loop can run for several
+                // seconds against 365 reminders; if the user dismisses
+                // the dialog mid-save (or rotates), `requireActivity()`
+                // throws IllegalStateException. Guard with isAdded()
+                // before touching activity/context. DataChangeNotifier
+                // still fires on a successful save even if the dialog
+                // is gone — the work itself completed.
+                DataChangeNotifier.notifyChange();
+                if (!isAdded()) return;
                 requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(getContext(), R.string.saved, Toast.LENGTH_SHORT).show();
-                    DataChangeNotifier.notifyChange();
+                    if (!isAdded()) return;
+                    android.content.Context ctx = getContext();
+                    if (ctx != null) {
+                        Toast.makeText(ctx, R.string.saved, Toast.LENGTH_SHORT).show();
+                    }
                     dismiss();
                 });
             });
@@ -219,18 +237,19 @@ public class EditManualReminderDialogFragment extends DialogFragment {
 
         buttonDelete.setOnClickListener(v -> {
             new AlertDialog.Builder(requireContext())
-                    .setTitle("Löschen bestätigen")
-                    .setMessage("Soll dieser Eintrag wirklich gelöscht werden?")
-                    .setPositiveButton("Ja", (dialog, which) -> {
+                    .setTitle(R.string.delete_confirm_title)
+                    .setMessage(R.string.delete_confirm_message_generic)
+                    .setPositiveButton(R.string.action_yes, (dialog, which) -> {
                         FragmentBg.runIO(this,
-                                () -> AppDatabase.getInstance(requireContext()).reminderDao().delete(reminder),
+                                () -> com.example.plantcare.data.repository.ReminderRepository
+                                        .getInstance(requireContext()).deleteBlocking(reminder),
                                 () -> {
                                     Toast.makeText(getContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
                                     DataChangeNotifier.notifyChange();
                                     dismiss();
                                 });
                     })
-                    .setNegativeButton("Nein", null)
+                    .setNegativeButton(R.string.action_no, null)
                     .show();
         });
 

@@ -1,0 +1,417 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.PlantCareApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary Material roles -->
+        <item name="colorPrimary">@color/pc_primary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/pc_onPrimary</item>
+
+        <!-- Secondary roles (terracotta/honey kept on M2 secondary slot) -->
+        <item name="colorSecondary">@color/pc_tertiary</item>
+        <item name="colorSecondaryVariant">@color/pc_accent2</item>
+        <item name="colorOnSecondary">@color/pc_onTertiary</item>
+
+        <!-- Unified backgrounds and surfaces -->
+        <item name="android:windowBackground">@color/pc_background</item>
+        <item name="android:colorBackground">@color/pc_background</item>
+        <item name="colorSurface">@color/pc_surface</item>
+        <item name="colorOnSurface">@color/pc_onSurface</item>
+
+        <!-- Status bar — light surface in light theme so system icons
+             render dark and remain visible (P2 fix). -->
+        <item name="android:statusBarColor">@color/pc_background</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:navigationBarColor">@color/pc_background</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+
+        <!-- Text colors for compatibility -->
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorTertiary">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
+        <item name="android:textColorPrimaryInverse">@color/pc_onPrimary</item>
+
+        <!-- Error roles — fixed: pc_error is now actual red, not terracotta. -->
+        <item name="colorError">@color/pc_error</item>
+        <item name="colorOnError">@color/pc_onError</item>
+
+        <!-- Modern AlertDialog style (applies to ALL AlertDialogs globally) -->
+        <item name="alertDialogTheme">@style/PlantCare.AlertDialog</item>
+        <item name="materialAlertDialogTheme">@style/PlantCare.MaterialAlertDialog</item>
+        <item name="android:alertDialogTheme">@style/PlantCare.AlertDialog</item>
+        <item name="android:datePickerDialogTheme">@style/PlantCare.DatePickerDialog</item>
+
+        <!-- Bottom Sheet Dialog Theme -->
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialog.Modern</item>
+
+        <!-- Sage Garden — Nunito for UI body text everywhere. DM Serif Display
+             is reserved for hero/page titles. Cairo is no longer applied
+             globally — only Arabic-only screens may opt in via @font/cairo. -->
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="fontFamily">@font/nunito</item>
+
+        <!-- Typography defaults (M2 names, applied app-wide). -->
+        <item name="textAppearanceHeadline5">@style/TextAppearance.PlantCare.Headline</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.PlantCare.Title</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.PlantCare.Subtitle</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.PlantCare.Body</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.PlantCare.BodySmall</item>
+        <item name="textAppearanceButton">@style/TextAppearance.PlantCare.Button</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.PlantCare.Caption</item>
+
+        <!-- Default Material widget styles — applied globally so raw <Button>
+             tags in legacy XML automatically pick up the modern look. -->
+        <item name="materialButtonStyle">@style/PlantCare.Button.Filled</item>
+        <item name="floatingActionButtonStyle">@style/PlantCare.Fab</item>
+        <item name="materialCardViewStyle">@style/PlantCare.Card</item>
+        <item name="chipStyle">@style/PlantCare.Chip</item>
+        <item name="toolbarStyle">@style/PlantCare.Toolbar</item>
+
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
+
+    <!-- AAPT requires the intermediate parent for dot-name hierarchy -->
+    <style name="TextAppearance.PlantCare" parent="TextAppearance.MaterialComponents.Body1" />
+
+    <!-- ============ Typography scale ============ -->
+
+    <style name="TextAppearance.PlantCare.Headline" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:fontFamily">@font/dm_serif_display</item>
+        <item name="fontFamily">@font/dm_serif_display</item>
+        <item name="android:textColor">@color/title_text</item>
+        <item name="android:letterSpacing">-0.005</item>
+    </style>
+
+    <style name="TextAppearance.PlantCare.Title" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="fontFamily">@font/nunito</item>
+        <item name="android:textColor">@color/pc_onSurface</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="TextAppearance.PlantCare.Subtitle" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="fontFamily">@font/nunito</item>
+        <item name="android:textColor">@color/pc_onSurface</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="TextAppearance.PlantCare.Body" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="fontFamily">@font/nunito</item>
+        <item name="android:textColor">@color/pc_onSurface</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:lineSpacingExtra">2dp</item>
+    </style>
+
+    <style name="TextAppearance.PlantCare.BodySmall" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="fontFamily">@font/nunito</item>
+        <item name="android:textColor">@color/pc_onSurfaceSecondary</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="TextAppearance.PlantCare.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="fontFamily">@font/nunito</item>
+        <item name="android:textColor">@color/pc_onSurfaceSecondary</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextAppearance.PlantCare.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="fontFamily">@font/nunito</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <!-- Sage Garden — DM Serif Display for hero / page titles -->
+    <style name="TextAppearance.PlantCare.SerifTitle" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:fontFamily">@font/dm_serif_display</item>
+        <item name="fontFamily">@font/dm_serif_display</item>
+        <item name="android:textColor">@color/title_text</item>
+        <item name="android:letterSpacing">-0.005</item>
+    </style>
+
+    <!-- Section label (UPPERCASE caption like "MEINE ZIMMER") -->
+    <style name="TextAppearance.PlantCare.SectionLabel" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.07</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <!-- Pill / count badge -->
+    <style name="TextAppearance.PlantCare.Badge">
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <!-- ============ Base styles required for dot-name hierarchy ============ -->
+    <!-- AAPT requires these intermediate parent styles to exist -->
+    <style name="PlantCare" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
+    <style name="PlantCare.Dialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog" />
+    <style name="PlantCare.Dialog.Button" parent="Widget.MaterialComponents.Button.TextButton" />
+
+    <!-- ============ Modern AlertDialog Theme ============ -->
+    <style name="PlantCare.AlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/pc_primary</item>
+        <item name="colorSecondary">@color/pc_primary</item>
+        <item name="colorSurface">@color/pc_surface</item>
+        <item name="colorOnSurface">@color/pc_onSurface</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@drawable/bg_dialog_modern</item>
+        <item name="android:backgroundDimAmount">0.32</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="fontFamily">@font/nunito</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PlantCare.Dialog.Button.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/PlantCare.Dialog.Button.Negative</item>
+        <item name="buttonBarNeutralButtonStyle">@style/PlantCare.Dialog.Button.Neutral</item>
+        <item name="shapeAppearanceOverlay">@style/PlantCare.Dialog.Shape</item>
+    </style>
+
+    <style name="PlantCare.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/pc_primary</item>
+        <item name="colorSecondary">@color/pc_primary</item>
+        <item name="colorSurface">@color/pc_surface</item>
+        <item name="colorOnSurface">@color/pc_onSurface</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="fontFamily">@font/nunito</item>
+        <item name="android:backgroundDimAmount">0.32</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/PlantCare.Dialog.Body</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/PlantCare.Dialog.Title</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PlantCare.Dialog.Button.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/PlantCare.Dialog.Button.Negative</item>
+        <item name="buttonBarNeutralButtonStyle">@style/PlantCare.Dialog.Button.Neutral</item>
+        <item name="shapeAppearanceOverlay">@style/PlantCare.Dialog.Shape</item>
+    </style>
+
+    <!-- Dialog shape: large rounded corners -->
+    <style name="PlantCare.Dialog.Shape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">28dp</item>
+    </style>
+
+    <!-- Dialog title text -->
+    <style name="PlantCare.Dialog.Title" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/pc_onSurface</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- Dialog body text -->
+    <style name="PlantCare.Dialog.Body" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textColor">@color/pc_onSurfaceSecondary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:lineSpacingExtra">3dp</item>
+    </style>
+
+    <!-- Dialog positive button -->
+    <style name="PlantCare.Dialog.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/pc_primary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">20dp</item>
+        <item name="rippleColor">@color/pc_secondaryContainer</item>
+    </style>
+
+    <!-- Dialog negative button -->
+    <style name="PlantCare.Dialog.Button.Negative" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/pc_onSurfaceSecondary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">20dp</item>
+    </style>
+
+    <!-- Dialog neutral button -->
+    <style name="PlantCare.Dialog.Button.Neutral" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/pc_onSurfaceSecondary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="cornerRadius">20dp</item>
+    </style>
+
+    <!-- ============ Modern DatePicker Dialog Theme ============ -->
+    <style name="PlantCare.DatePickerDialog" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <item name="colorPrimary">@color/pc_primary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/pc_onPrimary</item>
+        <item name="colorAccent">@color/pc_primary</item>
+        <item name="android:colorAccent">@color/pc_primary</item>
+        <item name="colorSurface">@color/pc_surface</item>
+        <item name="colorOnSurface">@color/pc_onSurface</item>
+        <item name="android:textColorPrimary">@color/pc_onSurface</item>
+        <item name="android:textColorSecondary">@color/pc_onSurfaceSecondary</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="fontFamily">@font/nunito</item>
+        <item name="android:backgroundDimAmount">0.32</item>
+        <item name="android:datePickerStyle">@style/PlantCare.DatePicker.Widget</item>
+        <item name="shapeAppearanceOverlay">@style/PlantCare.Dialog.Shape</item>
+    </style>
+
+    <!-- DayNight DatePicker — Light variant locks to a white calendar even
+         in night theme; the platform DayNight equivalent uses the system's
+         current uiMode so dates remain readable on the dark background. -->
+    <style name="PlantCare.DatePicker.Widget" parent="@android:style/Widget.Material.DatePicker">
+        <item name="android:calendarViewShown">true</item>
+        <item name="android:spinnersShown">false</item>
+    </style>
+
+    <!-- ============ Bottom Sheet Dialog ============ -->
+    <!-- DayNight (was Light) — bottom sheets now follow the system theme. -->
+    <style name="BottomSheetDialog.Modern" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle.Modern</item>
+    </style>
+
+    <style name="BottomSheetStyle.Modern" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.BottomSheet.Modern</item>
+        <item name="android:background">@color/pc_surface</item>
+    </style>
+
+    <style name="ShapeAppearance.BottomSheet.Modern" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">28dp</item>
+        <item name="cornerSizeTopRight">28dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <!-- ============ Default widget styles (applied via theme attrs) ============ -->
+
+    <!-- Default FAB style — primary tinted, on-primary icon, no quirky terracotta default -->
+    <style name="PlantCare.Fab" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">@color/pc_primary</item>
+        <item name="tint">@color/pc_onPrimary</item>
+        <item name="rippleColor">@color/pc_onPrimary</item>
+        <item name="elevation">6dp</item>
+    </style>
+
+    <!-- Default MaterialCardView — consistent corner + elevation + outline -->
+    <style name="PlantCare.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardBackgroundColor">@color/pc_surface</item>
+        <item name="contentPadding">0dp</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+
+    <!-- Default Chip — choice-style, sage tinted -->
+    <style name="PlantCare.Chip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/pc_surfaceContainerLow</item>
+        <item name="chipStrokeColor">@color/pc_outlineVariant</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textColor">@color/pc_onSurface</item>
+        <item name="rippleColor">@color/pc_secondaryContainer</item>
+        <item name="checkedIconTint">@color/pc_onPrimary</item>
+    </style>
+
+    <!-- Default Toolbar — flat, on-surface text, no shadow -->
+    <style name="PlantCare.Toolbar" parent="Widget.MaterialComponents.Toolbar.Surface">
+        <item name="android:background">@color/pc_background</item>
+        <item name="titleTextAppearance">@style/TextAppearance.PlantCare.Title</item>
+        <item name="subtitleTextAppearance">@style/TextAppearance.PlantCare.BodySmall</item>
+        <item name="android:elevation">0dp</item>
+        <item name="navigationIconTint">@color/pc_onSurface</item>
+    </style>
+
+    <!-- ============ Button family — picked up automatically as default
+         materialButtonStyle. Variants for opt-in usage:
+           PlantCare.Button.Filled   — high-emphasis primary action
+           PlantCare.Button.Tonal    — medium-emphasis (sage container)
+           PlantCare.Button.Outlined — low-emphasis with outline
+           PlantCare.Button.Text     — lowest emphasis text-only
+           PlantCare.Button.Danger   — destructive action (red)
+         ============================================================ -->
+
+    <style name="PlantCare.Button" parent="Widget.MaterialComponents.Button" />
+
+    <style name="PlantCare.Button.Filled" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/pc_primary</item>
+        <item name="android:textColor">@color/pc_onPrimary</item>
+        <item name="iconTint">@color/pc_onPrimary</item>
+        <item name="rippleColor">@color/pc_onPrimary</item>
+        <item name="cornerRadius">22dp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="PlantCare.Button.Tonal" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/pc_secondaryContainer</item>
+        <item name="android:textColor">@color/pc_onSecondaryContainer</item>
+        <item name="iconTint">@color/pc_onSecondaryContainer</item>
+        <item name="rippleColor">@color/pc_onSecondaryContainer</item>
+        <item name="cornerRadius">22dp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="PlantCare.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/pc_outline</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="android:textColor">@color/pc_onSurface</item>
+        <item name="iconTint">@color/pc_onSurface</item>
+        <item name="rippleColor">@color/pc_secondaryContainer</item>
+        <item name="cornerRadius">22dp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+    </style>
+
+    <style name="PlantCare.Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/pc_primary</item>
+        <item name="iconTint">@color/pc_primary</item>
+        <item name="rippleColor">@color/pc_secondaryContainer</item>
+        <item name="cornerRadius">22dp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="PlantCare.Button.Danger" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/pc_errorContainer</item>
+        <item name="android:textColor">@color/pc_onErrorContainer</item>
+        <item name="iconTint">@color/pc_onErrorContainer</item>
+        <item name="rippleColor">@color/pc_onErrorContainer</item>
+        <item name="cornerRadius">22dp</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <!-- Alias for compatibility -->
+    <style name="Theme.PlantCare" parent="Theme.PlantCareApp"/>
+</resources>

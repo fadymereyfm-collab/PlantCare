@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/pc_outline"
+            app:strokeWidth="1dp"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:id="@+id/imgDetail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@color/pc_surfaceVariant"
+                android:contentDescription="@string/plant_image" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/txtDetailName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/pc_onSurface" />
+
+        <TextView
+            android:id="@+id/txtDetailConfidence"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:textColor="@color/pc_primary"
+            android:layout_marginTop="2dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/pc_outline" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disease_history_detail_plant_label"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.07"
+            android:textColor="@color/pc_onSurfaceSecondary" />
+
+        <TextView
+            android:id="@+id/txtDetailPlant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/pc_onSurface"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disease_history_detail_advice_label"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.07"
+            android:textColor="@color/pc_onSurfaceSecondary" />
+
+        <TextView
+            android:id="@+id/txtDetailAdvice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/pc_onSurface"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+</ScrollView>

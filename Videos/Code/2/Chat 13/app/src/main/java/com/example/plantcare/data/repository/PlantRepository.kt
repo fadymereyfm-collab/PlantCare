@@ -2,7 +2,6 @@ package com.example.plantcare.data.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import com.example.plantcare.AppDatabase
 import com.example.plantcare.Plant
 import com.example.plantcare.PlantDao
@@ -10,45 +9,33 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Repository for Plant data access layer.
- * Wraps PlantDao and provides coroutine-based methods with LiveData/Flow support.
+ * Repository for Plant data access layer. Wraps PlantDao.
+ *
+ * Sprint-3 Task 3.1: read-side LiveData accessors now hand back the DAO's
+ * Room-observable LiveData directly (no `liveData { emit(dao.xxx()) }`
+ * one-shot builders), so the UI re-binds whenever the underlying rows
+ * change without any DataChangeNotifier nudge.
  */
-class PlantRepository private constructor(private val context: Context) {
+class PlantRepository private constructor(context: Context) {
 
+    // Sprint-3 cleanup 2026-05-05: take Context as a constructor parameter
+    // (not a property) so the Singleton doesn't pin an Activity in memory
+    // when getInstance is called from `requireContext()`. Only used here to
+    // resolve the DAO; getInstance below additionally normalises to
+    // applicationContext as a defence in depth.
     private val plantDao: PlantDao = AppDatabase.getInstance(context).plantDao()
 
-    /**
-     * Get all user plants for a specific email.
-     * Returns a LiveData that observes database changes.
-     */
-    fun getAllUserPlants(email: String): LiveData<List<Plant>> = liveData {
-        val plants = withContext(Dispatchers.IO) {
-            plantDao.getAllUserPlantsForUser(email)
-        }
-        emit(plants)
-    }
+    /** User plants for a given email — reactive. */
+    fun getAllUserPlants(email: String): LiveData<List<Plant>> =
+        plantDao.observeAllUserPlantsForUser(email)
 
-    /**
-     * Get plants in a specific room for a user.
-     * Returns a LiveData that observes database changes.
-     */
-    fun getPlantsInRoom(roomId: Int, email: String): LiveData<List<Plant>> = liveData {
-        val plants = withContext(Dispatchers.IO) {
-            plantDao.getAllUserPlantsInRoom(roomId, email)
-        }
-        emit(plants)
-    }
+    /** User plants inside a specific room — reactive. */
+    fun getPlantsInRoom(roomId: Int, email: String): LiveData<List<Plant>> =
+        plantDao.observeAllUserPlantsInRoom(roomId, email)
 
-    /**
-     * Get a single plant by ID.
-     * Returns a LiveData that observes database changes.
-     */
-    fun getPlantById(id: Int): LiveData<Plant?> = liveData {
-        val plant = withContext(Dispatchers.IO) {
-            plantDao.findById(id)
-        }
-        emit(plant)
-    }
+    /** Single plant by id — reactive. */
+    fun getPlantById(id: Int): LiveData<Plant> =
+        plantDao.observeById(id)
 
     /**
      * Insert a new plant into the database.
@@ -74,38 +61,22 @@ class PlantRepository private constructor(private val context: Context) {
         plantDao.delete(plant)
     }
 
-    /**
-     * Get all catalog (non-user) plants.
-     * Returns a LiveData that observes database changes.
-     */
-    fun getAllCatalogPlants(): LiveData<List<Plant>> = liveData {
-        val plants = withContext(Dispatchers.IO) {
-            plantDao.getAllNonUserPlants()
-        }
-        emit(plants)
-    }
+    /** Catalog (non-user) plants — reactive. */
+    fun getAllCatalogPlants(): LiveData<List<Plant>> =
+        plantDao.observeAllNonUserPlants()
 
     /**
-     * Search for plants by name.
-     * Returns a LiveData that observes database changes.
+     * Search for plants by name. Reactive lookups by name aren't supported
+     * by the current DAO surface (Room would need a separate observe method
+     * per query shape) — kept as a snapshot via withContext so the search
+     * field doesn't hang the main thread. Recompose by calling again on
+     * input change rather than wiring a Flow per keystroke.
      */
-    fun searchPlants(query: String): LiveData<List<Plant>> = liveData {
-        val plants = withContext(Dispatchers.IO) {
-            plantDao.getAllUserPlantsWithName(query)
-        }
-        emit(plants)
-    }
+    suspend fun searchPlants(query: String): List<Plant> =
+        withContext(Dispatchers.IO) { plantDao.getAllUserPlantsWithName(query) }
 
-    /**
-     * Get all plants (both user and catalog).
-     * Returns a LiveData that observes database changes.
-     */
-    fun getAllPlants(): LiveData<List<Plant>> = liveData {
-        val plants = withContext(Dispatchers.IO) {
-            plantDao.getAll()
-        }
-        emit(plants)
-    }
+    /** All plants (user + catalog) — reactive. */
+    fun getAllPlants(): LiveData<List<Plant>> = plantDao.observeAll()
 
     /**
      * Get plants by IDs.
@@ -201,15 +172,92 @@ class PlantRepository private constructor(private val context: Context) {
         plantDao.countUserPlants(email)
     }
 
+    /** Snapshot lookup by id — for callers that already sit on Dispatchers.IO
+     *  (e.g. weekbar ViewModel coroutines, image loaders). */
+    suspend fun findPlantById(id: Int): Plant? = withContext(Dispatchers.IO) {
+        plantDao.findById(id)
+    }
+
+    /** Catalog (non-user) plants snapshot. */
+    suspend fun getAllNonUserPlantsList(): List<Plant> = withContext(Dispatchers.IO) {
+        plantDao.getAllNonUserPlants()
+    }
+
+    /** All plants snapshot (user + catalog). */
+    suspend fun getAllPlantsList(): List<Plant> = withContext(Dispatchers.IO) {
+        plantDao.getAll()
+    }
+
+    // ────────────────────────────────────────────────────────────────────
+    // Sprint-3 Task 3.2b: blocking helpers for legacy Java callers.
+    //
+    // Suspend fun + Java is friction (runBlocking + Continuation noise),
+    // and the legacy Java fragments already manage their own threading via
+    // `new Thread()` / Executors. These plain `fun` wrappers expose Repo
+    // semantics to those callers without forcing them to wrap every line
+    // in `BuildersKt.runBlocking`. The caller is responsible for being on
+    // a background thread — Room itself will throw on the main thread.
+    //
+    // These are the only plain `fun` accessors on the Repository; the
+    // canonical Kotlin API (above) stays suspend.
+    // ────────────────────────────────────────────────────────────────────
+
+    fun countAllBlocking(): Int = plantDao.countAll()
+    fun findByIdBlocking(id: Int): Plant? = plantDao.findById(id)
+    fun getAllBlocking(): List<Plant> = plantDao.getAll()
+    fun getAllUserPlantsBlocking(): List<Plant> = plantDao.getAllUserPlants()
+    fun getPlantsByIdsBlocking(ids: List<Int>): List<Plant> = plantDao.getPlantsByIds(ids)
+    fun getCatalogPlantsWithoutImageBlocking(): List<Plant> = plantDao.getCatalogPlantsWithoutImage()
+    fun getCatalogPlantsWithoutCategoryBlocking(): List<Plant> = plantDao.getCatalogPlantsWithoutCategory()
+    fun updateCategoryBlocking(id: Int, category: String?) = plantDao.updateCategory(id, category)
+    fun findByNameBlocking(name: String?): Plant? = plantDao.findByName(name)
+    fun findByNicknameBlocking(nickname: String?): Plant? = plantDao.findByNickname(nickname)
+    fun findUserPlantByNameAndEmailBlocking(name: String?, email: String?): Plant? =
+        plantDao.findUserPlantByNameAndUser(name, email)
+    fun findCatalogByNameBlocking(name: String?): Plant? = plantDao.findCatalogByName(name)
+    fun findCatalogByNameLikeBlocking(pattern: String?): Plant? =
+        plantDao.findCatalogByNameLike(pattern)
+
+    fun getAllUserPlantsForUserBlocking(email: String?): List<Plant> =
+        plantDao.getAllUserPlantsForUser(email)
+    fun getAllUserPlantsInRoomBlocking(roomId: Int, email: String?): List<Plant> =
+        plantDao.getAllUserPlantsInRoom(roomId, email)
+    fun getAllUserPlantsWithNameBlocking(name: String?): List<Plant> =
+        plantDao.getAllUserPlantsWithName(name)
+    fun getAllUserPlantsWithNameAndUserBlocking(name: String?, email: String?): List<Plant> =
+        plantDao.getAllUserPlantsWithNameAndUser(name, email)
+    fun getAllUserPlantsWithNicknameAndUserBlocking(nickname: String?, email: String?): List<Plant> =
+        plantDao.getAllUserPlantsWithNicknameAndUser(nickname, email)
+    fun getAllNonUserPlantsBlocking(): List<Plant> = plantDao.getAllNonUserPlants()
+    fun getCatalogPlantsByCategoryBlocking(category: String?): List<Plant> =
+        plantDao.getCatalogPlantsByCategory(category)
+    fun countUserPlantsBlocking(email: String?): Int = plantDao.countUserPlants(email)
+    fun countPlantsByRoomBlocking(roomId: Int, email: String?): Int =
+        plantDao.countPlantsByRoom(roomId, email)
+
+    fun insertBlocking(plant: Plant): Long = plantDao.insert(plant)
+    fun updateBlocking(plant: Plant) = plantDao.update(plant)
+    fun deleteBlocking(plant: Plant) = plantDao.delete(plant)
+    fun deleteAllUserPlantsForUserBlocking(email: String?) =
+        plantDao.deleteAllUserPlantsForUser(email)
+    fun updateProfileImageBlocking(id: Int, imageUri: String?) =
+        plantDao.updateProfileImage(id, imageUri)
+    fun clearProfileImageBlocking(id: Int) = plantDao.clearProfileImage(id)
+
     companion object {
         @Volatile
         private var INSTANCE: PlantRepository? = null
 
+        @JvmStatic
         fun getInstance(context: Context): PlantRepository {
+            // #5 fix: classic double-checked-locking — the inner
+            // recheck of INSTANCE was missing, so two threads racing
+            // through the outer null-check could each enter the
+            // synchronized block in turn and construct duplicate
+            // singletons. The first instance would silently lose its
+            // observer registrations / lazy DAO refs to the second.
             return INSTANCE ?: synchronized(this) {
-                val instance = PlantRepository(context)
-                INSTANCE = instance
-                instance
+                INSTANCE ?: PlantRepository(context.applicationContext).also { INSTANCE = it }
             }
         }
     }

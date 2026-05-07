@@ -37,11 +37,13 @@
                     android:id="@+id/editPlantName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="اسم النبتة"
+                    android:hint="@string/hint_plant_name"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
-                    android:fontFamily="@font/cairo"
-                    android:background="@android:color/transparent"/>
+                    android:background="@android:color/transparent"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:maxLength="60"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- الغرفة + إضافة غرفة -->
@@ -60,12 +62,11 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonAddRoom"
-                    style="@style/Button.Secondary"
+                    style="@style/PlantCare.Button.Outlined"
                     android:layout_width="wrap_content"
                     android:layout_height="44dp"
-                    android:text="إضافة غرفة"
-                    android:textAllCaps="false"
-                    app:cornerRadius="14dp"
+                    android:text="@string/action_add_room"
+                    app:icon="@drawable/ic_add"
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
 
@@ -86,12 +87,11 @@
                     android:id="@+id/editStartDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="تاريخ البداية"
+                    android:hint="@string/hint_start_date"
                     android:focusable="false"
                     android:inputType="none"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
-                    android:fontFamily="@font/cairo"
                     android:background="@android:color/transparent"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -112,10 +112,9 @@
                     android:id="@+id/editLighting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Licht"
+                    android:hint="@string/lighting_label"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
-                    android:fontFamily="@font/cairo"
                     android:background="@android:color/transparent"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -135,10 +134,9 @@
                     android:id="@+id/editSoil"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Boden"
+                    android:hint="@string/soil_label"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
-                    android:fontFamily="@font/cairo"
                     android:background="@android:color/transparent"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -158,10 +156,9 @@
                     android:id="@+id/editFertilizing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Düngung"
+                    android:hint="@string/fertilizing_label"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
-                    android:fontFamily="@font/cairo"
                     android:background="@android:color/transparent"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -181,10 +178,9 @@
                     android:id="@+id/editWatering"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Bewässerung"
+                    android:hint="@string/watering_label"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
-                    android:fontFamily="@font/cairo"
                     android:background="@android:color/transparent"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -200,32 +196,27 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonCapture"
-                style="@style/Button.Secondary"
+                style="@style/PlantCare.Button.Outlined"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="📷 Foto machen"
-                android:textAllCaps="false"
-                app:cornerRadius="18dp"
+                android:text="@string/take_photo"
+                app:icon="@drawable/ic_camera"
                 android:layout_marginBottom="12dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonAdd"
-                style="@style/Button.Secondary"
+                style="@style/PlantCare.Button.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="➕ Hinzufügen"
-                android:textAllCaps="false"
-                app:cornerRadius="18dp"
+                android:text="@string/action_add_plant"
                 android:layout_marginBottom="8dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonClose"
-                style="@style/Button.Secondary"
+                style="@style/PlantCare.Button.Text"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="❌ Schließen"
-                android:textAllCaps="false"
-                app:cornerRadius="18dp" />
+                android:text="@string/close" />
         </LinearLayout>
     </ScrollView>
 </com.google.android.material.card.MaterialCardView>

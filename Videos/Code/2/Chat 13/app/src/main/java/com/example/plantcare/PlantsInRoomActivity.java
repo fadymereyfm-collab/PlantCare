@@ -40,6 +40,14 @@ public class PlantsInRoomActivity extends AppCompatActivity
     private String roomName;
     private String userEmail;
 
+    /**
+     * Reload the toolbar title + plant list when the room is renamed or
+     * deleted from another screen (e.g. MyPlants long-press menu). Without
+     * this, the title stays on the stale name until the user backs out and
+     * re-enters the room.
+     */
+    private final Runnable dataChangeListener = this::refreshFromRoomState;
+
     private Uri photoURI;
     private File capturedPhotoFile; // absolute file of the captured image
     private Plant currentPlantForPhoto;
@@ -77,6 +85,40 @@ public class PlantsInRoomActivity extends AppCompatActivity
 
         setupActivityResultLaunchers();
         refreshList();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        DataChangeNotifier.addListener(dataChangeListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        DataChangeNotifier.removeListener(dataChangeListener);
+    }
+
+    /**
+     * Re-resolve the room from the DB so a rename / delete from elsewhere
+     * propagates here. If the room is gone (deleted with no plants), back
+     * out — the activity has nothing meaningful to show.
+     */
+    private void refreshFromRoomState() {
+        final int rid = roomId;
+        com.example.plantcare.util.BgExecutor.io(() -> {
+            RoomCategory rc = com.example.plantcare.data.repository
+                    .RoomCategoryRepository.getInstance(getApplicationContext())
+                    .findByIdBlocking(rid);
+            runOnUiThread(() -> {
+                if (rc == null) { finish(); return; }
+                if (!rc.name.equals(roomName)) {
+                    roomName = rc.name;
+                    if (getSupportActionBar() != null) getSupportActionBar().setTitle(rc.name);
+                }
+                refreshList();
+            });
+        });
     }
 
     private void setupActivityResultLaunchers() {
@@ -203,8 +245,9 @@ public class PlantsInRoomActivity extends AppCompatActivity
                 } else if (photoURI != null) {
                     currentPlantForPhoto.imageUri = photoURI.toString();
                 }
-                AppDatabase db = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase();
-                db.plantDao().update(currentPlantForPhoto);
+                com.example.plantcare.data.repository.PlantRepository
+                        .getInstance(getApplicationContext())
+                        .updateBlocking(currentPlantForPhoto);
 
                 // 2) Set as cover in ArchiveStore so the loader picks it with highest priority
                 try {
@@ -219,14 +262,16 @@ public class PlantsInRoomActivity extends AppCompatActivity
 
                 // 3) Persist a PlantPhoto marked as cover and start pending-aware upload
                 try {
-                    PlantPhotoDao photoDao = db.plantPhotoDao();
+                    com.example.plantcare.data.repository.PlantPhotoRepository photoRepo =
+                            com.example.plantcare.data.repository.PlantPhotoRepository
+                                    .getInstance(getApplicationContext());
                     PlantPhoto photo = new PlantPhoto();
                     photo.plantId = currentPlantForPhoto.id;
                     photo.imagePath = (coverUri != null) ? coverUri.toString() : (photoURI != null ? photoURI.toString() : null);
                     photo.dateTaken = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(new java.util.Date());
                     photo.isCover = true;
                     photo.userEmail = userEmail;
-                    long newId = photoDao.insert(photo);
+                    long newId = photoRepo.insertBlocking(photo);
                     photo.id = (int) newId;
 
                     Uri uploadUri = (coverUri != null) ? coverUri : photoURI;
@@ -257,8 +302,9 @@ public class PlantsInRoomActivity extends AppCompatActivity
     private void refreshList() {
         final int finalRoomId = roomId;
         com.example.plantcare.util.BgExecutor.io(() -> {
-            AppDatabase db = DatabaseClient.getInstance(this).getAppDatabase();
-            List<Plant> plants = db.plantDao().getAllUserPlantsInRoom(finalRoomId, userEmail);
+            List<Plant> plants = com.example.plantcare.data.repository.PlantRepository
+                    .getInstance(this)
+                    .getAllUserPlantsInRoomBlocking(finalRoomId, userEmail);
             runOnUiThread(() -> adapter.setPlantList(plants));
         });
     }
@@ -284,53 +330,104 @@ public class PlantsInRoomActivity extends AppCompatActivity
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle(R.string.confirm_delete_plant_title)
                 .setMessage(R.string.confirm_delete_plant_message)
-                .setPositiveButton(R.string.action_delete, (d, w) -> {
-                    com.example.plantcare.util.BgExecutor.io(() -> {
-                        FirebaseSyncManager fsm = FirebaseSyncManager.get();
-                        try {
-                            AppDatabase db = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase();
-                            List<PlantPhoto> photos = db.plantPhotoDao().getPhotosForPlant(plant.id);
-                            if (photos != null) {
-                                for (PlantPhoto p : photos) {
-                                    try { fsm.deletePhotoSmart(p, getApplicationContext()); } catch (Throwable ignore) {}
-                                }
-                            }
-                            db.reminderDao().deleteRemindersForPlantAndUser(plant.id, plant.name, plant.userEmail);
-                            fsm.deletePlant(plant);
-                            db.plantDao().delete(plant);
-                            runOnUiThread(() -> {
-                                Toast.makeText(this, getString(R.string.msg_deleted), Toast.LENGTH_SHORT).show();
-                                refreshList();
-                            });
-                            DataChangeNotifier.notifyChange();
-                        } catch (Throwable t) {
-                            runOnUiThread(() -> Toast.makeText(this, R.string.delete_failed, Toast.LENGTH_SHORT).show());
-                        }
-                    });
-                })
+                .setPositiveButton(R.string.action_delete, (d, w) -> startDeleteWithUndo(plant))
                 .setNegativeButton(R.string.action_cancel, null)
                 .show();
+    }
+
+    /**
+     * Soft-confirm pattern: hide the row immediately so the list feels
+     * responsive, show a Snackbar with UNDO, and only commit the actual
+     * deletion after the Snackbar dismisses without action. Tapping UNDO
+     * restores ONLY this plant — concurrent deletes on other plants
+     * remain pending. DB and Firebase are untouched until the timeout,
+     * so undo is free.
+     */
+    private void startDeleteWithUndo(Plant plant) {
+        final int plantId = plant.id;
+        adapter.hidePlantById(plantId);
+        final boolean[] undone = { false };
+        com.google.android.material.snackbar.Snackbar
+                .make(findViewById(R.id.recyclerViewPlants),
+                        getString(R.string.msg_deleted),
+                        com.google.android.material.snackbar.Snackbar.LENGTH_LONG)
+                .setAction(R.string.action_undo, v -> {
+                    undone[0] = true;
+                    adapter.restorePendingDelete(plantId);
+                })
+                .addCallback(new com.google.android.material.snackbar.Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(com.google.android.material.snackbar.Snackbar sb, int event) {
+                        if (undone[0]) return;
+                        commitPlantDeletion(plant);
+                    }
+                })
+                .show();
+    }
+
+    private void commitPlantDeletion(Plant plant) {
+        com.example.plantcare.util.BgExecutor.io(() -> {
+            FirebaseSyncManager fsm = FirebaseSyncManager.get();
+            try {
+                List<PlantPhoto> photos = com.example.plantcare.data.repository
+                        .PlantPhotoRepository.getInstance(getApplicationContext())
+                        .getPhotosForPlantBlocking(plant.id);
+                if (photos != null) {
+                    for (PlantPhoto p : photos) {
+                        try { fsm.deletePhotoSmart(p, getApplicationContext()); } catch (Throwable ignore) { /* best-effort */ }
+                    }
+                }
+                com.example.plantcare.data.repository.ReminderRepository
+                        .getInstance(getApplicationContext())
+                        .deleteRemindersForPlantAndUserBlocking(plant.id, plant.name, plant.userEmail);
+                fsm.deletePlant(plant);
+                com.example.plantcare.data.repository.PlantRepository
+                        .getInstance(getApplicationContext()).deleteBlocking(plant);
+                runOnUiThread(() -> {
+                    adapter.clearPendingDelete(plant.id);
+                    refreshList();
+                });
+                DataChangeNotifier.notifyChange();
+            } catch (Throwable t) {
+                runOnUiThread(() -> {
+                    // Failure path: surface the row again so the user can retry.
+                    adapter.restorePendingDelete(plant.id);
+                    Toast.makeText(this, R.string.delete_failed, Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
     }
 
     @Override
     public void onRequestMovePlantToRoom(Plant plant) {
         com.example.plantcare.util.BgExecutor.io(() -> {
-            AppDatabase db = DatabaseClient.getInstance(getApplicationContext()).getAppDatabase();
-            List<RoomCategory> rooms = db.roomCategoryDao().getAllRoomsForUser(plant.userEmail);
+            List<RoomCategory> all = com.example.plantcare.data.repository
+                    .RoomCategoryRepository.getInstance(getApplicationContext())
+                    .getAllRoomsForUserBlocking(plant.userEmail);
+            // Filter out the plant's current room — moving in place is just
+            // a no-op, no point showing it.
+            final List<RoomCategory> targets = new java.util.ArrayList<>();
+            if (all != null) {
+                for (RoomCategory r : all) if (r.id != plant.roomId) targets.add(r);
+            }
             runOnUiThread(() -> {
-                if (rooms == null || rooms.isEmpty()) {
+                if (targets.isEmpty()) {
                     Toast.makeText(this, R.string.no_rooms_available, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String[] names = new String[rooms.size()];
-                for (int i = 0; i < rooms.size(); i++) names[i] = rooms.get(i).name;
-                new androidx.appcompat.app.AlertDialog.Builder(this)
-                        .setTitle("In Raum verschieben")
+                String[] names = new String[targets.size()];
+                for (int i = 0; i < targets.size(); i++) names[i] = targets.get(i).name;
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.move_to_room_title)
                         .setItems(names, (d, which) -> {
-                            RoomCategory target = rooms.get(which);
+                            RoomCategory target = targets.get(which);
                             com.example.plantcare.util.BgExecutor.io(() -> {
                                 plant.roomId = target.id;
-                                DatabaseClient.getInstance(getApplicationContext()).getAppDatabase().plantDao().update(plant);
+                                com.example.plantcare.data.repository.PlantRepository
+                                        .getInstance(getApplicationContext()).updateBlocking(plant);
+                                try {
+                                    FirebaseSyncManager.get().syncPlant(plant);
+                                } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
                                 runOnUiThread(() -> {
                                     Toast.makeText(this, getString(R.string.msg_moved), Toast.LENGTH_SHORT).show();
                                     refreshList();
@@ -338,7 +435,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
                                 DataChangeNotifier.notifyChange();
                             });
                         })
-                        .setNegativeButton("Abbrechen", null)
+                        .setNegativeButton(R.string.action_cancel, null)
                         .show();
             });
         });

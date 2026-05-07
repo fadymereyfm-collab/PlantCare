@@ -19,12 +19,24 @@ import com.example.plantcare.weekbar.PlantImageLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.PlantViewHolder> implements Filterable {
 
     private final List<Plant> originalList = new ArrayList<>();
     private final List<Plant> filteredList = new ArrayList<>();
+    /**
+     * IDs the host activity has soft-deleted via the Snackbar-undo flow but
+     * not yet committed. They're hidden from filteredList AND skipped when
+     * setPlantList is called with fresh DB rows that still contain them
+     * (DB delete hasn't fired yet). This avoids the flicker where a plant
+     * the user thinks is gone briefly reappears, and ensures multi-delete
+     * undo only restores the still-pending IDs.
+     */
+    private final Set<Integer> pendingDeleteIds = new HashSet<>();
     private final Context context;
     private final OnPlantClickListener listener;
     private final boolean isUserList;
@@ -50,11 +62,51 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.PlantViewHol
 
     public void setPlantList(List<Plant> list) {
         originalList.clear();
-        originalList.addAll(list);
-        filteredList.clear();
-        filteredList.addAll(list);
-        sortFilteredList();
+        if (list != null) originalList.addAll(list);
+        rebuildFilteredFromOriginal();
         notifyDataSetChanged();
+    }
+
+    /**
+     * Optimistic-delete helper: mark the plant as pending-delete and drop it
+     * from the visible list. Concurrent setPlantList calls (e.g. from
+     * DataChangeNotifier broadcasts firing during the Snackbar timeout)
+     * also skip this id so the row doesn't reappear before the DB delete
+     * commits.
+     */
+    public void hidePlantById(int plantId) {
+        pendingDeleteIds.add(plantId);
+        for (int i = filteredList.size() - 1; i >= 0; i--) {
+            if (filteredList.get(i).id == plantId) {
+                filteredList.remove(i);
+                notifyItemRemoved(i);
+                return;
+            }
+        }
+    }
+
+    /**
+     * Restore a single plant from pending-delete (UNDO tap). Other plants
+     * still pending stay hidden — important for the case where the user
+     * deletes A, then B, then taps UNDO on B's snackbar: only B comes back.
+     */
+    public void restorePendingDelete(int plantId) {
+        if (!pendingDeleteIds.remove(plantId)) return;
+        rebuildFilteredFromOriginal();
+        notifyDataSetChanged();
+    }
+
+    /** Forget about a delete that has now been committed to the DB. */
+    public void clearPendingDelete(int plantId) {
+        pendingDeleteIds.remove(plantId);
+    }
+
+    private void rebuildFilteredFromOriginal() {
+        filteredList.clear();
+        for (Plant p : originalList) {
+            if (!pendingDeleteIds.contains(p.id)) filteredList.add(p);
+        }
+        sortFilteredList();
     }
 
     @NonNull
@@ -92,26 +144,30 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.PlantViewHol
             PlantImageLoader.loadInto(context, holder.image, (long) plant.id, displayName, userEmail);
         }
 
-        // المفضلة (النجمة)
+        // Favourites: works for both catalog (Pin to top of "Alle Pflanzen")
+        // and user plants (pin within their room). Previously the star was
+        // hidden for user plants, so the `isFavorite` flag was effectively
+        // dead for the most-used view.
         if (holder.star != null) {
-            if (!plant.isUserPlant) {
-                holder.star.setVisibility(View.VISIBLE);
-                holder.star.setImageResource(
-                        plant.isFavorite ? R.drawable.ic_star_filled : R.drawable.ic_star_outline
-                );
-                holder.star.setOnClickListener(v -> {
-                    plant.isFavorite = !plant.isFavorite;
-                    AppDatabase db = DatabaseClient.getInstance(context).getAppDatabase();
-                    com.example.plantcare.util.BgExecutor.io(() -> {
-                        db.plantDao().update(plant);
-                        DataChangeNotifier.notifyChange();
-                    });
-                    sortFilteredList();
-                    notifyDataSetChanged();
+            holder.star.setVisibility(View.VISIBLE);
+            holder.star.setImageResource(
+                    plant.isFavorite ? R.drawable.ic_star_filled : R.drawable.ic_star_outline
+            );
+            holder.star.setOnClickListener(v -> {
+                plant.isFavorite = !plant.isFavorite;
+                com.example.plantcare.util.BgExecutor.io(() -> {
+                    com.example.plantcare.data.repository.PlantRepository
+                            .getInstance(context).updateBlocking(plant);
+                    if (plant.isUserPlant) {
+                        try {
+                            FirebaseSyncManager.get().syncPlant(plant);
+                        } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
+                    }
+                    DataChangeNotifier.notifyChange();
                 });
-            } else {
-                holder.star.setVisibility(View.GONE);
-            }
+                sortFilteredList();
+                notifyDataSetChanged();
+            });
         }
 
         // الملاحظة الشخصية
@@ -179,7 +235,12 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.PlantViewHol
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 filteredList.clear();
-                filteredList.addAll((List<Plant>) results.values);
+                List<Plant> matched = (List<Plant>) results.values;
+                if (matched != null) {
+                    for (Plant p : matched) {
+                        if (!pendingDeleteIds.contains(p.id)) filteredList.add(p);
+                    }
+                }
                 sortFilteredList();
                 notifyDataSetChanged();
             }

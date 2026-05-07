@@ -41,50 +41,86 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/welcome"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/playfair_display"/>
+                    android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+                    android:textSize="22sp" />
 
                 <ImageButton
                     android:id="@+id/buttonClose"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/pc_onSurfaceSecondary"
+                    android:padding="10dp"
                     android:contentDescription="@string/close"/>
             </LinearLayout>
 
             <!-- زر Google -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGoogle"
-                style="@style/Button.Secondary"
+                style="@style/PlantCare.Button.Outlined"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Mit Google anmelden"
-                android:textAllCaps="false"
+                android:text="@string/auth_button_google_login"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Phase 6.1: Apple Sign-In -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnApple"
+                style="@style/PlantCare.Button.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/auth_apple_button"
                 android:layout_marginBottom="12dp" />
 
             <!-- زر البريد -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEmail"
-                style="@style/Button.Secondary"
+                style="@style/PlantCare.Button.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Mit E‑Mail fortfahren"
-                android:textAllCaps="false"
+                android:text="@string/auth_button_email_continue"
                 android:layout_marginBottom="8dp" />
+
+            <!-- Phase 6.2: Magic Link -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMagicLink"
+                style="@style/PlantCare.Button.Text"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/auth_magic_link_label"
+                android:layout_marginBottom="4dp" />
 
             <!-- رابط: لدي حساب -->
             <TextView
                 android:id="@+id/textHaveAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Schon ein Konto? Hier anmelden"
-                android:textColor="@color/text_secondary"
+                android:text="@string/auth_link_have_account"
+                android:textColor="@color/pc_primary"
                 android:textStyle="bold"
-                android:layout_marginTop="6dp"
+                android:textSize="14sp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="4dp"/>
+
+            <!-- Phase 1.1: progress while Google round-trip -->
+            <ProgressBar
+                android:id="@+id/authStartProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:visibility="gone" />
+
+            <!-- Phase 1.2: inline error replaces Toast -->
+            <TextView
+                android:id="@+id/authStartError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/pc_error"
+                android:textSize="13sp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </com.google.android.material.card.MaterialCardView>

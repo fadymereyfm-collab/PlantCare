@@ -32,7 +32,7 @@
                 android:id="@+id/selectionOverlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#80000000"
+                android:background="@color/pc_scrim_50"
                 android:visibility="gone" />
 
             <!-- Checkmark icon -->
@@ -41,8 +41,8 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
-                android:src="@android:drawable/ic_menu_view"
-                android:tint="@color/pc_onPrimary"
+                android:src="@drawable/ic_check"
+                app:tint="@color/pc_onPrimary"
                 android:visibility="gone"
                 android:contentDescription="@string/cd_selected" />
         </FrameLayout>

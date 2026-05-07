@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="6dp"
+    android:layout_marginHorizontal="8dp"
+    android:elevation="2dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:id="@+id/layoutReminderRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <View
+            android:id="@+id/sideStripe"
+            android:layout_width="6dp"
+            android:layout_height="56dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/pc_success"
+            android:visibility="visible"/>
+
+        <!-- اجعل الصورة مرئية افتراضياً -->
+        <ImageView
+            android:id="@+id/plantImageView"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="12dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/plant_image"
+            android:background="@drawable/circle_bg"
+            android:clipToOutline="true"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/textReminderPlantName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.PlantCare.Subtitle"
+                android:textSize="16sp"
+                tools:text="Pflanze" />
+
+            <TextView
+                android:id="@+id/textReminderType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+                android:layout_marginTop="2dp"
+                android:visibility="visible"
+                tools:text="Automatisch" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

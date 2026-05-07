@@ -165,10 +165,36 @@ class BillingManager(private val context: Context) : PurchasesUpdatedListener {
     }
 
     private fun acknowledgePurchase(purchase: Purchase) {
+        acknowledgePurchaseWithRetry(purchase, attempt = 0)
+    }
+
+    /**
+     * B3: Google Play auto-refunds any non-acknowledged purchase after
+     * 3 days. Pre-fix the manager swallowed the result and relied on
+     * the next `connect()` to discover the missed acknowledgement —
+     * but `connect()` only ever runs at app start, so a user who
+     * purchased Pro and then closed the app immediately was on a
+     * clock with no retry until next launch. Now we retry up to
+     * 3 times with exponential backoff right inside the same
+     * coroutine/process, then fall back to the connect-time refresh
+     * for the cold-start case.
+     */
+    @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
+    private fun acknowledgePurchaseWithRetry(purchase: Purchase, attempt: Int) {
         val params = AcknowledgePurchaseParams.newBuilder()
             .setPurchaseToken(purchase.purchaseToken)
             .build()
-        billingClient.acknowledgePurchase(params) { _ -> /* ignore result — retry on next connect */ }
+        billingClient.acknowledgePurchase(params) { result ->
+            if (result.responseCode == BillingClient.BillingResponseCode.OK) return@acknowledgePurchase
+            if (attempt >= 2) return@acknowledgePurchase  // 3 attempts total — connect()-time refresh handles the rest
+            // Backoff: 1s, 4s. Use the application-scoped IO dispatcher;
+            // the BillingManager itself is a singleton so a leaked
+            // coroutine here doesn't outlive the process.
+            GlobalScope.launch(Dispatchers.IO) {
+                kotlinx.coroutines.delay(if (attempt == 0) 1_000L else 4_000L)
+                acknowledgePurchaseWithRetry(purchase, attempt + 1)
+            }
+        }
     }
 
     private fun refreshPurchases() {
@@ -190,6 +216,19 @@ class BillingManager(private val context: Context) : PurchasesUpdatedListener {
     private fun grantOrRevokePro(isPro: Boolean) {
         ProStatusManager.setPro(context, isPro)
         _isPro.value = isPro
+    }
+
+    /**
+     * ZZ1: Re-read the cached Pro flag from ProStatusManager and push
+     * it into the StateFlow. Used by the cloud-restore path in
+     * MainActivity, which writes prefs directly via
+     * `ProStatusManager.restoreFromCloud` to avoid a Firestore loop —
+     * but that bypass also means subscribers of `isPro` never see the
+     * updated value, so the AdManager observer keeps showing the
+     * banner even after a Pro account is restored from cloud.
+     */
+    fun refreshFromLocal() {
+        _isPro.value = ProStatusManager.isPro(context)
     }
 
     /** Java-friendly fire-and-forget wrappers (called from App.java / Activity onResume). */

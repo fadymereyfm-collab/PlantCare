@@ -73,6 +73,40 @@ public class FirebaseSyncManager {
         return db.collection("users").document(uid).collection("photos");
     }
 
+    /** Shortcut: users/{uid}/rooms */
+    private CollectionReference roomsRef(String uid) {
+        return db.collection("users").document(uid).collection("rooms");
+    }
+
+    /** Shortcut: users/{uid}/memos */
+    private CollectionReference memosRef(String uid) {
+        return db.collection("users").document(uid).collection("memos");
+    }
+
+    /** Shortcut: users/{uid}/vacation (single fixed doc id "current"). */
+    private com.google.firebase.firestore.DocumentReference vacationDocRef(String uid) {
+        return db.collection("users").document(uid)
+                .collection("vacation").document("current");
+    }
+
+    /** Shortcut: users/{uid}/gamification/streak (single fixed doc). */
+    private com.google.firebase.firestore.DocumentReference streakDocRef(String uid) {
+        return db.collection("users").document(uid)
+                .collection("gamification").document("streak");
+    }
+
+    /** Shortcut: users/{uid}/gamification/challenges (single fixed doc). */
+    private com.google.firebase.firestore.DocumentReference challengesDocRef(String uid) {
+        return db.collection("users").document(uid)
+                .collection("gamification").document("challenges");
+    }
+
+    /** Shortcut: users/{uid}/billing/proStatus (single fixed doc). */
+    private com.google.firebase.firestore.DocumentReference proStatusDocRef(String uid) {
+        return db.collection("users").document(uid)
+                .collection("billing").document("proStatus");
+    }
+
     /* ── data classes ────────────────────────────────────────── */
 
     private static class PendingUpload {
@@ -127,6 +161,13 @@ public class FirebaseSyncManager {
 
         deleteRemindersForPlantByUid(uid, plant.id);
         deletePhotosForPlantByUid(uid, plant.id);
+        // F10.3 cascade: Room's FK CASCADE drops local memos, but Firestore
+        // has no FK awareness — without an explicit delete the user's
+        // memos for this plant become orphans the journal can never
+        // surface again (the parent plant id no longer exists, so a
+        // future restore would re-insert them only to fail FK on the
+        // local DB). Mirror the reminders/photos pattern.
+        deleteMemosForPlantByUid(uid, plant.id);
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -171,6 +212,325 @@ public class FirebaseSyncManager {
                     Log.d(TAG, "Deleted " + qs.size() + " reminders for plant " + plantId);
                 })
                 .addOnFailureListener(e -> Log.e(TAG, "deleteRemindersForPlant failed", e));
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       ROOMS
+
+       Until 2026-05-06 the app shipped with no Firebase representation
+       for rooms — they lived in Room only. That meant the most common
+       sign-in scenario (new device, reinstall) silently dropped the
+       user's custom rooms back to the five hard-coded defaults. The
+       sync surface here is intentionally minimal: id-keyed `set` for
+       upsert, id-keyed `delete` for removal, and a snapshot getter
+       used by the post-sign-in restore.
+    ══════════════════════════════════════════════════════════ */
+
+    public void syncRoom(RoomCategory room) {
+        String uid = getCurrentUid();
+        if (room == null || uid == null) return;
+        roomsRef(uid)
+                .document(String.valueOf(room.id))
+                .set(room)
+                .addOnFailureListener(e -> Log.e(TAG, "Room sync failed", e));
+    }
+
+    public void deleteRoom(int roomId) {
+        String uid = getCurrentUid();
+        if (uid == null || roomId <= 0) return;
+        roomsRef(uid)
+                .document(String.valueOf(roomId))
+                .delete()
+                .addOnFailureListener(e -> Log.e(TAG, "Room delete failed", e));
+    }
+
+    public interface RoomsImportCallback {
+        void onRoomsImported(List<RoomCategory> rooms);
+    }
+
+    /**
+     * Pull every room the user owns from Firestore. Used by MainActivity
+     * after a successful sign-in so a fresh install rebuilds the same
+     * room layout the user had on their other device.
+     */
+    public void importRoomsForCurrentUser(RoomsImportCallback callback) {
+        String uid = getCurrentUid();
+        if (uid == null) {
+            if (callback != null) callback.onRoomsImported(Collections.emptyList());
+            return;
+        }
+        roomsRef(uid).get()
+                .addOnSuccessListener(snap -> {
+                    List<RoomCategory> rooms = new ArrayList<>();
+                    for (DocumentSnapshot doc : snap.getDocuments()) {
+                        RoomCategory r = doc.toObject(RoomCategory.class);
+                        if (r != null && r.name != null && !r.name.isEmpty()) rooms.add(r);
+                    }
+                    if (callback != null) callback.onRoomsImported(rooms);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "importRoomsForCurrentUser failed", e);
+                    if (callback != null) callback.onRoomsImported(Collections.emptyList());
+                });
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       JOURNAL MEMOS
+
+       Free-text plant journal notes the user authors via the journal
+       dialog. Pre-2026-05-06 they lived in Room only — same gap that
+       used to bite the rooms feature: a fresh install or new device
+       silently dropped every memo. Mirrors the rooms sync surface:
+       id-keyed `set` for upsert, id-keyed `delete`, snapshot getter
+       for the post-sign-in restore.
+    ══════════════════════════════════════════════════════════ */
+
+    public void syncJournalMemo(com.example.plantcare.data.journal.JournalMemo memo) {
+        String uid = getCurrentUid();
+        if (memo == null || uid == null || memo.getId() <= 0) return;
+        memosRef(uid)
+                .document(String.valueOf(memo.getId()))
+                .set(memo)
+                .addOnFailureListener(e -> Log.e(TAG, "Memo sync failed", e));
+    }
+
+    public void deleteJournalMemo(int memoId) {
+        String uid = getCurrentUid();
+        if (uid == null || memoId <= 0) return;
+        memosRef(uid)
+                .document(String.valueOf(memoId))
+                .delete()
+                .addOnFailureListener(e -> Log.e(TAG, "Memo delete failed", e));
+    }
+
+    /**
+     * Cascade-delete all memos belonging to a plant. Called from
+     * {@link #deletePlant(Plant)} so plant removal in Firestore mirrors
+     * the local FK CASCADE on `journal_memo.plantId`. Without this,
+     * deleting a plant from one device would leave its memos as
+     * permanent orphans in `users/{uid}/memos` — invisible in the
+     * journal (no parent plant) but still counting against quota.
+     */
+    private void deleteMemosForPlantByUid(String uid, int plantId) {
+        memosRef(uid)
+                .whereEqualTo("plantId", plantId)
+                .get()
+                .addOnSuccessListener(qs -> {
+                    for (DocumentSnapshot doc : qs.getDocuments()) doc.getReference().delete();
+                    Log.d(TAG, "Deleted " + qs.size() + " memos for plant " + plantId);
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "deleteMemosForPlant failed", e));
+    }
+
+    public interface MemosImportCallback {
+        void onMemosImported(List<com.example.plantcare.data.journal.JournalMemo> memos);
+    }
+
+    /**
+     * Pull every memo the user owns from Firestore. Used by MainActivity
+     * after a successful sign-in so a fresh install rebuilds the same
+     * journal notes the user had on their other device.
+     */
+    /* ══════════════════════════════════════════════════════════
+       VACATION (single doc per user)
+
+       Pre-2026-05-06 vacation lived only in SharedPreferences. A user
+       reinstalling mid-vacation, or signing in on a second device,
+       would see their plants screaming at them for water — the device
+       had no idea the user was on holiday. One doc at
+       `users/{uid}/vacation/current` is enough: the user can only
+       have one active vacation at a time.
+    ══════════════════════════════════════════════════════════ */
+
+    public void syncVacation(com.example.plantcare.feature.vacation.VacationDoc doc) {
+        String uid = getCurrentUid();
+        if (uid == null || doc == null) return;
+        vacationDocRef(uid)
+                .set(doc)
+                .addOnFailureListener(e -> Log.e(TAG, "Vacation sync failed", e));
+    }
+
+    public void clearVacationCloud() {
+        String uid = getCurrentUid();
+        if (uid == null) return;
+        vacationDocRef(uid)
+                .delete()
+                .addOnFailureListener(e -> Log.e(TAG, "Vacation clear failed", e));
+    }
+
+    public interface VacationImportCallback {
+        void onVacationImported(com.example.plantcare.feature.vacation.VacationDoc doc);
+    }
+
+    /**
+     * Pull the current vacation doc — null if the user has no active
+     * vacation in cloud. Single-doc fetch, not a collection scan.
+     */
+    public void importVacationForCurrentUser(VacationImportCallback callback) {
+        String uid = getCurrentUid();
+        if (uid == null) {
+            if (callback != null) callback.onVacationImported(null);
+            return;
+        }
+        vacationDocRef(uid).get()
+                .addOnSuccessListener(snap -> {
+                    com.example.plantcare.feature.vacation.VacationDoc d = null;
+                    if (snap != null && snap.exists()) {
+                        d = snap.toObject(com.example.plantcare.feature.vacation.VacationDoc.class);
+                    }
+                    if (callback != null) callback.onVacationImported(d);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "importVacationForCurrentUser failed", e);
+                    if (callback != null) callback.onVacationImported(null);
+                });
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       GAMIFICATION (streak + challenges, two fixed docs per user)
+
+       Pre-this-session both lived only in SharedPreferences. A user
+       reinstalling the app or moving to a new device would lose a
+       100-day streak and every challenge trophy — a gut-punch UX
+       failure that Duolingo, Strava, and Headspace all solve by
+       making gamification state cloud-first. Two docs (not one)
+       because their write rates differ wildly: streak updates once
+       per day, challenges potentially many times. Splitting keeps
+       challenge churn from invalidating streak reads.
+    ══════════════════════════════════════════════════════════ */
+
+    public void syncStreak(com.example.plantcare.feature.streak.StreakDoc doc) {
+        String uid = getCurrentUid();
+        if (uid == null || doc == null) return;
+        streakDocRef(uid)
+                .set(doc)
+                .addOnFailureListener(e -> Log.e(TAG, "Streak sync failed", e));
+    }
+
+    public interface StreakImportCallback {
+        void onStreakImported(com.example.plantcare.feature.streak.StreakDoc doc);
+    }
+
+    public void importStreakForCurrentUser(StreakImportCallback callback) {
+        String uid = getCurrentUid();
+        if (uid == null) {
+            if (callback != null) callback.onStreakImported(null);
+            return;
+        }
+        streakDocRef(uid).get()
+                .addOnSuccessListener(snap -> {
+                    com.example.plantcare.feature.streak.StreakDoc d = null;
+                    if (snap != null && snap.exists()) {
+                        d = snap.toObject(com.example.plantcare.feature.streak.StreakDoc.class);
+                    }
+                    if (callback != null) callback.onStreakImported(d);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "importStreakForCurrentUser failed", e);
+                    if (callback != null) callback.onStreakImported(null);
+                });
+    }
+
+    public void syncChallenges(com.example.plantcare.feature.streak.ChallengesDoc doc) {
+        String uid = getCurrentUid();
+        if (uid == null || doc == null) return;
+        challengesDocRef(uid)
+                .set(doc)
+                .addOnFailureListener(e -> Log.e(TAG, "Challenges sync failed", e));
+    }
+
+    public interface ChallengesImportCallback {
+        void onChallengesImported(com.example.plantcare.feature.streak.ChallengesDoc doc);
+    }
+
+    public void importChallengesForCurrentUser(ChallengesImportCallback callback) {
+        String uid = getCurrentUid();
+        if (uid == null) {
+            if (callback != null) callback.onChallengesImported(null);
+            return;
+        }
+        challengesDocRef(uid).get()
+                .addOnSuccessListener(snap -> {
+                    com.example.plantcare.feature.streak.ChallengesDoc d = null;
+                    if (snap != null && snap.exists()) {
+                        d = snap.toObject(com.example.plantcare.feature.streak.ChallengesDoc.class);
+                    }
+                    if (callback != null) callback.onChallengesImported(d);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "importChallengesForCurrentUser failed", e);
+                    if (callback != null) callback.onChallengesImported(null);
+                });
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       PRO STATUS (single doc per user)
+
+       B7: Google Play Billing keeps the canonical purchase record on
+       its own servers, but our local `pro_status` SharedPreferences
+       is what every isPro() caller actually reads. On a fresh
+       install / new device, isPro() defaults to false until the user
+       remembers to tap "Restore Purchases" — most never do, and
+       review-bomb us as "fraud, paid twice". Mirroring our local
+       belief into Firestore lets a sign-in restore reflect the user's
+       Pro state immediately. The Play Billing reconciliation runs
+       in parallel and overrides if the two ever disagree.
+    ══════════════════════════════════════════════════════════ */
+
+    public void syncProStatus(com.example.plantcare.billing.ProStatusDoc doc) {
+        String uid = getCurrentUid();
+        if (uid == null || doc == null) return;
+        proStatusDocRef(uid)
+                .set(doc)
+                .addOnFailureListener(e -> Log.e(TAG, "Pro status sync failed", e));
+    }
+
+    public interface ProStatusImportCallback {
+        void onProStatusImported(com.example.plantcare.billing.ProStatusDoc doc);
+    }
+
+    public void importProStatusForCurrentUser(ProStatusImportCallback callback) {
+        String uid = getCurrentUid();
+        if (uid == null) {
+            if (callback != null) callback.onProStatusImported(null);
+            return;
+        }
+        proStatusDocRef(uid).get()
+                .addOnSuccessListener(snap -> {
+                    com.example.plantcare.billing.ProStatusDoc d = null;
+                    if (snap != null && snap.exists()) {
+                        d = snap.toObject(com.example.plantcare.billing.ProStatusDoc.class);
+                    }
+                    if (callback != null) callback.onProStatusImported(d);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "importProStatusForCurrentUser failed", e);
+                    if (callback != null) callback.onProStatusImported(null);
+                });
+    }
+
+    public void importMemosForCurrentUser(MemosImportCallback callback) {
+        String uid = getCurrentUid();
+        if (uid == null) {
+            if (callback != null) callback.onMemosImported(Collections.emptyList());
+            return;
+        }
+        memosRef(uid).get()
+                .addOnSuccessListener(snap -> {
+                    List<com.example.plantcare.data.journal.JournalMemo> memos = new ArrayList<>();
+                    for (DocumentSnapshot doc : snap.getDocuments()) {
+                        com.example.plantcare.data.journal.JournalMemo m =
+                                doc.toObject(com.example.plantcare.data.journal.JournalMemo.class);
+                        if (m != null && m.getText() != null && !m.getText().isEmpty()) {
+                            memos.add(m);
+                        }
+                    }
+                    if (callback != null) callback.onMemosImported(memos);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "importMemosForCurrentUser failed", e);
+                    if (callback != null) callback.onMemosImported(Collections.emptyList());
+                });
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -253,10 +613,16 @@ public class FirebaseSyncManager {
     private void safeLocalUpdatePhoto(Context ctx, PlantPhoto photo) {
         try {
             if (ctx != null) {
-                DatabaseClient.getInstance(ctx).getAppDatabase().plantPhotoDao().update(photo);
+                com.example.plantcare.data.repository.PlantPhotoRepository
+                        .getInstance(ctx).updateBlocking(photo);
             }
         } catch (Throwable t) {
-            Log.w(TAG, "Local DB photo update failed", t);
+            // CS2: route through CrashReporter so Crashlytics surfaces
+            // local-DB write failures during photo upload — same pattern
+            // as N5 (notification SecurityException). Log.w alone gave
+            // us zero visibility into how many users were silently losing
+            // photo metadata after a successful Storage upload.
+            CrashReporter.INSTANCE.log(t);
         }
     }
 
@@ -315,7 +681,8 @@ public class FirebaseSyncManager {
     private void safeLocalDeletePhoto(Context ctx, PlantPhoto photo) {
         try {
             if (ctx != null) {
-                DatabaseClient.getInstance(ctx).getAppDatabase().plantPhotoDao().delete(photo);
+                com.example.plantcare.data.repository.PlantPhotoRepository
+                        .getInstance(ctx).deleteBlocking(photo);
             }
         } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
         if (photo.imagePath != null
@@ -438,7 +805,10 @@ public class FirebaseSyncManager {
             String afterO = downloadUrl.substring(idx + 3);
             int q = afterO.indexOf('?');
             if (q >= 0) afterO = afterO.substring(0, q);
-            String decoded    = URLDecoder.decode(afterO, StandardCharsets.UTF_8);
+            // 2026-05-05: URLDecoder.decode(String, Charset) is API 33+. Use the
+            // (String, String) overload which has been around since API 1 to keep
+            // minSdk 24 compatibility.
+            String decoded    = URLDecoder.decode(afterO, "UTF-8");
             int    lastSlash  = decoded.lastIndexOf('/');
             if (lastSlash < 0) return null;
             String filename   = decoded.substring(lastSlash + 1);

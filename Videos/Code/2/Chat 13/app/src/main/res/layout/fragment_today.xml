@@ -1,0 +1,114 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pc_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/pc_background">
+
+        <!-- Urlaubsbanner: nur sichtbar, wenn Urlaub aktiv. -->
+        <TextView
+            android:id="@+id/vacationBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:visibility="gone"
+            android:background="@color/pc_secondaryContainer"
+            android:textColor="@color/pc_onSurface"
+            android:padding="12dp"
+            android:layout_margin="16dp"
+            android:textSize="14sp" />
+
+        <!-- Streak + Challenges Kopfzeile (Feature 4) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/streakCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="14dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/streak_bar_title"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:textColor="@color/pc_onSurface" />
+
+                <TextView
+                    android:id="@+id/streakDaysText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/streak_zero"
+                    android:textSize="15sp"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/streakBestText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="2dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/pc_outline"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/challenge_header"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_primary" />
+
+                <LinearLayout
+                    android:id="@+id/challengesContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="6dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewToday"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:clipToPadding="false"
+            android:background="@color/pc_background"/>
+
+        <TextView
+            android:id="@+id/textEmptyToday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/today_empty_state"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
+            android:textColor="@color/pc_onSurfaceSecondary"
+            android:padding="32dp"
+            android:layout_marginTop="30dp"/>
+    </LinearLayout>
+</FrameLayout>

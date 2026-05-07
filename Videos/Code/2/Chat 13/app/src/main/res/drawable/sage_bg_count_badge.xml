@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sage Garden — plant-count pill badge.
+     Uses M3 secondaryContainer for slightly stronger contrast than the
+     previous surfaceVariant (P3 fix from 2026-05-02 audit). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/pc_secondaryContainer" />
+    <corners android:radius="999dp" />
+</shape>

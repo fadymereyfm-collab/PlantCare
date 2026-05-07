@@ -12,6 +12,10 @@ import com.example.plantcare.data.Converters;
 import com.example.plantcare.data.db.DatabaseMigrations;
 import com.example.plantcare.data.disease.DiseaseDiagnosis;
 import com.example.plantcare.data.disease.DiseaseDiagnosisDao;
+import com.example.plantcare.data.disease.DiseaseReferenceImage;
+import com.example.plantcare.data.disease.DiseaseReferenceImageDao;
+import com.example.plantcare.data.journal.JournalMemo;
+import com.example.plantcare.data.journal.JournalMemoDao;
 import com.example.plantcare.data.plantnet.CachedIdentification;
 import com.example.plantcare.data.plantnet.IdentificationCacheDao;
 
@@ -31,9 +35,11 @@ import com.example.plantcare.data.plantnet.IdentificationCacheDao;
                 RoomCategory.class,
                 User.class,
                 DiseaseDiagnosis.class,
-                CachedIdentification.class
+                CachedIdentification.class,
+                DiseaseReferenceImage.class,
+                JournalMemo.class
         },
-        version = 10,
+        version = 14,
         exportSchema = true
 )
 @TypeConverters({Converters.class})
@@ -48,6 +54,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract DiseaseDiagnosisDao diseaseDiagnosisDao();
     public abstract IdentificationCacheDao identificationCacheDao();
+    public abstract DiseaseReferenceImageDao diseaseReferenceImageDao();
+    public abstract JournalMemoDao journalMemoDao();
 
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {

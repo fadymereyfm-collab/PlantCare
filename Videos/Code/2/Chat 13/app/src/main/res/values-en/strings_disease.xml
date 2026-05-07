@@ -10,7 +10,7 @@
     <string name="disease_no_results">No matching disease detected. Please use a clearer leaf photo.</string>
     <string name="disease_error">Error: %1$s</string>
     <string name="disease_healthy_label">%1$s — Healthy</string>
-    <string name="disease_confidence_percent">%1$.1f %%</string>
+    <string name="disease_confidence_percent">%1$.0f %%</string>
     <string name="disease_no_advice">No specific advice available.</string>
     <string name="disease_saved">Diagnosis saved</string>
 
@@ -20,6 +20,24 @@
     <string name="disease_history_delete_message">This entry will be removed permanently.</string>
 
     <string name="disease_button_tooltip">Detect disease</string>
+    <string name="disease_check_this_plant">🩺 Disease check</string>
+    <string name="disease_history_open">📋 Diagnosis history</string>
+    <string name="disease_save_to_history">Save to history</string>
+    <string name="disease_retry">Try again</string>
+    <string name="disease_camera_permission_settings">Enable permission in Settings</string>
+    <string name="disease_history_detail_title">Diagnosis detail</string>
+    <string name="disease_history_detail_advice_label">Advice</string>
+    <string name="disease_history_detail_plant_label">Plant</string>
+    <string name="disease_history_detail_no_plant">— general, not linked to a plant —</string>
+    <string name="disease_history_detail_share">Share</string>
+    <string name="disease_share_subject">PlantCare diagnosis</string>
+    <string name="disease_share_body">%1$s\nConfidence: %2$.0f %%\n\n%3$s</string>
+
+    <!-- Calendar quick-action chooser after photo capture -->
+    <string name="calendar_photo_action_title">Photo captured</string>
+    <string name="calendar_photo_action_message">What do you want to do with this photo?</string>
+    <string name="calendar_photo_action_archive">📷 Archive</string>
+    <string name="calendar_photo_action_diagnose">🩺 Disease check</string>
     <string name="disease_feature_unavailable">This feature is not available in this version.</string>
 
     <string name="disease_pick_plant_title">Which plant does this diagnosis belong to?</string>
@@ -27,4 +45,58 @@
     <string name="disease_pick_plant_none">No plant — save as general</string>
     <string name="disease_pick_plant_empty">No plants in your collection yet. The diagnosis will be saved as general.</string>
     <string name="disease_pick_plant_cancel">Cancel</string>
+
+    <!-- GDPR consent on first diagnosis use -->
+    <string name="disease_consent_title">Enable disease diagnosis?</string>
+    <string name="disease_consent_message">To diagnose, the photo you take will be sent to the Google Gemini AI service for processing. No personal data or location is included. Processing is performed under Art. 6(1)(b) GDPR (contract performance).\n\nAfter the diagnosis, reference images are loaded from Wikipedia/Wikimedia Commons, iNaturalist and PlantVillage for visual comparison. These services may log your IP address — your own photo is NOT sent to them.\n\nPrivacy policy: https://fadymereyfm-collab.github.io/plantcare-privacy/</string>
+    <string name="disease_consent_accept">Accept and continue</string>
+    <string name="disease_consent_decline">Cancel</string>
+    <string name="disease_consent_declined_toast">Diagnosis cancelled — no data was sent.</string>
+
+    <!-- AI didn't detect a plant in the photo -->
+    <string name="disease_no_plant_detected">No plant detected in the photo. Please take a clear picture of a leaf or plant.</string>
+
+    <!-- Pre-dialog: general diagnosis or specific plant -->
+    <string name="disease_chooser_title">Disease check</string>
+    <string name="disease_chooser_message">Do you want to run a general disease check, or examine a specific plant from your collection?</string>
+    <string name="disease_chooser_general">General diagnosis</string>
+    <string name="disease_chooser_specific">Check one of my plants</string>
+    <string name="disease_chooser_no_plants">You have no plants in your collection yet. Add a plant first to check it specifically.</string>
+    <string name="disease_chooser_pick_plant_title">Which plant should be checked?</string>
+
+    <!-- After successful diagnosis: optionally copy photo + advice into the plant archive -->
+    <string name="disease_archive_prompt_title">Save photo to plant archive?</string>
+    <string name="disease_archive_prompt_message">Add this photo and the note \"%1$s\" to the photo archive of %2$s?</string>
+    <string name="disease_archive_prompt_yes">Yes, save</string>
+    <string name="disease_archive_prompt_no">No, thanks</string>
+    <string name="disease_archive_prompt_plant_fallback">the plant</string>
+    <string name="disease_archive_saved">Photo saved to archive</string>
+    <string name="disease_archive_save_failed">Could not save photo to archive</string>
+    <string name="disease_archive_inspection_label">🩺 %1$s</string>
+
+    <!-- Differential-diagnosis UI: comparison images + candidate selection -->
+    <string name="disease_results_subtitle">Tap "Matches my photo" on the diagnosis whose reference images look closest to yours.</string>
+    <string name="disease_reference_section_label">Reference images</string>
+    <string name="disease_reference_none">No reference images available.</string>
+    <string name="disease_reference_attribution">Source: %1$s</string>
+    <string name="disease_reference_image_cd">Reference photo of a diseased leaf</string>
+    <string name="disease_candidate_match">Matches my photo</string>
+    <string name="disease_candidate_selected">Selected ✓</string>
+    <string name="disease_none_match">None match — suggest alternatives</string>
+    <string name="disease_selected_candidate_label">Selected: %1$s</string>
+    <string name="disease_plant_species_label">🌿 Detected plant: %1$s</string>
+
+    <!-- Species-conflict warning before save -->
+    <string name="disease_species_mismatch_title">Plant doesn\'t match AI detection</string>
+    <string name="disease_species_mismatch_message">The AI detected \"%1$s\" in the photo, but you\'re saving the diagnosis under your plant \"%2$s\".\n\nSave anyway? If you uploaded the wrong photo, cancel and pick a new one.</string>
+    <string name="disease_species_mismatch_proceed">Save anyway</string>
+    <string name="disease_species_mismatch_cancel">Cancel</string>
+
+    <!-- Classified AI backend error messages -->
+    <string name="disease_error_no_internet">No internet connection. Please check Wi-Fi or mobile data.</string>
+    <string name="disease_error_quota_exceeded">Daily quota reached. Please try again tomorrow.</string>
+    <string name="disease_error_invalid_key">API key invalid. Please install the latest app update.</string>
+    <string name="disease_error_timeout">Server is not responding. Please try again later.</string>
+    <string name="disease_error_server">AI model is currently overloaded. Please try again in 1–2 minutes.</string>
+    <string name="disease_error_unknown">Unknown error. Please try again.</string>
 </resources>

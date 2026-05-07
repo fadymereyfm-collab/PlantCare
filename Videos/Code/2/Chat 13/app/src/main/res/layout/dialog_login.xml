@@ -36,17 +36,17 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/sign_in"
-                    android:textStyle="bold"
-                    android:textColor="@color/pc_onSurface"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/playfair_display" />
+                    android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+                    android:textSize="22sp" />
 
                 <ImageButton
                     android:id="@+id/buttonClose"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/pc_onSurfaceSecondary"
+                    android:padding="10dp"
                     android:contentDescription="@string/close" />
             </LinearLayout>
 
@@ -54,9 +54,10 @@
                 android:id="@+id/textModeToggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Neu hier? Jetzt registrieren"
-                android:textColor="@color/pc_onSurfaceSecondary"
+                android:text="@string/login_link_register_new"
+                android:textColor="@color/pc_primary"
                 android:textStyle="bold"
+                android:textSize="14sp"
                 android:layout_marginBottom="14dp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -113,6 +114,47 @@
                     android:background="@android:color/transparent" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Phase 1.3: password strength meter (3 levels) -->
+            <LinearLayout
+                android:id="@+id/strengthRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp"
+                android:visibility="gone">
+
+                <View
+                    android:id="@+id/strengthBar1"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@color/pc_outline" />
+                <View
+                    android:id="@+id/strengthBar2"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:background="@color/pc_outline" />
+                <View
+                    android:id="@+id/strengthBar3"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@color/pc_outline" />
+
+                <TextView
+                    android:id="@+id/strengthLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="11sp"
+                    android:minWidth="60dp"
+                    android:textColor="@color/pc_onSurfaceSecondary" />
+            </LinearLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutConfirm"
                 android:layout_width="match_parent"
@@ -153,11 +195,22 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonPrimary"
-                style="@style/Button.Secondary"
+                style="@style/PlantCare.Button.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:text="@string/sign_in"
-                android:textAllCaps="false"
+                android:layout_marginTop="6dp" />
+
+            <!-- Phase 2.2: forgot password link -->
+            <TextView
+                android:id="@+id/textForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/auth_forgot_password_link"
+                android:textColor="@color/pc_primary"
+                android:textSize="13sp"
+                android:padding="8dp"
                 android:layout_marginTop="6dp" />
 
             <ProgressBar

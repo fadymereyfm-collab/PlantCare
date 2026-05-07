@@ -1,0 +1,50 @@
+rules_version = '2';
+
+// Firebase Cloud Storage rules. Lives next to firestore.rules and
+// is published via the same `firebase deploy` command (the
+// `storage` block in firebase.json wires it).
+//
+// Path layout (mirrors what FirebaseSyncManager.uploadPlantPhotoWithPending
+// and CoverCloudSync write):
+//   users/{uid}/plant_photos/{filename}.jpg     — archive photos
+//   users/{uid}/plants/{plantId}/cover.jpg      — cover image per plant
+//
+// Pre-this-rules-file there was no storage.rules in version control.
+// Whatever was set in Firebase Console was the only line of defence;
+// if it had ever drifted to the post-Sept-2025 default of "deny all
+// while authenticated" the photo upload path would have started
+// failing silently in production with no rollback story. With
+// rules in version control we can audit and `firebase deploy`
+// the same way the Firestore rules are managed.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Per-user data. Only the signed-in user with the matching UID
+    // may read or write anything under their own subtree.
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == userId
+                         // Cap at 8 MB per object — even a 4032×3024
+                         // JPEG at quality 90 lands well below this.
+                         // Without this cap a malicious client could
+                         // upload arbitrarily large blobs into the
+                         // user's own subtree and burn through their
+                         // own free-tier quota (and ours) without any
+                         // app-level sanity check.
+                         && request.resource.size < 8 * 1024 * 1024
+                         // Image-only on writes. The app never stores
+                         // anything else; rejecting non-image content
+                         // types blocks accidental or malicious
+                         // arbitrary-file uploads.
+                         && (request.resource == null
+                             || request.resource.contentType.matches('image/.*'));
+    }
+
+    // Catch-all: deny reads and writes anywhere outside per-user
+    // subtrees. Mirrors the firestore.rules catch-all.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

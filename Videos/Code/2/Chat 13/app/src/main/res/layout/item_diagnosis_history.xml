@@ -64,9 +64,9 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_close"
-            android:tint="@color/pc_onSurfaceSecondary"
+            app:tint="@color/pc_onSurfaceSecondary"
             android:contentDescription="@string/delete"
-            android:padding="8dp"
+            android:padding="12dp"
             android:layout_gravity="center_vertical" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

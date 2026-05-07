@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ============================================================
+         Legacy aliases — kept so existing layouts compile unchanged.
+         New layouts should use PlantCare.Button.* directly.
+         Button.Primary  ⇒ PlantCare.Button.Filled
+         Button.Secondary ⇒ PlantCare.Button.Outlined
+         ============================================================ -->
+    <style name="Button.Primary" parent="PlantCare.Button.Filled" />
+
+    <style name="Button.Secondary" parent="PlantCare.Button.Outlined" />
+
+    <!-- حوارات / بطاقات -->
+    <style name="Card.Rounded" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="android:background">@color/card_bg</item>
+    </style>
+
+    <!-- DayNight (was Light) — dialog inherits dark/light from system theme. -->
+    <style name="Dialog.Modern" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:background">@color/card_bg</item>
+        <item name="android:windowBackground">@color/card_bg</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+        <item name="shapeAppearanceOverlay">@style/DialogShapeAppearance</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:padding">28dp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">@font/nunito</item>
+        <item name="materialButtonStyle">@style/PlantCare.Button.Outlined</item>
+    </style>
+
+    <style name="DialogShapeAppearance">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">28dp</item>
+    </style>
+
+    <!-- Rounded square for the suggestion thumbnail in the plant-identify list -->
+    <style name="ShapeAppearance.PlantCare.IdentifyThumb" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <!-- تقويم -->
+    <style name="ThemeOverlay.PlantCare.MaterialCalendar" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
+        <item name="materialCalendarStyle">@style/PlantCareMaterialCalendar</item>
+        <item name="materialCalendarTheme">@style/PlantCareMaterialCalendar</item>
+        <item name="materialButtonStyle">@style/PlantCare.Button.Outlined</item>
+    </style>
+
+    <style name="PlantCareMaterialCalendar" parent="Widget.MaterialComponents.MaterialCalendar">
+        <item name="android:background">@color/card_bg</item>
+        <item name="shapeAppearanceOverlay">@style/DialogShapeAppearance</item>
+        <item name="daySelectedStyle">@style/DaySelectedStyle</item>
+    </style>
+
+    <style name="DaySelectedStyle" parent="Widget.MaterialComponents.MaterialCalendar.Day.Selected">
+        <item name="itemShapeAppearanceOverlay">@style/DialogShapeAppearance</item>
+        <item name="android:background">@color/pc_primary</item>
+    </style>
+
+    <!-- تبويبات -->
+    <style name="TabText.Base">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">none</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:background">@drawable/tab_unselected_background</item>
+        <item name="android:textColor">@color/tab_inactive_text</item>
+        <item name="android:fontFamily">@font/nunito</item>
+    </style>
+
+    <style name="TabText.Active" parent="TabText.Base">
+        <item name="android:background">@drawable/tab_selected_background</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/tab_active_text</item>
+    </style>
+
+    <style name="TabText.Inactive" parent="TabText.Base" />
+    <!-- alias — no explicit parent: TabText.Base inherits from TabText implicitly -->
+    <style name="TabText" />
+
+    <!-- تفاصيل النبات -->
+    <style name="PlantDetails.Label">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="PlantDetails.Value">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/pc_onSurface</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:lineSpacingExtra">1dp</item>
+    </style>
+
+    <!-- alias — no explicit parent: PlantDetails.Value inherits from PlantDetails implicitly -->
+    <style name="PlantDetails" />
+
+</resources>

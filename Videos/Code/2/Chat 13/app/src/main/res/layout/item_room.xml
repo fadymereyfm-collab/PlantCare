@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Sage Garden — Meine Pflanzen / room row.
+    Layout: [Icon]   [Room name (Nunito bold)]   [X Pflanzen badge]
+-->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/pc_surface"
+    app:rippleColor="@color/pc_secondary"
+    app:strokeColor="@android:color/transparent"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
+
+        <!-- Room icon — colored circle + white Material symbol baked in. -->
+        <ImageView
+            android:id="@+id/roomIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/sage_ic_room_default"
+            android:layout_marginEnd="14dp"
+            android:contentDescription="@null" />
+
+        <!-- Room name -->
+        <TextView
+            android:id="@+id/textViewRoomName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/pc_onSurface"
+            android:fontFamily="@font/nunito"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <!-- Plant count pill badge -->
+        <TextView
+            android:id="@+id/textViewPlantCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/pc_onSecondaryContainer"
+            android:fontFamily="@font/nunito"
+            android:background="@drawable/sage_bg_count_badge"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:minWidth="64dp"
+            android:gravity="center"
+            tools:text="4 Pflanzen" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

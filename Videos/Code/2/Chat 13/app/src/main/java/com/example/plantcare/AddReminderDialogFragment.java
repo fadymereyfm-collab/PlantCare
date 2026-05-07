@@ -59,8 +59,9 @@ public class AddReminderDialogFragment extends DialogFragment {
 
         FragmentBg.<List<Plant>>runWithResult(this,
                 () -> {
-                    List<Plant> plants = AppDatabase.getInstance(requireContext())
-                            .plantDao().getAllUserPlantsForUser(userEmail);
+                    List<Plant> plants = com.example.plantcare.data.repository.PlantRepository
+                            .getInstance(requireContext())
+                            .getAllUserPlantsForUserBlocking(userEmail);
                     Plant generalPlant = new Plant();
                     generalPlant.setId(0);
                     generalPlant.setName("Allgemein");
@@ -171,11 +172,15 @@ public class AddReminderDialogFragment extends DialogFragment {
             String endDateStr = editEndDate.getText().toString().trim();
             boolean noEndDate = checkNoEndDate.isChecked();
 
+            final boolean[] failed = { false };
+            final boolean[] capHit = { false };
             FragmentBg.runIO(this, () -> {
                 try {
-                    ReminderDao dao = AppDatabase.getInstance(requireContext()).reminderDao();
+                    com.example.plantcare.data.repository.ReminderRepository reminderRepo =
+                            com.example.plantcare.data.repository.ReminderRepository
+                                    .getInstance(requireContext());
                     if (repeatDays <= 0) {
-                        dao.insert(reminder);
+                        reminderRepo.insertBlocking(reminder);
                         FirebaseSyncManager.get().syncReminder(reminder);
                     } else {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -197,8 +202,14 @@ public class AddReminderDialogFragment extends DialogFragment {
                             }
                         }
 
-                        int i = 0;
-                        for (; i < 365*2; i += repeatDays) {
+                        // Hard cap: 365 reminders per series. Without it,
+                        // repeatDays=1 + 2-year window inflates to 730 rows
+                        // and 730 Firestore writes — enough to freeze the
+                        // dialog dismissal and burn through the user's
+                        // notification budget for the year.
+                        final int MAX_REMINDERS = 365;
+                        int created = 0;
+                        for (int i = 0; i < 365 * 2 && created < MAX_REMINDERS; i += repeatDays) {
                             WateringReminder r = new WateringReminder();
                             r.plantId = reminder.plantId;
                             r.plantName = reminder.plantName;
@@ -207,20 +218,48 @@ public class AddReminderDialogFragment extends DialogFragment {
                             r.repeat = reminder.repeat;
                             r.description = reminder.description;
                             r.userEmail = reminder.userEmail;
-                            dao.insert(r);
+                            reminderRepo.insertBlocking(r);
                             FirebaseSyncManager.get().syncReminder(r);
+                            created++;
 
                             cal.add(Calendar.DAY_OF_YEAR, repeatDays);
 
                             if (endCal != null && cal.after(endCal)) break;
                             if (cal.after(maxCal)) break;
                         }
+                        // Cap-triggered detection: we hit MAX_REMINDERS
+                        // AND we still had room left in the natural
+                        // iteration window. That means the user's
+                        // "no end date" expectation was silently truncated.
+                        if (created >= 365 && (endCal == null || cal.before(endCal))
+                                && cal.before(maxCal)) {
+                            capHit[0] = true;
+                        }
                     }
                 } catch (Exception e) {
-                    // swallow rare conflicts
+                    // Was: silent swallow with a "rare conflicts" comment.
+                    // The user got NO feedback when the insert failed (e.g.
+                    // PK collision on a generated id, parse error on the
+                    // start date, schema constraint). Surface it via toast.
+                    failed[0] = true;
+                    com.example.plantcare.CrashReporter.INSTANCE.log(e);
                 }
                 if (getActivity() instanceof MainActivity activity) {
                     activity.runOnUiThread(() -> {
+                        if (failed[0]) {
+                            Toast.makeText(activity, R.string.reminder_save_failed,
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if (capHit[0]) {
+                            // Tell the user their "no end date" series was
+                            // silently truncated at 365. They can re-add to
+                            // continue further, but the message ensures
+                            // they're not surprised by the empty calendar
+                            // next year.
+                            Toast.makeText(activity, R.string.reminder_count_cap_warning,
+                                    Toast.LENGTH_LONG).show();
+                        }
                         Analytics.INSTANCE.logReminderAdded(activity);
                         DataChangeNotifier.notifyChange();
                         activity.refreshFragments();

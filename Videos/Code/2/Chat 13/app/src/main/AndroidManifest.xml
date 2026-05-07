@@ -5,6 +5,10 @@
     <!-- CAMERA permission is optional for TakePicture() when delegating to external camera,
          but keeping it does not hurt. -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 2026-05-05: declare camera as optional so Chromebooks (and any
+         device without a built-in camera) remain eligible to install. -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="false" />
 
     <!-- Required for notifications on Android 13 (API 33) and above -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -83,6 +87,17 @@
             android:name=".ui.disease.DiagnosisHistoryActivity"
             android:exported="false"
             android:label="@string/disease_history_title" />
+
+        <!-- Notification action: "Mark all watered" inline button. exported=false
+             because the action only fires from PendingIntents we create
+             ourselves; nothing outside the app should be able to broadcast it. -->
+        <receiver
+            android:name=".NotificationActionReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.plantcare.action.MARK_ALL_WATERED" />
+            </intent-filter>
+        </receiver>
 
         <!-- Widget Provider -->
         <receiver

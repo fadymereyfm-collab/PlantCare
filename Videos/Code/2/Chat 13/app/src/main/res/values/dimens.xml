@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ارتفاع FAB (56dp) + هامش (20dp) + أمان (28dp) = 104~112dp -->
+    <dimen name="list_fab_inset">112dp</dimen>
+
+    <!-- أحجام تبويبات أعلى الشاشة -->
+    <dimen name="tab_text_size">14sp</dimen>
+    <dimen name="tab_text_size_small">13sp</dimen>
+    <dimen name="tab_h_padding">12dp</dimen>
+    <dimen name="tab_v_padding">6dp</dimen>
+</resources>

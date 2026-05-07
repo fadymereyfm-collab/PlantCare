@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@drawable/widget_item_background"
+    android:padding="8dp"
+    android:layout_margin="4dp">
+
+    <!-- Plant thumbnail -->
+    <ImageView
+        android:id="@+id/widget_item_thumbnail"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_plant_placeholder"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/plant_thumbnail"
+        android:background="@drawable/widget_thumbnail_background" />
+
+    <!-- Plant name -->
+    <TextView
+        android:id="@+id/widget_item_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Plant Name"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginStart="8dp" />
+
+    <!-- Status icon (checkmark or water drop) -->
+    <ImageView
+        android:id="@+id/widget_item_status_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_water_drop"
+        android:scaleType="centerInside"
+        android:contentDescription="@string/task_status"
+        android:layout_marginStart="8dp" />
+
+</LinearLayout>

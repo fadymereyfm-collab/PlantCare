@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class AllPlantsFragment extends Fragment {
 
     private PlantAdapter adapter;
-    private PlantDao dao;
+    private com.example.plantcare.data.repository.PlantRepository plantRepo;
 
     /** Aktiver Kategorie-Filter: null = "Alle", sonst einer aus PlantCategoryUtil.ALL_CATEGORIES. */
     @Nullable
@@ -50,7 +50,8 @@ public class AllPlantsFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewAllPlants);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        dao = DatabaseClient.getInstance(requireContext()).plantDao();
+        plantRepo = com.example.plantcare.data.repository.PlantRepository
+                .getInstance(requireContext());
 
         adapter = new PlantAdapter(requireContext(), plant -> {
             // الضغط على عنصر من الدليل: افتح تفاصيل "نبات كتالوج"
@@ -128,7 +129,7 @@ public class AllPlantsFragment extends Fragment {
                                         }
                                     }
 
-                                    dao.insert(p);
+                                    plantRepo.insertBlocking(p);
                                 } catch (Exception e) {
                                     errorRef.set(e.getMessage());
                                 }
@@ -166,7 +167,7 @@ public class AllPlantsFragment extends Fragment {
     private void loadAllPlants() {
         final String cat = activeCategory;
         FragmentBg.<List<Plant>>runWithResult(this,
-                () -> cat == null ? dao.getAllNonUserPlants() : dao.getCatalogPlantsByCategory(cat),
+                () -> cat == null ? plantRepo.getAllNonUserPlantsBlocking() : plantRepo.getCatalogPlantsByCategoryBlocking(cat),
                 list -> adapter.setPlantList(list));
     }
 

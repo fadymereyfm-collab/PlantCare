@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============================================================ -->
+    <!-- Urlaubsmodus (Feature 2)                                      -->
+    <!-- ============================================================ -->
+    <string name="settings_section_vacation">Urlaubsmodus</string>
+    <string name="vacation_inactive_hint">Kein Urlaub geplant. Erinnerungen laufen normal.</string>
+    <string name="vacation_requires_account">Bitte zuerst anmelden, um den Urlaubsmodus zu nutzen.</string>
+    <string name="vacation_pick_start">Start wählen</string>
+    <string name="vacation_pick_end">Ende wählen</string>
+    <string name="vacation_clear">Urlaub beenden</string>
+    <string name="vacation_status_set">Im Urlaub vom %1$s bis %2$s. Benachrichtigungen pausieren.</string>
+    <string name="vacation_status_start_only">Startdatum gewählt: %1$s. Jetzt noch Rückkehr­datum wählen.</string>
+    <string name="vacation_invalid_range">Rückkehrtag muss nach dem Abreise­tag liegen.</string>
+    <string name="vacation_saved_toast">Urlaubsmodus aktiv.</string>
+    <string name="vacation_cleared_toast">Urlaubsmodus beendet.</string>
+    <string name="vacation_banner_format">Du bist im Urlaub bis %1$s \u2014 Erinnerungen sind pausiert.</string>
+
+    <!-- ============================================================ -->
+    <!-- Streak &amp; Challenges (Feature 4)                           -->
+    <!-- ============================================================ -->
+    <string name="streak_bar_title">Deine Pflanz­streak</string>
+    <string name="streak_days_format">%1$d Tage in Folge \uD83C\uDF3F</string>
+    <string name="streak_zero">Noch keine Streak \u2014 gieße heute, um zu starten!</string>
+    <string name="streak_best_format">Bestzeit: %1$d Tage</string>
+    <string name="challenge_header">Aktuelle Aufgaben</string>
+    <string name="challenge_progress_format">%1$d / %2$d</string>
+    <string name="challenge_water_7_days">7 Tage nacheinander gießen</string>
+    <string name="challenge_add_5_plants">5 Pflanzen hinzufügen</string>
+    <string name="challenge_monthly_photo">Eine Monats­foto pro Pflanze</string>
+    <string name="challenge_complete_toast">Super! Aufgabe abgeschlossen: %1$s</string>
+
+    <!-- ============================================================ -->
+    <!-- Growth Memoir (Feature 1)                                     -->
+    <!-- ============================================================ -->
+    <string name="memoir_button_label">Wachstums­tagebuch</string>
+    <string name="memoir_generating">Collage wird erstellt \u2026</string>
+    <string name="memoir_saved_toast">Collage gespeichert.</string>
+    <string name="memoir_no_photos">Mindestens 2 Fotos für eine Collage nötig.</string>
+    <string name="memoir_share_chooser">Wachstum teilen</string>
+    <string name="memoir_title_format">%1$s \u2014 Wachstum</string>
+    <string name="memoir_build_failed">Collage konnte nicht erstellt werden.</string>
+
+    <!-- ============================================================ -->
+    <!-- Familien-Freigabe (Feature 3)                                 -->
+    <!-- ============================================================ -->
+    <string name="share_button_label">Mit Familie teilen</string>
+    <string name="share_dialog_title">Pflanze freigeben</string>
+    <string name="share_add_email_hint">E-Mail des Familien­mitglieds</string>
+    <string name="share_added_toast">%1$s hat nun Zugriff.</string>
+    <string name="share_removed_toast">%1$s hat keinen Zugriff mehr.</string>
+    <string name="share_invalid_email">Bitte eine gültige E-Mail eingeben.</string>
+    <string name="share_nobody_label">Noch niemand eingeladen.</string>
+    <string name="share_watered_by_format">Zuletzt gegossen von: %1$s</string>
+    <string name="share_remove">Entfernen</string>
+
+    <!-- ============================================================ -->
+    <!-- Behandlungsplan (Feature 5)                                   -->
+    <!-- ============================================================ -->
+    <string name="treatment_plan_button">Behandlungs­plan erstellen</string>
+    <string name="treatment_plan_created_toast">%1$d Behandlungs­schritte geplant.</string>
+    <string name="treatment_plan_requires_plant">Zuerst eine Pflanze auswählen.</string>
+    <string name="treatment_step_fungicide">Fungizid anwenden</string>
+    <string name="treatment_step_isolate">Pflanze isolieren (Ausbreitung stoppen)</string>
+    <string name="treatment_step_prune">Befallene Blätter entfernen</string>
+    <string name="treatment_step_check">Zustand kontrollieren</string>
+    <string name="treatment_step_water_less">Bewässerung reduzieren</string>
+    <string name="treatment_step_repot">Substrat wechseln</string>
+    <string name="treatment_step_insecticide">Biologisches Insektizid anwenden</string>
+</resources>

@@ -2,13 +2,15 @@
 <!-- نسخة محسّنة للتبويبات: ضمان ظهور كامل النص + دعم التمرير الأفقي إذا لزم -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootMain"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@color/pc_background">
 
-    <!-- شريط علوي (يمكن تركه كما كان لديك إذا مختلف) -->
+    <!-- شريط علوي: app brand + identify/disease/settings actions -->
     <LinearLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
@@ -16,7 +18,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@color/pc_background"
-        android:paddingStart="16dp"
+        android:paddingStart="20dp"
         android:paddingEnd="8dp"
         android:paddingBottom="4dp">
 
@@ -25,10 +27,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textStyle="bold"
-            android:textSize="24sp"
-            android:includeFontPadding="false"
-            android:textColor="@color/pc_onSurface" />
+            android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+            android:textSize="26sp"
+            android:includeFontPadding="false" />
 
         <View
             android:layout_width="0dp"
@@ -42,12 +43,10 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_identify"
             android:contentDescription="@string/identify_title"
-            android:tint="@color/pc_success"
-            android:padding="8dp"
-            android:layout_marginEnd="4dp" />
+            app:tint="@color/pc_primary"
+            android:padding="10dp"
+            android:layout_marginEnd="2dp" />
 
-        <!-- ميزة تشخيص الأمراض معروضة، لكن ملف plant_disease_model.tflite غير متوفر في assets/
-             فنعرض Toast «bald verfügbar» عند الضغط بدلاً من فتح نشاط مكسور. -->
         <ImageButton
             android:id="@+id/diseaseButton"
             android:layout_width="48dp"
@@ -55,9 +54,9 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_disease"
             android:contentDescription="@string/disease_button_tooltip"
-            android:tint="@color/pc_primary"
-            android:padding="8dp"
-            android:layout_marginEnd="4dp" />
+            app:tint="@color/pc_primary"
+            android:padding="10dp"
+            android:layout_marginEnd="2dp" />
 
         <ImageButton
             android:id="@+id/settingsButton"
@@ -66,8 +65,8 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_settings_black"
             android:contentDescription="@string/settings"
-            android:tint="@color/pc_onSurfaceSecondary"
-            android:padding="8dp" />
+            app:tint="@color/pc_onSurfaceSecondary"
+            android:padding="10dp" />
     </LinearLayout>
 
     <!-- التبويبات – موزّعة بالتساوي داخل الشاشة -->

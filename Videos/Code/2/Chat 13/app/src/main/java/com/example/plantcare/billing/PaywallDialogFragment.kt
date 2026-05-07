@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.android.billingclient.api.ProductDetails
 import com.example.plantcare.R
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -66,10 +67,19 @@ class PaywallDialogFragment : DialogFragment() {
             lifecycleScope.launch {
                 try {
                     billing.restorePurchases()
-                    Toast.makeText(requireContext(), R.string.paywall_restore_done, Toast.LENGTH_SHORT).show()
+                    // #6 fix: dialog could be dismissed mid-suspension;
+                    // cancellation must propagate, and toast contexts
+                    // must null-check rather than requireContext (which
+                    // throws if the fragment detached during the await).
+                    val ctx1 = context ?: return@launch
+                    Toast.makeText(ctx1, R.string.paywall_restore_done, Toast.LENGTH_SHORT).show()
                     dismissAllowingStateLoss()
+                } catch (c: kotlinx.coroutines.CancellationException) {
+                    throw c
                 } catch (e: Exception) {
-                    Toast.makeText(requireContext(), R.string.paywall_restore_failed, Toast.LENGTH_SHORT).show()
+                    com.example.plantcare.CrashReporter.log(e)
+                    val ctx2 = context ?: return@launch
+                    Toast.makeText(ctx2, R.string.paywall_restore_failed, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -78,6 +88,20 @@ class PaywallDialogFragment : DialogFragment() {
         lifecycleScope.launch {
             val products = billing.queryProducts()
             bindProducts(view, products)
+        }
+
+        // ZZ4: auto-dismiss when the purchase actually completes.
+        // Pre-fix the user had to tap Close manually after seeing
+        // Google Play's success sheet, which on top of the paywall
+        // looks like the purchase didn't take. Drop the value
+        // initially captured (false → no-op) so we only react to
+        // the next change to true.
+        var seenInitial = false
+        lifecycleScope.launch {
+            billing.isPro.collectLatest { pro ->
+                if (!seenInitial) { seenInitial = true; return@collectLatest }
+                if (pro) dismissAllowingStateLoss()
+            }
         }
     }
 

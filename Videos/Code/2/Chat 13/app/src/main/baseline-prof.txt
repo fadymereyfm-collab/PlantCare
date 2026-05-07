@@ -1,0 +1,24 @@
+# Starter Baseline Profile for PlantCare
+# Generated manually — replace with output of:
+#   ./gradlew :app:generateProdReleaseBaselineProfile
+# (requires a connected device with API 28+)
+#
+# Format: HSP flags + class/method descriptor
+#   H = Hot  (compiled to native code)
+#   S = Startup path
+#   P = Post-startup path
+
+# ── Launcher Activity ────────────────────────────────────────
+HSPLcom/example/plantcare/ui/onboarding/OnboardingActivity;->onCreate(Landroid/os/Bundle;)V
+HSPLcom/example/plantcare/ui/onboarding/OnboardingActivity;->onStart()V
+
+# ── Main Activity ─────────────────────────────────────────────
+HSPLcom/example/plantcare/MainActivity;->onCreate(Landroid/os/Bundle;)V
+
+# ── Room Database initialisation ─────────────────────────────
+HSPLcom/example/plantcare/data/db/PlantDatabase;->getInstance(Landroid/content/Context;)Lcom/example/plantcare/data/db/PlantDatabase;
+
+# ── SecurePrefsHelper (read on every cold start) ─────────────
+HSPLcom/example/plantcare/SecurePrefsHelper;->init(Landroid/content/Context;)V
+HSPLcom/example/plantcare/SecurePrefsHelper;->getCurrentUserEmail()Ljava/lang/String;
+HSPLcom/example/plantcare/SecurePrefsHelper;->isGuest()Z

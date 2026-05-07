@@ -1,0 +1,188 @@
+<resources>
+    <!-- ============================================================
+         PlantCare — Sage Garden palette (Light)
+         Now extended with full Material-3-style tonal token set so
+         Compose + XML share the same source of truth.
+
+         Naming convention:
+           pc_*           — semantic role (M3 token names)
+           pc_<n>         — fixed brand swatches (sage_50…sage_900 etc.)
+           legacy *_text  — kept for backward compat with existing 53
+                            layouts; do NOT add new usages.
+         ============================================================ -->
+
+    <!-- ── Brand tonal palette (sage) ── -->
+    <color name="sage_50">#EEF6F2</color>
+    <color name="sage_100">#D4E8E0</color>
+    <color name="sage_200">#A8C5B8</color>
+    <color name="sage_300">#7FAD9C</color>
+    <color name="sage_400">#6B9080</color>
+    <color name="sage_500">#578071</color>
+    <color name="sage_600">#4A7060</color>
+    <color name="sage_700">#3C5C4F</color>
+    <color name="sage_800">#2A3A33</color>
+    <color name="sage_900">#1A2620</color>
+
+    <!-- ── Brand accent palettes ── -->
+    <color name="terracotta_300">#E5B89D</color>
+    <color name="terracotta_500">#C47B5A</color>
+    <color name="terracotta_700">#8E5236</color>
+    <color name="honey_500">#D4A24C</color>
+    <color name="honey_300">#E5C475</color>
+
+    <!-- ============================================================
+         M3 Color Roles (Light) — used by Compose + ?attr
+         ============================================================ -->
+
+    <!-- Primary -->
+    <color name="pc_primary">#6B9080</color>
+    <color name="pc_onPrimary">#FFFFFF</color>
+    <color name="pc_primaryContainer">#C5E1D3</color>
+    <color name="pc_onPrimaryContainer">#002113</color>
+
+    <!-- Secondary -->
+    <color name="pc_secondary">#A8C5B8</color>
+    <color name="pc_onSecondary">#1B2E22</color>
+    <color name="pc_secondaryContainer">#E0EEDF</color>
+    <color name="pc_onSecondaryContainer">#1B2E22</color>
+
+    <!-- Tertiary (terracotta accent) -->
+    <color name="pc_tertiary">#C47B5A</color>
+    <color name="pc_onTertiary">#FFFFFF</color>
+    <color name="pc_tertiaryContainer">#FFD6C2</color>
+    <color name="pc_onTertiaryContainer">#401400</color>
+
+    <!-- Error — proper Material red, NOT terracotta. -->
+    <color name="pc_error">#BA1A1A</color>
+    <color name="pc_onError">#FFFFFF</color>
+    <color name="pc_errorContainer">#FFDAD6</color>
+    <color name="pc_onErrorContainer">#410002</color>
+
+    <!-- Background / Surface -->
+    <color name="pc_background">#FAF6EF</color>
+    <color name="pc_onBackground">#2A3A33</color>
+    <color name="pc_surface">#FFFFFF</color>
+    <color name="pc_onSurface">#2A3A33</color>
+    <color name="pc_surfaceVariant">#DDE5DE</color>
+    <color name="pc_onSurfaceVariant">#4A6B5C</color>
+
+    <!-- Surface containers (M3 elevation tokens) -->
+    <color name="pc_surfaceContainerLowest">#FFFFFF</color>
+    <color name="pc_surfaceContainerLow">#F4F0E9</color>
+    <color name="pc_surfaceContainer">#EEEAE3</color>
+    <color name="pc_surfaceContainerHigh">#E8E4DD</color>
+    <color name="pc_surfaceContainerHighest">#E2DED7</color>
+
+    <!-- Outlines -->
+    <color name="pc_outline">#6F7973</color>
+    <color name="pc_outlineVariant">#BFC9C2</color>
+
+    <!-- Inverse (used by snackbars, e.g.) -->
+    <color name="pc_inverseSurface">#2F3933</color>
+    <color name="pc_inverseOnSurface">#F0F1EC</color>
+    <color name="pc_inversePrimary">#ABCEBE</color>
+
+    <!-- Scrim — semi-transparent black overlays for photos, dialogs.
+         Do NOT theme these (constant black is correct for both modes
+         since they sit on top of arbitrary content). -->
+    <color name="pc_scrim">#000000</color>
+    <color name="pc_scrim_50">#80000000</color>
+    <color name="pc_scrim_67">#AA000000</color>
+
+    <!-- ============================================================
+         Semantic role aliases (KEEP — referenced by 53 layouts)
+         ============================================================ -->
+
+    <!-- Secondary text (M3 onSurfaceVariant) -->
+    <color name="pc_onSurfaceSecondary">#4A6B5C</color>
+
+    <!-- Brand accents (kept for legacy refs) -->
+    <color name="pc_accent">#C47B5A</color>
+    <color name="pc_accent2">#D4A24C</color>
+    <color name="modern_accent">#C47B5A</color>
+
+    <!-- Success — slightly darker than primary so it reads as "✓" -->
+    <color name="pc_success">#4A7060</color>
+
+    <!-- Variant (kept for compat — was contradictory before) -->
+    <color name="colorPrimaryVariant">#4A7060</color>
+
+    <!-- ============================================================
+         Backgrounds (legacy aliases — do not introduce new ones)
+         ============================================================ -->
+    <color name="bg_light">#FAF6EF</color>
+    <color name="creamy_background">#FAF6EF</color>
+    <color name="ultra_light_gray">#FAF6EF</color>
+    <color name="gray_very_light">#EEF6F2</color>
+    <color name="backgroundLight">#FAF6EF</color>
+    <color name="card_bg">#FFFFFF</color>
+    <color name="border_soft">#D4E8E0</color>
+
+    <!-- True white/black — DO NOT override in night. Use pc_surface for
+         surfaces that should flip in dark mode; use pc_onPrimary for
+         text-on-primary; use these only when you literally want hex
+         #FFFFFF / #000000 regardless of theme (widgets, scrims, dialogs
+         with hard-coded foreground photography). -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- ============================================================
+         Text colors (alias to onSurface variants)
+         ============================================================ -->
+    <color name="text_primary">#2A3A33</color>
+    <color name="text_secondary">#4A6B5C</color>
+    <color name="title_text">#2A3A33</color>
+
+    <!-- Custom semantic text (KEEP — used by reminder list) -->
+    <color name="manual_reminder_text">#6D4C41</color>
+    <color name="auto_reminder_text">#4A7060</color>
+
+    <!-- ============================================================
+         Tabs (pill style)
+         ============================================================ -->
+    <color name="tab_active_bg">#6B9080</color>
+    <color name="tab_inactive_bg">#EEF6F2</color>
+    <color name="tab_inactive_stroke">#D4E8E0</color>
+    <color name="tab_active_text">#FFFFFF</color>
+    <color name="tab_inactive_text">#4A6B5C</color>
+    <color name="tab_shadow">#1A6B9080</color>
+
+    <!-- Card shadow -->
+    <color name="card_shadow">#226B9080</color>
+
+    <!-- ============================================================
+         Calendar
+         ============================================================ -->
+    <color name="calendar_selected_day">#6B9080</color>
+    <color name="calendar_today_circle">#A8C5B8</color>
+    <color name="calendar_event_day">#C47B5A</color>
+    <color name="calendar_text">#2A3A33</color>
+    <color name="calendar_text_disabled">#D4E8E0</color>
+    <color name="calendar_background">#FAF6EF</color>
+
+    <!-- ============================================================
+         Widget legacy aliases (KEEP — widget XML references these
+         under fixed names regardless of theme)
+         ============================================================ -->
+    <color name="gray_500">#4A6B5C</color>
+    <color name="gray_400">#A8C5B8</color>
+    <color name="green_500">#6B9080</color>
+    <color name="blue_500">#4A7060</color>
+
+    <!-- ============================================================
+         Room icon palette (12 distinct hues for room cards)
+         Used by RoomAdapter via @drawable/sage_ic_room_*.xml
+         ============================================================ -->
+    <color name="room_living">#C47B5A</color>          <!-- Wohnzimmer / terracotta -->
+    <color name="room_bedroom">#7E8FB8</color>         <!-- Schlafzimmer / lavender-blue -->
+    <color name="room_bathroom">#5B9BB8</color>        <!-- Bad / sky blue -->
+    <color name="room_toilet">#5C9C8E</color>          <!-- Toilette / muted teal -->
+    <color name="room_hallway">#D4A24C</color>         <!-- Flur / honey -->
+    <color name="room_kitchen">#D67961</color>         <!-- Küche / paprika -->
+    <color name="room_office">#8F7DB3</color>          <!-- Büro / lavender -->
+    <color name="room_balcony">#C49A3F</color>         <!-- Balkon / mustard -->
+    <color name="room_garden">#6B9080</color>          <!-- Garten / sage primary -->
+    <color name="room_kids">#D87BA0</color>            <!-- Kinderzimmer / dusty pink -->
+    <color name="room_dining">#A85A4A</color>          <!-- Esszimmer / brick -->
+    <color name="room_default">#88A39A</color>         <!-- Default / neutral sage -->
+</resources>

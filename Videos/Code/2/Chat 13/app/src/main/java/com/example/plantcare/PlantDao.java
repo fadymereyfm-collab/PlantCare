@@ -1,6 +1,7 @@
 package com.example.plantcare;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -157,4 +158,30 @@ public interface PlantDao {
 
     @Query("DELETE FROM plant WHERE userEmail = :userEmail")
     void deleteAllUserPlantsForUser(@Nullable String userEmail);
+
+    // ────────────────────────────────────────────────────────────────────
+    // Sprint-3 Task 3.1: reactive LiveData<List<...>> read queries
+    //
+    // Room observes the underlying tables and re-emits whenever the rows
+    // matching the query change — so any UI binding these methods updates
+    // automatically on insert/update/delete, with no DataChangeNotifier
+    // tickle needed. Kept as parallel `observeXxx` methods so existing
+    // blocking call sites (workers, sync IO paths) keep their original
+    // List<X> contract.
+    // ────────────────────────────────────────────────────────────────────
+
+    @Query("SELECT * FROM plant")
+    LiveData<List<Plant>> observeAll();
+
+    @Query("SELECT * FROM plant WHERE isUserPlant = 0")
+    LiveData<List<Plant>> observeAllNonUserPlants();
+
+    @Query("SELECT * FROM plant WHERE isUserPlant = 1 AND userEmail = :userEmail")
+    LiveData<List<Plant>> observeAllUserPlantsForUser(@Nullable String userEmail);
+
+    @Query("SELECT * FROM plant WHERE roomId = :roomId AND isUserPlant = 1 AND userEmail = :userEmail")
+    LiveData<List<Plant>> observeAllUserPlantsInRoom(int roomId, @Nullable String userEmail);
+
+    @Query("SELECT * FROM plant WHERE id = :id LIMIT 1")
+    LiveData<Plant> observeById(int id);
 }

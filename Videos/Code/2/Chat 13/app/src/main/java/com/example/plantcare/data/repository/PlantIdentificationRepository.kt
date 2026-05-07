@@ -113,10 +113,10 @@ class PlantIdentificationRepository private constructor(context: Context) {
         private var INSTANCE: PlantIdentificationRepository? = null
 
         fun getInstance(context: Context): PlantIdentificationRepository {
+            // #5 fix: inner recheck.
             return INSTANCE ?: synchronized(this) {
-                val instance = PlantIdentificationRepository(context.applicationContext)
-                INSTANCE = instance
-                instance
+                INSTANCE ?: PlantIdentificationRepository(context.applicationContext)
+                    .also { INSTANCE = it }
             }
         }
     }

@@ -1,0 +1,187 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp"
+    app:cardBackgroundColor="@color/pc_surface">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textEditAffectsFuture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Diese Änderung gilt nur für dieses und zukünftige Daten."
+                android:textColor="@color/pc_tertiary"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:padding="8dp"
+                android:textAlignment="center"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Titel -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/pc_outline"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editReminderTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/auth_name_optional"
+                    android:background="@android:color/transparent"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Beschreibung -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/pc_outline"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editReminderDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/description_optional"
+                    android:background="@android:color/transparent"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Datum -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/pc_outline"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editReminderDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/pick_date"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:background="@android:color/transparent"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Wiederholen -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/pc_outline"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editReminderRepeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Wiederholen alle X Tage (0 = nie)"
+                    android:inputType="number"
+                    android:background="@android:color/transparent"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Enddatum + Kein Enddatum -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/pc_outline"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="2dp"
+                    app:boxCornerRadiusTopStart="14dp"
+                    app:boxCornerRadiusTopEnd="14dp"
+                    app:boxCornerRadiusBottomStart="14dp"
+                    app:boxCornerRadiusBottomEnd="14dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editEndDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enddatum (yyyy-MM-dd)"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:visibility="gone"
+                        android:background="@android:color/transparent"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <CheckBox
+                    android:id="@+id/checkNoEndDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Kein Enddatum"
+                    android:layout_gravity="center_vertical"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+            <!-- Actions -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonSave"
+                style="@style/Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/settings_update_name"
+                android:textAllCaps="false"
+                android:layout_marginTop="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonDelete"
+                style="@style/Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/delete"
+                android:textAllCaps="false"
+                android:layout_marginTop="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonCancel"
+                style="@style/Button.Secondary"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/close"
+                android:textAllCaps="false"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+    </ScrollView>
+</com.google.android.material.card.MaterialCardView>

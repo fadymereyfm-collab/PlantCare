@@ -3,6 +3,31 @@
     <!-- App -->
     <string name="app_name">PlantCare</string>
 
+    <!-- Dialog: Pflanze hinzufügen (Eingabefelder + Aktionen) -->
+    <string name="hint_plant_name">Pflanzenname</string>
+    <string name="hint_start_date">Startdatum</string>
+    <string name="action_add_room">Raum hinzufügen</string>
+    <string name="action_add_plant">Hinzufügen</string>
+    <!-- Pflanzen-Fallback-Name + Spinner-Hinweis (vorher arabisch hart-kodiert) -->
+    <string name="default_plant_base">Pflanze</string>
+    <string name="spinner_add_new_room">Neuen Raum hinzufügen…</string>
+    <string name="my_plants_no_rooms_hint">Noch keine Räume — füge unten einen hinzu.</string>
+    <!-- Standardräume bei Erst-Anmeldung (vorher dreifach hart-kodiert) -->
+    <string-array name="default_rooms">
+        <item>Wohnzimmer</item>
+        <item>Schlafzimmer</item>
+        <item>Flur</item>
+        <item>Bad</item>
+        <item>Toilette</item>
+    </string-array>
+
+    <!-- Generische Bestätigungs- und Auswahl­dialoge (vorher hart-kodiert in Java) -->
+    <string name="delete_confirm_title">Löschen bestätigen</string>
+    <string name="delete_confirm_message_generic">Soll dieser Eintrag wirklich gelöscht werden?</string>
+    <string name="pick_plant_title">Wähle Pflanze</string>
+    <string name="move_to_room_title">In Raum verschieben</string>
+    <string name="no_plants_available">Keine Pflanzen vorhanden</string>
+
     <!-- عام -->
     <string name="add_plant">Zu meiner Liste hinzufügen</string>
     <string name="edit">Bearbeiten</string>
@@ -198,9 +223,12 @@
     <string name="settings_export_success">Exportdatei erstellt</string>
     <string name="settings_export_error">Export fehlgeschlagen – bitte erneut versuchen</string>
 
-    <!-- Allgemeine Aktionen -->
-    <string name="action_save">SPEICHERN</string>
-    <string name="action_delete_caps">LÖSCHEN</string>
+    <!-- Allgemeine Aktionen — action_cancel / action_close / action_delete
+         live in strings_messages.xml + strings_copilot_additions.xml. -->
+    <string name="action_save">Speichern</string>
+    <string name="action_delete_caps">Löschen</string>
+    <string name="action_add_short">Hinzufügen</string>
+    <string name="action_edit">Bearbeiten</string>
     <string name="saved">Gespeichert</string>
     <string name="deleted">Gelöscht</string>
     <string name="filter_all">Alle</string>
@@ -253,7 +281,7 @@
     <string name="consent_privacy_link">Datenschutzerklärung lesen →</string>
     <string name="consent_accept">Zustimmen</string>
     <string name="consent_decline">Nur notwendige</string>
-    <string name="consent_privacy_url">https://fadymereyfm-collab.github.io/PlantCare/</string>
+    <string name="consent_privacy_url">https://fadymereyfm-collab.github.io/plantcare-privacy/</string>
 
     <!-- Accessibility content descriptions -->
     <string name="cd_plant_preview">Pflanzenvorschau</string>
@@ -293,4 +321,284 @@
     <!-- AdMob — test IDs; replace with real IDs from AdMob console before release -->
     <string name="admob_app_id" translatable="false">ca-app-pub-1100803679228908~5665289638</string>
     <string name="admob_banner_unit_id" translatable="false">ca-app-pub-1100803679228908/8905471157</string>
+
+    <!-- Plant Journal (Functional Report §4) -->
+    <string name="journal_title">Pflanzen-Verlauf</string>
+    <string name="journal_open">Verlauf öffnen</string>
+    <string name="journal_filter_all">Alle</string>
+    <string name="journal_filter_watering">Gießen</string>
+    <string name="journal_filter_photos">Fotos</string>
+    <string name="journal_filter_diagnoses">Checks</string>
+    <string name="journal_empty">Noch keine Einträge in diesem Filter.</string>
+    <string name="journal_since_format">Seit %1$s (%2$d Tage)</string>
+    <string name="journal_counters_format">%1$d Gießungen · %2$d Fotos · %3$d Checks</string>
+    <string name="journal_last_watering_format">Zuletzt gegossen: %1$s</string>
+    <string name="journal_watering_done">Erledigt</string>
+    <string name="journal_watering_done_by_format">Erledigt · %1$s</string>
+    <string name="journal_diagnosis_result_format">%1$s (%2$d %%)</string>
+    <string name="journal_icon_watering" translatable="false">💧</string>
+    <string name="journal_icon_photo" translatable="false">📷</string>
+    <string name="journal_icon_diagnosis" translatable="false">🩺</string>
+    <string name="journal_photo_thumb_desc">Foto im Pflanzen-Verlauf</string>
+    <string name="journal_diagnosis_thumb_desc">Foto des Krankheits-Checks</string>
+    <string name="journal_note_dialog_title">Notiz zur Gießung</string>
+    <string name="journal_note_hint">Wie sah die Pflanze aus? (optional)</string>
+    <string name="journal_note_save">Speichern</string>
+    <string name="journal_filter_memos">Notizen</string>
+    <string name="journal_icon_memo" translatable="false">📝</string>
+    <string name="journal_memo_count_format">%1$d Notizen</string>
+    <string name="journal_add_memo_fab_desc">Neue Notiz hinzufügen</string>
+    <string name="journal_memo_dialog_title">Neue Notiz</string>
+    <string name="journal_memo_hint">Was möchtest du festhalten?</string>
+    <string name="journal_memo_save">Speichern</string>
+    <string name="journal_memo_empty_error">Bitte etwas eintragen.</string>
+    <string name="journal_memo_edit_dialog_title">Notiz bearbeiten</string>
+    <string name="journal_memo_actions_title">Notiz</string>
+    <string name="journal_memo_action_edit">Bearbeiten</string>
+    <string name="journal_memo_action_delete">Löschen</string>
+    <string name="journal_memo_delete_title">Notiz löschen?</string>
+    <string name="journal_memo_delete_message">Diese Notiz wird endgültig entfernt.</string>
+    <string name="journal_memo_delete_confirm">Löschen</string>
+    <string name="journal_memo_save_failed">Notiz konnte nicht gespeichert werden</string>
+    <string name="journal_note_delete">Notiz entfernen</string>
+    <string name="challenge_complete_emoji" translatable="false">🎉</string>
+    <string name="challenge_complete_headline">Geschafft!</string>
+    <string name="challenge_complete_subtext">Tolle Arbeit — weiter so!</string>
+    <string name="challenge_complete_dismiss">Weiter</string>
+
+    <!-- F15 Memoir-PDF (Sprint 2) — multi-page growth report -->
+    <string name="memoir_pdf_title">Wachstumsbericht</string>
+    <string name="memoir_pdf_room_format">Raum: %1$s</string>
+    <string name="memoir_pdf_range_format">%1$s – %2$s</string>
+    <string name="memoir_pdf_created_format">Erstellt am %1$s</string>
+    <string name="memoir_pdf_stats_header">Statistiken</string>
+    <string name="memoir_pdf_stat_days_label">Tage seit Start</string>
+    <string name="memoir_pdf_stat_waterings_label">Gießungen</string>
+    <string name="memoir_pdf_stat_photos_label">Fotos</string>
+    <string name="memoir_pdf_stat_diagnoses_label">Krankheits-Checks</string>
+    <string name="memoir_pdf_stat_memos_label">Notizen</string>
+    <string name="memoir_pdf_stat_last_label">Zuletzt gegossen</string>
+    <string name="memoir_pdf_timeline_header">Zeitachse</string>
+    <string name="memoir_pdf_timeline_header_cont">Zeitachse (Fortsetzung)</string>
+    <string name="memoir_pdf_photos_header">Fotos</string>
+    <string name="memoir_pdf_event_watered">Gegossen</string>
+    <string name="memoir_pdf_event_watered_by">Gegossen von %1$s</string>
+    <string name="memoir_pdf_event_photo">Foto</string>
+    <string name="memoir_pdf_event_diagnosis">Krankheits-Check: %1$s (%2$d %%)</string>
+    <string name="memoir_pdf_event_memo">Notiz</string>
+    <string name="memoir_pdf_share_chooser">Wachstumsbericht teilen</string>
+
+    <!-- ============================================================
+         Auth — Phase 0-6 hardening (2026-05-05)
+         ============================================================ -->
+    <!-- Phase 0: validation messages -->
+    <string name="auth_error_email_required">Bitte E-Mail eingeben</string>
+    <string name="auth_error_email_invalid">E-Mail Adresse ungültig</string>
+    <string name="auth_error_password_required">Bitte Passwort eingeben</string>
+    <string name="auth_error_password_too_short">Passwort mindestens %1$d Zeichen</string>
+    <string name="auth_error_password_confirm_required">Bitte Bestätigung eingeben</string>
+    <string name="auth_error_password_mismatch">Passwörter stimmen nicht überein</string>
+    <string name="auth_error_generic_failed">Anmeldung fehlgeschlagen</string>
+    <string name="auth_error_email_collision">E-Mail bereits registriert</string>
+    <string name="auth_error_invalid_credentials">E-Mail oder Passwort ungültig</string>
+    <string name="auth_error_user_not_found">Benutzer nicht gefunden</string>
+
+    <!-- Google Sign-In -->
+    <string name="auth_google_not_configured">Google-Anmeldung benötigt Firebase-Konfiguration.</string>
+    <string name="auth_google_one_tap_empty_token">Google-Anmeldung fehlgeschlagen: leeres Token.</string>
+    <string name="auth_google_one_tap_error">Google-Anmeldung fehlgeschlagen: %1$s</string>
+    <string name="auth_google_unavailable">Google-Anmeldung nicht verfügbar: %1$s</string>
+    <string name="auth_google_chooser_error">Google-Auswahl-Fehler: %1$s</string>
+    <string name="auth_google_account_null">Google-Konto ist leer</string>
+    <string name="auth_google_no_id_token">Kein ID-Token (Firebase Web-Client-ID / SHA-1 prüfen).</string>
+    <string name="auth_google_one_tap_launch_error">One-Tap Start-Fehler: %1$s</string>
+    <string name="auth_firebase_signin_failed">Firebase-Anmeldung fehlgeschlagen</string>
+
+    <!-- Phase 1: password strength meter -->
+    <string name="auth_pw_strength_weak">Schwach</string>
+    <string name="auth_pw_strength_medium">Mittel</string>
+    <string name="auth_pw_strength_strong">Stark</string>
+
+    <!-- Phase 1: logout confirm -->
+    <string name="auth_logout_confirm_title">Abmelden?</string>
+    <string name="auth_logout_confirm_message">Du wirst von diesem Gerät abgemeldet. Deine Daten bleiben in der Cloud erhalten.</string>
+    <string name="auth_logout_confirm_yes">Abmelden</string>
+
+    <!-- Phase 2.1: re-authentication before delete -->
+    <string name="auth_reauth_required_title">Bestätigung erforderlich</string>
+    <string name="auth_reauth_required_message">Aus Sicherheitsgründen musst du dein Passwort erneut eingeben, um dein Konto zu löschen.</string>
+    <string name="auth_reauth_password_hint">Aktuelles Passwort</string>
+    <string name="auth_reauth_confirm">Bestätigen</string>
+    <string name="auth_reauth_failed">Passwort falsch — Konto nicht gelöscht.</string>
+    <string name="auth_reauth_google_required">Google-Konto bestätigen, um fortzufahren.</string>
+
+    <!-- Phase 2.2: forgot password -->
+    <string name="auth_forgot_password_link">Passwort vergessen?</string>
+    <string name="auth_forgot_password_title">Passwort zurücksetzen</string>
+    <string name="auth_forgot_password_message">Gib deine E-Mail ein. Wir senden dir einen Link zum Zurücksetzen.</string>
+    <string name="auth_forgot_password_send">Link senden</string>
+    <string name="auth_forgot_password_sent">E-Mail zum Zurücksetzen gesendet — prüfe deinen Posteingang.</string>
+    <string name="auth_forgot_password_failed">Senden fehlgeschlagen: %1$s</string>
+
+    <!-- Phase 2.3: rate limiting -->
+    <string name="auth_rate_limited">Zu viele Versuche — bitte %1$d Sekunden warten.</string>
+
+    <!-- Phase 2.4: change password -->
+    <string name="auth_change_password_title">Passwort ändern</string>
+    <string name="auth_change_password_current">Aktuelles Passwort</string>
+    <string name="auth_change_password_new">Neues Passwort</string>
+    <string name="auth_change_password_confirm">Neues Passwort bestätigen</string>
+    <string name="auth_change_password_save">Speichern</string>
+    <string name="auth_change_password_success">Passwort erfolgreich geändert.</string>
+    <string name="auth_change_password_failed">Passwort-Änderung fehlgeschlagen: %1$s</string>
+
+    <!-- Phase 3.1: set password for Google users -->
+    <string name="auth_set_password_title">Passwort erstellen</string>
+    <string name="auth_set_password_message">Erstelle ein Passwort, um dich auch ohne Google anmelden zu können.</string>
+    <string name="auth_set_password_save">Erstellen</string>
+    <string name="auth_set_password_success">Passwort erstellt. Du kannst dich jetzt mit E-Mail + Passwort anmelden.</string>
+    <string name="auth_set_password_failed">Passwort-Erstellung fehlgeschlagen: %1$s</string>
+
+    <!-- Phase 3.2: email verification -->
+    <string name="auth_email_unverified_badge">Nicht bestätigt</string>
+    <string name="auth_email_verified_badge">Bestätigt ✓</string>
+    <string name="auth_email_verify_send">Bestätigungs-E-Mail senden</string>
+    <string name="auth_email_verify_sent">Bestätigungs-E-Mail gesendet — prüfe deinen Posteingang.</string>
+    <string name="auth_email_verify_failed">Senden fehlgeschlagen: %1$s</string>
+
+    <!-- Phase 4.1: biometric login -->
+    <string name="auth_biometric_toggle_label">Schnellanmeldung mit Fingerabdruck</string>
+    <string name="auth_biometric_unavailable">Fingerabdruck-Sensor nicht verfügbar oder nicht eingerichtet.</string>
+    <string name="auth_biometric_prompt_title">PlantCare entsperren</string>
+    <string name="auth_biometric_prompt_subtitle">Lege deinen Finger auf den Sensor</string>
+    <string name="auth_biometric_prompt_negative">Mit Passwort anmelden</string>
+    <string name="auth_biometric_failed">Authentifizierung fehlgeschlagen.</string>
+
+    <!-- Phase 6.1: Apple Sign-In -->
+    <string name="auth_apple_button">Mit Apple anmelden</string>
+    <string name="auth_apple_failed">Apple-Anmeldung fehlgeschlagen: %1$s</string>
+
+    <!-- Phase 6.2: Magic Link -->
+    <string name="auth_magic_link_label">Anmeldelink per E-Mail</string>
+    <string name="auth_magic_link_send">Link senden</string>
+    <string name="auth_magic_link_sent">Anmeldelink gesendet — öffne die E-Mail auf diesem Gerät.</string>
+    <string name="auth_magic_link_failed">Senden fehlgeschlagen: %1$s</string>
+
+    <!-- Phase 6.3: 2FA -->
+    <string name="auth_2fa_settings_label">Zwei-Faktor-Authentifizierung</string>
+    <string name="auth_2fa_enroll_title">2FA aktivieren</string>
+    <string name="auth_2fa_enroll_message">Gib den Code aus deiner Authenticator-App ein.</string>
+    <string name="auth_2fa_code_hint">6-stelliger Code</string>
+    <string name="auth_2fa_verify">Verifizieren</string>
+    <string name="auth_2fa_enrolled">2FA aktiviert.</string>
+    <string name="auth_2fa_disable">2FA deaktivieren</string>
+    <string name="auth_2fa_failed">Code ungültig.</string>
+
+    <!-- Phase 6.4: sessions -->
+    <string name="auth_sessions_label">Aktive Sitzungen</string>
+    <string name="auth_sessions_logout_all">Von allen Geräten abmelden</string>
+    <string name="auth_sessions_logout_all_confirm">Auf allen Geräten abmelden? Du musst dich erneut anmelden.</string>
+    <string name="auth_sessions_logout_all_done">Reset-Link gesendet. Andere Geräte werden abgemeldet, sobald du dort dein Passwort änderst (oder spätestens nach 1 Stunde).</string>
+
+    <!-- ============================================================
+         UI Audit 2026-05-04 — strings extracted from hardcoded
+         German text inside layouts (Today/Settings/Detail/Login/Auth).
+         ============================================================ -->
+
+    <!-- Today fragment empty state -->
+    <string name="today_empty_state">Keine Erinnerungen für heute.</string>
+
+    <!-- Settings fragment (legacy fragment_settings.xml) -->
+    <string name="settings_hint_new_name">Neuer Name</string>
+    <string name="settings_button_update_name">Name aktualisieren</string>
+    <string name="settings_hint_old_password">Altes Passwort</string>
+    <string name="settings_hint_new_password">Neues Passwort</string>
+    <string name="settings_button_change_password_short">Passwort ändern</string>
+    <string name="settings_button_logout_short">Abmelden</string>
+    <string name="settings_button_delete_account_short">Konto löschen</string>
+
+    <!-- Plant Detail (catalogue) — labels + actions -->
+    <string name="detail_label_lighting">Licht:</string>
+    <string name="detail_label_soil">Boden:</string>
+    <string name="detail_label_watering">Bewässerung:</string>
+    <string name="detail_label_fertilizing">Düngung:</string>
+    <string name="detail_label_info">Infos:</string>
+    <string name="detail_label_room">Raum:</string>
+    <string name="detail_label_start">Start:</string>
+    <string name="detail_action_add_to_my_plants">Zu „Meine Pflanzen" hinzufügen</string>
+    <string name="detail_action_remove">Entfernen</string>
+    <string name="detail_action_rename">Umbenennen</string>
+    <string name="detail_action_take_photo">Foto aufnehmen</string>
+    <string name="detail_action_view_photos">Bilder ansehen</string>
+    <string name="detail_action_close">Schließen</string>
+    <string name="detail_action_edit">Bearbeiten</string>
+    <string name="detail_action_take_cover">Titelbild aufnehmen</string>
+    <string name="detail_action_view_archive">Archivfotos ansehen</string>
+    <string name="detail_action_delete">Löschen</string>
+    <string name="detail_action_move_room">In anderen Raum verschieben</string>
+    <string name="detail_placeholder_name">Pflanzenname</string>
+    <string name="detail_placeholder_dash">—</string>
+
+    <!-- Auth start dialog -->
+    <string name="auth_button_google_login">Mit Google anmelden</string>
+    <string name="auth_button_email_continue">Mit E‑Mail fortfahren</string>
+    <string name="auth_link_have_account">Schon ein Konto? Hier anmelden</string>
+
+    <!-- Login dialog -->
+    <string name="login_link_register_new">Neu hier? Jetzt registrieren</string>
+
+    <!-- All Plants search hint (uses existing search_hint key) -->
+
+    <!-- Dialog yes/no -->
+    <string name="dialog_yes">Ja</string>
+    <string name="dialog_no">Nein</string>
+
+    <!-- ============================================================
+         UI Audit 2026-05-04 — Phase 2 (remaining hardcoded strings)
+         ============================================================ -->
+
+    <!-- Add Room dialog -->
+    <string name="add_room_dialog_title">Neuen Raum hinzufügen</string>
+    <string name="hint_room_name">Zimmername</string>
+
+    <!-- Email-entry dialog -->
+    <string name="email_pin_hint">Passwort oder PIN</string>
+
+    <!-- Add reminder dialog -->
+    <string name="reminder_add_button">Hinzufügen</string>
+    <string name="take_photo_optional">Foto aufnehmen (optional)</string>
+
+    <!-- Add to my plants dialog -->
+    <string name="add_to_my_plants_hint_name">Pflanzenname (bearbeitbar)</string>
+    <string name="add_to_my_plants_pick_room">Zimmer wählen</string>
+    <string name="add_to_my_plants_add_room">Raum hinzufügen</string>
+    <string name="forward">Weiter</string>
+
+    <!-- Edit-plant dialog -->
+    <string name="hint_watering">Bewässerung</string>
+    <string name="hint_personal_note">Persönliche Notiz</string>
+
+    <!-- Plant detail (catalogue) dialog actions (already-touched fragment, but
+         dialog_plant_detail.xml is a different layout that still has them) -->
+    <string name="plant_detail_action_take_photo">Foto aufnehmen</string>
+    <string name="plant_detail_action_view_photos">Fotos ansehen</string>
+    <string name="quick_add_button">Schnell hinzufügen</string>
+
+    <!-- Today reminder detail -->
+    <string name="today_reminder_watering_placeholder">Bewässerung: …</string>
+    <string name="today_reminder_lighting_placeholder">Licht: …</string>
+    <string name="today_reminder_soil_placeholder">Boden: …</string>
+    <string name="today_reminder_fertilizing_placeholder">Düngung: …</string>
+    <string name="photos_empty_message">Keine Fotos verfügbar</string>
+
+    <!-- Daily watering -->
+    <string name="daily_watering_button">Heute gießen</string>
+
+    <!-- Item placeholder -->
+    <string name="item_plant_name_placeholder">Pflanzenname</string>
+    <string name="item_plant_label">Pflanze</string>
+
+    <!-- Custom plant dialog (extras beyond hint_watering) -->
+    <string name="dialog_custom_plant_hint_watering">Bewässerung</string>
+
 </resources>

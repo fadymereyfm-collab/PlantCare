@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- عنوان اسم النبتة -->
+    <TextView
+        android:id="@+id/textPlantName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.PlantCare.Title"
+        android:text="@string/item_plant_label"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="8dp"/>
+
+    <!-- رسالة في حال لم توجد صور -->
+    <TextView
+        android:id="@+id/emptyMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/photos_empty_message"
+        android:textAlignment="center"
+        android:visibility="gone"
+        android:textAppearance="@style/TextAppearance.PlantCare.Body"
+        android:textColor="@color/pc_onSurfaceSecondary"
+        android:padding="16dp" />
+
+    <!-- صور النبتة -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/photosRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        android:scrollbars="vertical"/>
+</LinearLayout>

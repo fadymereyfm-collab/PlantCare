@@ -7,6 +7,15 @@ import java.util.*;
 
 public class ReminderUtils {
 
+    /**
+     * Window the auto-generator covers — 180 days. Was 60 before
+     * 2026-05-06; a long-cycle plant (e.g. cacti at 21d intervals) only got
+     * 3 reminders, then nothing for half a year. The {@link
+     * com.example.plantcare.feature.reminder.ReminderTopUpWorker} keeps
+     * each plant topped up to this horizon as time advances.
+     */
+    public static final int GENERATION_WINDOW_DAYS = 180;
+
     public static List<WateringReminder> generateReminders(Plant plant) {
         List<WateringReminder> reminders = new ArrayList<>();
 
@@ -19,7 +28,7 @@ public class ReminderUtils {
         String todayStr = sdf.format(new Date());
 
         int interval = plant.getWateringInterval();
-        for (int i = 0; i < 60; i += interval) {
+        for (int i = 0; i < GENERATION_WINDOW_DAYS; i += interval) {
             Date reminderDate = calendar.getTime();
             String dateStr = sdf.format(reminderDate);
 
@@ -43,9 +52,10 @@ public class ReminderUtils {
 
     public static void rescheduleFromToday(WateringReminder reminder, Context context) {
         try {
-            AppDatabase db = DatabaseClient.getInstance(context).getAppDatabase();
-            ReminderDao reminderDao = db.reminderDao();
-            PlantDao plantDao = db.plantDao();
+            com.example.plantcare.data.repository.ReminderRepository reminderRepo =
+                    com.example.plantcare.data.repository.ReminderRepository.getInstance(context);
+            com.example.plantcare.data.repository.PlantRepository plantRepo =
+                    com.example.plantcare.data.repository.PlantRepository.getInstance(context);
 
             int repeatDays;
             try {
@@ -55,9 +65,9 @@ public class ReminderUtils {
             }
 
             if (repeatDays <= 0) {
-                Plant plant = plantDao.findByNickname(reminder.plantName);
+                Plant plant = plantRepo.findByNicknameBlocking(reminder.plantName);
                 if (plant == null) {
-                    plant = plantDao.findUserPlantByNameAndUser(reminder.plantName, reminder.userEmail);
+                    plant = plantRepo.findUserPlantByNameAndEmailBlocking(reminder.plantName, reminder.userEmail);
                 }
                 if (plant != null) {
                     repeatDays = plant.getWateringInterval();
@@ -70,28 +80,28 @@ public class ReminderUtils {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String newDate = sdf.format(calendar.getTime());
 
-            reminderDao.deleteFutureRemindersForPlant(reminder.plantId, newDate);
+            reminderRepo.deleteFutureRemindersForPlantBlocking(reminder.plantId, newDate);
 
             reminder.date = newDate;
             reminder.done = false;
             reminder.completedDate = null;
             reminder.repeat = String.valueOf(repeatDays);
-            reminderDao.update(reminder);
+            reminderRepo.updateBlocking(reminder);
 
-            Plant plant = plantDao.findByNickname(reminder.plantName);
+            Plant plant = plantRepo.findByNicknameBlocking(reminder.plantName);
             if (plant == null) {
-                plant = plantDao.findUserPlantByNameAndUser(reminder.plantName, reminder.userEmail);
+                plant = plantRepo.findUserPlantByNameAndEmailBlocking(reminder.plantName, reminder.userEmail);
             }
             if (plant != null) {
                 Date dateObj = sdf.parse(newDate);
                 plant.setStartDate(dateObj);
                 plant.setWateringInterval(repeatDays);
-                plantDao.update(plant);
+                plantRepo.updateBlocking(plant);
 
                 List<WateringReminder> newReminders = ReminderUtils.generateReminders(plant);
                 if (!newReminders.isEmpty()) {
                     newReminders.remove(0);
-                    reminderDao.insertAll(newReminders);
+                    reminderRepo.insertAllBlocking(newReminders);
                 }
             }
 
@@ -100,7 +110,7 @@ public class ReminderUtils {
                 DataChangeNotifier.notifyCalendar(context);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            com.example.plantcare.CrashReporter.INSTANCE.log(e);
         }
     }
 

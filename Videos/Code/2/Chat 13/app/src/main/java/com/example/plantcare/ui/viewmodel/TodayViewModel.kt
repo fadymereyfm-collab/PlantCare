@@ -68,7 +68,11 @@ class TodayViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private suspend fun buildRoomGroups(email: String): List<RoomGroup> {
-        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        // Locale.US for the wire format — Locale.getDefault() emits
+        // Eastern-Arabic digits on ar/fa devices and the SQL date
+        // comparisons never match the Latin-digit rows we write
+        // elsewhere. Same root cause as the worker-layer A2 fix.
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
         val reminders = reminderRepo.getTodayAllRemindersList(today, email)
         if (reminders.isEmpty()) return emptyList()
 
@@ -151,6 +155,41 @@ class TodayViewModel(application: Application) : AndroidViewModel(application) {
             val current = StreakTracker.getCurrentStreak(ctx, email, today, vacationGap)
             val best = StreakTracker.getBestStreak(ctx, email)
             _streakState.postValue(Pair(current, best))
+
+            // C1: ADD_FIVE_PLANTS was wired up in the ViewModel but no
+            // caller ever invoked recordPlantCountForChallenge — the
+            // challenge sat permanently at 0/5 even when the user had
+            // dozens of plants. Detect every refresh by re-counting the
+            // user's plants on a background thread and feeding the
+            // current value into the registry. Idempotent — the
+            // registry no-ops if progress hasn't changed.
+            //
+            // C2 + C4 + C16: same dead-feature problem with
+            // MONTHLY_PHOTO. We now check whether the user has any
+            // photo on or after the 1st of the current calendar
+            // month (the month boundary itself is enforced by the
+            // monthly-reset logic in ChallengeRegistry.load) and
+            // mark the challenge done if so.
+            withContext(Dispatchers.IO) {
+                try {
+                    val plantCount = plantRepo.countUserPlantsBlocking(email)
+                    val plantCompleted = ChallengeRegistry.updateProgress(
+                        ctx, email, "ADD_FIVE_PLANTS", plantCount
+                    )
+                    if (plantCompleted != null) _justCompletedChallenge.postValue(plantCompleted)
+
+                    val monthStartIso = today.withDayOfMonth(1).toString()  // yyyy-MM-dd
+                    val photoCount = com.example.plantcare.data.repository.PlantPhotoRepository
+                        .getInstance(ctx)
+                        .countPhotosForUserSinceBlocking(email, monthStartIso)
+                    if (photoCount > 0) {
+                        val photoCompleted = ChallengeRegistry.markMonthlyPhotoDone(ctx, email)
+                        if (photoCompleted != null) _justCompletedChallenge.postValue(photoCompleted)
+                    }
+                } catch (e: Exception) {
+                    com.example.plantcare.CrashReporter.log(e)
+                }
+            }
             _challenges.postValue(ChallengeRegistry.allFor(ctx, email))
 
             val end = VacationPrefs.getEnd(ctx, email)

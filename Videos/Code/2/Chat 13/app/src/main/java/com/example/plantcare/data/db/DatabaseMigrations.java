@@ -180,6 +180,117 @@ public final class DatabaseMigrations {
     };
 
     /**
+     * v10 → v11: Plant Journal feature (Functional Report §4).
+     *
+     *  • plant_photo.photoType       — "regular" | "inspection" | "cover".
+     *                                   Defaults to "regular" so existing rows are
+     *                                   correctly classified without a backfill query.
+     *  • plant_photo.diagnosisId     — optional FK-by-convention to disease_diagnosis.id.
+     *                                   No DB-level FK so a deleted diagnosis doesn't
+     *                                   cascade-delete the photo evidence.
+     *  • WateringReminder.notes      — free-text note the user can attach when
+     *                                   ticking a reminder ("looked thirsty").
+     *
+     * Reiner additiver Schritt — Bestandsdaten bleiben unverändert.
+     */
+    public static final Migration MIGRATION_10_11 = new Migration(10, 11) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE `plant_photo` ADD COLUMN `photoType` TEXT DEFAULT 'regular'");
+            db.execSQL("ALTER TABLE `plant_photo` ADD COLUMN `diagnosisId` INTEGER");
+            db.execSQL("ALTER TABLE `WateringReminder` ADD COLUMN `notes` TEXT");
+        }
+    };
+
+    /**
+     * v11 → v12: Cache table for disease reference images (Wikimedia Commons,
+     * iNaturalist, PlantVillage CDN). Keyed by (diseaseKey, imageUrl) so
+     * re-fetches are idempotent. Pure additive — no existing data touched.
+     */
+    public static final Migration MIGRATION_11_12 = new Migration(11, 12) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `disease_reference_image` (" +
+                            "`diseaseKey` TEXT NOT NULL, " +
+                            "`imageUrl` TEXT NOT NULL, " +
+                            "`thumbnailUrl` TEXT, " +
+                            "`source` TEXT NOT NULL, " +
+                            "`attribution` TEXT, " +
+                            "`pageUrl` TEXT, " +
+                            "`fetchedAt` INTEGER NOT NULL, " +
+                            "PRIMARY KEY(`diseaseKey`, `imageUrl`))"
+            );
+            db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS " +
+                            "`index_disease_reference_image_diseaseKey` " +
+                            "ON `disease_reference_image`(`diseaseKey`)"
+            );
+            db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS " +
+                            "`index_disease_reference_image_fetchedAt` " +
+                            "ON `disease_reference_image`(`fetchedAt`)"
+            );
+        }
+    };
+
+    /**
+     * v12 → v13: Plant Journal write-side (Sprint-1 Task 1.2). Adds the
+     * `journal_memo` table for free-text notes the user attaches to a plant
+     * from the journal screen — distinct from `WateringReminder.notes` which
+     * stays bound to a specific watering event.
+     *
+     * Schema:
+     *  • id          — autogen primary key
+     *  • plantId     — FK to plant(id), CASCADE so deleting a plant doesn't
+     *                  leave orphan memos the journal screen would silently hide
+     *  • userEmail   — nullable, mirrors every other table's segregation pattern
+     *  • text        — free-text body
+     *  • createdAt   — epoch millis
+     *  • updatedAt   — epoch millis; the repository orders by this so editing
+     *                  an old memo bumps it back to the top of the timeline
+     *
+     * Indexes match @Index declarations in the entity: plantId, userEmail,
+     * and a compound (plantId, updatedAt) for the per-plant ORDER BY query.
+     *
+     * Pure additive — no existing data touched.
+     */
+    public static final Migration MIGRATION_12_13 = new Migration(12, 13) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `journal_memo` (" +
+                            "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                            "`plantId` INTEGER NOT NULL, " +
+                            "`userEmail` TEXT, " +
+                            "`text` TEXT NOT NULL, " +
+                            "`createdAt` INTEGER NOT NULL, " +
+                            "`updatedAt` INTEGER NOT NULL, " +
+                            "FOREIGN KEY(`plantId`) REFERENCES `plant`(`id`) ON DELETE CASCADE)"
+            );
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_journal_memo_plantId` ON `journal_memo`(`plantId`)");
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_journal_memo_userEmail` ON `journal_memo`(`userEmail`)");
+            db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS " +
+                            "`index_journal_memo_plantId_updatedAt` " +
+                            "ON `journal_memo`(`plantId`, `updatedAt`)"
+            );
+        }
+    };
+
+    /**
+     * v13 → v14: User-defined room ordering. Adds `position INTEGER NOT NULL
+     * DEFAULT 0` so existing rooms keep their alphabetical fallback until
+     * the user explicitly drags them. Pure additive — no data migration.
+     */
+    public static final Migration MIGRATION_13_14 = new Migration(13, 14) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE `RoomCategory` ADD COLUMN `position` INTEGER NOT NULL DEFAULT 0");
+        }
+    };
+
+    /**
      * All migrations that AppDatabase should register.
      * Add new entries here as you create them.
      */
@@ -189,6 +300,10 @@ public final class DatabaseMigrations {
             MIGRATION_7_8,
             MIGRATION_8_9,
             MIGRATION_9_10,
+            MIGRATION_10_11,
+            MIGRATION_11_12,
+            MIGRATION_12_13,
+            MIGRATION_13_14,
     };
 
     // ──────────────────────────────────────────────────────────────

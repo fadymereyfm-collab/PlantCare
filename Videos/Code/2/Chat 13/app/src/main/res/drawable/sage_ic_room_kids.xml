@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kinderzimmer · friendly face on dusty pink circle -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/room_kids"
+        android:pathData="M12,0 C18.6,0 24,5.4 24,12 C24,18.6 18.6,24 12,24 C5.4,24 0,18.6 0,12 C0,5.4 5.4,0 12,0 Z" />
+    <group
+        android:scaleX="0.55"
+        android:scaleY="0.55"
+        android:translateX="5.4"
+        android:translateY="5.4">
+        <!-- Smiling face: outer head + two eyes + smile -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M12,2A10,10 0 1,0 12,22A10,10 0 1,0 12,2ZM12,4A8,8 0 1,1 12,20A8,8 0 1,1 12,4ZM8.5,9.5A1.5,1.5 0 0,1 10,11A1.5,1.5 0 0,1 8.5,12.5A1.5,1.5 0 0,1 7,11A1.5,1.5 0 0,1 8.5,9.5ZM15.5,9.5A1.5,1.5 0 0,1 17,11A1.5,1.5 0 0,1 15.5,12.5A1.5,1.5 0 0,1 14,11A1.5,1.5 0 0,1 15.5,9.5ZM12,17.5C9.67,17.5 7.69,16.04 6.89,14H17.11C16.31,16.04 14.33,17.5 12,17.5Z" />
+    </group>
+</vector>

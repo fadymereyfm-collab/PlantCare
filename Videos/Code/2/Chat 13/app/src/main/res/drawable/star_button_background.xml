@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    A simple circular background for the favourite star button. The semi‑transparent
+    white fill ensures the star remains visible against any plant photo while
+    letting the underlying image peek through. This drawable is used in the
+    redesigned plant list item to give the star a modern pill‑style appearance.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#80FFFFFF"/>
+</shape>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Sprint-1 Task 1.4: celebration dialog body for a completed challenge.
+  Replaces the toast in TodayFragment.java that was easy to miss. Body only —
+  the OK button is supplied by MaterialAlertDialogBuilder.setPositiveButton.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/challengeCompleteEmoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/challenge_complete_emoji"
+        android:textSize="64sp"
+        android:gravity="center"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/challengeCompleteHeadline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textStyle="bold"
+        android:text="@string/challenge_complete_headline" />
+
+    <TextView
+        android:id="@+id/challengeCompleteTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceBodyLarge"
+        tools:text="7 Tage in Folge gegossen" />
+
+    <TextView
+        android:id="@+id/challengeCompleteSubtext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:text="@string/challenge_complete_subtext" />
+</LinearLayout>

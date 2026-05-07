@@ -115,38 +115,62 @@ public class EditPlantDialogFragment extends DialogFragment {
             plant.setPersonalNote(personalNote);
         }
 
-        final String finalPersonalNote = personalNote;
-        final String finalPlantName = name;
-        final String userEmail = plant.getUserEmail();
-
         FragmentBg.runIO(this,
                 () -> {
-                    AppDatabase db = AppDatabase.getInstance(requireContext());
+                    com.example.plantcare.data.repository.PlantRepository plantRepo =
+                            com.example.plantcare.data.repository.PlantRepository
+                                    .getInstance(requireContext());
+                    com.example.plantcare.data.repository.ReminderRepository reminderRepo =
+                            com.example.plantcare.data.repository.ReminderRepository
+                                    .getInstance(requireContext());
 
-                    // جلب كل نسخ النبات (باسم أو nickname) للمستخدم - مزامنة الملاحظة في جميعها
-                    List<Plant> allCopiesByName = db.plantDao().getAllUserPlantsWithNameAndUser(finalPlantName, userEmail);
-                    List<Plant> allCopiesByNickname = db.plantDao().getAllUserPlantsWithNicknameAndUser(plant.getNickname(), userEmail);
+                    // Persist the in-memory edits on this plant only. The
+                    // previous implementation cascaded personalNote across
+                    // every sibling sharing the same name/nickname, which
+                    // silently clobbered per-instance notes whenever a user
+                    // had two of the same species (e.g. two Pothos in
+                    // different rooms).
+                    plantRepo.updateBlocking(plant);
 
-                    for (Plant p : allCopiesByName) {
-                        p.setPersonalNote(finalPersonalNote);
-                        db.plantDao().update(p);
-                    }
-                    for (Plant p : allCopiesByNickname) {
-                        p.setPersonalNote(finalPersonalNote);
-                        db.plantDao().update(p);
-                    }
-
-                    // تحديث باقي المواصفات (إضافة أو تعديل مواصفات أخرى)
+                    // Reschedule reminders only when the watering text was
+                    // actually populated and yields a valid interval.
+                    List<WateringReminder> newReminders = null;
                     if (!TextUtils.isEmpty(watering)) {
                         int newInterval = ReminderUtils.parseWateringInterval(watering);
-                        plant.setWateringInterval(newInterval);
-                        db.plantDao().update(plant);
+                        if (newInterval > 0) {
+                            plant.setWateringInterval(newInterval);
+                            plantRepo.updateBlocking(plant);
 
-                        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                        db.reminderDao().deleteFutureRemindersForPlant(plant.id, today);
+                            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                            reminderRepo.deleteFutureRemindersForPlantBlocking(plant.id, today);
 
-                        List<WateringReminder> newReminders = ReminderUtils.generateReminders(plant);
-                        db.reminderDao().insertAll(newReminders);
+                            newReminders = ReminderUtils.generateReminders(plant);
+                            if (newReminders != null) reminderRepo.insertAllBlocking(newReminders);
+                        }
+                    }
+
+                    // Mirror the edits + new reminder schedule to Firebase.
+                    // Best-effort: Firestore writes don't block the UI ack
+                    // (they queue offline if the device is disconnected),
+                    // and `try/catch` shields us from unexpected SDK errors
+                    // so a sync glitch doesn't undo a successful local save.
+                    if (plant.isUserPlant()) {
+                        try {
+                            FirebaseSyncManager.get().syncPlant(plant);
+                        } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
+                        if (newReminders != null) {
+                            // Drop the old reminder docs before pushing new ones
+                            // so a shorter interval doesn't leave stale rows.
+                            try {
+                                FirebaseSyncManager.get().deleteRemindersForPlant(
+                                        plant.getUserEmail(), plant.id);
+                            } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
+                            for (WateringReminder r : newReminders) {
+                                try {
+                                    FirebaseSyncManager.get().syncReminder(r);
+                                } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
+                            }
+                        }
                     }
                 },
                 () -> {

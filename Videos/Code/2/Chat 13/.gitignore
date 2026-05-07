@@ -1,0 +1,32 @@
+# ── Android Build ─────────────────────────────────────────────
+.gradle/
+build/
+app/build/
+*.apk
+*.aab
+*.ap_
+
+# ── Local Config (NEVER commit these) ─────────────────────────
+local.properties
+google-services.json
+app/src/dev/google-services.json
+app/src/prod/google-services.json
+
+# ── Keystore & Signing (NEVER commit these) ───────────────────
+*.jks
+*.keystore
+keystore/
+
+# ── IDEs ──────────────────────────────────────────────────────
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ── Kotlin / Java ─────────────────────────────────────────────
+*.class
+*.jar
+out/
+
+# ── Room Schemas (optional — keep if you want schema in VCS) ──
+# app/schemas/
