@@ -87,6 +87,51 @@ service cloud.firestore {
         allow read, delete: if isOwner(userId);
         allow create, update: if isOwner(userId) && validSize(request.resource.data, 5);
       }
+
+      // Wave 2: per-user FCM token registry. Doc id = the FCM token itself.
+      // Cloud Functions reads these to send push to the device. Writes
+      // limited to the owning user — tokens are personally identifying
+      // (they tie a device to a user) and must never leak.
+      match /fcmTokens/{token} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 5);
+      }
+
+      // Wave 2 Family Share — pointer docs the recipient reads to discover
+      // plants shared with them. Written ONLY by Cloud Functions (admin
+      // SDK bypasses rules); the client gets read-only visibility and is
+      // explicitly forbidden from creating these from the app.
+      match /sharedPlants/{plantId} {
+        allow read: if isOwner(userId);
+        allow write: if false;
+      }
+    }
+
+    // ── Family Share invitations ─────────────────────────────────
+    //
+    // Invite docs live at the top level (not under /users/) because the
+    // invitee usually isn't authenticated as the same user as the owner.
+    // The Cloud Function `onShareInviteCreated` resolves toUid by email
+    // and sends the FCM push.
+    //
+    // Owner can create + read + update (to mark expired/declined).
+    // Invitee can read + update (to flip status to "accepted").
+    // Nobody else can touch the doc.
+    match /shareInvites/{inviteId} {
+      allow create: if request.auth != null
+                    && request.resource.data.fromUid == request.auth.uid
+                    && request.resource.data.status == "pending"
+                    && validSize(request.resource.data, 15);
+      allow read:   if request.auth != null
+                    && (resource.data.fromUid == request.auth.uid
+                        || resource.data.toUid == request.auth.uid
+                        || resource.data.toEmail == request.auth.token.email);
+      allow update: if request.auth != null
+                    && (resource.data.fromUid == request.auth.uid
+                        || resource.data.toUid == request.auth.uid)
+                    && validSize(request.resource.data, 15);
+      allow delete: if request.auth != null
+                    && resource.data.fromUid == request.auth.uid;
     }
 
     // ── Public plant catalog (read-only for authenticated users) ─

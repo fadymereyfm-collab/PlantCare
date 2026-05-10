@@ -191,6 +191,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage'
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging'  // Wave 2: FCM for Family Share invites
+    implementation 'com.google.firebase:firebase-functions'  // Wave 2: callable for cross-user reminder writes
 
     // Date/Time utils
     implementation "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
