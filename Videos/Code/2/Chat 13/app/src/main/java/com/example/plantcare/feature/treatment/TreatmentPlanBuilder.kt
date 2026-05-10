@@ -29,7 +29,7 @@ import java.util.Locale
  */
 object TreatmentPlanBuilder {
 
-    private val FMT = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val FMT = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
     /** Ein geplanter Schritt: Offset in Tagen + deutscher Text aus Strings.xml. */
     private data class Step(val dayOffset: Int, val labelRes: Int)

@@ -1,6 +1,7 @@
 package com.example.plantcare.ui.disease
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import com.example.plantcare.EmailContext
 import android.content.pm.PackageManager
@@ -56,6 +57,10 @@ import java.util.Locale
  * (PROGRESS.md F3-gemini), zugunsten besserer Erkennung für Zimmerpflanzen.
  */
 class DiseaseDiagnosisActivity : AppCompatActivity() {
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(com.example.plantcare.format.FontScaleHelper.wrap(newBase))
+    }
 
     companion object {
         /**
@@ -845,7 +850,7 @@ class DiseaseDiagnosisActivity : AppCompatActivity() {
         userEmail: String?,
         diagnosisId: Int
     ) {
-        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
         lifecycleScope.launch {
             val ok = withContext(Dispatchers.IO) {
                 try {
@@ -981,7 +986,7 @@ class DiseaseDiagnosisActivity : AppCompatActivity() {
      * Mirrors the `identify/` subdir convention introduced in F8.3.
      */
     private fun createImageFile(): File {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
         val baseDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val diseaseDir = File(baseDir, "disease").apply { mkdirs() }
         return File.createTempFile("DISEASE_${timeStamp}_", ".jpg", diseaseDir)
@@ -1142,31 +1147,37 @@ class DiseaseDiagnosisActivity : AppCompatActivity() {
                 return@launch
             }
 
-            // Anzeige­text bevorzugt Nickname, sonst Name.
-            val labels = plants.map { p ->
+            // Anzeige­text bevorzugt Nickname, sonst Name. Each plant becomes
+            // an Outlined row; "Keine Pflanze" is appended as the neutral
+            // option (was setNeutralButton on the legacy MaterialAlertDialog).
+            val items = mutableListOf<com.example.plantcare.ui.util.ActionListDialogFragment.Item>()
+            plants.forEach { p ->
                 val nick = p.nickname?.takeIf { it.isNotBlank() }
-                nick ?: p.name ?: "Pflanze #${p.id}"
-            }.toTypedArray()
+                val label = nick ?: p.name ?: "Pflanze #${p.id}"
+                items.add(
+                    com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                        label = label,
+                        isDanger = false,
+                        onClick = { confirmAndSave(p.id, userEmail) }
+                    )
+                )
+            }
+            items.add(
+                com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                    label = getString(R.string.disease_pick_plant_none),
+                    isDanger = false,
+                    onClick = { viewModel.saveTopResult(userEmail, plantId = 0) }
+                )
+            )
 
-            AlertDialog.Builder(this@DiseaseDiagnosisActivity)
-                .setTitle(R.string.disease_pick_plant_title)
-                .setItems(labels) { dlg, which ->
-                    val chosen = plants[which]
-                    dlg.dismiss()
-                    confirmAndSave(chosen.id, userEmail)
-                }
-                .setNeutralButton(R.string.disease_pick_plant_none) { dlg, _ ->
-                    dlg.dismiss()
-                    viewModel.saveTopResult(userEmail, plantId = 0)
-                }
-                // Cancel re-enables Save so the user can pick again instead
-                // of being stuck on a permanently-disabled button.
-                .setNegativeButton(R.string.disease_pick_plant_cancel) { d, _ ->
-                    d.dismiss()
-                    btnSave.isEnabled = true
-                }
-                .setOnCancelListener { btnSave.isEnabled = true }
-                .show()
+            // Abbrechen / tap-outside / back must re-enable Save so the user
+            // isn't stuck on a permanently-disabled button. Item picks bypass
+            // this callback (handled inside ActionListDialogFragment).
+            com.example.plantcare.ui.util.ActionListDialogFragment()
+                .configure(getString(R.string.disease_pick_plant_title), items)
+                .onDismissedWithoutPick { btnSave.isEnabled = true }
+                .show(supportFragmentManager,
+                    com.example.plantcare.ui.util.ActionListDialogFragment.TAG)
         }
     }
 
