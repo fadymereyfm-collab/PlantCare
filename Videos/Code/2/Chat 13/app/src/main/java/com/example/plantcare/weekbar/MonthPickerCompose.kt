@@ -223,11 +223,17 @@ private fun MonthGrid(
                                     fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
                                 )
                                 if (hasReminder) {
+                                    // Pre-fix this was a 6.dp orange dot —
+                                    // user found it too easy to miss. Now a
+                                    // chunky orange bar under the day number,
+                                    // sized 16×3 so it stays well inside the
+                                    // 40dp day circle even at the lowest row.
                                     Spacer(Modifier.height(2.dp))
                                     Box(
                                         Modifier
-                                            .size(6.dp)
-                                            .clip(CircleShape)
+                                            .width(16.dp)
+                                            .height(3.dp)
+                                            .clip(RoundedCornerShape(2.dp))
                                             .background(reminderDot)
                                     )
                                 }
@@ -267,10 +273,14 @@ private fun ReminderCloudPopup(
     val shown = reminders.take(maxThumbs)
     val extra = (reminders.size - shown.size).coerceAtLeast(0)
 
-    val thumbSize = 28.dp
-    val horizontalPadding = 8.dp
-    val verticalPadding = 6.dp
-    val gap = 4.dp
+    // thumbSize bumped 28 → 40 → 48 (matches RemindersList.PlantThumbnail
+    // size) so plants are clearly recognisable inside the hover popup.
+    // With maxThumbs=5 + gap=6 + padding 10 the popup is ≈ 280dp wide,
+    // still comfortable on a 360dp phone with 24dp screen padding.
+    val thumbSize = 48.dp
+    val horizontalPadding = 10.dp
+    val verticalPadding = 8.dp
+    val gap = 6.dp
 
     // Positions the popup horizontally centred above the day cell, clamped to the
     // window so it never slides off-screen near the calendar edges. Using a custom

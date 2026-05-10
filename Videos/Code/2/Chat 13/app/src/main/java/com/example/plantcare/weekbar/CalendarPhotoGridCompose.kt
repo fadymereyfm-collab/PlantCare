@@ -24,6 +24,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.signature.ObjectKey
 import com.example.plantcare.R
+import com.example.plantcare.media.PhotoStorage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.io.File
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -44,11 +50,18 @@ fun CalendarPhotoGrid(
         Surface(
             color = Color.Transparent
         ) {
+            // U9 — pre-fix `GridCells.Adaptive(120.dp)` produced a single
+            // huge thumbnail (~330dp wide) when only one photo existed for
+            // the day, dwarfing the reminder cards above and pushing the
+            // bottom action bar off-screen. Fixed at 3 columns so each
+            // thumbnail is a predictable ~106dp on a 360dp-wide phone, and
+            // height capped at 240.dp keeps the grid from monopolising the
+            // screen even with 9+ photos.
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 120.dp),
+                columns = GridCells.Fixed(3),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 420.dp),
+                    .heightIn(max = 240.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(bottom = 4.dp)
@@ -88,9 +101,22 @@ fun CalendarPhotoGrid(
 
 private fun loadCalendarPhotoInto(iv: ImageView, photo: CalendarPhotoItem) {
     val ctx = iv.context
-    val placeholder = R.drawable.ic_default_plant
-    val raw = photo.imagePath
+    val placeholder = DefaultPlantIcon.forPlant(photo.plantName, photo.plantId)
+    val original = photo.imagePath
+    // Strip the "PENDING_DOC:<docId>|" prefix that FirebaseSyncManager adds
+    // while an upload is in flight. The original local URI follows the `|`,
+    // so the rest of the resolution logic can treat it like any other path.
+    val raw: String? = when {
+        original == null -> null
+        original.startsWith("PENDING_DOC:") -> {
+            val sep = original.indexOf('|')
+            if (sep > 0 && sep + 1 < original.length) original.substring(sep + 1) else null
+        }
+        else -> original
+    }
 
+    // Resolve the photo's own imagePath first — covers the happy path:
+    // freshly captured `content://` URIs and uploaded https URLs alike.
     val model: Any? = when {
         raw.isNullOrBlank() -> null
         raw.startsWith("PENDING_DOC:") -> null
@@ -103,24 +129,72 @@ private fun loadCalendarPhotoInto(iv: ImageView, photo: CalendarPhotoItem) {
         else -> File(raw).takeIf { it.exists() && it.length() > 0 }
     }
 
-    val request = Glide.with(ctx)
-    if (model == null) {
-        request.load(placeholder)
+    if (model != null) {
+        val builder = Glide.with(ctx).load(model)
+            .placeholder(placeholder)
+            .error(placeholder)
             .centerCrop()
-            .into(iv)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+        if (model is File) {
+            builder.signature(ObjectKey("${model.absolutePath}#${model.lastModified()}"))
+        }
+        builder.into(iv)
         return
     }
 
-    val builder = request.load(model)
-        .placeholder(placeholder)
-        .error(placeholder)
-        .centerCrop()
-        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-    if (model is File) {
-        builder.signature(ObjectKey("${model.absolutePath}#${model.lastModified()}"))
+    // Functional Report §6.1 (B1/F1) deeper fix: when imagePath is blank
+    // or PENDING_DOC: (Firebase upload window — the local content:// is
+    // overwritten with "PENDING_DOC:<docId>" the moment upload starts),
+    // we cascade through the same resolution chain the rest of the app
+    // uses (cover file → DB imageUri → ArchiveStore → catalog drawable →
+    // Wiki image). PlantImageLoader exposes that chain via
+    // resolveBestImage. We can't call PlantImageLoader.loadInto directly
+    // here because it forces circleCrop, while the calendar grid wants
+    // RoundedCornerShape (centerCrop) — so we resolve, then load by
+    // hand with centerCrop preserved.
+    iv.setImageResource(placeholder)
+    val userEmail = try {
+        com.example.plantcare.EmailContext.current(ctx)
+    } catch (_: Throwable) {
+        // expected: very early app start before EmailContext is wired
+        null
     }
-    builder.into(iv)
+    // Same job-tag pattern as PlantImageLoader — cancel any prior in-flight
+    // resolution attached to this ImageView so RecyclerView reuse doesn't
+    // race a stale Wiki/DB result onto the bound-since item.
+    (iv.getTag(R.id.tag_plant_image_load_job) as? Job)?.cancel()
+    val job = CALENDAR_PHOTO_SCOPE.launch {
+        val resolved = try {
+            PlantImageLoader.resolveBestImage(ctx, photo.plantId, photo.plantName, userEmail)
+        } catch (_: Throwable) {
+            // expected: storage / DB edge cases — fall back to placeholder.
+            Pair<Any?, Int?>(null, null)
+        }
+        val finalModel: Any = resolved.first ?: resolved.second ?: placeholder
+        try {
+            val builder = Glide.with(ctx).load(finalModel)
+                .placeholder(placeholder)
+                .error(placeholder)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            if (finalModel is File) {
+                builder.signature(ObjectKey("${finalModel.absolutePath}#${finalModel.lastModified()}"))
+            }
+            builder.into(iv)
+        } catch (_: Throwable) {
+            iv.setImageResource(placeholder)
+        }
+    }
+    iv.setTag(R.id.tag_plant_image_load_job, job)
 }
+
+/**
+ * Shared SupervisorJob scope so per-photo failures don't take down siblings.
+ * One file scope keeps coroutine bookkeeping cheap; cancellation is per-Job
+ * via the tag attached to each ImageView (see loadCalendarPhotoInto).
+ */
+private val CALENDAR_PHOTO_SCOPE: CoroutineScope =
+    CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
 /**
  * content:// URIs from this app's own FileProvider can lose their grant once the

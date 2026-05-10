@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 // AppCompat AlertDialog used via fully qualified name below
 import androidx.fragment.app.FragmentActivity
@@ -85,8 +86,12 @@ fun WeatherTipCard(weatherTip: WeatherTip) {
             Column(modifier = Modifier.weight(1f)) {
                 // City + temp
                 if (weatherTip.city.isNotEmpty()) {
+                    // Wave 2: temp display respects AppearancePrefs.Units.
+                    val ctx = androidx.compose.ui.platform.LocalContext.current
                     Text(
-                        text = "${weatherTip.city} · ${weatherTip.temp.toInt()}°C",
+                        text = "${weatherTip.city} · " +
+                                com.example.plantcare.format.UnitFormatter
+                                    .formatTemp(ctx, weatherTip.temp.toDouble()),
                         color = textColor,
                         fontWeight = FontWeight.SemiBold,
                         style = MaterialTheme.typography.body1,
@@ -231,11 +236,22 @@ fun MainScreen(
                     modifier = Modifier.fillMaxWidth(),
                     onPhotoClick = { photo ->
                         if (!showMonthDialog) {
-                            val path = photo.imagePath
-                            if (path != null && !path.startsWith("PENDING_DOC:") && activity != null) {
-                                val dialog = FullScreenImageDialogFragment.newInstance(path)
+                            val raw = photo.imagePath
+                            // Extract local URI from PENDING_DOC:<docId>|<uri>
+                            // so the user can preview the freshly captured
+                            // photo even before its Firebase upload finishes.
+                            val effective = when {
+                                raw == null -> null
+                                raw.startsWith("PENDING_DOC:") -> {
+                                    val sep = raw.indexOf('|')
+                                    if (sep > 0 && sep + 1 < raw.length) raw.substring(sep + 1) else null
+                                }
+                                else -> raw
+                            }
+                            if (effective != null && activity != null) {
+                                val dialog = FullScreenImageDialogFragment.newInstance(effective)
                                 dialog.show(activity.supportFragmentManager, "image_fullscreen")
-                            } else if (path != null && path.startsWith("PENDING_DOC:")) {
+                            } else if (raw != null && raw.startsWith("PENDING_DOC:")) {
                                 Toast.makeText(context, R.string.photo_still_uploading, Toast.LENGTH_SHORT).show()
                             }
                         }
@@ -243,13 +259,11 @@ fun MainScreen(
                     onPhotoLongClick = { photo ->
                         if (showMonthDialog) return@CalendarPhotoGrid
                         if (activity == null) return@CalendarPhotoGrid
-                        val optionDelete = context.getString(R.string.action_delete)
-                        val optionChangeDate = context.getString(R.string.action_change_date)
-                        val options = arrayOf(optionDelete, optionChangeDate)
-                        androidx.appcompat.app.AlertDialog.Builder(context)
-                            .setTitle(R.string.photo_options_title)
-                            .setItems(options) { _, which ->
-                                if (which == 0) {
+                        val items = listOf(
+                            com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                                label = context.getString(R.string.action_delete),
+                                isDanger = true,
+                                onClick = {
                                     androidx.appcompat.app.AlertDialog.Builder(context)
                                         .setMessage(R.string.confirm_delete_photo_message)
                                         .setPositiveButton(R.string.action_yes) { _, _ ->
@@ -267,11 +281,16 @@ fun MainScreen(
                                         }
                                         .setNegativeButton(R.string.action_no, null)
                                         .show()
-                                } else if (which == 1) {
+                                }
+                            ),
+                            com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                                label = context.getString(R.string.action_change_date),
+                                isDanger = false,
+                                onClick = {
                                     val cal = java.util.Calendar.getInstance()
                                     cal.set(photo.date.year, photo.date.monthValue - 1, photo.date.dayOfMonth)
                                     android.app.DatePickerDialog(context, { _, y, m, d ->
-                                        val newDate = String.format(java.util.Locale.getDefault(), "%04d-%02d-%02d", y, m + 1, d)
+                                        val newDate = String.format(java.util.Locale.US, "%04d-%02d-%02d", y, m + 1, d)
                                         scope.launch(Dispatchers.IO) {
                                             val photoRepo = PlantPhotoRepository.getInstance(context)
                                             val plantPhoto = photoRepo.getPhotoById(photo.photoId)
@@ -286,9 +305,12 @@ fun MainScreen(
                                         }
                                     }, cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH), cal.get(java.util.Calendar.DAY_OF_MONTH)).show()
                                 }
-                            }
-                            .setNegativeButton(R.string.action_cancel, null)
-                            .show()
+                            )
+                        )
+                        com.example.plantcare.ui.util.ActionListDialogFragment()
+                            .configure(context.getString(R.string.photo_options_title), items)
+                            .show(activity.supportFragmentManager,
+                                com.example.plantcare.ui.util.ActionListDialogFragment.TAG)
                     }
                 )
             }
@@ -315,15 +337,19 @@ fun MainScreen(
 
         // Month picker overlay
         if (showMonthDialog) {
+            // Scrim alpha bumped 0.15 → 0.55 so the dialog reads as a
+            // foreground modal instead of a translucent veneer that
+            // leaves the underlying tabs/weekbar fully legible (U5).
             Box(
                 Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.15f))
+                    .background(Color.Black.copy(alpha = 0.55f))
                     .clickable(enabled = true) { showMonthDialog = false }
                     .zIndex(1f)
             )
             val dialogBg = colorResource(R.color.pc_surface)
             val dialogTextColor = colorResource(R.color.pc_onSurface)
+            val dialogTextSecondary = colorResource(R.color.pc_onSurfaceSecondary)
             Box(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -341,6 +367,16 @@ fun MainScreen(
                         text = "Monat auswählen",
                         color = dialogTextColor,
                         style = MaterialTheme.typography.h6
+                    )
+                    // U2 — title was misleading because the dialog only
+                    // showed one month with no explicit prev/next chevrons.
+                    // The pager DOES support swipe across ±10 years, so a
+                    // small hint makes the affordance discoverable.
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = "‹ Wischen für andere Monate ›",
+                        color = dialogTextSecondary,
+                        fontSize = 12.sp
                     )
                     Spacer(Modifier.height(8.dp))
 

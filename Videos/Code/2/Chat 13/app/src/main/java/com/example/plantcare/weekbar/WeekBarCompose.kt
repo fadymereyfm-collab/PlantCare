@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -176,11 +177,16 @@ fun WeekBarWithMonthPicker(
                             color = onSurfaceColor
                         )
                         if (hasReminder && !isSelected) {
+                            // Match the MonthPicker treatment (U3): a chunky
+                            // 16×3 orange bar instead of a 6dp dot. Easier
+                            // to spot under the day number, and consistent
+                            // with the month-picker affordance.
                             Spacer(Modifier.height(2.dp))
                             Box(
                                 Modifier
-                                    .size(6.dp)
-                                    .clip(CircleShape)
+                                    .width(16.dp)
+                                    .height(3.dp)
+                                    .clip(RoundedCornerShape(2.dp))
                                     .background(reminderDotColor)
                             )
                         }

@@ -26,14 +26,18 @@ object ArchiveStore {
     fun addCalendarPhoto(context: Context, email: String, plantId: Long, plantName: String?, uri: Uri, date: LocalDate) {
         val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         val key = keyArchive(email, plantId)
-        val arr = JSONArray(prefs.getString(key, "[]"))
-        val obj = JSONObject().apply {
-            put("uri", uri.toString())
-            put("date", date.format(DateTimeFormatter.ISO_LOCAL_DATE))
-            put("plantName", plantName ?: JSONObject.NULL)
+        // RMW must be atomic: rapid-fire captures on the IO dispatcher would
+        // otherwise both read the same baseline and one's append would lose.
+        synchronized(this) {
+            val arr = JSONArray(prefs.getString(key, "[]"))
+            val obj = JSONObject().apply {
+                put("uri", uri.toString())
+                put("date", date.format(DateTimeFormatter.ISO_LOCAL_DATE))
+                put("plantName", plantName ?: JSONObject.NULL)
+            }
+            arr.put(obj)
+            prefs.edit().putString(key, arr.toString()).apply()
         }
-        arr.put(obj)
-        prefs.edit().putString(key, arr.toString()).apply()
     }
 
     fun getPhotos(context: Context, email: String, plantId: Long): List<PhotoEntry> {
