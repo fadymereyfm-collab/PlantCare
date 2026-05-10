@@ -194,10 +194,18 @@ public class PlantPhotosViewerDialogFragment extends DialogFragment {
         public void bind(PlantPhoto photo) {
             loadPhotoInto(imageView, photo);
 
-            // Date label
+            // Date label — Wave 2: respect AppearancePrefs date format.
             if (dateView != null) {
                 if (photo.dateTaken != null && !photo.dateTaken.isEmpty()) {
-                    dateView.setText(itemView.getContext().getString(R.string.calendar_date_prefix, photo.dateTaken));
+                    String displayDate = photo.dateTaken;
+                    try {
+                        java.time.LocalDate parsed = java.time.LocalDate.parse(photo.dateTaken);
+                        displayDate = com.example.plantcare.format.DateFormatter
+                                .INSTANCE.format(itemView.getContext(), parsed);
+                    } catch (Exception expected) {
+                        // expected: bad rows from old data — fall back to the raw string.
+                    }
+                    dateView.setText(itemView.getContext().getString(R.string.calendar_date_prefix, displayDate));
                     dateView.setVisibility(View.VISIBLE);
                 } else {
                     dateView.setVisibility(View.GONE);
@@ -247,52 +255,57 @@ public class PlantPhotosViewerDialogFragment extends DialogFragment {
     }
 
     void showPhotoOptionsDialogWithDelete(View contextView, PlantPhoto photo, Runnable onChanged) {
-        String[] options = {
+        java.util.List<com.example.plantcare.ui.util.ActionListDialogFragment.Item> items =
+                new java.util.ArrayList<>();
+        items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
                 contextView.getContext().getString(R.string.action_delete),
-                contextView.getContext().getString(R.string.action_change_date)
-        };
-        new AlertDialog.Builder(contextView.getContext())
-                .setTitle(R.string.photo_options_title)
-                .setItems(options, (dialog, which) -> {
-                    if (which == 0) {
-                        new AlertDialog.Builder(contextView.getContext())
-                                .setMessage(R.string.confirm_delete_photo_message)
-                                .setPositiveButton(R.string.action_yes, (d, w) -> {
-                                    FragmentBg.runIO(PlantPhotosViewerDialogFragment.this,
-                                            () -> FirebaseSyncManager.get().deletePhotoSmart(photo, contextView.getContext()),
-                                            () -> {
-                                                Toast.makeText(contextView.getContext(), R.string.msg_photo_deleted, Toast.LENGTH_SHORT).show();
-                                                if (onChanged != null) onChanged.run();
-                                            });
-                                })
-                                .setNegativeButton(R.string.action_no, null)
-                                .show();
-                    } else if (which == 1) {
-                        java.util.Calendar cal = java.util.Calendar.getInstance();
-                        try {
-                            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
-                            java.util.Date d = sdf.parse(photo.dateTaken);
-                            if (d != null) cal.setTime(d);
-                        } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
-                        android.app.DatePickerDialog dateDialog = new android.app.DatePickerDialog(contextView.getContext(), (v, y, m, d) -> {
-                            String newDate = String.format(java.util.Locale.getDefault(), "%04d-%02d-%02d", y, m + 1, d);
-                            FragmentBg.runIO(PlantPhotosViewerDialogFragment.this,
-                                    () -> {
-                                        photo.dateTaken = newDate;
-                                        com.example.plantcare.data.repository.PlantPhotoRepository
-                                                .getInstance(contextView.getContext())
-                                                .updateBlocking(photo);
-                                    },
-                                    () -> {
-                                        Toast.makeText(contextView.getContext(), R.string.msg_date_changed, Toast.LENGTH_SHORT).show();
-                                        if (onChanged != null) onChanged.run();
-                                    });
-                        }, cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH), cal.get(java.util.Calendar.DAY_OF_MONTH));
-                        dateDialog.show();
-                    }
-                })
-                .setNegativeButton(R.string.action_cancel, null)
-                .show();
+                true,
+                () -> {
+                    new AlertDialog.Builder(contextView.getContext())
+                            .setMessage(R.string.confirm_delete_photo_message)
+                            .setPositiveButton(R.string.action_yes, (d, w) -> {
+                                FragmentBg.runIO(PlantPhotosViewerDialogFragment.this,
+                                        () -> FirebaseSyncManager.get().deletePhotoSmart(photo, contextView.getContext()),
+                                        () -> {
+                                            Toast.makeText(contextView.getContext(), R.string.msg_photo_deleted, Toast.LENGTH_SHORT).show();
+                                            if (onChanged != null) onChanged.run();
+                                        });
+                            })
+                            .setNegativeButton(R.string.action_no, null)
+                            .show();
+                    return kotlin.Unit.INSTANCE;
+                }));
+        items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                contextView.getContext().getString(R.string.action_change_date),
+                false,
+                () -> {
+                    java.util.Calendar cal = java.util.Calendar.getInstance();
+                    try {
+                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
+                        java.util.Date d = sdf.parse(photo.dateTaken);
+                        if (d != null) cal.setTime(d);
+                    } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+                    android.app.DatePickerDialog dateDialog = new android.app.DatePickerDialog(contextView.getContext(), (v, y, m, d) -> {
+                        String newDate = String.format(java.util.Locale.US, "%04d-%02d-%02d", y, m + 1, d);
+                        FragmentBg.runIO(PlantPhotosViewerDialogFragment.this,
+                                () -> {
+                                    photo.dateTaken = newDate;
+                                    com.example.plantcare.data.repository.PlantPhotoRepository
+                                            .getInstance(contextView.getContext())
+                                            .updateBlocking(photo);
+                                },
+                                () -> {
+                                    Toast.makeText(contextView.getContext(), R.string.msg_date_changed, Toast.LENGTH_SHORT).show();
+                                    if (onChanged != null) onChanged.run();
+                                });
+                    }, cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH), cal.get(java.util.Calendar.DAY_OF_MONTH));
+                    dateDialog.show();
+                    return kotlin.Unit.INSTANCE;
+                }));
+        new com.example.plantcare.ui.util.ActionListDialogFragment()
+                .configure(contextView.getContext().getString(R.string.photo_options_title), items)
+                .show(getParentFragmentManager(),
+                        com.example.plantcare.ui.util.ActionListDialogFragment.TAG);
     }
 
     @Override
@@ -321,9 +334,16 @@ public class PlantPhotosViewerDialogFragment extends DialogFragment {
         }
         String path = p.imagePath;
 
+        // PENDING_DOC:<docId>|<localUri> — extract the local URI suffix so
+        // the photo viewer shows the real image while upload is pending.
         if (path.startsWith("PENDING_DOC:")) {
-            iv.setImageResource(android.R.drawable.ic_menu_report_image);
-            return;
+            int sep = path.indexOf('|');
+            if (sep > 0 && sep + 1 < path.length()) {
+                path = path.substring(sep + 1);
+            } else {
+                iv.setImageResource(android.R.drawable.ic_menu_report_image);
+                return;
+            }
         }
 
         Object model;

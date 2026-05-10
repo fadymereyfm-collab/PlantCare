@@ -42,9 +42,9 @@
 | A1 (SecurePrefs unify) | `grep -rn '"current_user_email"' app/src/main/java` | فقط `SecurePrefsHelper.kt` و `EmailContext.kt` |
 | C2 (DAO out of UI) | `grep -rn "AppDatabase.getInstance\|DatabaseClient\." app/src/main/java/com/example/plantcare/ui/` | 0 |
 | C4 (no new Thread in UI) | `grep -rn "new Thread(" app/src/main/java/com/example/plantcare/ui/ app/src/main/java/com/example/plantcare/weekbar/` | 0 |
-| B1 (no resConfigs de) | `grep -n 'resConfigs' app/build.gradle` | لا نتيجة |
+| B1 (i18n shipped, not DE-only) | `grep -n 'resConfigs' app/build.gradle` | يجب أن يحتوي السطر على `"de"` و `"en"` معاً (DE-only ممنوع) |
 | A3 (no hardcoded weather key) | `grep -rn "YOUR_API_KEY_HERE" app/src/main/java` | 0 |
-| A4 (TFLite present) | `ls -la app/src/main/assets/plant_disease_model.tflite` | الملف موجود |
+| A4 (Disease backend wired) | `grep -n 'GEMINI_API_KEY' app/build.gradle` | يجب أن يحتوي على `buildConfigField "String", "GEMINI_API_KEY"` (الميزة هاجرت من TFLite محلي إلى Gemini 2.5 Flash السحابي يوم 2026-05-01؛ ملف `assets/plant_disease_model.tflite` لم يعد مطلوباً) |
 
 ---
 
@@ -61,7 +61,7 @@ Phase F (Functional bugs)  →  Phase A متبقّي  →  Phase B (i18n)  →  
 **Phase F — ترتيب موصى به (من Functional Report قسم 6):**
 1. F1: إصلاح عرض الصور في Today list (`CalendarPhotoGridCompose.kt`).
 2. F2: إصلاح عرض الصور في Archive (`ArchivePhotosDialogFragment.java`).
-3. F3: تفعيل Disease Diagnosis (نقل tflite + استبدال Toast بـ Intent).
+3. F3: تفعيل Disease Diagnosis — ✅ تمّ (Gemini 2.5 Flash، 2026-05-01).
 4. F4: تغيير `ic_disease.xml` لأيقونة معبّرة عن الفحص الصحي.
 5. F5: إصلاح wateringInterval بعد PlantNet (CSV column + defaults + draft passing).
 6. F6-F8: تحسين Weather adjustment.
@@ -161,8 +161,9 @@ Phase F (Functional bugs)  →  Phase A متبقّي  →  Phase B (i18n)  →  
 - [ ] keystore valid حتى 2030+ (حالياً 2053 ✅).
 - [ ] لا `ca-app-pub-3940256099942544` (test AdMob) في strings.xml.
 - [ ] لا `YOUR_API_KEY_HERE` في الكود.
-- [ ] `plant_disease_model.tflite` موجود (أو الميزة مخفيّة).
+- [ ] `BuildConfig.GEMINI_API_KEY` غير فارغ في prod-release (الميزة هاجرت من TFLite محلي إلى Gemini 2.5 Flash السحابي يوم 2026-05-01).
 - [ ] firestore.rules منشور في Firebase Console.
+- [ ] storage.rules منشور في Firebase Console (per DEFERRED_ISSUES #24).
 - [ ] Privacy Policy URL يعمل.
 
 ---
