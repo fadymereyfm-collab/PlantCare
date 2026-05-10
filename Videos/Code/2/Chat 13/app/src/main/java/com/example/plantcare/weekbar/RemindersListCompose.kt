@@ -104,6 +104,13 @@ fun RemindersList(
                                             launch(Dispatchers.Main) {
                                                 val dialog = PlantDetailDialogFragment.newInstance(found!!, true)
                                                 dialog.setReadOnlyMode(true)
+                                                // Pass the reminder type so the dialog renders
+                                                // the bold task-highlight at the top
+                                                // (water/fertilize/mist/repot — sourced via
+                                                // ReminderTaskHighlight from per-plant text
+                                                // for water+fertilize and per-family text for
+                                                // mist+repot, with generic fallbacks).
+                                                dialog.setHighlightTaskType(reminder.type)
                                                 dialog.show(context.supportFragmentManager, "plant_detail_from_calendar")
                                             }
                                         }
@@ -147,9 +154,21 @@ fun RemindersList(
                         Spacer(Modifier.width(10.dp))
 
                         if (isAuto) {
+                            // v16 — pick the icon + tint per reminder.type so
+                            // the calendar matches the Today list. Pre-fix every
+                            // auto reminder rendered with `ic_watering_can` and
+                            // a day with water+fertilize+repot for one plant
+                            // showed three identical watering-can icons.
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_watering_can),
-                                contentDescription = "Watering Can",
+                                painter = painterResource(
+                                    id = com.example.plantcare.util.ReminderTypeUi.iconFor(reminder.type)
+                                ),
+                                contentDescription = androidx.compose.ui.res.stringResource(
+                                    id = R.string.cd_watering_reminder
+                                ),
+                                tint = colorResource(
+                                    id = com.example.plantcare.util.ReminderTypeUi.tintFor(reminder.type)
+                                ),
                                 modifier = Modifier.size(36.dp)
                             )
                         } else {

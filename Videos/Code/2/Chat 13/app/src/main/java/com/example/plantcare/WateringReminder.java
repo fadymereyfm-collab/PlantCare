@@ -77,13 +77,26 @@ public class WateringReminder implements Serializable {
     public String notes;
 
     /**
+     * Wave 2 (v15): Reminder-Kategorie, die das Per-Type-Notification-Toggle
+     * im Settings-Dialog ansteuert. Werte:
+     *   "water"     → Gießen (Standard für alle vor v15 erstellten Erinnerungen)
+     *   "fertilize" → Düngen
+     *   "mist"      → Sprühen
+     *   "repot"     → Umtopfen
+     * Treatment-Reminders behalten {@link #isTreatment}=1; type bleibt "water".
+     * Worker liest pro-Typ-Toggles, um die heutige Summary zu filtern.
+     */
+    @Nullable
+    public String type;
+
+    /**
      * لحساب عدد الأيام المتأخرة
      */
     public int getDaysOverdue() {
         if (done || date == null) return 0;
 
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             Date reminderDate = sdf.parse(date);
             Date today = sdf.parse(sdf.format(new Date())); // لضمان تجاهل الوقت
 
@@ -110,7 +123,7 @@ public class WateringReminder implements Serializable {
             int intervalDays = Integer.parseInt(repeat);
             if (intervalDays <= 0) return dates;
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(sdf.parse(date));
 

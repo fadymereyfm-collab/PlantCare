@@ -70,7 +70,7 @@ public class EditManualReminderDialogFragment extends DialogFragment {
             final Calendar calendar = Calendar.getInstance();
             if (!TextUtils.isEmpty(editDate.getText())) {
                 try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                     calendar.setTime(sdf.parse(editDate.getText().toString()));
                 } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
             }
@@ -80,7 +80,7 @@ public class EditManualReminderDialogFragment extends DialogFragment {
             new DatePickerDialog(
                     new android.view.ContextThemeWrapper(requireContext(), R.style.PlantCareDatePicker),
                     (DatePicker dp, int y, int m, int d) -> {
-                        String dateStr = String.format(Locale.getDefault(), "%04d-%02d-%02d", y, m + 1, d);
+                        String dateStr = String.format(Locale.US, "%04d-%02d-%02d", y, m + 1, d);
                         editDate.setText(dateStr);
                     }, year, month, day).show();
         });
@@ -91,7 +91,7 @@ public class EditManualReminderDialogFragment extends DialogFragment {
             final Calendar calendar = Calendar.getInstance();
             if (!TextUtils.isEmpty(editEndDate.getText())) {
                 try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                     calendar.setTime(sdf.parse(editEndDate.getText().toString()));
                 } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
             }
@@ -101,7 +101,7 @@ public class EditManualReminderDialogFragment extends DialogFragment {
             new DatePickerDialog(
                     new android.view.ContextThemeWrapper(requireContext(), R.style.PlantCareDatePicker),
                     (DatePicker dp, int y, int m, int d) -> {
-                        String dateStr = String.format(Locale.getDefault(), "%04d-%02d-%02d", y, m + 1, d);
+                        String dateStr = String.format(Locale.US, "%04d-%02d-%02d", y, m + 1, d);
                         editEndDate.setText(dateStr);
                     }, year, month, day).show();
         });
@@ -170,7 +170,7 @@ public class EditManualReminderDialogFragment extends DialogFragment {
                 int repeatDays = 0;
                 try { repeatDays = Integer.parseInt(newRepeat); } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
                 if (repeatDays > 0) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                     Calendar cal = Calendar.getInstance();
                     try { cal.setTime(sdf.parse(newDate)); } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
 
