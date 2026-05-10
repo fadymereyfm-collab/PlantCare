@@ -21,11 +21,16 @@ import com.example.plantcare.ui.viewmodel.OnboardingViewModel
 
 /**
  * Onboarding screen shown on first app launch.
- * Pages: Welcome -> Watering Reminders -> Catalog & Archive -> Plant Selection
+ * Pages: Welcome -> Watering Reminders -> Catalog & Archive
  * Options: Create account / Login / Try without account (Guest mode)
  * A DSGVO consent dialog is shown before the user leaves onboarding.
  */
 class OnboardingActivity : AppCompatActivity() {
+
+    // Wave 2: respect the AppearancePrefs font-scale on this Activity too.
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(com.example.plantcare.format.FontScaleHelper.wrap(newBase))
+    }
 
     private val viewModel: OnboardingViewModel by viewModels()
 
@@ -42,7 +47,7 @@ class OnboardingActivity : AppCompatActivity() {
         private const val PREF_ONBOARDING = "prefs"
         private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
         private const val GUEST_EMAIL = "guest@local"
-        private const val TOTAL_PAGES = 4
+        private const val TOTAL_PAGES = 3
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -199,19 +204,18 @@ class OnboardingActivity : AppCompatActivity() {
             0 -> OnboardingPageFragment.newInstance(
                 title = getString(R.string.onboarding_welcome_title),
                 description = getString(R.string.onboarding_welcome_desc),
-                drawableRes = R.drawable.ic_plant_placeholder
+                drawableRes = R.drawable.ic_onboarding_welcome
             )
             1 -> OnboardingPageFragment.newInstance(
                 title = getString(R.string.onboarding_watering_title),
                 description = getString(R.string.onboarding_watering_desc),
-                drawableRes = R.drawable.ic_water_drop
+                drawableRes = R.drawable.ic_onboarding_watering
             )
             2 -> OnboardingPageFragment.newInstance(
                 title = getString(R.string.onboarding_catalog_title),
                 description = getString(R.string.onboarding_catalog_desc),
-                drawableRes = R.drawable.ic_plant_placeholder
+                drawableRes = R.drawable.ic_onboarding_catalog
             )
-            3 -> PlantSelectionFragment()
             else -> OnboardingPageFragment()
         }
     }
