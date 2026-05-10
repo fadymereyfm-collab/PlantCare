@@ -291,6 +291,44 @@ public final class DatabaseMigrations {
     };
 
     /**
+     * Wave 2 — adds a nullable `type` column to WateringReminder so the
+     * per-type notification toggles in Settings can filter the summary
+     * notification. Existing rows stay NULL — Worker treats NULL as
+     * "water" (the historical default), so behaviour is preserved for
+     * users upgrading from v14 without forcing a backfill on the main
+     * thread. New reminders will be created with the explicit type.
+     */
+    public static final Migration MIGRATION_14_15 = new Migration(14, 15) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE `WateringReminder` ADD COLUMN `type` TEXT");
+        }
+    };
+
+    /**
+     * Multi-type reminders (2026-05-09): expand Plant with the missing
+     * interval fields so the auto-generator can emit reminders for all
+     * four care types — Düngen / Sprühen / Umtopfen — alongside the
+     * historical Gießen-only flow. Also captures `scientificName` and
+     * `family` so future enrichment (Wikipedia / Wikidata / per-family
+     * defaults) has stable lookup keys to work from.
+     *
+     * All five columns default to 0 / NULL, so plants existing before
+     * this migration keep the round-1 watering-only behaviour until
+     * the user (or PlantCareDefaults seed) populates the new fields.
+     */
+    public static final Migration MIGRATION_15_16 = new Migration(15, 16) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE `plant` ADD COLUMN `fertilizingInterval` INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE `plant` ADD COLUMN `mistingInterval` INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE `plant` ADD COLUMN `repottingIntervalDays` INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE `plant` ADD COLUMN `scientificName` TEXT");
+            db.execSQL("ALTER TABLE `plant` ADD COLUMN `family` TEXT");
+        }
+    };
+
+    /**
      * All migrations that AppDatabase should register.
      * Add new entries here as you create them.
      */
@@ -304,6 +342,8 @@ public final class DatabaseMigrations {
             MIGRATION_11_12,
             MIGRATION_12_13,
             MIGRATION_13_14,
+            MIGRATION_14_15,
+            MIGRATION_15_16,
     };
 
     // ──────────────────────────────────────────────────────────────

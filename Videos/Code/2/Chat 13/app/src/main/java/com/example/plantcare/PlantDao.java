@@ -61,10 +61,9 @@ public interface PlantDao {
     List<Plant> getCatalogPlantsByCategory(@Nullable String category);
 
     /**
-     * Catalog plants that have no category yet — for the one-off classification
-     * pass after MIGRATION_6_7.
+     * Catalog plants that have no category yet.
      */
-    @Query("SELECT * FROM plant WHERE isUserPlant = 0 AND (category IS NULL OR category = '')")
+    @Query("SELECT * FROM plant WHERE isUserPlant = 0 AND (category IS NULL OR category = \'\')")
     List<Plant> getCatalogPlantsWithoutCategory();
 
     /**
@@ -74,20 +73,29 @@ public interface PlantDao {
     void updateCategory(int id, @Nullable String category);
 
     /**
-     * Case‑insensitive‑Suche im Katalog (isUserPlant = 0) anhand des Namens.
-     * Wird vom PlantNet‑Flow benutzt, um nach der Erkennung die vier Pflege‑Felder
-     * (Licht, Boden, Düngung, Bewässerung) aus dem vorhandenen 506er‑Katalog zu übernehmen,
-     * statt den Nutzer mit leeren Feldern zu lassen.
+     * Case-insensitive catalog lookup by German name.
      */
     @Query("SELECT * FROM plant WHERE LOWER(name) = LOWER(:name) AND isUserPlant = 0 LIMIT 1")
     Plant findCatalogByName(@Nullable String name);
 
     /**
-     * Partielle Katalog‑Suche: nützlich, wenn PlantNet einen zusammengesetzten Trivialnamen liefert
-     * (z. B. „Vielblütiges Salomonssiegel"), im Katalog aber die Kurzform („Salomonssiegel") steht.
+     * Partial catalog name match.
      */
     @Query("SELECT * FROM plant WHERE LOWER(name) LIKE LOWER(:pattern) AND isUserPlant = 0 LIMIT 1")
     Plant findCatalogByNameLike(@Nullable String pattern);
+
+    /**
+     * v17: catalog lookup by binomial / Latin name.
+     * Primary key for PlantNet matching now that the CSV carries scientificName.
+     */
+    @Query("SELECT * FROM plant WHERE LOWER(scientificName) = LOWER(:scientificName) AND isUserPlant = 0 LIMIT 1")
+    Plant findCatalogByScientificName(@Nullable String scientificName);
+
+    /**
+     * v17: partial Latin-name match (genus prefix fallback).
+     */
+    @Query("SELECT * FROM plant WHERE LOWER(scientificName) LIKE LOWER(:pattern) AND isUserPlant = 0 LIMIT 1")
+    Plant findCatalogByScientificNameLike(@Nullable String pattern);
 
     @Query("SELECT * FROM plant WHERE name = :name AND isUserPlant = 1")
     List<Plant> getAllUserPlantsWithName(@Nullable String name);
@@ -125,15 +133,9 @@ public interface PlantDao {
     // Profile image control
     // -------------------------
 
-    /**
-     * Set/replace the profile image (imageUri) explicitly.
-     */
     @Query("UPDATE plant SET imageUri = :imageUri WHERE id = :id")
     void updateProfileImage(int id, @Nullable String imageUri);
 
-    /**
-     * Clear (remove) the profile image (sets imageUri = NULL).
-     */
     @Query("UPDATE plant SET imageUri = NULL WHERE id = :id")
     void clearProfileImage(int id);
 
@@ -147,10 +149,7 @@ public interface PlantDao {
     @Update
     void update(Plant plant);
 
-    /**
-     * Get all catalog (non-user) plants that have no profile image yet.
-     */
-    @Query("SELECT * FROM plant WHERE isUserPlant = 0 AND (imageUri IS NULL OR imageUri = '')")
+    @Query("SELECT * FROM plant WHERE isUserPlant = 0 AND (imageUri IS NULL OR imageUri = \'\')")
     List<Plant> getCatalogPlantsWithoutImage();
 
     @Delete
@@ -161,13 +160,6 @@ public interface PlantDao {
 
     // ────────────────────────────────────────────────────────────────────
     // Sprint-3 Task 3.1: reactive LiveData<List<...>> read queries
-    //
-    // Room observes the underlying tables and re-emits whenever the rows
-    // matching the query change — so any UI binding these methods updates
-    // automatically on insert/update/delete, with no DataChangeNotifier
-    // tickle needed. Kept as parallel `observeXxx` methods so existing
-    // blocking call sites (workers, sync IO paths) keep their original
-    // List<X> contract.
     // ────────────────────────────────────────────────────────────────────
 
     @Query("SELECT * FROM plant")

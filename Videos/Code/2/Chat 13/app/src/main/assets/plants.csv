@@ -1,506 +1,506 @@
-name,lighting,soil,fertilizing,watering
-Aloe Vera,Helles bis mittleres Licht. Direkte Sonne fördert das Wachstum.,Gut drainierende Kakteenerde. Kein schwerer Lehm.,Von Frühling bis Sommer alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 14 Tage. Wenig Wasser genügt.
-Einblatt,Wenig bis mittleres Licht. Keine direkte Sonne.,Lockere humusreiche Blumenerde. Gleichmäßig feucht halten.,Alle 2 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Erde leicht feucht halten.
-Gummibaum,Helles bis mittleres Licht. Keine pralle Sonne.,Gut durchlässige Blumenerde. Etwas Sand für Drainage.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 12 Tage. Mäßig gießen.
-Glücksfeder,Mittellicht. Verträgt auch Schatten.,Lockere durchlässige Blumenerde. Keine Staunässe.,Alle 8 Wochen schwach düngen. Im Winter nicht düngen.,Alle 21 Tage. Wenig Wasser genügt.
-Ficus Benjamini,Helles Licht. Verträgt Halbschatten.,Gut durchlässige Blumenerde. Etwas Sand beigemischt.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 12 Tage. Mäßig gießen.
-Orchidee,Helles Licht. Keine direkte Sonne.,Spezielle Orchideenerde mit Rinde.,Alle 2 Wochen schwach düngen. Im Winter selten düngen.,Alle 10 Tage. Mäßig wässern.
-Kaktus,Viel Licht. Direkte Sonne erwünscht.,Mineralische Kakteenerde. Sehr gute Drainage.,Alle 6 Wochen wenig düngen. Nur im Sommer.,Alle 21 Tage. Sehr sparsam gießen.
-Sansevieria,Helles bis mittleres Licht. Auch Halbschatten möglich.,Durchlässige Kakteenerde. Kein dichter Boden.,Alle 6 Wochen leicht düngen. Im Winter nicht düngen.,Alle 30 Tage. Wenig Wasser.
-Bogenhanf,Mittellicht. Toleriert Schatten.,Kakteenerde mit Sandanteil. Gute Drainage wichtig.,Alle 6 Wochen leicht düngen. Im Winter nicht düngen.,Alle 30 Tage. Wenig Wasser.
-Efeutute,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere Blumenerde mit Drainage.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Gleichmäßig feucht halten.
-Zyperngras,Helles Licht. Keine direkte Sonne.,Humusreiche Erde. Gleichmäßig feucht halten.,Alle 4 Wochen düngen. Im Winter selten.,Alle 7 Tage. Erde stets feucht halten.
-Philodendron,Helles bis mittleres Licht. Kein direktes Sonnenlicht.,Nährstoffreiche durchlässige Blumenerde.,Alle 4 Wochen düngen. Im Winter selten.,Alle 10 Tage. Mäßig gießen.
-Calathea,Mittellicht. Keine direkte Sonne.,Lockere humusreiche Erde. Etwas feucht halten.,Alle 3 Wochen düngen. Im Winter nicht düngen.,Alle 7 Tage. Erde leicht feucht halten.
-Fensterblatt,Mittellicht. Keine direkte Sonne.,Nährstoffreiche gut drainierende Erde.,Alle 3 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Palme,Viel Licht. Heller Standort ohne Zugluft.,Torfhaltige gut drainierende Erde.,Alle 4 Wochen düngen. Im Winter selten.,Alle 10 Tage. Mäßig gießen.
-Drachenbaum,Mittellicht. Keine direkte Sonne.,Gut durchlässige Blumenerde. Etwas Sand beigemischt.,Alle 6 Wochen düngen. Im Winter nicht düngen.,Alle 14 Tage. Mäßig gießen.
-Grünlilie,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Blumenerde.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Schusterpalme,Wenig Licht. Sehr robust.,Lehmige lockere Blumenerde. Gut durchlässig.,Alle 6 Wochen leicht düngen. Im Winter nicht düngen.,Alle 21 Tage. Wenig Wasser.
-Farne,Wenig bis mittleres Licht. Keine Sonne.,Humusreiche leicht saure Erde. Stets leicht feucht.,Alle 4 Wochen düngen. Im Winter selten.,Alle 7 Tage. Gleichmäßig feucht halten.
-Zamioculcas,Wenig bis mittleres Licht. Verträgt Schatten.,Gut durchlässige Blumenerde. Keine Staunässe.,Alle 8 Wochen leicht düngen. Im Winter nicht düngen.,Alle 21 Tage. Wenig Wasser genügt.
-Clivie,Helles bis mittleres Licht. Kein direktes Sonnenlicht.,Torfhaltige gut drainierende Erde.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 14 Tage. Mäßig gießen.
-Yucca-Palme,Viel Licht. Direkte Sonne möglich.,Leichte gut drainierende Erde.,Alle 6 Wochen düngen. Im Winter nicht düngen.,Alle 21 Tage. Wenig Wasser.
-Amaryllis,Viel Licht. Sonniger Standort bevorzugt.,Gut durchlässige Blumenerde.,Alle 3 Wochen düngen. Während der Blüte stärker.,Alle 10 Tage. Mäßig gießen.
-Weihnachtsstern,Viel Licht. Keine Zugluft.,Humusreiche durchlässige Erde.,Alle 4 Wochen leicht düngen. Nach der Blüte weniger.,Alle 10 Tage. Mäßig gießen.
-Begonie,Helles Licht. Keine direkte Sonne.,Lockere Blumenerde. Gleichmäßig feucht halten.,Alle 3 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Erde leicht feucht halten.
-Gloxinie,Mittellicht. Keine Sonne.,Lockere Blumenerde. Leicht feucht halten.,Alle 3 Wochen düngen. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Geranie,Viel Licht. Sonniger Standort bevorzugt.,Lockere Blumenerde. Gute Drainage wichtig.,Alle 2 Wochen düngen. Während der Blüte häufiger.,Alle 7 Tage. Reichlich gießen.
-Lavendel,Viel Licht. Direkte Sonne erwünscht.,Durchlässige sandige Erde. Kein Torf.,Alle 8 Wochen leicht düngen. Im Winter nicht düngen.,Alle 14 Tage. Wenig Wasser.
-Basilikum,Viel Licht. Warm und windgeschützt.,Lockere humusreiche Erde. Gleichmäßig feucht.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 3 Tage. Mäßig gießen.
-Rosmarin,Mittellicht. Verträgt direkte Sonne.,Humusreiche durchlässige Erde. Keine Staunässe.,Alle 8 Wochen schwach düngen. Im Winter nicht düngen.,Alle 14 Tage. Mäßig gießen.
-Zitronenmelisse,Mittellicht. Halbschattig verträglich.,Lockere humusreiche Erde mit guter Drainage.,Einmal im Frühling leicht düngen. Im Sommer alle 14 Tage möglich.,Alle 7 Tage. Boden stets leicht feucht halten.
-Majoran,Mittellicht. Keine pralle Sonne.,Humusreiche durchlässige Erde.,Alle 4 Wochen düngen während Wachstum. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig gießen.
-Thymian,Mittellicht. Volle Sonne möglich.,Durchlässige eher magere Erde.,Einmal im Monat leichter Dünger. Im Winter nicht düngen.,Alle 7 Tage. Sparsam gießen.
-Chili,Mittellicht. Viel Sonne vorteilhaft.,Gut drainierende Blumenerde.,Einmal im Monat düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Pfefferminze,Mittellicht. Halbschatten möglich.,Feuchte humusreiche Erde.,Leichter Frühjahrsdünger. Im Sommer alle 4 Wochen.,Alle 5 Tage. Feucht halten.
-Kapuzinerkresse,Mittellicht. Keine starke Sonne.,Lockere humusreiche Erde.,Alle 14 Tage mäßig düngen. Im Winter nicht düngen.,Alle 10 Tage. Gleichmäßig feucht.
-Petunie,Warmes Licht bevorzugt. Kein tiefer Schatten.,Humusreiche durchlässige Erde.,Einmal im Monat düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Stiefmütterchen,Mittellicht. Kein direktes Sonnenlicht.,Durchlässige humusreiche Erde.,Leichter Frühjahrsdünger. Im Sommer alle 4 Wochen.,Alle 14 Tage. Mäßig gießen.
-Primel,Wenig Licht möglich. Kein grelles Licht.,Gut durchlässige Blumenerde.,Einmal im Frühling düngen.,Alle 3 Tage. Feucht gießen.
-Anthurie,Mittellicht. Kein direktes Sonnenlicht.,Locker durchlässige Erde mit Torfanteil.,Einmal im Monat düngen. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig gießen.
-Calla,Mittellicht. Halbschatten möglich.,Feuchte humusreiche Erde.,Alle 14 Tage düngen. Im Winter selten.,Alle 10 Tage. Feucht halten.
-Hibiskus,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 14 Tage düngen. Im Winter weniger.,Alle 3 Tage. Mäßig gießen.
-Friedenslilie,Viel Licht. Halbschatten möglich.,Humusreiche durchlässige Erde. Keine Staunässe.,Alle 2 Wochen schwach düngen. Im Winter selten.,Alle 7 Tage. Feucht halten.
-Tillandsie,Viel Licht. Keine direkte Sonne.,Luft- bzw. sehr lockere Substrate. Kein dichter Boden.,Keine oder sehr sparsame Düngung. Im Winter aussetzen.,Alle 7 Tage. Leicht besprühen.
-Passionsblume,Viel Licht. Sonniger Standort.,Leichte humusreiche Erde. Gute Drainage.,Im Frühling leichte Düngung. Im Sommer alle 4 Wochen.,Alle 7 Tage. Ausreichend gießen.
-Kamelie,Wenig Licht. Helles kühles Umfeld.,Säurehaltige gut durchlässige Erde.,Leichte Düngung im Frühling. Im Sommer gelegentlich.,Alle 14 Tage. Mäßig gießen.
-Engelstrompete,Mittellicht. Keine pralle Sonne.,Humusreiche durchlässige Erde.,Von Frühling bis Sommer alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
-Zimmerlinde,Viel Licht. Indirektes Licht vorteilhaft.,Lockere gut drainierende Erde.,Alle 3 Monate schwach düngen. Im Winter nicht düngen.,Alle 14 Tage. Mäßig gießen.
-Weinrebe,Viel Licht. Sonnig bevorzugt.,Gut durchlässige humusreiche Erde.,Leichte Düngung im Frühling. Im Sommer alle 4 Wochen.,Alle 14 Tage. Mäßig gießen.
-Papyrus,Viel Licht. Kein direktes Sonnenlicht.,Humusreiche wasserspeichernde Erde.,Alle 3 Monate mäßig düngen.,Alle 10 Tage. Feucht halten.
-Kängurublume,Wenig Licht. Diffuses Licht genügt.,Gut durchlässige leichte Erde.,Leichte Düngung im Frühling.,Alle 10 Tage. Mäßig gießen.
-Zimmeraralie,Wenig Licht. Helles indirektes Licht.,Durchlässige humusreiche Erde.,Von Frühling bis Sommer alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Zitronenbaum,Viel Licht. Sonniger Standort.,Leichte humusreiche Erde.,Alle 4 Wochen düngen. Im Winter selten.,Alle 5 Tage. Mäßig gießen.
-Olivenbaum,Viel Licht. Volle Sonne verträglich.,Durchlässige leicht sandige Erde.,Leichte Frühjahrsdüngung.,Alle 5 Tage. Mäßig gießen.
-Mimosen,Wenig Licht. Helles schattiges Umfeld.,Lockere humusreiche Erde.,Von Frühling bis Sommer alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Azalee,Wenig Licht. Kühle helle Lage.,Saurer humusreicher durchlässiger Boden.,Einmal im Monat mäßig düngen. Im Winter nicht düngen.,Alle 3 Tage. Feucht halten.
-Bougainvillea,Mittellicht. Mehr Sonne vorteilhaft.,Gut drainierende torfhaltige Erde.,Alle 3 Monate schwach düngen. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
-Fuchsie,Wenig Licht. Vermeide pralle Sonne.,Locker durchlässige Erde.,Leichte Düngung im Sommer. Im Winter einstellen.,Alle 7 Tage. Mäßig gießen.
-Hortensie,Wenig Licht. Heller schattiger Standort.,Lockere humusreiche Erde.,Nur im Frühling leicht düngen.,Alle 10 Tage. Feucht halten.
-Kalanchoe,Mittellicht. Indirektes Sonnenlicht.,Lockere durchlässige Erde.,Nur im Frühling leicht düngen.,Alle 5 Tage. Sparsam gießen.
-Kranzschlinge,Mittellicht. Keine direkte Sonne.,Durchlässige humusreiche Erde.,Alle 2 Wochen mäßig düngen. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Lilien,Mittellicht. Keine Mittagssonne.,Gut durchlässige humusreiche Erde.,Alle 3 Monate leicht düngen. Im Winter nicht düngen.,Alle 3 Tage. Mäßig gießen.
-Margerite,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Leichte Düngung im Frühling. Im Sommer selten.,Alle 10 Tage. Mäßig gießen.
-Nelke,Viel Licht. Sonnig bevorzugt.,Durchlässige humusreiche Erde.,Alle 2 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Oleander,Viel Licht. Volle Sonne möglich.,Saurer durchlässiger Boden.,Nur im Frühling leicht düngen.,Alle 5 Tage. Mäßig gießen.
-Pelargonie,Viel Licht. Sonnig bevorzugt.,Lockere gut drainierende Erde.,Leichte Düngung im Frühling. Im Sommer alle 4 Wochen.,Alle 5 Tage. Reichlich gießen.
-Portulakröschen,Viel Licht. Sonniger Standort.,Durchlässige humose Erde.,Kein oder sehr schwacher Dünger.,Alle 10 Tage. Mäßig gießen.
-Rhipsalis,Wenig Licht. Indirektes Licht genügend.,Durchlässige Erde mit gutem Luftanteil.,Leichte Düngung im Frühling.,Alle 7 Tage. Mäßig gießen.
-Schefflera,Mittellicht. Kein direktes Sonnenlicht.,Lockere durchlässige Erde.,Nur im Frühling leicht düngen.,Alle 3 Tage. Mäßig gießen.
-Sonnenblume,Viel Licht. Volle Sonne notwendig.,Gut drainierende humusreiche Erde.,Leichte Frühjahrsdüngung.,Alle 3 Tage. Reichlich gießen.
-Steckpalme,Viel Licht. Heller Standort.,Sehr durchlässige Erde.,Einmal im Monat leicht düngen. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Usambaraveilchen,Viel Licht. Hell aber kein direktes Sonnenlicht.,Lockere durchlässige Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Veilchen,Wenig Licht. Heller Schattenspot.,Durchlässige humusreiche Erde.,Einmal im Monat mäßig düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Wachsblume,Viel Licht. Sonniger Standort.,Torfhaltige durchlässige Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Zinnie,Mittellicht. Sonnig gelegentlich.,Torfhaltige gut drainierende Erde.,Alle 3 Monate leicht düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Zitronenbasilikum,Viel Licht. Sonnig und warm.,Lockere humusreiche Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 3 Tage. Mäßig gießen.
-Aubergine,Viel Licht. Volle Sonne ideal.,Lockere gut drainierende Erde.,Kein oder leichter Dünger.,Alle 5 Tage. Mäßig gießen.
-Tomate,Mittellicht. Sonnig bevorzugt.,Humusreiche durchlässige Erde.,Alle 14 Tage kräftig düngen. Im Winter nicht düngen.,Alle 14 Tage. Reichlich gießen.
-Paprika,Viel Licht. Sonniger Standort.,Humusreiche durchlässige Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Gurke,Viel Licht. Direkte Sonne möglich.,Humusreiche gut drainierende Erde.,Einmal im Monat leicht düngen. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
-Salat,Viel Licht. Sonnig oder hell.,Lockere humose Erde.,Wöchentlich düngen während Wachstum.,Alle 3 Tage. Reichlich gießen.
-Kürbis,Viel Licht. Volle Sonne bevorzugt.,Gut drainierende Erde.,Einmal im Monat leicht düngen. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
-Zucchini,Viel Licht. Sonnig bevorzugt.,Lockere humose Erde.,Wöchentlich düngen während Wachstum.,Alle 7 Tage. Reichlich gießen.
-Bohne,Viel Licht. Volle Sonne.,Durchlässige humusreiche Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Erbse,Mittellicht. Sonnig möglich.,Humusreiche Erde mit guter Drainage.,Alle 14 Tage düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Spinat,Viel Licht. Helles Umfeld.,Humusreiche frische Erde.,Wöchentlich düngen während Wachstum.,Alle 5 Tage. Feucht halten.
-Mangold,Viel Licht. Sonnig bevorzugt.,Lockere humose Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Rucola,Mittellicht. Heller Standort.,Durchlässige Erde.,Alle 3 Monate leicht düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Chinakohl,Mittellicht. Kein grelles Licht.,Lockere humusreiche Erde.,Leichte Frühjahrsdüngung.,Alle 3 Tage. Mäßig gießen.
-Petersilie,Mittellicht. Heller Standort.,Humusreiche durchlässige Erde.,Einmal im Frühling schwach düngen.,Alle 10 Tage. Mäßig gießen.
-Dill,Mittellicht. Keine pralle Sonne.,Torfhaltige durchlässige Erde.,Alle 7 Tage mäßig düngen während Wachstum.,Alle 7 Tage. Mäßig gießen.
-Schnittlauch,Viel Licht. Sonnig bevorzugt.,Durchlässige humusreiche Erde.,Alle 5 Wochen mäßig düngen während Wachstum.,Alle 5 Tage. Feucht halten.
-Lauch,Viel Licht. Sonnig bevorzugt.,Lockere humose Erde.,Alle 5 Wochen schwach düngen.,Alle 5 Tage. Mäßig gießen.
-Brokkoli,Viel Licht. Sonnig bevorzugt.,Humusreiche durchlässige Erde.,Alle 14 Tage düngen.,Alle 3 Tage. Ausreichend gießen.
-Blumenkohl,Mittellicht. Sonnig möglich.,Durchlässige humusreiche Erde.,Alle 14 Tage düngen.,Alle 10 Tage. Mäßig gießen.
-Rosenkohl,Mittellicht. Sonnig möglich.,Durchlässige humusreiche Erde.,Einmal im Monat schwach düngen.,Alle 3 Tage. Mäßig gießen.
-Monstera deliciosa,Helles indirektes Licht. Keine direkte Mittagssonne.,Lockere humusreiche Erde mit Perlite. Gute Drainage.,Alle 2 Wochen düngen von April bis September. Im Winter nicht düngen.,Alle 7 Tage. Erde zwischen Gießen leicht antrocknen lassen.
-Monstera adansonii,Helles indirektes Licht. Morgen- oder Abendsonne verträglich.,Lockere durchlässige Erde mit Torf und Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Pilea peperomioides,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Blumenerde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Erde zwischen Gießen antrocknen lassen.
-Alocasia zebrina,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche Erde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Alocasia Polly,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde mit Drainage.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Strelitzie,Viel Licht. Direkte Sonne möglich.,Lehmige nährstoffreiche Erde. Gute Drainage.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Geigenfeige,Helles indirektes Licht. Keine Zugluft.,Gut durchlässige nährstoffreiche Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Erde leicht antrocknen lassen.
-Pfeilblatt,Helles indirektes Licht. Keine Mittagssonne.,Lockere humusreiche Erde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Korbmarante,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde. Gleichmäßig feucht.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Dieffenbachia,Mittleres bis helles Licht. Keine direkte Sonne.,Lockere humusreiche Blumenerde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Croton,Viel helles Licht. Etwas direkte Sonne verträglich.,Nährstoffreiche durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Dracaena marginata,Helles bis mittleres Licht. Keine direkte Sonne.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Erde zwischen Gießen antrocknen lassen.
-Dracaena fragrans,Mittleres Licht. Verträgt Halbschatten.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Baumfreund,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Kolbenfaden,Wenig bis mittleres Licht. Schattenverträglich.,Lockere durchlässige Blumenerde.,Alle 4 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Zebrakraut,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche Blumenerde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Geldbaum,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Elefantenfuß,Viel Licht. Direkte Sonne verträglich.,Gut drainierende sandige Erde.,Alle 6 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sparsam gießen.
-Wunderstrauch,Helles Licht. Etwas direkte Sonne verträglich.,Nährstoffreiche durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Purpurtute,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Peperomia obtusifolia,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Peperomia caperata,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde mit Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Nestfarn,Wenig bis mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde. Stets leicht feucht.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Schwertfarn,Helles indirektes Licht. Keine direkte Sonne.,Torfhaltige lockere Erde. Stets leicht feucht.,Alle 4 Wochen düngen im Sommer. Im Winter selten.,Alle 5 Tage. Gleichmäßig feucht halten.
-Frauenhaarfarn,Wenig Licht. Keine direkte Sonne. Hohe Luftfeuchtigkeit.,Torfhaltige lockere Erde. Stets feucht halten.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Hirschgeweihfarn,Helles indirektes Licht. Keine direkte Sonne.,Lockeres Substrat aus Rinde und Moos.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Besprühen und feucht halten.
-Kentia-Palme,Helles bis mittleres Licht. Verträgt Schatten.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Bergpalme,Wenig bis mittleres Licht. Keine direkte Sonne.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Strahlenaralie,Helles indirektes Licht. Keine Mittagssonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Goldfruchtpalme,Helles indirektes Licht. Keine direkte Mittagssonne.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Fächerpalme,Viel Licht. Direkte Sonne verträglich.,Gut durchlässige Erde mit Sand.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Kokospalme,Viel Licht. Direkte Sonne nötig.,Lockere durchlässige Erde mit Sand.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Dattelpalme,Viel Licht. Direkte Sonne verträglich.,Gut durchlässige sandige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Fischschwanzpalme,Helles indirektes Licht. Keine direkte Sonne.,Gut durchlässige humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Steckenpalme,Wenig bis mittleres Licht. Schattenverträglich.,Gut durchlässige humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Zwergpalme,Viel Licht. Direkte Sonne verträglich.,Gut durchlässige sandige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Bananenpflanze,Viel Licht. Direkte Sonne möglich.,Nährstoffreiche humusreiche Erde. Gute Drainage.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
-Guzmania,Helles indirektes Licht. Keine direkte Sonne.,Lockere orchideenartige Erde mit Rinde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
-Vriesea,Helles indirektes Licht. Keine direkte Sonne.,Lockere orchideenartige Erde mit Rinde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
-Aechmea,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde und Moos.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
-Neoregelia,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde und Moos.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
-Flamingoblume,Helles indirektes Licht. Keine direkte Sonne.,Lockere Orchideenerde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Katzengras,Helles Licht. Direkte Sonne verträglich.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Grüne Birkenfeige,Helles indirektes Licht. Keine Zugluft.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Ficus lyrata,Helles indirektes Licht. Keine direkte Sonne.,Gut durchlässige nährstoffreiche Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Erde leicht antrocknen lassen.
-Ficus elastica,Helles bis mittleres Licht. Keine pralle Sonne.,Gut durchlässige Blumenerde mit Sand.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Dreimasterblume,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Weiße Birkenfeige,Helles indirektes Licht. Keine Zugluft.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Echeveria,Viel Licht. Direkte Sonne ideal.,Mineralische gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Haworthia,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde mit Sand.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Crassula ovata,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Sedum,Viel Licht. Direkte Sonne ideal.,Mineralische gut drainierende Erde.,Alle 8 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Lithops,Viel Licht. Direkte Sonne notwendig.,Sehr gut drainierende mineralische Erde.,Im Sommer alle 8 Wochen sehr schwach düngen. Im Winter nicht düngen.,Alle 30 Tage. Extrem sparsam gießen.
-Sempervivum,Viel Licht. Direkte Sonne ideal.,Gut drainierende sandige Erde.,Kein Dünger nötig. Höchstens einmal im Frühjahr.,Alle 14 Tage. Sparsam gießen.
-Euphorbia trigona,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Weihnachtskaktus,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde mit Torfanteil.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Osterkaktus,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde mit Torfanteil.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Dickblatt,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Fetthenne,Viel Licht. Direkte Sonne verträglich.,Durchlässige sandige Erde.,Alle 8 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Königin der Nacht,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Mäßig gießen.
-Agave,Viel Licht. Volle Sonne notwendig.,Sehr gut drainierende sandige Erde.,Alle 8 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sehr sparsam gießen.
-Wolfsmilch,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Zebra-Haworthie,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde mit Sand.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Rosettendickblatt,Viel Licht. Direkte Sonne ideal.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Schwiegermutterstuhl,Viel Licht. Direkte Sonne notwendig.,Mineralische gut drainierende Kakteenerde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 30 Tage. Sehr sparsam gießen.
-Feigenkaktus,Viel Licht. Volle Sonne ideal.,Sehr gut drainierende sandige Erde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sparsam gießen.
-Bleistiftstrauch,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sparsam gießen.
-Oregano,Viel Licht. Sonniger Standort ideal.,Durchlässige sandige Erde. Kein Staunässe.,Alle 6 Wochen leicht düngen. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Salbei,Viel Licht. Sonniger Standort bevorzugt.,Durchlässige kalkhaltige Erde.,Alle 6 Wochen leicht düngen. Im Winter nicht düngen.,Alle 7 Tage. Sparsam gießen.
-Estragon,Helles Licht. Sonnig bis halbschattig.,Durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Koriander,Helles Licht. Keine pralle Mittagssonne.,Lockere humusreiche durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Bohnenkraut,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Alle 6 Wochen leicht düngen.,Alle 7 Tage. Sparsam gießen.
-Liebstöckel,Helles bis mittleres Licht. Halbschatten verträglich.,Tiefgründige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Lorbeer,Helles Licht. Sonnig bis halbschattig.,Gut durchlässige humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Kerbel,Mittleres Licht. Keine pralle Sonne.,Lockere humusreiche feuchte Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Brunnenkresse,Mittleres Licht. Halbschatten möglich.,Feuchte nährstoffreiche Erde.,Alle 4 Wochen leicht düngen.,Alle 3 Tage. Sehr feucht halten.
-Borretsch,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 6 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Currykraut,Viel Licht. Sonniger warmer Standort.,Durchlässige magere sandige Erde.,Alle 8 Wochen leicht düngen. Im Winter nicht düngen.,Alle 10 Tage. Sparsam gießen.
-Minze,Helles bis mittleres Licht. Halbschatten möglich.,Feuchte humusreiche Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
-Zitronengras,Viel Licht. Sonnig und warm.,Nährstoffreiche humusreiche feuchte Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
-Ingwer,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Kurkuma,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Karotte,Viel Licht. Sonniger Standort.,Lockere tiefgründige sandige Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Radieschen,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Leichte Düngung bei Aussaat.,Alle 3 Tage. Gleichmäßig feucht halten.
-Kohlrabi,Viel Licht. Sonniger Standort.,Nährstoffreiche humusreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Sellerie,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche tiefgründige feuchte Erde.,Alle 2 Wochen düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Fenchel,Viel Licht. Sonniger warmer Standort.,Tiefgründige nährstoffreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Rote Bete,Helles Licht. Sonnig bis halbschattig.,Lockere tiefgründige humusreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Artischocke,Viel Licht. Sonniger warmer Standort.,Tiefgründige nährstoffreiche Erde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Süßkartoffel,Viel Licht. Sonnig und warm.,Lockere sandige nährstoffreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Kartoffel,Viel Licht. Sonniger Standort.,Lockere sandige tiefgründige Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Mais,Viel Licht. Volle Sonne notwendig.,Nährstoffreiche tiefgründige Erde.,Alle 2 Wochen düngen während Wachstum.,Alle 5 Tage. Reichlich gießen.
-Zwiebel,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Knoblauch,Viel Licht. Sonniger Standort.,Lockere durchlässige nährstoffreiche Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Spargel,Viel Licht. Sonniger Standort.,Tiefgründige sandige humusreiche Erde.,Im Frühling kräftig düngen. Nach Ernte alle 4 Wochen.,Alle 7 Tage. Mäßig gießen.
-Grünkohl,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche lehmige Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Pak Choi,Helles Licht. Keine pralle Mittagssonne.,Lockere nährstoffreiche feuchte Erde.,Alle 4 Wochen leicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Rettich,Helles Licht. Sonnig bis halbschattig.,Lockere tiefgründige Erde.,Leichte Düngung bei Aussaat.,Alle 5 Tage. Gleichmäßig feucht halten.
-Topinambur,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Pastinake,Helles Licht. Sonnig bis halbschattig.,Tiefgründige lockere Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Wirsing,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche lehmige Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Weißkohl,Viel Licht. Sonniger Standort.,Nährstoffreiche schwere Erde.,Alle 3 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Rotkohl,Viel Licht. Sonniger Standort.,Nährstoffreiche schwere Erde.,Alle 3 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Erdbeere,Viel Licht. Sonniger Standort.,Lockere humusreiche leicht saure Erde.,Alle 2 Wochen düngen während der Blüte. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Himbeere,Viel Licht. Sonnig bis halbschattig.,Lockere humusreiche leicht saure Erde. Gute Drainage.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Heidelbeere,Viel Licht. Sonniger bis halbschattiger Standort.,Saure torfhaltige Erde. pH-Wert 4 bis 5.,Alle 4 Wochen Rhododendrondünger im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
-Johannisbeere,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche humusreiche Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Brombeere,Viel Licht. Sonniger Standort.,Lockere humusreiche leicht saure Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Stachelbeere,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche humusreiche Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Feigenbaum,Viel Licht. Sonniger geschützter Standort.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Granatapfel,Viel Licht. Volle Sonne ideal.,Gut durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Orangenbaum,Viel Licht. Sonniger Standort.,Gut durchlässige leicht saure Erde.,Alle 4 Wochen Zitruspflanzendünger im Sommer.,Alle 5 Tage. Mäßig gießen.
-Mandarinenbäumchen,Viel Licht. Sonniger Standort.,Gut durchlässige leicht saure Erde.,Alle 4 Wochen Zitruspflanzendünger im Sommer.,Alle 5 Tage. Mäßig gießen.
-Limette,Viel Licht. Sonniger warmer Standort.,Gut durchlässige leicht saure Erde.,Alle 4 Wochen Zitruspflanzendünger im Sommer.,Alle 5 Tage. Mäßig gießen.
-Kumquat,Viel Licht. Sonniger Standort.,Gut durchlässige leicht saure Erde.,Alle 4 Wochen Zitruspflanzendünger im Sommer.,Alle 5 Tage. Mäßig gießen.
-Kiwi,Viel Licht. Sonnig bis halbschattig.,Lockere humusreiche leicht saure Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Avocado,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Mango,Viel Licht. Volle Sonne notwendig.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Papaya,Viel Licht. Volle Sonne notwendig.,Lockere gut durchlässige nährstoffreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Passionsfrucht,Viel Licht. Sonniger Standort.,Lockere humusreiche Erde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Physalis,Viel Licht. Sonniger warmer Standort.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Guave,Viel Licht. Volle Sonne ideal.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Melone,Viel Licht. Volle Sonne notwendig.,Nährstoffreiche lockere Erde.,Alle 2 Wochen düngen während Wachstum.,Alle 3 Tage. Reichlich gießen.
-Weintraube,Viel Licht. Sonniger warmer Standort.,Gut durchlässige Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 7 Tage. Mäßig gießen.
-Dahlie,Viel Licht. Sonniger Standort.,Nährstoffreiche durchlässige Erde.,Alle 2 Wochen düngen während der Blüte.,Alle 5 Tage. Reichlich gießen.
-Chrysantheme,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 2 Wochen düngen während der Blüte. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Gardenie,Helles indirektes Licht. Keine direkte Sonne.,Saure torfhaltige Erde. pH-Wert 5 bis 6.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Jasmin,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Clematis,Helles Licht. Sonnig mit beschattetem Fuß.,Nährstoffreiche humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Rose,Viel Licht. Sonniger Standort.,Nährstoffreiche lehmige Erde. Gute Drainage.,Alle 4 Wochen Rosendünger im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
-Pfingstrose,Viel Licht. Sonniger bis halbschattiger Standort.,Tiefgründige nährstoffreiche Erde.,Im Frühling und nach der Blüte düngen.,Alle 7 Tage. Mäßig gießen.
-Krokus,Viel Licht. Sonnig bis halbschattig.,Durchlässige Erde. Keine Staunässe.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
-Tulpe,Viel Licht. Sonniger Standort.,Durchlässige nährstoffreiche Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
-Narzisse,Viel Licht. Sonnig bis halbschattig.,Durchlässige nährstoffreiche Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
-Hyazinthe,Viel Licht. Sonniger Standort.,Durchlässige nährstoffreiche Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
-Gladiole,Viel Licht. Volle Sonne ideal.,Lockere durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen während Wachstum.,Alle 5 Tage. Mäßig gießen.
-Iris,Viel Licht. Sonniger Standort.,Durchlässige Erde. Keine Staunässe.,Leichte Düngung im Frühling.,Alle 7 Tage. Mäßig gießen.
-Ranunkel,Helles Licht. Keine pralle Mittagssonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen während der Blüte.,Alle 5 Tage. Mäßig gießen.
-Alpenveilchen,Helles indirektes Licht. Keine direkte Sonne. Kühl.,Durchlässige humusreiche Erde.,Alle 4 Wochen düngen während der Blüte. Im Sommer Ruhephase.,Alle 7 Tage. Mäßig gießen. Von unten gießen.
-Vergissmeinnicht,Helles Licht. Halbschatten verträglich.,Feuchte humusreiche Erde.,Leichte Düngung im Frühling.,Alle 5 Tage. Gleichmäßig feucht halten.
-Gerbera,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Lisianthus,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Anemone,Helles Licht. Halbschatten verträglich.,Lockere humusreiche Erde.,Leichte Düngung im Frühling.,Alle 5 Tage. Mäßig gießen.
-Cosmea,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde. Nicht zu nährstoffreich.,Wenig bis kein Dünger nötig.,Alle 7 Tage. Mäßig gießen.
-Kornblume,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Wenig bis kein Dünger nötig.,Alle 7 Tage. Sparsam gießen.
-Ringelblume,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Tagetes,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Löwenmäulchen,Viel Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Mäßig gießen.
-Stockrose,Viel Licht. Sonniger geschützter Standort.,Tiefgründige nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Eisenkraut,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer.,Alle 5 Tage. Mäßig gießen.
-Flieder,Viel Licht. Sonniger Standort.,Durchlässige nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Schneeball,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Magnolie,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche leicht saure Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Rhododendron,Helles Licht. Halbschatten bevorzugt.,Saure humusreiche Erde. pH-Wert 4 bis 5.,Im Frühling Rhododendrondünger geben.,Alle 5 Tage. Gleichmäßig feucht halten.
-Forsythie,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Wisteria,Viel Licht. Sonniger Standort.,Nährstoffreiche durchlässige Erde.,Im Frühling düngen. Im Sommer alle 4 Wochen.,Alle 7 Tage. Mäßig gießen.
-Efeu,Wenig bis mittleres Licht. Schattenverträglich.,Lockere humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Geißblatt,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Hopfen,Viel Licht. Sonniger Standort.,Nährstoffreiche tiefgründige Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
-Kletterrose,Viel Licht. Sonniger Standort.,Nährstoffreiche lehmige Erde.,Alle 4 Wochen Rosendünger im Sommer.,Alle 5 Tage. Reichlich gießen.
-Kletterhortensie,Helles Licht. Halbschatten möglich.,Lockere humusreiche leicht saure Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Trompetenblume,Viel Licht. Sonnig und warm.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Bambus,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Pampasgras,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Ziergras,Viel Licht. Sonniger Standort.,Durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Lampenputzergras,Viel Licht. Sonniger Standort.,Durchlässige lockere Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Blauschwingel,Viel Licht. Volle Sonne ideal.,Durchlässige magere Erde.,Wenig bis kein Dünger nötig.,Alle 10 Tage. Sparsam gießen.
-Segge,Helles bis mittleres Licht. Halbschatten verträglich.,Feuchte humusreiche Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
-Bonsai Ficus,Helles indirektes Licht. Keine direkte Sonne.,Gut drainierende Bonsaierde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Bonsai Ahorn,Helles Licht. Morgen- oder Abendsonne.,Gut drainierende Bonsaierde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Bonsai Kiefer,Viel Licht. Volle Sonne ideal.,Gut drainierende Bonsaierde mit Akadama.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Mäßig gießen.
-Buchsbaum,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Eibe,Helles Licht. Halbschatten verträglich.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Thuja,Viel Licht. Sonniger Standort.,Lockere nährstoffreiche Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Liguster,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Kirschlorbeer,Helles Licht. Sonnig bis schattig.,Lockere nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Zypresse,Viel Licht. Sonniger Standort.,Gut durchlässige Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 7 Tage. Mäßig gießen.
-Wacholder,Viel Licht. Sonniger Standort.,Durchlässige sandige Erde.,Im Frühling leicht düngen.,Alle 10 Tage. Sparsam gießen.
-Apfelbaum,Viel Licht. Volle Sonne ideal.,Nährstoffreiche lehmige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Kirschbaum,Viel Licht. Sonniger Standort.,Nährstoffreiche durchlässige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Mäßig gießen.
-Birnbaum,Viel Licht. Sonniger warmer Standort.,Nährstoffreiche tiefgründige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Mäßig gießen.
-Pflaume,Viel Licht. Sonniger Standort.,Nährstoffreiche durchlässige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Mäßig gießen.
-Pfirsichbaum,Viel Licht. Sonniger geschützter Standort.,Nährstoffreiche durchlässige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Mäßig gießen.
-Nektarine,Viel Licht. Sonniger warmer Standort.,Nährstoffreiche durchlässige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Mäßig gießen.
-Walnussbaum,Viel Licht. Sonniger Standort.,Tiefgründige nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Haselnuss,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Seerose,Viel Licht. Volle Sonne notwendig.,Schwere lehmige Teicherde.,Spezielle Teichpflanzendüngertabletten im Frühling.,Alle 1 Tage. Stets im Wasser stehend. Wasserstand konstant halten.
-Lotusblume,Viel Licht. Volle Sonne notwendig.,Schwere lehmige Teicherde.,Spezielle Teichpflanzendüngertabletten im Frühling.,Alle 1 Tage. Stets im Wasser stehend. Wasserstand konstant halten.
-Wasserhyazinthe,Viel Licht. Sonniger Standort.,Schwimmend in nährstoffreichem Wasser.,Kein Dünger nötig.,Alle 1 Tage. Stets im Wasser schwimmend. Wasser regelmäßig wechseln.
-Venusfliegenfalle,Viel Licht. Direkte Sonne notwendig.,Torf-Sand-Gemisch ohne Nährstoffe.,Keinen Dünger verwenden.,Alle 3 Tage. Nur mit Regenwasser oder destilliertem Wasser.
-Sonnentau,Viel Licht. Direkte Sonne ideal.,Torf-Sand-Gemisch ohne Nährstoffe.,Keinen Dünger verwenden.,Alle 3 Tage. Nur mit Regenwasser oder destilliertem Wasser.
-Schlauchpflanze,Viel Licht. Direkte Sonne ideal.,Torf-Sand-Gemisch ohne Nährstoffe.,Keinen Dünger verwenden.,Alle 3 Tage. Nur mit Regenwasser oder destilliertem Wasser.
-Kannenpflanze,Helles indirektes Licht. Hohe Luftfeuchtigkeit.,Torf-Moos-Gemisch. Gut durchlässig.,Keinen Dünger verwenden.,Alle 3 Tage. Nur mit Regenwasser oder destilliertem Wasser.
-Fettkraut,Helles Licht. Keine pralle Sonne.,Torf-Sand-Gemisch ohne Nährstoffe.,Keinen Dünger verwenden.,Alle 5 Tage. Nur mit Regenwasser oder destilliertem Wasser.
-Phalaenopsis,Helles indirektes Licht. Keine direkte Sonne.,Spezielle Orchideenerde mit Rinde und Moos.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter selten.,Alle 10 Tage. Tauchen und abtropfen lassen.
-Dendrobium,Helles Licht. Morgen- oder Abendsonne verträglich.,Orchideenerde mit Rinde.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Cattleya,Viel Licht. Direkte Morgen- oder Abendsonne.,Grobe Orchideenerde mit Rinde.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Zwischen Gießen gut abtrocknen lassen.
-Cymbidium,Helles Licht. Morgen- oder Abendsonne.,Orchideenerde mit Rinde und Torf.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Oncidium,Helles indirektes Licht. Keine direkte Sonne.,Orchideenerde mit Rinde.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Vanda,Viel Licht. Direkte Sonne verträglich.,Grobe Rinde oder in Korb ohne Erde.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Täglich besprühen.
-Miltonia,Helles indirektes Licht. Keine direkte Sonne.,Feine Orchideenerde mit Moos.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Paphiopedilum,Mittleres Licht. Keine direkte Sonne.,Feine Orchideenerde mit Rinde und Moos.,Alle 4 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Zygopetalum,Helles indirektes Licht. Keine direkte Sonne.,Orchideenerde mit Rinde.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Areca-Palme,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Chrysalidocarpus,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Birkenfeige variegata,Helles indirektes Licht. Keine Zugluft.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Spathiphyllum,Wenig bis mittleres Licht. Keine direkte Sonne.,Lockere humusreiche Blumenerde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Scindapsus,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Clusia,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Alocasia macrorrhiza,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Calathea ornata,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Calathea lancifolia,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Maranta leuconeura,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Ctenanthe,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Stromanthe,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Philodendron scandens,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Philodendron Pink Princess,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Philodendron Birkin,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde mit Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Syngonium,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Hoya carnosa,Helles indirektes Licht. Etwas direkte Sonne verträglich.,Lockere durchlässige Erde mit Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Hoya kerrii,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 6 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Begonia maculata,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche Erde. Gute Drainage.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Begonia rex,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Tradescantia zebrina,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Tradescantia pallida,Helles Licht. Direkte Sonne verträglich.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-String of Pearls,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-String of Hearts,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Erbsenpflanze,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Leuchterblume,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Erde mit Sand.,Alle 4 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Dreikantige Wolfsmilch,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Glückskastanie,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Pachira aquatica,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Mädchenauge,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer.,Alle 7 Tage. Mäßig gießen.
-Sonnenhut,Viel Licht. Sonniger Standort.,Lockere durchlässige nährstoffreiche Erde.,Im Frühling düngen.,Alle 5 Tage. Mäßig gießen.
-Hauswurz,Viel Licht. Volle Sonne ideal.,Sehr durchlässige mineralische Erde.,Kein Dünger nötig.,Alle 14 Tage. Sparsam gießen.
-Steinbrech,Helles Licht. Halbschatten verträglich.,Durchlässige kalkhaltige Erde.,Leichte Düngung im Frühling.,Alle 7 Tage. Mäßig gießen.
-Mandevilla,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Dipladenia,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Enzianstrauch,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer.,Alle 5 Tage. Mäßig gießen.
-Wandelröschen,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Schönmalve,Helles indirektes Licht. Keine pralle Sonne.,Lockere humusreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Bleiwurz,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Plectranthus,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Harfenstrauch,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Porzellanblümchen,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Zimmerbambus,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Jakobsleiter,Helles Licht. Halbschatten verträglich.,Lockere humusreiche feuchte Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
-Blattbegonie,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Elefantenohr,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Kolbenfaden Silver Queen,Wenig bis mittleres Licht. Schattenverträglich.,Lockere durchlässige Blumenerde.,Alle 4 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Dracaena reflexa,Helles bis mittleres Licht. Keine direkte Sonne.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Kaffeebaum,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche leicht saure Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Kakaobaum,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Pfennigbaum,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Glücksklee,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Fleißiges Lieschen,Helles bis mittleres Licht. Keine pralle Sonne.,Lockere humusreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Pantoffelblume,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
-Jasminblütiger Nachtschatten,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Brunfelsia,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche leicht saure Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Ananaspflanze,Viel Licht. Direkte Sonne verträglich.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Drachenfrucht,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Vanille,Helles indirektes Licht. Hohe Luftfeuchtigkeit.,Lockere Orchideenerde mit Rinde.,Alle 4 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Zimt,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Astilbe,Halbschatten. Keine pralle Sonne.,Feuchte humusreiche Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Rittersporn,Viel Licht. Sonniger Standort.,Nährstoffreiche durchlässige Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
-Phlox,Viel Licht. Sonnig bis halbschattig.,Nährstoffreiche feuchte Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
-Storchschnabel,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Akelei,Helles Licht. Halbschatten bevorzugt.,Lockere humusreiche Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Glockenblume,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Fingerhut,Helles Licht. Halbschatten möglich.,Lockere humusreiche Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Funkien,Wenig bis mittleres Licht. Schatten bevorzugt.,Lockere humusreiche feuchte Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Echinacea,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Katzenminze,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Sparsam gießen.
-Mohn,Viel Licht. Sonniger Standort.,Durchlässige Erde. Keine Staunässe.,Im Frühling leicht düngen.,Alle 7 Tage. Sparsam gießen.
-Schafgarbe,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Wenig bis kein Dünger nötig.,Alle 10 Tage. Sparsam gießen.
-Frauenmantel,Helles Licht. Halbschatten verträglich.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Taglilie,Viel Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Im Frühling und Sommer düngen.,Alle 5 Tage. Mäßig gießen.
-Malve,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer.,Alle 7 Tage. Mäßig gießen.
-Prachtspiere,Helles Licht. Halbschatten verträglich.,Feuchte humusreiche Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Purpurglöckchen,Helles Licht. Halbschatten verträglich.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Silberkerze,Mittleres Licht. Halbschatten bevorzugt.,Lockere humusreiche feuchte Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Herbstanemone,Helles Licht. Halbschatten verträglich.,Lockere humusreiche Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Christrose,Wenig bis mittleres Licht. Halbschatten bevorzugt.,Lockere humusreiche kalkhaltige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Winterjasmin,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Zierlauch,Viel Licht. Sonniger Standort.,Durchlässige Erde. Keine Staunässe.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Schneeglöckchen,Helles Licht. Halbschatten verträglich.,Lockere humusreiche feuchte Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
-Märzenbecher,Helles Licht. Halbschatten möglich.,Lockere feuchte Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Gleichmäßig feucht halten.
-Blausternchen,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
-Maiglöckchen,Wenig bis mittleres Licht. Schatten bevorzugt.,Lockere humusreiche feuchte Erde.,Im Frühling leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Fittonia,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Kanonierblume,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Zimmertanne,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Norfolk-Tanne,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige leicht saure Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Zierspargel,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Asparagus densiflorus,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Korallenkaktus,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Erde mit Perlite.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Herzblattbaum,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Geldbaum variegata,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Aloe aristata,Helles Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Aloe humilis,Helles bis mittleres Licht. Direkte Sonne möglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Epipremnum aureum,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Philodendron hederaceum,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Monstera Thai Constellation,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde und Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Zamie,Wenig bis mittleres Licht. Schattenverträglich.,Gut durchlässige Erde.,Alle 8 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sparsam gießen.
-Blattkaktus,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde mit Torfanteil.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Keulenlilie,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Zimmeresche,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Kroton,Helles Licht. Etwas direkte Sonne verträglich.,Nährstoffreiche durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Flammendes Käthchen,Viel Licht. Sonnig und warm.,Gut drainierende Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Sparsam gießen.
-Wunderblume,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Mäßig gießen.
-Birkenfeige,Helles indirektes Licht. Keine Zugluft.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Buntnessel,Helles indirektes Licht. Keine pralle Sonne.,Lockere humusreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Glücksbambus,Mittleres Licht. Keine direkte Sonne.,In Wasser oder lockere Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Wasser regelmäßig wechseln.
-Pfeilwurz,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Mexikanische Glückspalme,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Kamelienblütige Begonie,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Zwergpfeffer,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Wasserpalme,Helles Licht. Keine direkte Sonne.,Humusreiche feuchte Erde.,Alle 4 Wochen düngen im Sommer. Im Winter selten.,Alle 3 Tage. Stets feucht halten.
-Bromelie,Helles indirektes Licht. Keine direkte Sonne.,Lockere orchideenartige Erde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
-Flammendes Schwert,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
-Palmfarn,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Cycas revoluta,Viel Licht. Direkte Sonne verträglich.,Gut drainierende sandige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Zimmerkalla,Mittleres Licht. Halbschatten möglich.,Feuchte humusreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Drehfrucht,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Korallenbeere,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Zierananas,Viel Licht. Direkte Sonne verträglich.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Strahlenaralie variegata,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Philodendron xanadu,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Philodendron gloriosum,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde und Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Alocasia Dragon Scale,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Perlite und Rinde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Calathea Medallion,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Calathea Makoyana,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Calathea Musaica,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Paradiesvogelblume,Viel Licht. Direkte Sonne möglich.,Nährstoffreiche durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Plumeria,Viel Licht. Volle Sonne notwendig.,Gut drainierende sandige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Bougainvillea glabra,Viel Licht. Volle Sonne ideal.,Gut drainierende Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Medinilla,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Alpinia,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche feuchte Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Heliconia,Viel Licht. Sonnig und warm.,Nährstoffreiche feuchte Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Reichlich gießen.
-Frühlingszwiebel,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Schalotte,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Knollensellerie,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche tiefgründige feuchte Erde.,Alle 2 Wochen düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Endivie,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Feldsalat,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Leichte Düngung bei Aussaat.,Alle 5 Tage. Gleichmäßig feucht halten.
-Kopfsalat,Helles Licht. Keine pralle Mittagssonne.,Lockere nährstoffreiche feuchte Erde.,Alle 4 Wochen leicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Eisbergsalat,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Alle 4 Wochen leicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Radicchio,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Chicorée,Helles Licht. Sonnig bis halbschattig.,Lockere tiefgründige Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Portulak,Viel Licht. Sonniger Standort.,Durchlässige sandige Erde.,Wenig bis kein Dünger nötig.,Alle 7 Tage. Sparsam gießen.
-Okra,Viel Licht. Sonnig und warm.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Schwarzwurzel,Helles Licht. Sonnig bis halbschattig.,Tiefgründige lockere Erde.,Leichte Düngung bei Aussaat.,Alle 7 Tage. Mäßig gießen.
-Bärlauch,Wenig Licht. Schattiger feuchter Standort.,Lockere humusreiche feuchte Erde.,Im Frühling leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Kresse,Helles Licht. Sonnig bis halbschattig.,Lockere feuchte Erde.,Kein Dünger nötig.,Alle 3 Tage. Stets feucht halten.
-Stevia,Viel Licht. Sonniger warmer Standort.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Zitronenverbene,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
-Sauerampfer,Helles Licht. Halbschatten verträglich.,Lockere feuchte Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Ysop,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Sparsam gießen.
-Waldmeister,Wenig Licht. Schatten bevorzugt.,Lockere humusreiche feuchte Erde.,Im Frühling leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Anis,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Fenchel (Gewürz),Viel Licht. Sonniger warmer Standort.,Tiefgründige nährstoffreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Kreuzkümmel,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Schwarzer Pfeffer,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche feuchte Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
-Japanisches Blutgras,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Chinaschilf,Viel Licht. Sonniger Standort.,Lockere nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Blaustrahlhafer,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Wenig bis kein Dünger nötig.,Alle 10 Tage. Sparsam gießen.
-Reitgras,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Schwingel,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Wenig bis kein Dünger nötig.,Alle 10 Tage. Sparsam gießen.
-Liriope,Helles Licht. Halbschatten verträglich.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Schildkrötenpflanze,Helles indirektes Licht. Keine direkte Sonne.,Sehr gut drainierende Erde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Silbervase,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
-Pfauenpflanze,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Zebrapflanze,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Polka-Dot-Pflanze,Helles indirektes Licht. Keine pralle Sonne.,Lockere humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Luftpflanze,Helles indirektes Licht. Keine direkte Sonne.,Kein Substrat nötig. Auf Holz oder Stein befestigen.,Alle 4 Wochen mit sehr schwachem Dünger besprühen.,Alle 5 Tage. Regelmäßig besprühen oder tauchen.
-Mosaikpflanze,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Nervenblatt,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Flammennessel,Helles indirektes Licht. Keine pralle Sonne.,Lockere humusreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Grünlilie variegata,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Efeutute Marble Queen,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Efeutute Neon,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Monstera Peru,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde mit Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Rhaphidophora tetrasperma,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde mit Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Alocasia Black Velvet,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Perlite und Rinde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Anthurium clarinervium,Helles indirektes Licht. Keine direkte Sonne.,Lockere Orchideenerde mit Perlite.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
-Colocasia,Helles indirektes Licht. Keine direkte Sonne.,Nährstoffreiche feuchte Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
-Caladium,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter Ruhephase.,Alle 5 Tage. Gleichmäßig feucht halten.
-Aglaonema Silver Bay,Wenig bis mittleres Licht. Schattenverträglich.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
-Sansevieria cylindrica,Helles bis mittleres Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sehr sparsam gießen.
-Sansevieria moonshine,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sparsam gießen.
-Goji-Beere,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
-Schwarze Johannisbeere,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche humusreiche Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Preiselbeere,Helles Licht. Sonnig bis halbschattig.,Saure torfhaltige Erde. pH-Wert 4 bis 5.,Alle 4 Wochen Rhododendrondünger im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
-Cranberry,Helles Licht. Sonnig bis halbschattig.,Saure torfhaltige feuchte Erde.,Alle 4 Wochen Rhododendrondünger im Sommer.,Alle 3 Tage. Stets feucht halten.
-Mispel,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Quitte,Viel Licht. Sonniger warmer Standort.,Nährstoffreiche tiefgründige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Holunder,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche feuchte Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
-Sanddorn,Viel Licht. Sonniger Standort.,Durchlässige sandige Erde.,Wenig bis kein Dünger nötig.,Alle 10 Tage. Sparsam gießen.
-Felsenbirne,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
-Aronia,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
-Echeveria elegans,Viel Licht. Direkte Sonne ideal.,Mineralische gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Echeveria Perle von Nürnberg,Viel Licht. Direkte Sonne ideal.,Mineralische gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Graptoveria,Viel Licht. Direkte Sonne ideal.,Mineralische gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Gasteria,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Aeonium,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Senecio rowleyanus,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Ceropegia woodii,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Erde mit Sand.,Alle 6 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Euphorbia milii,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Adenium,Viel Licht. Volle Sonne notwendig.,Sehr gut drainierende Kakteenerde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
-Stapelia,Viel Licht. Direkte Sonne verträglich.,Sehr gut drainierende Kakteenerde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sehr sparsam gießen.
+name,scientificName,family,category,lighting,soil,fertilizing,watering
+Aloe Vera,Aloe vera,Asphodelaceae,cacti,Helles bis mittleres Licht. Direkte Sonne fördert das Wachstum.,Gut drainierende Kakteenerde. Kein schwerer Lehm.,Von Frühling bis Sommer alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 14 Tage. Wenig Wasser genügt.
+Einblatt,Spathiphyllum wallisii,Araceae,indoor,Wenig bis mittleres Licht. Keine direkte Sonne.,Lockere humusreiche Blumenerde. Gleichmäßig feucht halten.,Alle 2 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Erde leicht feucht halten.
+Gummibaum,Ficus elastica,Moraceae,outdoor,Helles bis mittleres Licht. Keine pralle Sonne.,Gut durchlässige Blumenerde. Etwas Sand für Drainage.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 12 Tage. Mäßig gießen.
+Glücksfeder,Zamioculcas zamiifolia,Asparagaceae,indoor,Mittellicht. Verträgt auch Schatten.,Lockere durchlässige Blumenerde. Keine Staunässe.,Alle 8 Wochen schwach düngen. Im Winter nicht düngen.,Alle 21 Tage. Wenig Wasser genügt.
+Ficus Benjamini,Ficus benjamina,Moraceae,indoor,Helles Licht. Verträgt Halbschatten.,Gut durchlässige Blumenerde. Etwas Sand beigemischt.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 12 Tage. Mäßig gießen.
+Orchidee,Phalaenopsis,Orchidaceae,indoor,Helles Licht. Keine direkte Sonne.,Spezielle Orchideenerde mit Rinde.,Alle 2 Wochen schwach düngen. Im Winter selten düngen.,Alle 10 Tage. Mäßig wässern.
+Kaktus,Cactaceae,Cactaceae,cacti,Viel Licht. Direkte Sonne erwünscht.,Mineralische Kakteenerde. Sehr gute Drainage.,Alle 6 Wochen wenig düngen. Nur im Sommer.,Alle 21 Tage. Sehr sparsam gießen.
+Sansevieria,Dracaena trifasciata,Asparagaceae,indoor,Helles bis mittleres Licht. Auch Halbschatten möglich.,Durchlässige Kakteenerde. Kein dichter Boden.,Alle 6 Wochen leicht düngen. Im Winter nicht düngen.,Alle 30 Tage. Wenig Wasser.
+Bogenhanf,Dracaena trifasciata,Asparagaceae,indoor,Mittellicht. Toleriert Schatten.,Kakteenerde mit Sandanteil. Gute Drainage wichtig.,Alle 6 Wochen leicht düngen. Im Winter nicht düngen.,Alle 30 Tage. Wenig Wasser.
+Efeutute,Epipremnum aureum,Araceae,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere Blumenerde mit Drainage.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Gleichmäßig feucht halten.
+Zyperngras,Cyperus,Cyperaceae,outdoor,Helles Licht. Keine direkte Sonne.,Humusreiche Erde. Gleichmäßig feucht halten.,Alle 4 Wochen düngen. Im Winter selten.,Alle 7 Tage. Erde stets feucht halten.
+Philodendron,Philodendron,Araceae,indoor,Helles bis mittleres Licht. Kein direktes Sonnenlicht.,Nährstoffreiche durchlässige Blumenerde.,Alle 4 Wochen düngen. Im Winter selten.,Alle 10 Tage. Mäßig gießen.
+Calathea,Calathea,Marantaceae,indoor,Mittellicht. Keine direkte Sonne.,Lockere humusreiche Erde. Etwas feucht halten.,Alle 3 Wochen düngen. Im Winter nicht düngen.,Alle 7 Tage. Erde leicht feucht halten.
+Fensterblatt,Monstera deliciosa,Araceae,indoor,Mittellicht. Keine direkte Sonne.,Nährstoffreiche gut drainierende Erde.,Alle 3 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Palme,Arecaceae,Arecaceae,indoor,Viel Licht. Heller Standort ohne Zugluft.,Torfhaltige gut drainierende Erde.,Alle 4 Wochen düngen. Im Winter selten.,Alle 10 Tage. Mäßig gießen.
+Drachenbaum,Dracaena,Asparagaceae,outdoor,Mittellicht. Keine direkte Sonne.,Gut durchlässige Blumenerde. Etwas Sand beigemischt.,Alle 6 Wochen düngen. Im Winter nicht düngen.,Alle 14 Tage. Mäßig gießen.
+Grünlilie,Chlorophytum comosum,Asparagaceae,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Blumenerde.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Schusterpalme,Aspidistra elatior,Asparagaceae,indoor,Wenig Licht. Sehr robust.,Lehmige lockere Blumenerde. Gut durchlässig.,Alle 6 Wochen leicht düngen. Im Winter nicht düngen.,Alle 21 Tage. Wenig Wasser.
+Farne,Polypodiaceae,Polypodiaceae,indoor,Wenig bis mittleres Licht. Keine Sonne.,Humusreiche leicht saure Erde. Stets leicht feucht.,Alle 4 Wochen düngen. Im Winter selten.,Alle 7 Tage. Gleichmäßig feucht halten.
+Zamioculcas,Zamioculcas zamiifolia,Asparagaceae,indoor,Wenig bis mittleres Licht. Verträgt Schatten.,Gut durchlässige Blumenerde. Keine Staunässe.,Alle 8 Wochen leicht düngen. Im Winter nicht düngen.,Alle 21 Tage. Wenig Wasser genügt.
+Clivie,Clivia miniata,Amaryllidaceae,indoor,Helles bis mittleres Licht. Kein direktes Sonnenlicht.,Torfhaltige gut drainierende Erde.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 14 Tage. Mäßig gießen.
+Yucca-Palme,Yucca,Asparagaceae,indoor,Viel Licht. Direkte Sonne möglich.,Leichte gut drainierende Erde.,Alle 6 Wochen düngen. Im Winter nicht düngen.,Alle 21 Tage. Wenig Wasser.
+Amaryllis,Hippeastrum,Amaryllidaceae,indoor,Viel Licht. Sonniger Standort bevorzugt.,Gut durchlässige Blumenerde.,Alle 3 Wochen düngen. Während der Blüte stärker.,Alle 10 Tage. Mäßig gießen.
+Weihnachtsstern,Euphorbia pulcherrima,Euphorbiaceae,indoor,Viel Licht. Keine Zugluft.,Humusreiche durchlässige Erde.,Alle 4 Wochen leicht düngen. Nach der Blüte weniger.,Alle 10 Tage. Mäßig gießen.
+Begonie,Begonia,Begoniaceae,indoor,Helles Licht. Keine direkte Sonne.,Lockere Blumenerde. Gleichmäßig feucht halten.,Alle 3 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Erde leicht feucht halten.
+Gloxinie,Sinningia speciosa,Gesneriaceae,indoor,Mittellicht. Keine Sonne.,Lockere Blumenerde. Leicht feucht halten.,Alle 3 Wochen düngen. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Geranie,Pelargonium,Geraniaceae,indoor,Viel Licht. Sonniger Standort bevorzugt.,Lockere Blumenerde. Gute Drainage wichtig.,Alle 2 Wochen düngen. Während der Blüte häufiger.,Alle 7 Tage. Reichlich gießen.
+Lavendel,Lavandula,Lamiaceae,herbal,Viel Licht. Direkte Sonne erwünscht.,Durchlässige sandige Erde. Kein Torf.,Alle 8 Wochen leicht düngen. Im Winter nicht düngen.,Alle 14 Tage. Wenig Wasser.
+Basilikum,Ocimum basilicum,Lamiaceae,herbal,Viel Licht. Warm und windgeschützt.,Lockere humusreiche Erde. Gleichmäßig feucht.,Alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 3 Tage. Mäßig gießen.
+Rosmarin,Salvia rosmarinus,Lamiaceae,herbal,Mittellicht. Verträgt direkte Sonne.,Humusreiche durchlässige Erde. Keine Staunässe.,Alle 8 Wochen schwach düngen. Im Winter nicht düngen.,Alle 14 Tage. Mäßig gießen.
+Zitronenmelisse,Melissa officinalis,Lamiaceae,indoor,Mittellicht. Halbschattig verträglich.,Lockere humusreiche Erde mit guter Drainage.,Einmal im Frühling leicht düngen. Im Sommer alle 14 Tage möglich.,Alle 7 Tage. Boden stets leicht feucht halten.
+Majoran,Origanum majorana,Lamiaceae,herbal,Mittellicht. Keine pralle Sonne.,Humusreiche durchlässige Erde.,Alle 4 Wochen düngen während Wachstum. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig gießen.
+Thymian,Thymus,Lamiaceae,herbal,Mittellicht. Volle Sonne möglich.,Durchlässige eher magere Erde.,Einmal im Monat leichter Dünger. Im Winter nicht düngen.,Alle 7 Tage. Sparsam gießen.
+Chili,Capsicum,Solanaceae,indoor,Mittellicht. Viel Sonne vorteilhaft.,Gut drainierende Blumenerde.,Einmal im Monat düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Pfefferminze,Mentha × piperita,Lamiaceae,herbal,Mittellicht. Halbschatten möglich.,Feuchte humusreiche Erde.,Leichter Frühjahrsdünger. Im Sommer alle 4 Wochen.,Alle 5 Tage. Feucht halten.
+Kapuzinerkresse,Tropaeolum majus,Tropaeolaceae,herbal,Mittellicht. Keine starke Sonne.,Lockere humusreiche Erde.,Alle 14 Tage mäßig düngen. Im Winter nicht düngen.,Alle 10 Tage. Gleichmäßig feucht.
+Petunie,Petunia,Solanaceae,indoor,Warmes Licht bevorzugt. Kein tiefer Schatten.,Humusreiche durchlässige Erde.,Einmal im Monat düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Stiefmütterchen,Viola,Violaceae,indoor,Mittellicht. Kein direktes Sonnenlicht.,Durchlässige humusreiche Erde.,Leichter Frühjahrsdünger. Im Sommer alle 4 Wochen.,Alle 14 Tage. Mäßig gießen.
+Primel,Primula,Primulaceae,indoor,Wenig Licht möglich. Kein grelles Licht.,Gut durchlässige Blumenerde.,Einmal im Frühling düngen.,Alle 3 Tage. Feucht gießen.
+Anthurie,Anthurium,Araceae,indoor,Mittellicht. Kein direktes Sonnenlicht.,Locker durchlässige Erde mit Torfanteil.,Einmal im Monat düngen. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig gießen.
+Calla,Zantedeschia,Araceae,indoor,Mittellicht. Halbschatten möglich.,Feuchte humusreiche Erde.,Alle 14 Tage düngen. Im Winter selten.,Alle 10 Tage. Feucht halten.
+Hibiskus,Hibiscus rosa-sinensis,Malvaceae,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 14 Tage düngen. Im Winter weniger.,Alle 3 Tage. Mäßig gießen.
+Friedenslilie,Spathiphyllum,Araceae,indoor,Viel Licht. Halbschatten möglich.,Humusreiche durchlässige Erde. Keine Staunässe.,Alle 2 Wochen schwach düngen. Im Winter selten.,Alle 7 Tage. Feucht halten.
+Tillandsie,Tillandsia,Bromeliaceae,indoor,Viel Licht. Keine direkte Sonne.,Luft- bzw. sehr lockere Substrate. Kein dichter Boden.,Keine oder sehr sparsame Düngung. Im Winter aussetzen.,Alle 7 Tage. Leicht besprühen.
+Passionsblume,Passiflora,Passifloraceae,indoor,Viel Licht. Sonniger Standort.,Leichte humusreiche Erde. Gute Drainage.,Im Frühling leichte Düngung. Im Sommer alle 4 Wochen.,Alle 7 Tage. Ausreichend gießen.
+Kamelie,Camellia japonica,Theaceae,indoor,Wenig Licht. Helles kühles Umfeld.,Säurehaltige gut durchlässige Erde.,Leichte Düngung im Frühling. Im Sommer gelegentlich.,Alle 14 Tage. Mäßig gießen.
+Engelstrompete,Brugmansia,Solanaceae,indoor,Mittellicht. Keine pralle Sonne.,Humusreiche durchlässige Erde.,Von Frühling bis Sommer alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
+Zimmerlinde,Sparrmannia africana,Malvaceae,outdoor,Viel Licht. Indirektes Licht vorteilhaft.,Lockere gut drainierende Erde.,Alle 3 Monate schwach düngen. Im Winter nicht düngen.,Alle 14 Tage. Mäßig gießen.
+Weinrebe,Vitis,Vitaceae,outdoor,Viel Licht. Sonnig bevorzugt.,Gut durchlässige humusreiche Erde.,Leichte Düngung im Frühling. Im Sommer alle 4 Wochen.,Alle 14 Tage. Mäßig gießen.
+Papyrus,Cyperus papyrus,Cyperaceae,indoor,Viel Licht. Kein direktes Sonnenlicht.,Humusreiche wasserspeichernde Erde.,Alle 3 Monate mäßig düngen.,Alle 10 Tage. Feucht halten.
+Kängurublume,,,indoor,Wenig Licht. Diffuses Licht genügt.,Gut durchlässige leichte Erde.,Leichte Düngung im Frühling.,Alle 10 Tage. Mäßig gießen.
+Zimmeraralie,,,indoor,Wenig Licht. Helles indirektes Licht.,Durchlässige humusreiche Erde.,Von Frühling bis Sommer alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Zitronenbaum,Citrus × limon,Rutaceae,outdoor,Viel Licht. Sonniger Standort.,Leichte humusreiche Erde.,Alle 4 Wochen düngen. Im Winter selten.,Alle 5 Tage. Mäßig gießen.
+Olivenbaum,Olea europaea,Oleaceae,outdoor,Viel Licht. Volle Sonne verträglich.,Durchlässige leicht sandige Erde.,Leichte Frühjahrsdüngung.,Alle 5 Tage. Mäßig gießen.
+Mimosen,,,indoor,Wenig Licht. Helles schattiges Umfeld.,Lockere humusreiche Erde.,Von Frühling bis Sommer alle 4 Wochen düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Azalee,Rhododendron simsii,Ericaceae,indoor,Wenig Licht. Kühle helle Lage.,Saurer humusreicher durchlässiger Boden.,Einmal im Monat mäßig düngen. Im Winter nicht düngen.,Alle 3 Tage. Feucht halten.
+Bougainvillea,Bougainvillea,Nyctaginaceae,indoor,Mittellicht. Mehr Sonne vorteilhaft.,Gut drainierende torfhaltige Erde.,Alle 3 Monate schwach düngen. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
+Fuchsie,Fuchsia,Onagraceae,indoor,Wenig Licht. Vermeide pralle Sonne.,Locker durchlässige Erde.,Leichte Düngung im Sommer. Im Winter einstellen.,Alle 7 Tage. Mäßig gießen.
+Hortensie,Hydrangea macrophylla,Hydrangeaceae,outdoor,Wenig Licht. Heller schattiger Standort.,Lockere humusreiche Erde.,Nur im Frühling leicht düngen.,Alle 10 Tage. Feucht halten.
+Kalanchoe,Kalanchoe,Crassulaceae,cacti,Mittellicht. Indirektes Sonnenlicht.,Lockere durchlässige Erde.,Nur im Frühling leicht düngen.,Alle 10 Tage. Sparsam gießen. Erde zwischen den Wassergaben antrocknen lassen.
+Kranzschlinge,,,indoor,Mittellicht. Keine direkte Sonne.,Durchlässige humusreiche Erde.,Alle 2 Wochen mäßig düngen. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Lilien,,Liliaceae,indoor,Mittellicht. Keine Mittagssonne.,Gut durchlässige humusreiche Erde.,Alle 3 Monate leicht düngen. Im Winter nicht düngen.,Alle 3 Tage. Mäßig gießen.
+Margerite,Leucanthemum vulgare,Asteraceae,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Leichte Düngung im Frühling. Im Sommer selten.,Alle 10 Tage. Mäßig gießen.
+Nelke,,,indoor,Viel Licht. Sonnig bevorzugt.,Durchlässige humusreiche Erde.,Alle 2 Wochen düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Oleander,Nerium oleander,Apocynaceae,indoor,Viel Licht. Volle Sonne möglich.,Saurer durchlässiger Boden.,Nur im Frühling leicht düngen.,Alle 5 Tage. Mäßig gießen.
+Pelargonie,Pelargonium,Geraniaceae,indoor,Viel Licht. Sonnig bevorzugt.,Lockere gut drainierende Erde.,Leichte Düngung im Frühling. Im Sommer alle 4 Wochen.,Alle 5 Tage. Reichlich gießen.
+Portulakröschen,,,indoor,Viel Licht. Sonniger Standort.,Durchlässige humose Erde.,Kein oder sehr schwacher Dünger.,Alle 10 Tage. Mäßig gießen.
+Rhipsalis,,,indoor,Wenig Licht. Indirektes Licht genügend.,Durchlässige Erde mit gutem Luftanteil.,Leichte Düngung im Frühling.,Alle 7 Tage. Mäßig gießen.
+Schefflera,Schefflera arboricola,Araliaceae,indoor,Mittellicht. Kein direktes Sonnenlicht.,Lockere durchlässige Erde.,Nur im Frühling leicht düngen.,Alle 3 Tage. Mäßig gießen.
+Sonnenblume,Helianthus annuus,Asteraceae,indoor,Viel Licht. Volle Sonne notwendig.,Gut drainierende humusreiche Erde.,Leichte Frühjahrsdüngung.,Alle 3 Tage. Reichlich gießen.
+Steckpalme,,Arecaceae,indoor,Viel Licht. Heller Standort.,Sehr durchlässige Erde.,Einmal im Monat leicht düngen. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Usambaraveilchen,Saintpaulia,Gesneriaceae,indoor,Viel Licht. Hell aber kein direktes Sonnenlicht.,Lockere durchlässige Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Veilchen,Viola,Violaceae,indoor,Wenig Licht. Heller Schattenspot.,Durchlässige humusreiche Erde.,Einmal im Monat mäßig düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Wachsblume,,,indoor,Viel Licht. Sonniger Standort.,Torfhaltige durchlässige Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Zinnie,,,indoor,Mittellicht. Sonnig gelegentlich.,Torfhaltige gut drainierende Erde.,Alle 3 Monate leicht düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Zitronenbasilikum,Ocimum × citriodorum,Lamiaceae,herbal,Viel Licht. Sonnig und warm.,Lockere humusreiche Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 3 Tage. Mäßig gießen.
+Aubergine,Solanum melongena,Solanaceae,indoor,Viel Licht. Volle Sonne ideal.,Lockere gut drainierende Erde.,Kein oder leichter Dünger.,Alle 5 Tage. Mäßig gießen.
+Tomate,Solanum lycopersicum,Solanaceae,outdoor,Mittellicht. Sonnig bevorzugt.,Humusreiche durchlässige Erde.,Alle 14 Tage kräftig düngen. Im Winter nicht düngen.,Alle 14 Tage. Reichlich gießen.
+Paprika,Capsicum annuum,Solanaceae,indoor,Viel Licht. Sonniger Standort.,Humusreiche durchlässige Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Gurke,Cucumis sativus,Cucurbitaceae,outdoor,Viel Licht. Direkte Sonne möglich.,Humusreiche gut drainierende Erde.,Einmal im Monat leicht düngen. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
+Salat,Lactuca sativa,Asteraceae,outdoor,Viel Licht. Sonnig oder hell.,Lockere humose Erde.,Wöchentlich düngen während Wachstum.,Alle 3 Tage. Reichlich gießen.
+Kürbis,,,outdoor,Viel Licht. Volle Sonne bevorzugt.,Gut drainierende Erde.,Einmal im Monat leicht düngen. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
+Zucchini,Cucurbita pepo,Cucurbitaceae,outdoor,Viel Licht. Sonnig bevorzugt.,Lockere humose Erde.,Wöchentlich düngen während Wachstum.,Alle 7 Tage. Reichlich gießen.
+Bohne,,,indoor,Viel Licht. Volle Sonne.,Durchlässige humusreiche Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Erbse,,,indoor,Mittellicht. Sonnig möglich.,Humusreiche Erde mit guter Drainage.,Alle 14 Tage düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Spinat,,,outdoor,Viel Licht. Helles Umfeld.,Humusreiche frische Erde.,Wöchentlich düngen während Wachstum.,Alle 5 Tage. Feucht halten.
+Mangold,,,outdoor,Viel Licht. Sonnig bevorzugt.,Lockere humose Erde.,Einmal im Monat schwach düngen. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Rucola,,,indoor,Mittellicht. Heller Standort.,Durchlässige Erde.,Alle 3 Monate leicht düngen. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Chinakohl,,,outdoor,Mittellicht. Kein grelles Licht.,Lockere humusreiche Erde.,Leichte Frühjahrsdüngung.,Alle 3 Tage. Mäßig gießen.
+Petersilie,Petroselinum crispum,Apiaceae,herbal,Mittellicht. Heller Standort.,Humusreiche durchlässige Erde.,Einmal im Frühling schwach düngen.,Alle 10 Tage. Mäßig gießen.
+Dill,Anethum graveolens,Apiaceae,herbal,Mittellicht. Keine pralle Sonne.,Torfhaltige durchlässige Erde.,Alle 7 Tage mäßig düngen während Wachstum.,Alle 7 Tage. Mäßig gießen.
+Schnittlauch,Allium schoenoprasum,Amaryllidaceae,herbal,Viel Licht. Sonnig bevorzugt.,Durchlässige humusreiche Erde.,Alle 5 Wochen mäßig düngen während Wachstum.,Alle 5 Tage. Feucht halten.
+Lauch,,,indoor,Viel Licht. Sonnig bevorzugt.,Lockere humose Erde.,Alle 5 Wochen schwach düngen.,Alle 5 Tage. Mäßig gießen.
+Brokkoli,,,indoor,Viel Licht. Sonnig bevorzugt.,Humusreiche durchlässige Erde.,Alle 14 Tage düngen.,Alle 3 Tage. Ausreichend gießen.
+Blumenkohl,,,outdoor,Mittellicht. Sonnig möglich.,Durchlässige humusreiche Erde.,Alle 14 Tage düngen.,Alle 10 Tage. Mäßig gießen.
+Rosenkohl,,Rosaceae,outdoor,Mittellicht. Sonnig möglich.,Durchlässige humusreiche Erde.,Einmal im Monat schwach düngen.,Alle 3 Tage. Mäßig gießen.
+Monstera deliciosa,,Araceae,indoor,Helles indirektes Licht. Keine direkte Mittagssonne.,Lockere humusreiche Erde mit Perlite. Gute Drainage.,Alle 2 Wochen düngen von April bis September. Im Winter nicht düngen.,Alle 7 Tage. Erde zwischen Gießen leicht antrocknen lassen.
+Monstera adansonii,,Araceae,indoor,Helles indirektes Licht. Morgen- oder Abendsonne verträglich.,Lockere durchlässige Erde mit Torf und Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Pilea peperomioides,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Blumenerde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Erde zwischen Gießen antrocknen lassen.
+Alocasia zebrina,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche Erde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Alocasia Polly,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde mit Drainage.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Strelitzie,,,indoor,Viel Licht. Direkte Sonne möglich.,Lehmige nährstoffreiche Erde. Gute Drainage.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Geigenfeige,Ficus lyrata,Moraceae,outdoor,Helles indirektes Licht. Keine Zugluft.,Gut durchlässige nährstoffreiche Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Erde leicht antrocknen lassen.
+Pfeilblatt,,,indoor,Helles indirektes Licht. Keine Mittagssonne.,Lockere humusreiche Erde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Korbmarante,Calathea,Marantaceae,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde. Gleichmäßig feucht.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Dieffenbachia,Dieffenbachia,Araceae,indoor,Mittleres bis helles Licht. Keine direkte Sonne.,Lockere humusreiche Blumenerde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Croton,,,indoor,Viel helles Licht. Etwas direkte Sonne verträglich.,Nährstoffreiche durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Dracaena marginata,,,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Erde zwischen Gießen antrocknen lassen.
+Dracaena fragrans,,,indoor,Mittleres Licht. Verträgt Halbschatten.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Baumfreund,,,outdoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Kolbenfaden,,,indoor,Wenig bis mittleres Licht. Schattenverträglich.,Lockere durchlässige Blumenerde.,Alle 4 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Zebrakraut,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche Blumenerde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Geldbaum,Crassula ovata,Crassulaceae,outdoor,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Elefantenfuß,,,indoor,Viel Licht. Direkte Sonne verträglich.,Gut drainierende sandige Erde.,Alle 6 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sparsam gießen.
+Wunderstrauch,,,indoor,Helles Licht. Etwas direkte Sonne verträglich.,Nährstoffreiche durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Purpurtute,,,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Peperomia obtusifolia,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Peperomia caperata,,,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde mit Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Nestfarn,,Polypodiaceae,indoor,Wenig bis mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde. Stets leicht feucht.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Schwertfarn,Nephrolepis,Nephrolepidaceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Torfhaltige lockere Erde. Stets leicht feucht.,Alle 4 Wochen düngen im Sommer. Im Winter selten.,Alle 5 Tage. Gleichmäßig feucht halten.
+Frauenhaarfarn,,Polypodiaceae,indoor,Wenig Licht. Keine direkte Sonne. Hohe Luftfeuchtigkeit.,Torfhaltige lockere Erde. Stets feucht halten.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Hirschgeweihfarn,,Polypodiaceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockeres Substrat aus Rinde und Moos.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Besprühen und feucht halten.
+Kentia-Palme,,Arecaceae,indoor,Helles bis mittleres Licht. Verträgt Schatten.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Bergpalme,Chamaedorea elegans,Arecaceae,indoor,Wenig bis mittleres Licht. Keine direkte Sonne.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Strahlenaralie,,,indoor,Helles indirektes Licht. Keine Mittagssonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Goldfruchtpalme,Dypsis lutescens,Arecaceae,indoor,Helles indirektes Licht. Keine direkte Mittagssonne.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Fächerpalme,,Arecaceae,indoor,Viel Licht. Direkte Sonne verträglich.,Gut durchlässige Erde mit Sand.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Kokospalme,,Arecaceae,indoor,Viel Licht. Direkte Sonne nötig.,Lockere durchlässige Erde mit Sand.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Dattelpalme,Phoenix,Arecaceae,indoor,Viel Licht. Direkte Sonne verträglich.,Gut durchlässige sandige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Fischschwanzpalme,,Arecaceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Gut durchlässige humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Steckenpalme,,Arecaceae,indoor,Wenig bis mittleres Licht. Schattenverträglich.,Gut durchlässige humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Zwergpalme,,Arecaceae,indoor,Viel Licht. Direkte Sonne verträglich.,Gut durchlässige sandige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Bananenpflanze,,,indoor,Viel Licht. Direkte Sonne möglich.,Nährstoffreiche humusreiche Erde. Gute Drainage.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
+Guzmania,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere orchideenartige Erde mit Rinde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
+Vriesea,Vriesea,Bromeliaceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere orchideenartige Erde mit Rinde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
+Aechmea,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde und Moos.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
+Neoregelia,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde und Moos.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
+Flamingoblume,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere Orchideenerde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Katzengras,,Poaceae,outdoor,Helles Licht. Direkte Sonne verträglich.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Grüne Birkenfeige,,,outdoor,Helles indirektes Licht. Keine Zugluft.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Ficus lyrata,,Moraceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Gut durchlässige nährstoffreiche Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Erde leicht antrocknen lassen.
+Ficus elastica,,Moraceae,indoor,Helles bis mittleres Licht. Keine pralle Sonne.,Gut durchlässige Blumenerde mit Sand.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Dreimasterblume,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Weiße Birkenfeige,,,outdoor,Helles indirektes Licht. Keine Zugluft.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Echeveria,Echeveria,Crassulaceae,cacti,Viel Licht. Direkte Sonne ideal.,Mineralische gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Haworthia,Haworthia,Asphodelaceae,cacti,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde mit Sand.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Crassula ovata,,,cacti,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Sedum,Sedum,Crassulaceae,cacti,Viel Licht. Direkte Sonne ideal.,Mineralische gut drainierende Erde.,Alle 8 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Lithops,,,cacti,Viel Licht. Direkte Sonne notwendig.,Sehr gut drainierende mineralische Erde.,Im Sommer alle 8 Wochen sehr schwach düngen. Im Winter nicht düngen.,Alle 30 Tage. Extrem sparsam gießen.
+Sempervivum,,,cacti,Viel Licht. Direkte Sonne ideal.,Gut drainierende sandige Erde.,Kein Dünger nötig. Höchstens einmal im Frühjahr.,Alle 14 Tage. Sparsam gießen.
+Euphorbia trigona,,,cacti,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Weihnachtskaktus,Schlumbergera,Cactaceae,cacti,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde mit Torfanteil.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Osterkaktus,Hatiora gaertneri,Cactaceae,cacti,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde mit Torfanteil.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Dickblatt,,,indoor,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Fetthenne,,,cacti,Viel Licht. Direkte Sonne verträglich.,Durchlässige sandige Erde.,Alle 8 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Königin der Nacht,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Mäßig gießen.
+Agave,,,cacti,Viel Licht. Volle Sonne notwendig.,Sehr gut drainierende sandige Erde.,Alle 8 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sehr sparsam gießen.
+Wolfsmilch,Euphorbia,Euphorbiaceae,indoor,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Zebra-Haworthie,,,cacti,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde mit Sand.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Rosettendickblatt,Aeonium tabuliforme,Crassulaceae,cacti,Viel Licht. Direkte Sonne ideal.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Schwiegermutterstuhl,,,indoor,Viel Licht. Direkte Sonne notwendig.,Mineralische gut drainierende Kakteenerde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 30 Tage. Sehr sparsam gießen.
+Feigenkaktus,,Cactaceae,cacti,Viel Licht. Volle Sonne ideal.,Sehr gut drainierende sandige Erde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sparsam gießen.
+Bleistiftstrauch,,,indoor,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sparsam gießen.
+Oregano,Origanum vulgare,Lamiaceae,herbal,Viel Licht. Sonniger Standort ideal.,Durchlässige sandige Erde. Kein Staunässe.,Alle 6 Wochen leicht düngen. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Salbei,Salvia officinalis,Lamiaceae,herbal,Viel Licht. Sonniger Standort bevorzugt.,Durchlässige kalkhaltige Erde.,Alle 6 Wochen leicht düngen. Im Winter nicht düngen.,Alle 7 Tage. Sparsam gießen.
+Estragon,,,herbal,Helles Licht. Sonnig bis halbschattig.,Durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Koriander,,,herbal,Helles Licht. Keine pralle Mittagssonne.,Lockere humusreiche durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Bohnenkraut,,,indoor,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Alle 6 Wochen leicht düngen.,Alle 7 Tage. Sparsam gießen.
+Liebstöckel,,,herbal,Helles bis mittleres Licht. Halbschatten verträglich.,Tiefgründige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Lorbeer,,,indoor,Helles Licht. Sonnig bis halbschattig.,Gut durchlässige humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Kerbel,,,herbal,Mittleres Licht. Keine pralle Sonne.,Lockere humusreiche feuchte Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Brunnenkresse,,,herbal,Mittleres Licht. Halbschatten möglich.,Feuchte nährstoffreiche Erde.,Alle 4 Wochen leicht düngen.,Alle 3 Tage. Sehr feucht halten.
+Borretsch,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 6 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Currykraut,,,indoor,Viel Licht. Sonniger warmer Standort.,Durchlässige magere sandige Erde.,Alle 8 Wochen leicht düngen. Im Winter nicht düngen.,Alle 10 Tage. Sparsam gießen.
+Minze,,,herbal,Helles bis mittleres Licht. Halbschatten möglich.,Feuchte humusreiche Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
+Zitronengras,,Poaceae,herbal,Viel Licht. Sonnig und warm.,Nährstoffreiche humusreiche feuchte Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
+Ingwer,,,herbal,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Kurkuma,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Karotte,,,outdoor,Viel Licht. Sonniger Standort.,Lockere tiefgründige sandige Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Radieschen,,,outdoor,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Leichte Düngung bei Aussaat.,Alle 3 Tage. Gleichmäßig feucht halten.
+Kohlrabi,,,outdoor,Viel Licht. Sonniger Standort.,Nährstoffreiche humusreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Sellerie,,,indoor,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche tiefgründige feuchte Erde.,Alle 2 Wochen düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Fenchel,,,indoor,Viel Licht. Sonniger warmer Standort.,Tiefgründige nährstoffreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Rote Bete,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere tiefgründige humusreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Artischocke,,,indoor,Viel Licht. Sonniger warmer Standort.,Tiefgründige nährstoffreiche Erde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Süßkartoffel,,,outdoor,Viel Licht. Sonnig und warm.,Lockere sandige nährstoffreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Kartoffel,,,outdoor,Viel Licht. Sonniger Standort.,Lockere sandige tiefgründige Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Mais,,,outdoor,Viel Licht. Volle Sonne notwendig.,Nährstoffreiche tiefgründige Erde.,Alle 2 Wochen düngen während Wachstum.,Alle 5 Tage. Reichlich gießen.
+Zwiebel,,,outdoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Knoblauch,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige nährstoffreiche Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Spargel,,,indoor,Viel Licht. Sonniger Standort.,Tiefgründige sandige humusreiche Erde.,Im Frühling kräftig düngen. Nach Ernte alle 4 Wochen.,Alle 7 Tage. Mäßig gießen.
+Grünkohl,,,outdoor,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche lehmige Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Pak Choi,,,indoor,Helles Licht. Keine pralle Mittagssonne.,Lockere nährstoffreiche feuchte Erde.,Alle 4 Wochen leicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Rettich,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere tiefgründige Erde.,Leichte Düngung bei Aussaat.,Alle 5 Tage. Gleichmäßig feucht halten.
+Topinambur,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Pastinake,,,indoor,Helles Licht. Sonnig bis halbschattig.,Tiefgründige lockere Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Wirsing,,,indoor,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche lehmige Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Weißkohl,,,outdoor,Viel Licht. Sonniger Standort.,Nährstoffreiche schwere Erde.,Alle 3 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Rotkohl,,,outdoor,Viel Licht. Sonniger Standort.,Nährstoffreiche schwere Erde.,Alle 3 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Erdbeere,,,outdoor,Viel Licht. Sonniger Standort.,Lockere humusreiche leicht saure Erde.,Alle 2 Wochen düngen während der Blüte. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Himbeere,,,outdoor,Viel Licht. Sonnig bis halbschattig.,Lockere humusreiche leicht saure Erde. Gute Drainage.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Heidelbeere,,,outdoor,Viel Licht. Sonniger bis halbschattiger Standort.,Saure torfhaltige Erde. pH-Wert 4 bis 5.,Alle 4 Wochen Rhododendrondünger im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
+Johannisbeere,,,indoor,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche humusreiche Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Brombeere,,,outdoor,Viel Licht. Sonniger Standort.,Lockere humusreiche leicht saure Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Stachelbeere,,,indoor,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche humusreiche Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Feigenbaum,,,outdoor,Viel Licht. Sonniger geschützter Standort.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Granatapfel,,,outdoor,Viel Licht. Volle Sonne ideal.,Gut durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Orangenbaum,,,outdoor,Viel Licht. Sonniger Standort.,Gut durchlässige leicht saure Erde.,Alle 4 Wochen Zitruspflanzendünger im Sommer.,Alle 5 Tage. Mäßig gießen.
+Mandarinenbäumchen,,,indoor,Viel Licht. Sonniger Standort.,Gut durchlässige leicht saure Erde.,Alle 4 Wochen Zitruspflanzendünger im Sommer.,Alle 5 Tage. Mäßig gießen.
+Limette,,,indoor,Viel Licht. Sonniger warmer Standort.,Gut durchlässige leicht saure Erde.,Alle 4 Wochen Zitruspflanzendünger im Sommer.,Alle 5 Tage. Mäßig gießen.
+Kumquat,,,indoor,Viel Licht. Sonniger Standort.,Gut durchlässige leicht saure Erde.,Alle 4 Wochen Zitruspflanzendünger im Sommer.,Alle 5 Tage. Mäßig gießen.
+Kiwi,,,indoor,Viel Licht. Sonnig bis halbschattig.,Lockere humusreiche leicht saure Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Avocado,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Mango,,,indoor,Viel Licht. Volle Sonne notwendig.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Papaya,,,indoor,Viel Licht. Volle Sonne notwendig.,Lockere gut durchlässige nährstoffreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Passionsfrucht,,,indoor,Viel Licht. Sonniger Standort.,Lockere humusreiche Erde. Gute Drainage.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Physalis,,,indoor,Viel Licht. Sonniger warmer Standort.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Guave,,,indoor,Viel Licht. Volle Sonne ideal.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Melone,,,indoor,Viel Licht. Volle Sonne notwendig.,Nährstoffreiche lockere Erde.,Alle 2 Wochen düngen während Wachstum.,Alle 3 Tage. Reichlich gießen.
+Weintraube,,,outdoor,Viel Licht. Sonniger warmer Standort.,Gut durchlässige Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 7 Tage. Mäßig gießen.
+Dahlie,,,indoor,Viel Licht. Sonniger Standort.,Nährstoffreiche durchlässige Erde.,Alle 2 Wochen düngen während der Blüte.,Alle 5 Tage. Reichlich gießen.
+Chrysantheme,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 2 Wochen düngen während der Blüte. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Gardenie,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Saure torfhaltige Erde. pH-Wert 5 bis 6.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Jasmin,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Clematis,,,indoor,Helles Licht. Sonnig mit beschattetem Fuß.,Nährstoffreiche humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Rose,,Rosaceae,outdoor,Viel Licht. Sonniger Standort.,Nährstoffreiche lehmige Erde. Gute Drainage.,Alle 4 Wochen Rosendünger im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Reichlich gießen.
+Pfingstrose,,Rosaceae,outdoor,Viel Licht. Sonniger bis halbschattiger Standort.,Tiefgründige nährstoffreiche Erde.,Im Frühling und nach der Blüte düngen.,Alle 7 Tage. Mäßig gießen.
+Krokus,,,outdoor,Viel Licht. Sonnig bis halbschattig.,Durchlässige Erde. Keine Staunässe.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
+Tulpe,,Liliaceae,outdoor,Viel Licht. Sonniger Standort.,Durchlässige nährstoffreiche Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
+Narzisse,,Amaryllidaceae,outdoor,Viel Licht. Sonnig bis halbschattig.,Durchlässige nährstoffreiche Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
+Hyazinthe,,,outdoor,Viel Licht. Sonniger Standort.,Durchlässige nährstoffreiche Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
+Gladiole,,,indoor,Viel Licht. Volle Sonne ideal.,Lockere durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen während Wachstum.,Alle 5 Tage. Mäßig gießen.
+Iris,,,indoor,Viel Licht. Sonniger Standort.,Durchlässige Erde. Keine Staunässe.,Leichte Düngung im Frühling.,Alle 7 Tage. Mäßig gießen.
+Ranunkel,,,indoor,Helles Licht. Keine pralle Mittagssonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen während der Blüte.,Alle 5 Tage. Mäßig gießen.
+Alpenveilchen,,,indoor,Helles indirektes Licht. Keine direkte Sonne. Kühl.,Durchlässige humusreiche Erde.,Alle 4 Wochen düngen während der Blüte. Im Sommer Ruhephase.,Alle 7 Tage. Mäßig gießen. Von unten gießen.
+Vergissmeinnicht,,,indoor,Helles Licht. Halbschatten verträglich.,Feuchte humusreiche Erde.,Leichte Düngung im Frühling.,Alle 5 Tage. Gleichmäßig feucht halten.
+Gerbera,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Lisianthus,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Anemone,,,indoor,Helles Licht. Halbschatten verträglich.,Lockere humusreiche Erde.,Leichte Düngung im Frühling.,Alle 5 Tage. Mäßig gießen.
+Cosmea,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde. Nicht zu nährstoffreich.,Wenig bis kein Dünger nötig.,Alle 7 Tage. Mäßig gießen.
+Kornblume,,,indoor,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Wenig bis kein Dünger nötig.,Alle 7 Tage. Sparsam gießen.
+Ringelblume,,,herbal,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Tagetes,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Löwenmäulchen,,,indoor,Viel Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Mäßig gießen.
+Stockrose,,Rosaceae,outdoor,Viel Licht. Sonniger geschützter Standort.,Tiefgründige nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Eisenkraut,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer.,Alle 5 Tage. Mäßig gießen.
+Flieder,,,outdoor,Viel Licht. Sonniger Standort.,Durchlässige nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Schneeball,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Magnolie,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche leicht saure Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Rhododendron,,,indoor,Helles Licht. Halbschatten bevorzugt.,Saure humusreiche Erde. pH-Wert 4 bis 5.,Im Frühling Rhododendrondünger geben.,Alle 5 Tage. Gleichmäßig feucht halten.
+Forsythie,,,outdoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Wisteria,,,indoor,Viel Licht. Sonniger Standort.,Nährstoffreiche durchlässige Erde.,Im Frühling düngen. Im Sommer alle 4 Wochen.,Alle 7 Tage. Mäßig gießen.
+Efeu,,Araliaceae,indoor,Wenig bis mittleres Licht. Schattenverträglich.,Lockere humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Geißblatt,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Hopfen,,,indoor,Viel Licht. Sonniger Standort.,Nährstoffreiche tiefgründige Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
+Kletterrose,,Rosaceae,outdoor,Viel Licht. Sonniger Standort.,Nährstoffreiche lehmige Erde.,Alle 4 Wochen Rosendünger im Sommer.,Alle 5 Tage. Reichlich gießen.
+Kletterhortensie,,,outdoor,Helles Licht. Halbschatten möglich.,Lockere humusreiche leicht saure Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Trompetenblume,,,indoor,Viel Licht. Sonnig und warm.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Bambus,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Pampasgras,,Poaceae,outdoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Ziergras,,Poaceae,outdoor,Viel Licht. Sonniger Standort.,Durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Lampenputzergras,,Poaceae,outdoor,Viel Licht. Sonniger Standort.,Durchlässige lockere Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Blauschwingel,,,indoor,Viel Licht. Volle Sonne ideal.,Durchlässige magere Erde.,Wenig bis kein Dünger nötig.,Alle 10 Tage. Sparsam gießen.
+Segge,,,indoor,Helles bis mittleres Licht. Halbschatten verträglich.,Feuchte humusreiche Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
+Bonsai Ficus,,Moraceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Gut drainierende Bonsaierde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Bonsai Ahorn,,,outdoor,Helles Licht. Morgen- oder Abendsonne.,Gut drainierende Bonsaierde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Bonsai Kiefer,,,outdoor,Viel Licht. Volle Sonne ideal.,Gut drainierende Bonsaierde mit Akadama.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Mäßig gießen.
+Buchsbaum,,,outdoor,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Eibe,,,indoor,Helles Licht. Halbschatten verträglich.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Thuja,,,indoor,Viel Licht. Sonniger Standort.,Lockere nährstoffreiche Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Liguster,,,outdoor,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Kirschlorbeer,,,outdoor,Helles Licht. Sonnig bis schattig.,Lockere nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Zypresse,,,indoor,Viel Licht. Sonniger Standort.,Gut durchlässige Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 7 Tage. Mäßig gießen.
+Wacholder,,,indoor,Viel Licht. Sonniger Standort.,Durchlässige sandige Erde.,Im Frühling leicht düngen.,Alle 10 Tage. Sparsam gießen.
+Apfelbaum,,,outdoor,Viel Licht. Volle Sonne ideal.,Nährstoffreiche lehmige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Kirschbaum,,,outdoor,Viel Licht. Sonniger Standort.,Nährstoffreiche durchlässige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Mäßig gießen.
+Birnbaum,,,outdoor,Viel Licht. Sonniger warmer Standort.,Nährstoffreiche tiefgründige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Mäßig gießen.
+Pflaume,,,outdoor,Viel Licht. Sonniger Standort.,Nährstoffreiche durchlässige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Mäßig gießen.
+Pfirsichbaum,,,outdoor,Viel Licht. Sonniger geschützter Standort.,Nährstoffreiche durchlässige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Mäßig gießen.
+Nektarine,,,indoor,Viel Licht. Sonniger warmer Standort.,Nährstoffreiche durchlässige Erde.,Im Frühling und Herbst düngen.,Alle 5 Tage. Mäßig gießen.
+Walnussbaum,,,outdoor,Viel Licht. Sonniger Standort.,Tiefgründige nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Haselnuss,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Seerose,,Rosaceae,outdoor,Viel Licht. Volle Sonne notwendig.,Schwere lehmige Teicherde.,Spezielle Teichpflanzendüngertabletten im Frühling.,Alle 1 Tage. Stets im Wasser stehend. Wasserstand konstant halten.
+Lotusblume,,,indoor,Viel Licht. Volle Sonne notwendig.,Schwere lehmige Teicherde.,Spezielle Teichpflanzendüngertabletten im Frühling.,Alle 1 Tage. Stets im Wasser stehend. Wasserstand konstant halten.
+Wasserhyazinthe,,,outdoor,Viel Licht. Sonniger Standort.,Schwimmend in nährstoffreichem Wasser.,Kein Dünger nötig.,Alle 1 Tage. Stets im Wasser schwimmend. Wasser regelmäßig wechseln.
+Venusfliegenfalle,,,indoor,Viel Licht. Direkte Sonne notwendig.,Torf-Sand-Gemisch ohne Nährstoffe.,Keinen Dünger verwenden.,Alle 3 Tage. Nur mit Regenwasser oder destilliertem Wasser.
+Sonnentau,,,indoor,Viel Licht. Direkte Sonne ideal.,Torf-Sand-Gemisch ohne Nährstoffe.,Keinen Dünger verwenden.,Alle 3 Tage. Nur mit Regenwasser oder destilliertem Wasser.
+Schlauchpflanze,,,indoor,Viel Licht. Direkte Sonne ideal.,Torf-Sand-Gemisch ohne Nährstoffe.,Keinen Dünger verwenden.,Alle 3 Tage. Nur mit Regenwasser oder destilliertem Wasser.
+Kannenpflanze,,,indoor,Helles indirektes Licht. Hohe Luftfeuchtigkeit.,Torf-Moos-Gemisch. Gut durchlässig.,Keinen Dünger verwenden.,Alle 3 Tage. Nur mit Regenwasser oder destilliertem Wasser.
+Fettkraut,,,indoor,Helles Licht. Keine pralle Sonne.,Torf-Sand-Gemisch ohne Nährstoffe.,Keinen Dünger verwenden.,Alle 5 Tage. Nur mit Regenwasser oder destilliertem Wasser.
+Phalaenopsis,Phalaenopsis,Orchidaceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Spezielle Orchideenerde mit Rinde und Moos.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter selten.,Alle 10 Tage. Tauchen und abtropfen lassen.
+Dendrobium,,,indoor,Helles Licht. Morgen- oder Abendsonne verträglich.,Orchideenerde mit Rinde.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Cattleya,,,indoor,Viel Licht. Direkte Morgen- oder Abendsonne.,Grobe Orchideenerde mit Rinde.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Zwischen Gießen gut abtrocknen lassen.
+Cymbidium,,,indoor,Helles Licht. Morgen- oder Abendsonne.,Orchideenerde mit Rinde und Torf.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Oncidium,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Orchideenerde mit Rinde.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Vanda,,,indoor,Viel Licht. Direkte Sonne verträglich.,Grobe Rinde oder in Korb ohne Erde.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Täglich besprühen.
+Miltonia,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Feine Orchideenerde mit Moos.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Paphiopedilum,,,indoor,Mittleres Licht. Keine direkte Sonne.,Feine Orchideenerde mit Rinde und Moos.,Alle 4 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Zygopetalum,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Orchideenerde mit Rinde.,Alle 2 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Areca-Palme,Dypsis lutescens,Arecaceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Chrysalidocarpus,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Birkenfeige variegata,,,outdoor,Helles indirektes Licht. Keine Zugluft.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Spathiphyllum,,,indoor,Wenig bis mittleres Licht. Keine direkte Sonne.,Lockere humusreiche Blumenerde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Scindapsus,,,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Clusia,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Alocasia macrorrhiza,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Calathea ornata,,Marantaceae,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Calathea lancifolia,,Marantaceae,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Maranta leuconeura,,,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Ctenanthe,,,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Stromanthe,Stromanthe,Marantaceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Philodendron scandens,,Araceae,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Philodendron Pink Princess,,Araceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde mit Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Philodendron Birkin,,Araceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde mit Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Syngonium,Syngonium,Araceae,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Hoya carnosa,,,indoor,Helles indirektes Licht. Etwas direkte Sonne verträglich.,Lockere durchlässige Erde mit Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Hoya kerrii,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 6 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Begonia maculata,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche Erde. Gute Drainage.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Begonia rex,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Tradescantia zebrina,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Tradescantia pallida,,,indoor,Helles Licht. Direkte Sonne verträglich.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+String of Pearls,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+String of Hearts,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Erbsenpflanze,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Leuchterblume,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Erde mit Sand.,Alle 4 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Dreikantige Wolfsmilch,,,indoor,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Glückskastanie,,,outdoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Pachira aquatica,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Mädchenauge,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer.,Alle 7 Tage. Mäßig gießen.
+Sonnenhut,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige nährstoffreiche Erde.,Im Frühling düngen.,Alle 5 Tage. Mäßig gießen.
+Hauswurz,,,indoor,Viel Licht. Volle Sonne ideal.,Sehr durchlässige mineralische Erde.,Kein Dünger nötig.,Alle 14 Tage. Sparsam gießen.
+Steinbrech,Saxifraga,Saxifragaceae,indoor,Helles Licht. Halbschatten verträglich.,Durchlässige kalkhaltige Erde.,Leichte Düngung im Frühling.,Alle 7 Tage. Mäßig gießen.
+Mandevilla,,,indoor,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Dipladenia,,,indoor,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Enzianstrauch,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer.,Alle 5 Tage. Mäßig gießen.
+Wandelröschen,,,indoor,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Schönmalve,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Lockere humusreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Bleiwurz,,,indoor,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Plectranthus,,,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Harfenstrauch,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Porzellanblümchen,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Zimmerbambus,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Jakobsleiter,,,indoor,Helles Licht. Halbschatten verträglich.,Lockere humusreiche feuchte Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
+Blattbegonie,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Elefantenohr,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Kolbenfaden Silver Queen,,,indoor,Wenig bis mittleres Licht. Schattenverträglich.,Lockere durchlässige Blumenerde.,Alle 4 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Dracaena reflexa,,,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Gut durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Kaffeebaum,,,outdoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche leicht saure Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Kakaobaum,,,outdoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Pfennigbaum,Crassula ovata,Crassulaceae,outdoor,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Glücksklee,,Fabaceae,outdoor,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Fleißiges Lieschen,,,outdoor,Helles bis mittleres Licht. Keine pralle Sonne.,Lockere humusreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Pantoffelblume,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 2 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
+Jasminblütiger Nachtschatten,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Brunfelsia,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche leicht saure Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Ananaspflanze,,,indoor,Viel Licht. Direkte Sonne verträglich.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Drachenfrucht,,,indoor,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Vanille,,,indoor,Helles indirektes Licht. Hohe Luftfeuchtigkeit.,Lockere Orchideenerde mit Rinde.,Alle 4 Wochen Orchideendünger im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Zimt,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Astilbe,,,indoor,Halbschatten. Keine pralle Sonne.,Feuchte humusreiche Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Rittersporn,,,indoor,Viel Licht. Sonniger Standort.,Nährstoffreiche durchlässige Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
+Phlox,,,indoor,Viel Licht. Sonnig bis halbschattig.,Nährstoffreiche feuchte Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
+Storchschnabel,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Akelei,,,indoor,Helles Licht. Halbschatten bevorzugt.,Lockere humusreiche Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Glockenblume,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Fingerhut,,,indoor,Helles Licht. Halbschatten möglich.,Lockere humusreiche Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Funkien,,,indoor,Wenig bis mittleres Licht. Schatten bevorzugt.,Lockere humusreiche feuchte Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Echinacea,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Katzenminze,,,herbal,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Sparsam gießen.
+Mohn,,,indoor,Viel Licht. Sonniger Standort.,Durchlässige Erde. Keine Staunässe.,Im Frühling leicht düngen.,Alle 7 Tage. Sparsam gießen.
+Schafgarbe,,,herbal,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Wenig bis kein Dünger nötig.,Alle 10 Tage. Sparsam gießen.
+Frauenmantel,,,herbal,Helles Licht. Halbschatten verträglich.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Taglilie,,Liliaceae,indoor,Viel Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Im Frühling und Sommer düngen.,Alle 5 Tage. Mäßig gießen.
+Malve,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer.,Alle 7 Tage. Mäßig gießen.
+Prachtspiere,,,indoor,Helles Licht. Halbschatten verträglich.,Feuchte humusreiche Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Purpurglöckchen,,,indoor,Helles Licht. Halbschatten verträglich.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Silberkerze,,,indoor,Mittleres Licht. Halbschatten bevorzugt.,Lockere humusreiche feuchte Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Herbstanemone,,,indoor,Helles Licht. Halbschatten verträglich.,Lockere humusreiche Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Christrose,,Rosaceae,outdoor,Wenig bis mittleres Licht. Halbschatten bevorzugt.,Lockere humusreiche kalkhaltige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Winterjasmin,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Zierlauch,,,indoor,Viel Licht. Sonniger Standort.,Durchlässige Erde. Keine Staunässe.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Schneeglöckchen,,,indoor,Helles Licht. Halbschatten verträglich.,Lockere humusreiche feuchte Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
+Märzenbecher,,,indoor,Helles Licht. Halbschatten möglich.,Lockere feuchte Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Gleichmäßig feucht halten.
+Blausternchen,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Leichte Düngung nach der Blüte.,Alle 7 Tage. Mäßig gießen.
+Maiglöckchen,,,indoor,Wenig bis mittleres Licht. Schatten bevorzugt.,Lockere humusreiche feuchte Erde.,Im Frühling leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Fittonia,,,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Kanonierblume,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Zimmertanne,,,outdoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Norfolk-Tanne,,,outdoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige leicht saure Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Zierspargel,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Asparagus densiflorus,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Korallenkaktus,,Cactaceae,cacti,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Erde mit Perlite.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Herzblattbaum,,,outdoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Geldbaum variegata,,,outdoor,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Aloe aristata,,Asphodelaceae,cacti,Helles Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Aloe humilis,,Asphodelaceae,cacti,Helles bis mittleres Licht. Direkte Sonne möglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Epipremnum aureum,,,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Blumenerde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Philodendron hederaceum,,Araceae,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Monstera Thai Constellation,,Araceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde und Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Zamie,,,indoor,Wenig bis mittleres Licht. Schattenverträglich.,Gut durchlässige Erde.,Alle 8 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sparsam gießen.
+Blattkaktus,,Cactaceae,cacti,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde mit Torfanteil.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Keulenlilie,,Liliaceae,indoor,Helles bis mittleres Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Zimmeresche,,,outdoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Kroton,,,indoor,Helles Licht. Etwas direkte Sonne verträglich.,Nährstoffreiche durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Flammendes Käthchen,Kalanchoe blossfeldiana,Crassulaceae,indoor,Viel Licht. Sonnig und warm.,Gut drainierende Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Sparsam gießen.
+Wunderblume,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Mäßig gießen.
+Birkenfeige,Ficus benjamina,Moraceae,outdoor,Helles indirektes Licht. Keine Zugluft.,Gut durchlässige nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Buntnessel,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Lockere humusreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Glücksbambus,,,indoor,Mittleres Licht. Keine direkte Sonne.,In Wasser oder lockere Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Wasser regelmäßig wechseln.
+Pfeilwurz,,,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Mexikanische Glückspalme,,Arecaceae,herbal,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Kamelienblütige Begonie,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Zwergpfeffer,Peperomia,Piperaceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Wasserpalme,,Arecaceae,indoor,Helles Licht. Keine direkte Sonne.,Humusreiche feuchte Erde.,Alle 4 Wochen düngen im Sommer. Im Winter selten.,Alle 3 Tage. Stets feucht halten.
+Bromelie,Bromelia,Bromeliaceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere orchideenartige Erde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
+Flammendes Schwert,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
+Palmfarn,,Polypodiaceae,indoor,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Cycas revoluta,,,indoor,Viel Licht. Direkte Sonne verträglich.,Gut drainierende sandige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Zimmerkalla,,,indoor,Mittleres Licht. Halbschatten möglich.,Feuchte humusreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Drehfrucht,,,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Korallenbeere,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Zierananas,,,indoor,Viel Licht. Direkte Sonne verträglich.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Strahlenaralie variegata,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Philodendron xanadu,,Araceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Philodendron gloriosum,,Araceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde und Perlite.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Alocasia Dragon Scale,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Perlite und Rinde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Calathea Medallion,,Marantaceae,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Calathea Makoyana,,Marantaceae,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Calathea Musaica,,Marantaceae,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Paradiesvogelblume,,,indoor,Viel Licht. Direkte Sonne möglich.,Nährstoffreiche durchlässige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Plumeria,,,indoor,Viel Licht. Volle Sonne notwendig.,Gut drainierende sandige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Bougainvillea glabra,,,indoor,Viel Licht. Volle Sonne ideal.,Gut drainierende Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Medinilla,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Alpinia,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere humusreiche feuchte Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Heliconia,,,indoor,Viel Licht. Sonnig und warm.,Nährstoffreiche feuchte Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Reichlich gießen.
+Frühlingszwiebel,,,outdoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Schalotte,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Knollensellerie,,,indoor,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche tiefgründige feuchte Erde.,Alle 2 Wochen düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Endivie,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Feldsalat,,,outdoor,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Leichte Düngung bei Aussaat.,Alle 5 Tage. Gleichmäßig feucht halten.
+Kopfsalat,,,outdoor,Helles Licht. Keine pralle Mittagssonne.,Lockere nährstoffreiche feuchte Erde.,Alle 4 Wochen leicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Eisbergsalat,,,outdoor,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Alle 4 Wochen leicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Radicchio,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Chicorée,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere tiefgründige Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Portulak,,,indoor,Viel Licht. Sonniger Standort.,Durchlässige sandige Erde.,Wenig bis kein Dünger nötig.,Alle 7 Tage. Sparsam gießen.
+Okra,,,indoor,Viel Licht. Sonnig und warm.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Schwarzwurzel,,,indoor,Helles Licht. Sonnig bis halbschattig.,Tiefgründige lockere Erde.,Leichte Düngung bei Aussaat.,Alle 7 Tage. Mäßig gießen.
+Bärlauch,,,indoor,Wenig Licht. Schattiger feuchter Standort.,Lockere humusreiche feuchte Erde.,Im Frühling leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Kresse,,,herbal,Helles Licht. Sonnig bis halbschattig.,Lockere feuchte Erde.,Kein Dünger nötig.,Alle 3 Tage. Stets feucht halten.
+Stevia,,,herbal,Viel Licht. Sonniger warmer Standort.,Lockere nährstoffreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Zitronenverbene,,,indoor,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Mäßig gießen.
+Sauerampfer,,,indoor,Helles Licht. Halbschatten verträglich.,Lockere feuchte Erde.,Alle 4 Wochen leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Ysop,,,indoor,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Sparsam gießen.
+Waldmeister,,,indoor,Wenig Licht. Schatten bevorzugt.,Lockere humusreiche feuchte Erde.,Im Frühling leicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Anis,,,herbal,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Fenchel (Gewürz),,,indoor,Viel Licht. Sonniger warmer Standort.,Tiefgründige nährstoffreiche Erde.,Alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Kreuzkümmel,,,herbal,Viel Licht. Sonnig und warm.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Schwarzer Pfeffer,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere nährstoffreiche feuchte Erde.,Alle 4 Wochen düngen im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
+Japanisches Blutgras,,Poaceae,herbal,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Chinaschilf,,,outdoor,Viel Licht. Sonniger Standort.,Lockere nährstoffreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Blaustrahlhafer,,,outdoor,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Wenig bis kein Dünger nötig.,Alle 10 Tage. Sparsam gießen.
+Reitgras,,Poaceae,outdoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Schwingel,,,indoor,Viel Licht. Sonniger Standort.,Durchlässige magere Erde.,Wenig bis kein Dünger nötig.,Alle 10 Tage. Sparsam gießen.
+Liriope,,,indoor,Helles Licht. Halbschatten verträglich.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Schildkrötenpflanze,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Sehr gut drainierende Erde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Silbervase,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Rinde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Trichter mit Wasser füllen.
+Pfauenpflanze,,,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Zebrapflanze,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Polka-Dot-Pflanze,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Lockere humusreiche Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Luftpflanze,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Kein Substrat nötig. Auf Holz oder Stein befestigen.,Alle 4 Wochen mit sehr schwachem Dünger besprühen.,Alle 5 Tage. Regelmäßig besprühen oder tauchen.
+Mosaikpflanze,,,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Nervenblatt,,,indoor,Mittleres Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Flammennessel,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Lockere humusreiche Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Grünlilie variegata,,Liliaceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Efeutute Marble Queen,,Araceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Efeutute Neon,,Araceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Monstera Peru,,Araceae,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde mit Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Rhaphidophora tetrasperma,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere durchlässige Erde mit Perlite.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Alocasia Black Velvet,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere Erde mit Perlite und Rinde.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Anthurium clarinervium,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere Orchideenerde mit Perlite.,Alle 4 Wochen schwach düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Gleichmäßig feucht halten.
+Colocasia,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Nährstoffreiche feuchte Erde.,Alle 2 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 3 Tage. Gleichmäßig feucht halten.
+Caladium,,,indoor,Helles indirektes Licht. Keine direkte Sonne.,Lockere torfhaltige Erde.,Alle 2 Wochen düngen im Sommer. Im Winter Ruhephase.,Alle 5 Tage. Gleichmäßig feucht halten.
+Aglaonema Silver Bay,,,indoor,Wenig bis mittleres Licht. Schattenverträglich.,Lockere durchlässige Erde.,Alle 4 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 10 Tage. Mäßig gießen.
+Sansevieria cylindrica,,,indoor,Helles bis mittleres Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sehr sparsam gießen.
+Sansevieria moonshine,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sparsam gießen.
+Goji-Beere,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Alle 4 Wochen düngen im Sommer. Im Winter nicht düngen.,Alle 7 Tage. Mäßig gießen.
+Schwarze Johannisbeere,,,indoor,Helles Licht. Sonnig bis halbschattig.,Nährstoffreiche humusreiche Erde.,Im Frühling und Sommer alle 4 Wochen düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Preiselbeere,,,outdoor,Helles Licht. Sonnig bis halbschattig.,Saure torfhaltige Erde. pH-Wert 4 bis 5.,Alle 4 Wochen Rhododendrondünger im Sommer.,Alle 5 Tage. Gleichmäßig feucht halten.
+Cranberry,,,indoor,Helles Licht. Sonnig bis halbschattig.,Saure torfhaltige feuchte Erde.,Alle 4 Wochen Rhododendrondünger im Sommer.,Alle 3 Tage. Stets feucht halten.
+Mispel,,,indoor,Viel Licht. Sonniger Standort.,Lockere durchlässige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Quitte,,,indoor,Viel Licht. Sonniger warmer Standort.,Nährstoffreiche tiefgründige Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Holunder,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere nährstoffreiche feuchte Erde.,Im Frühling düngen.,Alle 5 Tage. Gleichmäßig feucht halten.
+Sanddorn,,,outdoor,Viel Licht. Sonniger Standort.,Durchlässige sandige Erde.,Wenig bis kein Dünger nötig.,Alle 10 Tage. Sparsam gießen.
+Felsenbirne,,,outdoor,Helles Licht. Sonnig bis halbschattig.,Lockere durchlässige Erde.,Im Frühling leicht düngen.,Alle 7 Tage. Mäßig gießen.
+Aronia,,,indoor,Helles Licht. Sonnig bis halbschattig.,Lockere humusreiche Erde.,Im Frühling düngen.,Alle 7 Tage. Mäßig gießen.
+Echeveria elegans,,,cacti,Viel Licht. Direkte Sonne ideal.,Mineralische gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Echeveria Perle von Nürnberg,,,cacti,Viel Licht. Direkte Sonne ideal.,Mineralische gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Graptoveria,,,indoor,Viel Licht. Direkte Sonne ideal.,Mineralische gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Gasteria,Gasteria,Asphodelaceae,indoor,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Aeonium,,,indoor,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Senecio rowleyanus,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Kakteenerde.,Alle 6 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Ceropegia woodii,,,indoor,Helles indirektes Licht. Keine pralle Sonne.,Gut drainierende Erde mit Sand.,Alle 6 Wochen leicht düngen im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Euphorbia milii,,,cacti,Viel Licht. Direkte Sonne verträglich.,Gut drainierende Kakteenerde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Adenium,,,cacti,Viel Licht. Volle Sonne notwendig.,Sehr gut drainierende Kakteenerde.,Alle 4 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 14 Tage. Sparsam gießen.
+Stapelia,,,cacti,Viel Licht. Direkte Sonne verträglich.,Sehr gut drainierende Kakteenerde.,Alle 8 Wochen Kakteendünger im Sommer. Im Winter nicht düngen.,Alle 21 Tage. Sehr sparsam gießen.
