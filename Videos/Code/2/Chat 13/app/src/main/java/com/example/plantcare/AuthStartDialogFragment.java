@@ -334,6 +334,12 @@ public class AuthStartDialogFragment extends DialogFragment {
             }
         });
 
+        // Wave 2: register FCM token under the new user's subtree.
+        try {
+            com.example.plantcare.feature.share.FcmTokenManager
+                    .INSTANCE.registerCurrentToken(requireContext());
+        } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
+
         // NEW: أرسل نتيجة للمستمع في MainActivity لتحديث الواجهات فورًا
         Bundle result = new Bundle();
         result.putString("email", emailFinal);

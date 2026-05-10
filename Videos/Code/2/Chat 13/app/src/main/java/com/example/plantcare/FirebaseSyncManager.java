@@ -133,8 +133,17 @@ public class FirebaseSyncManager {
         plantsRef(uid)
                 .document(String.valueOf(plant.id))
                 .set(plant)
-                .addOnSuccessListener(v -> Log.d(TAG, "Plant synced: " + plant.id))
+                .addOnSuccessListener(v -> { Log.d(TAG, "Plant synced: " + plant.id); markGlobalSync(); })
                 .addOnFailureListener(e -> Log.e(TAG, "Plant sync failed", e));
+    }
+
+    /** Wave 2: write the "last successful sync" timestamp so the Settings
+     *  dialog can show "vor 2 min" without each call site threading a
+     *  Context. App.appContext() is process-wide; null only during very
+     *  early boot (before Application.onCreate finishes). */
+    private static void markGlobalSync() {
+        android.content.Context ctx = App.appContext();
+        if (ctx != null) com.example.plantcare.format.LastSyncTracker.markSynced(ctx);
     }
 
     public void deletePlant(Plant plant) {
@@ -145,7 +154,7 @@ public class FirebaseSyncManager {
         plantsRef(uid)
                 .document(String.valueOf(plant.id))
                 .delete()
-                .addOnSuccessListener(v -> Log.d(TAG, "Plant deleted: " + plant.id))
+                .addOnSuccessListener(v -> { Log.d(TAG, "Plant deleted: " + plant.id); markGlobalSync(); })
                 .addOnFailureListener(e -> Log.e(TAG, "Plant delete failed", e));
 
         // Delete cover image in Storage
@@ -182,6 +191,7 @@ public class FirebaseSyncManager {
         remindersRef(uid)
                 .document(docId)
                 .set(reminder)
+                .addOnSuccessListener(v -> markGlobalSync())
                 .addOnFailureListener(e -> Log.e(TAG, "Reminder sync failed", e));
     }
 
@@ -193,6 +203,7 @@ public class FirebaseSyncManager {
         remindersRef(uid)
                 .document(docId)
                 .delete()
+                .addOnSuccessListener(v -> markGlobalSync())
                 .addOnFailureListener(e -> Log.e(TAG, "Reminder delete failed", e));
     }
 
@@ -232,6 +243,7 @@ public class FirebaseSyncManager {
         roomsRef(uid)
                 .document(String.valueOf(room.id))
                 .set(room)
+                .addOnSuccessListener(v -> markGlobalSync())
                 .addOnFailureListener(e -> Log.e(TAG, "Room sync failed", e));
     }
 
@@ -241,6 +253,7 @@ public class FirebaseSyncManager {
         roomsRef(uid)
                 .document(String.valueOf(roomId))
                 .delete()
+                .addOnSuccessListener(v -> markGlobalSync())
                 .addOnFailureListener(e -> Log.e(TAG, "Room delete failed", e));
     }
 
@@ -291,6 +304,7 @@ public class FirebaseSyncManager {
         memosRef(uid)
                 .document(String.valueOf(memo.getId()))
                 .set(memo)
+                .addOnSuccessListener(v -> markGlobalSync())
                 .addOnFailureListener(e -> Log.e(TAG, "Memo sync failed", e));
     }
 
@@ -300,6 +314,7 @@ public class FirebaseSyncManager {
         memosRef(uid)
                 .document(String.valueOf(memoId))
                 .delete()
+                .addOnSuccessListener(v -> markGlobalSync())
                 .addOnFailureListener(e -> Log.e(TAG, "Memo delete failed", e));
     }
 
@@ -347,6 +362,7 @@ public class FirebaseSyncManager {
         if (uid == null || doc == null) return;
         vacationDocRef(uid)
                 .set(doc)
+                .addOnSuccessListener(v -> markGlobalSync())
                 .addOnFailureListener(e -> Log.e(TAG, "Vacation sync failed", e));
     }
 
@@ -355,6 +371,7 @@ public class FirebaseSyncManager {
         if (uid == null) return;
         vacationDocRef(uid)
                 .delete()
+                .addOnSuccessListener(v -> markGlobalSync())
                 .addOnFailureListener(e -> Log.e(TAG, "Vacation clear failed", e));
     }
 
@@ -404,6 +421,7 @@ public class FirebaseSyncManager {
         if (uid == null || doc == null) return;
         streakDocRef(uid)
                 .set(doc)
+                .addOnSuccessListener(v -> markGlobalSync())
                 .addOnFailureListener(e -> Log.e(TAG, "Streak sync failed", e));
     }
 
@@ -436,6 +454,7 @@ public class FirebaseSyncManager {
         if (uid == null || doc == null) return;
         challengesDocRef(uid)
                 .set(doc)
+                .addOnSuccessListener(v -> markGlobalSync())
                 .addOnFailureListener(e -> Log.e(TAG, "Challenges sync failed", e));
     }
 
@@ -482,6 +501,7 @@ public class FirebaseSyncManager {
         if (uid == null || doc == null) return;
         proStatusDocRef(uid)
                 .set(doc)
+                .addOnSuccessListener(v -> markGlobalSync())
                 .addOnFailureListener(e -> Log.e(TAG, "Pro status sync failed", e));
     }
 
@@ -553,8 +573,18 @@ public class FirebaseSyncManager {
             String storagePath = "users/" + uid + "/plant_photos/" + filename;
             String docId     = filename.substring(0, filename.length() - 4);
 
-            // Mark as pending
-            photo.imagePath = "PENDING_DOC:" + docId;
+            // Mark as pending. Pre-fix this overwrote `imagePath` outright
+            // with "PENDING_DOC:<docId>", which orphaned the local URI for
+            // the entire upload window — and forever if the upload failed.
+            // Net effect: every photo grid (Today, Archive, calendar
+            // popups) showed broken-image / placeholder until the cloud
+            // round-trip completed, and any failure mode (offline, quota,
+            // permission denied) made the image permanently unrecoverable
+            // from this client. Now we keep the original URI as a "|<uri>"
+            // suffix so loaders can split on `|` and use the local file
+            // immediately while upload is pending.
+            String originalUri = (localUri != null) ? localUri.toString() : "";
+            photo.imagePath = "PENDING_DOC:" + docId + "|" + originalUri;
             if (photo.userEmail == null || photo.userEmail.isEmpty()) {
                 photo.userEmail = current.getEmail() != null ? current.getEmail() : "nouser";
             }

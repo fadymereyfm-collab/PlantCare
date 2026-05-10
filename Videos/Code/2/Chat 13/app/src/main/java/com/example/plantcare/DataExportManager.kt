@@ -133,6 +133,14 @@ object DataExportManager {
                     SimpleDateFormat("yyyy-MM-dd", Locale.US).format(it)
                 } ?: "")
                 put("watering_interval_days", p.wateringInterval)
+                // v16: export the three additional care intervals + the
+                // scientific identifiers so a GDPR data-export round-trip
+                // doesn't lose the user's customised multi-type schedule.
+                put("fertilizing_interval_days", p.fertilizingInterval)
+                put("misting_interval_days", p.mistingInterval)
+                put("repotting_interval_days", p.repottingIntervalDays)
+                put("scientific_name", p.scientificName ?: "")
+                put("family", p.family ?: "")
                 put("lighting", p.lighting ?: "")
                 put("soil", p.soil ?: "")
                 put("fertilizing", p.fertilizing ?: "")
@@ -162,6 +170,11 @@ object DataExportManager {
                 put("description", r.description ?: "")
                 put("notes", r.notes ?: "")
                 put("watered_by", r.wateredBy ?: "")
+                // v16: export reminder type so an exported timeline preserves
+                // which care series each row belongs to (water/fertilize/mist/
+                // repot). NULL stored type is exported as empty string —
+                // legacy default "water" is implicit.
+                put("type", r.type ?: "")
                 put("completed_date", r.completedDate?.let {
                     SimpleDateFormat("yyyy-MM-dd", Locale.US).format(it)
                 } ?: "")

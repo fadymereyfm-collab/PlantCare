@@ -15,6 +15,7 @@
         <item>Living Room</item>
         <item>Bedroom</item>
         <item>Hallway</item>
+        <item>Kitchen</item>
         <item>Bathroom</item>
         <item>Toilet</item>
     </string-array>
@@ -160,8 +161,6 @@
     <string name="onboarding_watering_desc">Get daily reminders when your plants need water.</string>
     <string name="onboarding_catalog_title">Plant catalog &amp; archive</string>
     <string name="onboarding_catalog_desc">Browse our catalog and store photos of your green friends.</string>
-    <string name="onboarding_plants_title">Pick your first plants</string>
-    <string name="onboarding_plants_subtitle">Choose a few plants to get started (optional)</string>
     <string name="onboarding_next">Next</string>
     <string name="onboarding_skip">Skip</string>
     <string name="onboarding_create_account">Create account</string>
@@ -190,6 +189,9 @@
     <string name="identify_none_correct">No match — try again</string>
     <string name="identify_error">Error: %1$s</string>
     <string name="identify_add_plant">Add</string>
+    <string name="identify_catalog_match_badge">✓ In our catalog</string>
+    <string name="identify_catalog_match_hint">This plant is in our database — care info will be applied directly.</string>
+    <string name="identify_no_catalog_match_hint">Care info will be derived from family defaults.</string>
     <string name="identify_plant_added">Plant added!</string>
     <string name="identify_image_missing">Image not found</string>
     <string name="identify_family_format">Family: %1$s</string>
@@ -216,10 +218,102 @@
 
     <!-- Privacy settings (settings dialog) -->
     <string name="settings_section_privacy">Privacy &amp; data</string>
-    <string name="settings_analytics_label">Anonymous usage analytics &amp; crash reports</string>
+    <string name="settings_analytics_label">Anonymous usage analytics</string>
+    <string name="settings_crashreports_label">Crash reports (Crashlytics)</string>
     <string name="settings_export_data">Export my data (JSON)</string>
     <string name="settings_export_success">Export file created</string>
     <string name="settings_export_error">Export failed — please try again</string>
+
+    <!-- Notifications settings (Wave 1) -->
+    <string name="settings_section_notifications">Notifications</string>
+    <string name="settings_notif_morning_label">Morning reminder</string>
+    <string name="settings_notif_evening_label">Evening reminder</string>
+    <string name="settings_notif_morning_hint">When should we remind you about your plants in the morning?</string>
+    <string name="settings_notif_evening_hint">And in the evening, in case you forgot earlier?</string>
+    <string name="settings_notif_time_format">%1$02d:00</string>
+    <string name="settings_notif_picker_morning_title">Morning reminder time</string>
+    <string name="settings_notif_picker_evening_title">Evening reminder time</string>
+
+    <!-- Wave 2 — Search, avatar/bio, appearance, visibility, family share, NPA -->
+    <string name="settings_search_hint">Search settings</string>
+    <string name="settings_no_search_results">No matching settings.</string>
+    <string name="settings_avatar_label">Profile picture</string>
+    <string name="settings_avatar_change">Change photo</string>
+    <string name="settings_avatar_remove">Remove photo</string>
+    <string name="settings_avatar_pick_failed">Could not load that picture.</string>
+    <string name="settings_bio_hint">About me (optional)</string>
+    <string name="settings_bio_saved">Bio saved</string>
+
+    <string name="settings_section_appearance_extra">Display options</string>
+    <string name="settings_appearance_units">Units</string>
+    <string name="settings_appearance_units_metric">Metric (cm, °C)</string>
+    <string name="settings_appearance_units_imperial">Imperial (in, °F)</string>
+    <string name="settings_appearance_date_format">Date format</string>
+    <string name="settings_appearance_date_format_iso">2026-05-07 (ISO)</string>
+    <string name="settings_appearance_date_format_de">07.05.2026</string>
+    <string name="settings_appearance_date_format_us">05/07/2026</string>
+    <string name="settings_appearance_font_scale">Font size</string>
+    <string name="settings_appearance_font_small">Small</string>
+    <string name="settings_appearance_font_normal">Normal</string>
+    <string name="settings_appearance_font_large">Large</string>
+    <string name="settings_appearance_font_xlarge">Extra large</string>
+    <string name="settings_appearance_font_restart_hint">Change applies when screens open next.</string>
+
+    <string name="settings_notif_types_section">Which reminders?</string>
+    <string name="settings_notif_type_water">Watering</string>
+    <string name="settings_notif_type_fertilize">Fertilizing</string>
+    <string name="settings_notif_type_mist">Misting</string>
+    <string name="settings_notif_type_repot">Repotting</string>
+    <string name="settings_notif_type_weather">Weather alerts</string>
+
+    <string name="settings_profile_visibility_label">Show profile publicly</string>
+    <string name="settings_profile_visibility_hint">If off, your profile stays visible only to you.</string>
+
+    <string name="settings_ads_npa_label">Allow personalized ads</string>
+    <string name="settings_ads_npa_hint">If off, we serve only non-personalized ads (NPA).</string>
+
+    <!-- Family Share — Wave 2 (FCM-driven invite flow) -->
+    <string name="share_invite_dialog_title">Co‑watering invite</string>
+    <string name="share_invite_dialog_body">%1$s wants to share "%2$s" with you. Accept?</string>
+    <string name="share_invite_dialog_body_short">%1$s invited you to co-water a plant.</string>
+    <string name="share_invite_dialog_body_generic">You were invited to co-water a plant.</string>
+    <string name="share_invite_dialog_accept">Accept</string>
+    <string name="share_invite_dialog_decline">Decline</string>
+    <string name="share_invite_accepted_toast">Invite accepted</string>
+    <string name="share_invite_accept_failed_toast">Accept failed — please try again</string>
+    <string name="share_invite_accepted_owner_body">%1$s is now co-watering with you.</string>
+    <string name="share_invite_accepted_owner_generic">One of your invites was accepted.</string>
+
+    <string name="settings_section_family">Family share</string>
+    <string name="settings_family_subtitle">Invite co-waterers for your plants.</string>
+    <string name="settings_family_open">Manage</string>
+    <string name="settings_family_count">%1$d people listed</string>
+    <string name="settings_family_pending_title">Coming soon</string>
+    <string name="settings_family_pending_body">Real invites via email/push are coming. For now, in each plant tap "Share with others" to keep a list.</string>
+
+    <string name="settings_section_cloud">Cloud &amp; sync</string>
+    <string name="settings_cloud_last_sync_label">Last sync</string>
+    <string name="settings_cloud_last_sync_never">Never</string>
+    <string name="settings_cloud_last_sync_just_now">Just now</string>
+    <string name="settings_cloud_last_sync_relative_min">%1$d min ago</string>
+    <string name="settings_cloud_last_sync_relative_hour">%1$d h ago</string>
+    <string name="settings_cloud_last_sync_relative_day">%1$d days ago</string>
+
+    <!-- Help &amp; About (Wave 1) -->
+    <string name="settings_section_help">Help &amp; About</string>
+    <string name="settings_help_faq">FAQ</string>
+    <string name="settings_help_feedback">Send feedback</string>
+    <string name="settings_help_feedback_subject">PlantCare feedback</string>
+    <string name="settings_help_tutorial_replay">Replay tutorial</string>
+    <string name="settings_help_privacy_policy">Privacy policy</string>
+    <string name="settings_help_terms">Terms of service</string>
+    <string name="settings_help_licenses">Open-source licenses</string>
+    <string name="settings_help_rate_app">Rate app on Play Store</string>
+    <string name="settings_help_version_label">Version</string>
+    <string name="settings_help_version_value">%1$s (build %2$d)</string>
+    <string name="settings_help_open_failed">Could not open this action.</string>
+    <string name="settings_help_licenses_title">Open-source licenses</string>
+    <string name="settings_help_licenses_body">PlantCare uses these open-source libraries — thanks to all the projects and contributors:\n\n• AndroidX &amp; Jetpack (Apache 2.0)\n• Material Components for Android (Apache 2.0)\n• Kotlin &amp; Coroutines (Apache 2.0)\n• Room, WorkManager, Lifecycle (Apache 2.0)\n• Glide — image loading (BSD/MIT/Apache 2.0)\n• Firebase Android SDKs — Auth, Firestore, Storage, Analytics, Crashlytics, Messaging (Apache 2.0)\n• Google Play Services Auth &amp; Identity (proprietary, Google license)\n• Play Billing Library v7 (proprietary, Google license)\n• OkHttp (Apache 2.0)\n• TensorFlow Lite (Apache 2.0)\n• Apache Commons (Apache 2.0)\n\nFull license texts on the privacy site.</string>
 
     <!-- Common actions -->
     <string name="action_save">Save</string>
@@ -252,10 +346,6 @@
     <string name="reminder_title_required">Title cannot be empty!</string>
     <string name="reminder_date_required">Date cannot be empty!</string>
 
-    <!-- Login switching -->
-    <string name="login_already_have_account">Have an account? Sign in</string>
-    <string name="login_new_user_register">New here? Sign up</string>
-
     <!-- Email &amp; password -->
     <string name="email_invalid">Please enter a valid email</string>
     <string name="password_too_short">Please enter a secure password/PIN (at least 4 characters)</string>
@@ -279,6 +369,22 @@
     <string name="consent_accept">Accept</string>
     <string name="consent_decline">Only essential</string>
 
+    <!-- Empty-state copy for PlantsInRoomActivity -->
+    <string name="plants_in_room_empty">No plants in this room yet.\nWould you like to add one?\nJust tap the +.</string>
+    <string name="plants_in_room_add_dialog_title">Add a plant</string>
+    <string name="plants_in_room_add_from_catalog">📚 Pick from catalog</string>
+    <string name="plants_in_room_add_with_camera">📷 Identify with camera</string>
+    <string name="plants_in_room_add_manual">✏️ Create custom</string>
+
+    <!-- Care plan section in AddToMyPlantsDialog -->
+    <string name="care_plan_section_title">Care plan (adjustable)</string>
+    <string name="care_plan_water">💧 Watering</string>
+    <string name="care_plan_fertilize">🌿 Fertilizing</string>
+    <string name="care_plan_mist">💨 Misting</string>
+    <string name="care_plan_repot">🪴 Repotting</string>
+    <string name="care_plan_days_suffix">days</string>
+    <string name="care_plan_disabled_hint">0 = off</string>
+
     <!-- Accessibility -->
     <string name="cd_plant_preview">Plant preview</string>
     <string name="cd_plant_photo">Plant photo</string>
@@ -286,6 +392,7 @@
     <string name="cd_fab_add_plant">Add plant</string>
     <string name="cd_onboarding_image">Preview image</string>
     <string name="cd_selected">Selected</string>
+    <string name="cd_watering_reminder">Automatic watering reminder</string>
 
     <!-- Paywall / PlantCare Pro -->
     <string name="paywall_title">PlantCare Pro 🌿</string>
@@ -327,8 +434,6 @@
 
     <!-- ===== strings_auth.xml ===== -->
     <string name="welcome">Welcome!</string>
-    <string name="sign_in">Sign in</string>
-    <string name="register">Sign up</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
@@ -367,6 +472,10 @@
 
     <string name="room_action_rename">Rename</string>
     <string name="room_action_reorder">Reorder</string>
+    <string name="room_action_auto_sort">Auto-sort by plant count</string>
+    <string name="drag_handle_cd">Hold and drag to reorder room</string>
+    <string name="detail_action_more_options">More options</string>
+    <string name="detail_more_options_title">More actions</string>
     <string name="room_action_delete">Delete room</string>
     <string name="room_rename_dialog_title">Rename room</string>
     <string name="room_delete_blocked_title">Room not empty</string>
@@ -644,11 +753,11 @@
 
     <!-- Auth start dialog -->
     <string name="auth_button_google_login">Sign in with Google</string>
-    <string name="auth_button_email_continue">Continue with email</string>
-    <string name="auth_link_have_account">Already have an account? Sign in</string>
+    <string name="auth_button_email_continue">Sign up with email</string>
 
-    <!-- Login dialog -->
-    <string name="login_link_register_new">New here? Register now</string>
+    <!-- Login/Signup dialog toggle (canonical — see DE strings.xml comment) -->
+    <string name="auth_toggle_to_register">New here? Sign up</string>
+    <string name="auth_toggle_to_login">Already have an account? Sign in</string>
 
     <!-- Dialog yes/no -->
     <string name="dialog_yes">Yes</string>
@@ -660,6 +769,7 @@
 
     <!-- Add Room dialog -->
     <string name="add_room_dialog_title">Add new room</string>
+    <string name="add_room_dialog_subtitle">Give the new room a short, unique name.</string>
     <string name="hint_room_name">Room name</string>
 
     <!-- Email-entry dialog -->
@@ -700,5 +810,13 @@
 
     <!-- Custom plant dialog -->
     <string name="dialog_custom_plant_hint_watering">Watering</string>
+
+    <!-- Reminder task highlight in plant detail dialog. -->
+    <string name="reminder_task_water_title">Water today</string>
+    <string name="reminder_task_fertilize_title">Fertilize today</string>
+    <string name="reminder_task_mist_title">Mist today</string>
+    <string name="reminder_task_repot_title">Repot soon</string>
+    <string name="reminder_task_mist_generic">Mist with low-lime, room-temperature water to raise humidity. Cover the underside of leaves too. Mist in the morning so leaves are dry by evening — prevents fungal issues.</string>
+    <string name="reminder_task_repot_generic">Repot in spring before new growth begins. Choose a pot 2–4 cm wider in diameter. Loosen the root ball gently and trim damaged or rotten roots. Use fresh soil suited to the plant family. Skip fertiliser for 1–2 weeks afterwards.</string>
 
 </resources>

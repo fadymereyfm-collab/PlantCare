@@ -43,6 +43,12 @@
         <item name="cornerSize">12dp</item>
     </style>
 
+    <!-- Wave 2: Avatar circle. Used by ShapeableImageView in dialog_settings.xml. -->
+    <style name="Shape.PlantCare.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
     <!-- تقويم -->
     <style name="ThemeOverlay.PlantCare.MaterialCalendar" parent="ThemeOverlay.MaterialComponents.MaterialCalendar">
         <item name="materialCalendarStyle">@style/PlantCareMaterialCalendar</item>
@@ -62,15 +68,20 @@
     </style>
 
     <!-- تبويبات -->
+    <!-- paddingStart/End reduced from 8dp → 4dp + ellipsize="end" so the
+         longest German label ("Meine Pflanzen", 14 chars) fits the
+         weight-1 tab on standard 360dp-wide phones. Pre-fix the trailing
+         "n" was silently truncated because singleLine + ellipsize="none"
+         clipped without a visible "...". -->
     <style name="TabText.Base">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">36dp</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
         <item name="android:textSize">12sp</item>
         <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">none</item>
+        <item name="android:ellipsize">end</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:background">@drawable/tab_unselected_background</item>
         <item name="android:textColor">@color/tab_inactive_text</item>

@@ -209,17 +209,21 @@ public class LoginDialogFragment extends DialogFragment {
     }
 
     private void applyModeUI(boolean isRegister) {
+        // Canonical auth strings — same keys the layout uses as defaults so
+        // there's no flash of mismatched wording on dialog open. The toggle
+        // points the user to the OTHER mode: in login mode it offers to
+        // register, in register mode it offers to log in.
         if (isRegister) {
             layoutConfirm.setVisibility(View.VISIBLE);
             textTitle.setText(R.string.auth_sign_up);
             buttonPrimary.setText(R.string.onboarding_create_account);
-            if (textModeToggle != null) textModeToggle.setText(R.string.login_already_have_account);
+            if (textModeToggle != null) textModeToggle.setText(R.string.auth_toggle_to_login);
             if (textForgotPassword != null) textForgotPassword.setVisibility(View.GONE);
         } else {
             layoutConfirm.setVisibility(View.GONE);
             textTitle.setText(R.string.auth_sign_in);
             buttonPrimary.setText(R.string.auth_sign_in);
-            if (textModeToggle != null) textModeToggle.setText(R.string.login_new_user_register);
+            if (textModeToggle != null) textModeToggle.setText(R.string.auth_toggle_to_register);
             if (textForgotPassword != null) textForgotPassword.setVisibility(View.VISIBLE);
         }
         clearError();
@@ -394,6 +398,13 @@ public class LoginDialogFragment extends DialogFragment {
                 authRepo.insertUserBlocking(new User(email, finalDisplayName, ""));
             }
         });
+
+        // Wave 2: register FCM token under the new user's subtree so the
+        // Family Share Cloud Function can push invites to this device.
+        try {
+            com.example.plantcare.feature.share.FcmTokenManager
+                    .INSTANCE.registerCurrentToken(requireContext());
+        } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
 
         // إرسال نتيجة لـ MainActivity للتحديث الفوري
         Bundle result = new Bundle();

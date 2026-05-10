@@ -1,11 +1,13 @@
 package com.example.plantcare.ads
 
 import android.content.Context
+import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.example.plantcare.billing.BillingManager
 import com.example.plantcare.billing.ProStatusManager
+import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.Job
@@ -45,7 +47,7 @@ class AdManager(context: Context, private val adView: AdView) {
                     adView.pause()
                 } else if (adView.visibility != View.VISIBLE) {
                     adView.visibility = View.VISIBLE
-                    adView.loadAd(AdRequest.Builder().build())
+                    adView.loadAd(buildAdRequest())
                     adView.resume()
                 }
             }
@@ -58,7 +60,23 @@ class AdManager(context: Context, private val adView: AdView) {
             return
         }
         adView.visibility = View.VISIBLE
-        adView.loadAd(AdRequest.Builder().build())
+        adView.loadAd(buildAdRequest())
+    }
+
+    /** Wave 2: respects the user's "personalized ads" toggle. When the toggle
+     *  is OFF we send an `npa=1` extra to the AdMob adapter so AdMob serves
+     *  only non-personalized ads (NPA). Default is ON to preserve historical
+     *  behaviour. */
+    private fun buildAdRequest(): AdRequest {
+        val personalized = context
+            .getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            .getBoolean("ads_personalized", true)
+        val builder = AdRequest.Builder()
+        if (!personalized) {
+            val extras = Bundle().apply { putString("npa", "1") }
+            builder.addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
+        }
+        return builder.build()
     }
 
     fun resume() {

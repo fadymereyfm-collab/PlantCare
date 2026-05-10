@@ -73,7 +73,15 @@ class TodayViewModel(application: Application) : AndroidViewModel(application) {
         // comparisons never match the Latin-digit rows we write
         // elsewhere. Same root cause as the worker-layer A2 fix.
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
-        val reminders = reminderRepo.getTodayAllRemindersList(today, email)
+        // v16 close-out: also drop rows whose type toggle is muted in
+        // Settings (e.g. user disabled Düngen → no fertilizer rows in
+        // Today). Pre-fix the toggles only suppressed the morning
+        // notification — the visible Today list ignored them.
+        val reminders = com.example.plantcare.util.ReminderTypeUi
+            .filterByEnabledTypes(
+                getApplication<android.app.Application>().applicationContext,
+                reminderRepo.getTodayAllRemindersList(today, email)
+            )
         if (reminders.isEmpty()) return emptyList()
 
         val rooms = roomRepo.getRoomsListForUser(email)

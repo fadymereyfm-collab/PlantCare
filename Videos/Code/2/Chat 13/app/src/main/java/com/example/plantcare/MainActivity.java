@@ -31,12 +31,10 @@ import com.example.plantcare.media.CoverCloudSync; // Cloud sync for cover/profi
 import com.example.plantcare.media.PhotoStorage;
 import com.google.android.gms.ads.AdView;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,6 +51,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  *   then import, then pull covers into Room.
  */
 public class MainActivity extends AppCompatActivity {
+
+    /** Wave 2: wrap baseContext with the user's font-scale pref so every
+     *  text in this Activity respects the AppearancePrefs choice. Recreated
+     *  by SettingsDialogFragment after a font-scale change. */
+    @Override
+    protected void attachBaseContext(android.content.Context newBase) {
+        super.attachBaseContext(com.example.plantcare.format.FontScaleHelper.wrap(newBase));
+    }
 
     private AdManager adManager;
 
@@ -92,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
         // every other sign-in path inserts. Without it, a magic-link user
         // would have a Firebase session but no User row in Room, breaking
         // every Settings query that joins on email.
+        // Wave 2: Family Share — if launched from a share-invite push,
+        // surface the accept/decline dialog as soon as the Activity is up.
+        handleSharePushIntent(getIntent());
+
         AuthMagicLink.finishFromIntent(this, getIntent(),
                 email -> {
                     EmailContext.setCurrent(this, email);
@@ -208,24 +218,24 @@ public class MainActivity extends AppCompatActivity {
                                             .CLOUD_IMPORT_IN_PROGRESS.set(false);
                                 }, 30_000L);
                         refreshFragments();
-                        // After auth on a clean install, repair then import then pull
+                        // AUTH-A fix (2026-05-08): pre-fix `importCloudDataForUser`
+                        // ran ONLY from the `ensurePlantsCollectionHasImageUri`
+                        // success callback. When that callback never fired
+                        // (Firestore offline burst, intermittent permission
+                        // denied on the legacy global `plants` collection,
+                        // or any thrown-then-caught exception inside the
+                        // continuation), the user landed on an empty
+                        // account because the import chain was gated behind
+                        // a step that's only relevant for one-time legacy
+                        // schema repair. Now: kick off the cloud import
+                        // immediately, and run the schema-repair as an
+                        // independent best-effort task — they don't depend
+                        // on each other for correctness.
+                        importCloudDataForUser(email);
                         try {
                             CoverCloudSync.ensurePlantsCollectionHasImageUri(
-                                    getApplicationContext(),
-                                    new kotlin.jvm.functions.Function0<kotlin.Unit>() {
-                                        @Override
-                                        public kotlin.Unit invoke() {
-                                            importCloudDataForUser(email);
-                                            return kotlin.Unit.INSTANCE;
-                                        }
-                                    }
-                            );
+                                    getApplicationContext(), null);
                         } catch (Throwable __ce) {
-                            // Lift the barrier if the repair step itself
-                            // throws — without this the flag would stay
-                            // raised until the safety timeout (30 s) fires.
-                            com.example.plantcare.data.repository.RoomCategoryRepository
-                                    .CLOUD_IMPORT_IN_PROGRESS.set(false);
                             com.example.plantcare.CrashReporter.INSTANCE.log(__ce);
                         }
                     }
@@ -291,7 +301,13 @@ public class MainActivity extends AppCompatActivity {
             settingsButton.setOnClickListener(v -> openSettingsDialog());
         }
 
-        selectTab(0);
+        // v16 close-out: honour `launchTab` extra so PlantsInRoomActivity's
+        // "Add from catalog" path can drop the user straight into the
+        // Alle Pflanzen tab. Default to tab 0 (catalog) on a fresh open.
+        int requestedTab = getIntent() != null
+                ? getIntent().getIntExtra("launchTab", 0)
+                : 0;
+        selectTab(requestedTab);
 
         adManager = new AdManager(this, (AdView) findViewById(R.id.adBanner));
         adManager.start();
@@ -334,19 +350,28 @@ public class MainActivity extends AppCompatActivity {
      *     sollen.
      */
     private void openDiseaseDiagnosisFlow() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.disease_chooser_title)
-                .setMessage(R.string.disease_chooser_message)
-                .setPositiveButton(R.string.disease_chooser_specific, (dlg, which) -> {
-                    dlg.dismiss();
-                    pickPlantThenLaunchDisease();
-                })
-                .setNegativeButton(R.string.disease_chooser_general, (dlg, which) -> {
-                    dlg.dismiss();
-                    launchDiseaseActivity(0);
-                })
-                .setNeutralButton(R.string.disease_pick_plant_cancel, (dlg, which) -> dlg.dismiss())
-                .show();
+        // Pre-fix this rendered as a vanilla Material AlertDialog with three
+        // bottom buttons (positive/negative/neutral), which the user flagged
+        // as "non-matching" against the rest of the app's polished modals.
+        // Now it uses the same ActionListDialogFragment + subtitle pattern
+        // as the post-capture chooser — Outlined rows for the two real
+        // choices, the title's subtitle carries the original message body,
+        // and the dialog's built-in Abbrechen replaces the neutral button.
+        java.util.List<com.example.plantcare.ui.util.ActionListDialogFragment.Item> items =
+                new java.util.ArrayList<>();
+        items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                getString(R.string.disease_chooser_specific),
+                false,
+                () -> { pickPlantThenLaunchDisease(); return kotlin.Unit.INSTANCE; }));
+        items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                getString(R.string.disease_chooser_general),
+                false,
+                () -> { launchDiseaseActivity(0); return kotlin.Unit.INSTANCE; }));
+        new com.example.plantcare.ui.util.ActionListDialogFragment()
+                .configure(getString(R.string.disease_chooser_title), items)
+                .subtitle(getString(R.string.disease_chooser_message))
+                .show(getSupportFragmentManager(),
+                        com.example.plantcare.ui.util.ActionListDialogFragment.TAG);
     }
 
     /**
@@ -378,22 +403,22 @@ public class MainActivity extends AppCompatActivity {
                     launchDiseaseActivity(0);
                     return;
                 }
-                String[] labels = new String[finalPlants.size()];
-                for (int i = 0; i < finalPlants.size(); i++) {
-                    Plant p = finalPlants.get(i);
+                java.util.List<com.example.plantcare.ui.util.ActionListDialogFragment.Item> items =
+                        new java.util.ArrayList<>();
+                for (Plant p : finalPlants) {
+                    final Plant chosen = p;
                     String nick = (p.nickname != null && !p.nickname.trim().isEmpty()) ? p.nickname : null;
-                    labels[i] = nick != null ? nick
+                    String label = nick != null ? nick
                             : (p.name != null ? p.name : "Pflanze #" + p.id);
+                    items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                            label,
+                            false,
+                            () -> { launchDiseaseActivity(chosen.id); return kotlin.Unit.INSTANCE; }));
                 }
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.disease_chooser_pick_plant_title)
-                        .setItems(labels, (dialog, which) -> {
-                            Plant chosen = finalPlants.get(which);
-                            launchDiseaseActivity(chosen.id);
-                            dialog.dismiss();
-                        })
-                        .setNegativeButton(R.string.disease_pick_plant_cancel, null)
-                        .show();
+                new com.example.plantcare.ui.util.ActionListDialogFragment()
+                        .configure(getString(R.string.disease_chooser_pick_plant_title), items)
+                        .show(getSupportFragmentManager(),
+                                com.example.plantcare.ui.util.ActionListDialogFragment.TAG);
             });
         });
         // BgExecutor is a process-wide shared pool — no shutdown needed.
@@ -513,81 +538,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void seedDatabaseIfEmpty() {
-        com.example.plantcare.util.BgExecutor.io(() -> {
-            if (plantRepo.countAllBlocking() == 0) {
-                try (BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(getAssets().open("plants.csv")))) {
-                    String line;
-                    boolean isFirstLine = true;
-                    while ((line = reader.readLine()) != null) {
-                        if (isFirstLine) { isFirstLine = false; continue; }
-                        // Quoted-aware split: descriptions may contain commas
-                        // wrapped in double quotes (RFC-4180-ish). The previous
-                        // naive `split(",")` truncated such rows silently — a
-                        // future catalog row like "Aloe Vera","Hell, sonnig",...
-                        // would lose its lighting field entirely.
-                        String[] parts = parseCsvLine(line);
-                        if (parts.length >= 5) {
-                            Plant p = new Plant();
-                            p.name = parts[0].trim();
-                            p.lighting = parts[1].trim();
-                            p.soil = parts[2].trim();
-                            p.fertilizing = parts[3].trim();
-                            p.watering = parts[4].trim();
-                            p.imageUri = parts.length > 5 ? parts[5].trim() : null;
-                            p.isUserPlant = false;
-                            p.userEmail = null;
-                            // Auto-Klassifizierung beim Seed (indoor/outdoor/herbal/cacti)
-                            p.category = com.example.plantcare.ui.util.PlantCategoryUtil
-                                    .classify(p.name, p.lighting, p.watering);
-                            plantRepo.insertBlocking(p);
-                        }
-                    }
-                } catch (IOException e) {
-                    com.example.plantcare.CrashReporter.INSTANCE.log(e);
-                }
-            }
-
-            // Einmaliger Nachlauf nach MIGRATION_6_7: klassifiziere ältere
-            // Katalog-Einträge, die noch keine Kategorie haben.
-            try {
-                com.example.plantcare.ui.util.PlantCategoryUtil
-                        .classifyAllUnclassified(AppDatabase.getInstance(getApplicationContext()));
-            } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
-
-            // Catalog images are fetched on-demand per plant via
-            // PlantImageLoader.resolveBestImage(...) (step 6, Wikipedia fallback).
-            // Bulk startup fetch was removed to keep app launch fast and
-            // to avoid unnecessary network traffic for plants never viewed.
-        });
-    }
-
     /**
-     * Minimal RFC-4180-ish CSV line parser. Supports double-quoted fields
-     * with embedded commas. Doesn't bother with escaped quotes inside
-     * fields ("" → ") because plants.csv doesn't need them — but if a
-     * future row does, the row will simply be one comma-split below the
-     * 5-field threshold and the seeder skips it instead of corrupting
-     * the catalog.
+     * Defensive re-seed: the primary seed runs in App.onCreate() before any
+     * Activity opens. Kept here as a backup for upgrade scenarios where
+     * App.onCreate ran before this version of CatalogSeeder existed.
+     * Idempotent — guarded internally by `countAll == 0`.
      */
-    private static String[] parseCsvLine(String line) {
-        java.util.List<String> out = new java.util.ArrayList<>();
-        StringBuilder cur = new StringBuilder();
-        boolean inQuotes = false;
-        for (int i = 0; i < line.length(); i++) {
-            char c = line.charAt(i);
-            if (c == '"') {
-                inQuotes = !inQuotes;
-            } else if (c == ',' && !inQuotes) {
-                out.add(cur.toString());
-                cur.setLength(0);
-            } else {
-                cur.append(c);
-            }
-        }
-        out.add(cur.toString());
-        return out.toArray(new String[0]);
+    private void seedDatabaseIfEmpty() {
+        com.example.plantcare.data.CatalogSeeder.seedIfEmptyAsync(getApplicationContext());
     }
 
     private void openSettingsDialog() {
@@ -667,7 +625,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String fileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(null);
         return File.createTempFile(fileName, ".jpg", storageDir);
@@ -959,9 +917,29 @@ public class MainActivity extends AppCompatActivity {
                     com.example.plantcare.util.BgExecutor.io(() -> {
                         try {
                             if (rooms != null) {
+                                // Cloud rooms imported from a device that
+                                // pre-dates the canonical-position seed
+                                // arrive with position=0, which collapses
+                                // back to alphabetical (Bad first instead
+                                // of Wohnzimmer). Stamp the canonical
+                                // index for any room name that matches a
+                                // default — preserves user re-orderings
+                                // (those have non-zero positions already)
+                                // while fixing the typical "I just signed
+                                // in and everything is alphabetical" case.
+                                String[] canonical = appCtx.getResources()
+                                        .getStringArray(R.array.default_rooms);
                                 for (RoomCategory r : rooms) {
                                     if (r == null || r.name == null || r.name.isEmpty()) continue;
                                     if (r.userEmail == null || r.userEmail.isEmpty()) r.userEmail = email;
+                                    if (r.position == 0) {
+                                        for (int i = 0; i < canonical.length; i++) {
+                                            if (canonical[i].equals(r.name)) {
+                                                r.position = i;
+                                                break;
+                                            }
+                                        }
+                                    }
                                     try { roomRepo.insertBlocking(r); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
                                 }
                             }
@@ -1081,5 +1059,74 @@ public class MainActivity extends AppCompatActivity {
             refreshFragments();
         });
         try { com.example.plantcare.DataChangeNotifier.notifyChange(); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+    }
+
+    /**
+     * Wave 2 — Family Share — also handle invite-accept pushes when the
+     * Activity is already in the back stack. Without this, a tap on the
+     * push notification would silently re-foreground MainActivity without
+     * surfacing the accept dialog.
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleSharePushIntent(intent);
+        // v16 close-out: PlantsInRoomActivity bounces back here with a
+        // launchTab extra when the user picks "Add from catalog" inside
+        // an empty-room view. The Activity is usually still in the stack
+        // (FLAG_ACTIVITY_REORDER_TO_FRONT), so onCreate doesn't re-run
+        // — handle the tab switch here too.
+        if (intent != null && intent.hasExtra("launchTab")) {
+            int tab = intent.getIntExtra("launchTab", 0);
+            selectTab(tab);
+            intent.removeExtra("launchTab");
+        }
+    }
+
+    private void handleSharePushIntent(Intent intent) {
+        if (intent == null) return;
+        String type = intent.getStringExtra("share_push_type");
+        if (type == null) return;
+        if ("share_invite".equals(type)) {
+            String inviteId = intent.getStringExtra("share_invite_id");
+            String fromEmail = intent.getStringExtra("share_from_email");
+            String plantName = intent.getStringExtra("share_plant_name");
+            if (inviteId == null) return;
+            // Strip the extras so we don't re-fire on rotation.
+            intent.removeExtra("share_push_type");
+            intent.removeExtra("share_invite_id");
+            String body;
+            if (plantName != null && fromEmail != null) {
+                body = getString(R.string.share_invite_dialog_body, fromEmail, plantName);
+            } else if (fromEmail != null) {
+                body = getString(R.string.share_invite_dialog_body_short, fromEmail);
+            } else {
+                body = getString(R.string.share_invite_dialog_body_generic);
+            }
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(R.string.share_invite_dialog_title)
+                    .setMessage(body)
+                    .setPositiveButton(R.string.share_invite_dialog_accept, (d, w) ->
+                            com.example.plantcare.feature.share.ShareInviteManager.INSTANCE
+                                    .acceptInvite(inviteId, ok -> {
+                                        runOnUiThread(() -> Toast.makeText(this,
+                                                ok ? R.string.share_invite_accepted_toast
+                                                   : R.string.share_invite_accept_failed_toast,
+                                                Toast.LENGTH_SHORT).show());
+                                        return kotlin.Unit.INSTANCE;
+                                    }))
+                    .setNegativeButton(R.string.share_invite_dialog_decline, (d, w) ->
+                            com.example.plantcare.feature.share.ShareInviteManager.INSTANCE
+                                    .declineInvite(inviteId, ok -> kotlin.Unit.INSTANCE))
+                    .show();
+        } else if ("share_invite_accepted".equals(type)) {
+            String fromEmail = intent.getStringExtra("share_from_email");
+            intent.removeExtra("share_push_type");
+            String body = (fromEmail != null)
+                    ? getString(R.string.share_invite_accepted_owner_body, fromEmail)
+                    : getString(R.string.share_invite_accepted_owner_generic);
+            Toast.makeText(this, body, Toast.LENGTH_LONG).show();
+        }
     }
 }

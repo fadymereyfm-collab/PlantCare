@@ -1,6 +1,7 @@
 package com.example.plantcare;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.plantcare.billing.BillingManager;
@@ -19,9 +20,30 @@ public class App extends Application {
     private static final String WEATHER_WORK_TAG = "weather_adjustment_work";
     private static final String TOPUP_WORK_TAG = "reminder_topup_work";
 
+    /** Wave 2: process-scoped application context, registered on Application.onCreate.
+     *  Lets context-less components (FirebaseSyncManager singleton) write to
+     *  SharedPreferences without threading a Context parameter through every
+     *  sync method. Always the application context — never an Activity. */
+    private static volatile android.content.Context appContext;
+
+    public static android.content.Context appContext() { return appContext; }
+
+    /**
+     * Same German-locale wrap that every Activity gets via
+     * FontScaleHelper.wrap, applied to the Application context itself so
+     * Services, BroadcastReceivers and any caller that resolves strings
+     * through `getApplicationContext().getString(...)` also gets the
+     * German `values/strings.xml` instead of the device-locale variant.
+     */
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(com.example.plantcare.format.FontScaleHelper.wrap(base));
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+        appContext = getApplicationContext();
         SecurePrefsHelper.INSTANCE.migrateIfNeeded(this);
         // W1: register the application context with DataChangeNotifier so
         // the singleton can refresh the home-screen widget on every
@@ -30,10 +52,22 @@ public class App extends Application {
         DataChangeNotifier.setApplicationContext(this);
         ConsentManager.INSTANCE.applyStoredConsent(this);
         applySavedTheme();
+        applyAppLocale();
+        // Seed the catalog from assets/plants.csv before any Activity needs it.
+        // Idempotent: countAll == 0 guard keeps subsequent launches free.
+        com.example.plantcare.data.CatalogSeeder.seedIfEmptyAsync(this);
         MobileAds.initialize(this, initializationStatus -> {});
 
         // Create notification channel (safe to call multiple times)
         PlantNotificationHelper.createNotificationChannel(this);
+
+        // Wave 2: register the FCM token under the signed-in user's subtree
+        // so Cloud Functions can target this device for Family Share pushes.
+        // No-op if no user is signed in — the next sign-in retries.
+        try {
+            com.example.plantcare.feature.share.FcmTokenManager
+                    .INSTANCE.registerCurrentToken(this);
+        } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
 
         // Schedule periodic reminder checks
         scheduleReminderWorker();
@@ -68,6 +102,31 @@ public class App extends Application {
     }
 
     /**
+     * Force the app's UI locale to German.
+     *
+     * Why: PlantCare ships only to the German market (CLAUDE.md §6, build.gradle
+     * resConfigs "de","en"). Without this override Android picks values-en/ on
+     * any English-locale device and the user sees a mixed DE/EN UI — onboarding
+     * CTAs in EN while disease-diagnosis result bodies (which are hardcoded in
+     * Kotlin maps) stay in DE. Forcing "de" via AppCompatDelegate routes every
+     * R.string.* lookup through values/strings.xml regardless of device locale,
+     * which keeps the marketing copy consistent.
+     *
+     * `values-en/strings.xml` is preserved for now; if the German market ever
+     * adds an EN locale toggle, flipping this call to read from prefs is a
+     * one-liner.
+     */
+    private void applyAppLocale() {
+        try {
+            AppCompatDelegate.setApplicationLocales(
+                    androidx.core.os.LocaleListCompat.forLanguageTags("de")
+            );
+        } catch (Throwable t) {
+            CrashReporter.INSTANCE.log(t);
+        }
+    }
+
+    /**
      * Schedules a periodic WorkManager job that runs roughly every 6 hours.
      * The Worker internally checks the time-of-day to send at most
      * 2 notifications per day (morning window 7-11 AM, evening window 5-9 PM).
@@ -78,7 +137,13 @@ public class App extends Application {
         PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
                 PlantReminderWorker.class,
                 6, TimeUnit.HOURS   // run roughly every 6 hours
-        ).build();
+        )
+                // 1-min initial delay so the worker doesn't fire its
+                // first run during cold-start (Glide / Firestore /
+                // Compose all initialising) and contribute to a
+                // startup ANR.
+                .setInitialDelay(1, TimeUnit.MINUTES)
+                .build();
 
         // UPDATE (not KEEP) so a new app version's worker config — period
         // change, added constraints, etc. — actually reaches users who
@@ -111,7 +176,15 @@ public class App extends Application {
         PeriodicWorkRequest weatherRequest = new PeriodicWorkRequest.Builder(
                 WeatherAdjustmentWorker.class,
                 12, TimeUnit.HOURS
-        ).setConstraints(constraints).build();
+        )
+                .setConstraints(constraints)
+                // 5-min initial delay so the network round-trip + reminder
+                // shift work doesn't compete with cold-start I/O. Same
+                // rationale as ReminderWorker / TopUpWorker delays — the
+                // initial enqueue would otherwise fire immediately and
+                // contribute to a startup ANR after a v16 upgrade.
+                .setInitialDelay(5, TimeUnit.MINUTES)
+                .build();
 
         // UPDATE (not KEEP) so the new CONNECTED constraint actually
         // reaches users who already have the worker enqueued from a prior
@@ -135,10 +208,26 @@ public class App extends Application {
      * perfectly healthy 14-day cycle.
      */
     private void scheduleReminderTopUpWorker() {
+        // 15-minute initial delay + battery-not-low constraint so the
+        // worker doesn't fire during cold-start. Pre-fix the worker
+        // could spin up immediately on `enqueueUniquePeriodicWork`,
+        // and on a v16 upgrade `runV16Backfill` would then race
+        // Glide/Compose/Firestore for I/O and allocations during the
+        // startup window — emulator logs showed a "Process failed to
+        // complete startup" ANR with the app at ~0% CPU but blocked
+        // on GC pauses (~600 ms per cycle). Pushing the first run out
+        // by 15 min lets MainActivity render its first frame, the
+        // user navigate, and Glide warm its disk cache before the
+        // worker reaches into the DB.
         PeriodicWorkRequest topUpRequest = new PeriodicWorkRequest.Builder(
                 com.example.plantcare.feature.reminder.ReminderTopUpWorker.class,
                 1, TimeUnit.DAYS
-        ).build();
+        )
+                // 2-min initial delay is enough for cold-start to settle
+                // (MainActivity rendered, Glide warm, Firestore connected)
+                // without making the user wait long for v16 backfill.
+                .setInitialDelay(2, TimeUnit.MINUTES)
+                .build();
 
         // UPDATE for the same reason as the reminder + weather workers —
         // KEEP would lock existing users on the first install's config.
