@@ -28,6 +28,8 @@ public class EditPlantDialogFragment extends DialogFragment {
     private Runnable onPlantEdited; // جديد: متغير للاستماع لنجاح التعديل
 
     private EditText nameEditText, lightingEditText, soilEditText, fertilizingEditText, wateringEditText, personalNoteEditText;
+    // v16: per-care-type interval inputs.
+    private EditText editIntervalWater, editIntervalFertilize, editIntervalMist, editIntervalRepot;
 
     public static EditPlantDialogFragment newInstance(Plant plant, boolean showPersonalNote) {
         EditPlantDialogFragment fragment = new EditPlantDialogFragment();
@@ -67,6 +69,11 @@ public class EditPlantDialogFragment extends DialogFragment {
         wateringEditText = view.findViewById(R.id.editWatering);
         personalNoteEditText = view.findViewById(R.id.editPersonalNote);
 
+        editIntervalWater     = view.findViewById(R.id.editIntervalWater);
+        editIntervalFertilize = view.findViewById(R.id.editIntervalFertilize);
+        editIntervalMist      = view.findViewById(R.id.editIntervalMist);
+        editIntervalRepot     = view.findViewById(R.id.editIntervalRepot);
+
         if (plant != null) {
             if (plant.getName() != null) nameEditText.setText(plant.getName());
             if (plant.getLighting() != null) lightingEditText.setText(plant.getLighting());
@@ -74,10 +81,37 @@ public class EditPlantDialogFragment extends DialogFragment {
             if (plant.getFertilizing() != null) fertilizingEditText.setText(plant.getFertilizing());
             if (plant.getWatering() != null) wateringEditText.setText(plant.getWatering());
             if (personalNoteEditText != null && plant.getPersonalNote() != null) personalNoteEditText.setText(plant.getPersonalNote());
+
+            // v16: pre-fill the four interval inputs from the plant's stored
+            // values. 0 stays blank so the user sees "this type is off"
+            // explicitly rather than a confusing 0 in the field.
+            prefillInterval(editIntervalWater, plant.wateringInterval);
+            prefillInterval(editIntervalFertilize, plant.fertilizingInterval);
+            prefillInterval(editIntervalMist, plant.mistingInterval);
+            prefillInterval(editIntervalRepot, plant.repottingIntervalDays);
         }
 
         view.findViewById(R.id.saveButton).setOnClickListener(v -> saveChanges());
         view.findViewById(R.id.cancelButton).setOnClickListener(v -> dismiss());
+    }
+
+    /** v16 helper — write an int to an EditText, leaving it blank when 0. */
+    private static void prefillInterval(EditText field, int value) {
+        if (field == null) return;
+        field.setText(value > 0 ? String.valueOf(value) : "");
+    }
+
+    /** v16 helper — read an int from an EditText, defaulting to fallback when blank/invalid. */
+    private static int readInterval(EditText field, int fallback) {
+        if (field == null) return fallback;
+        try {
+            String s = field.getText().toString().trim();
+            if (s.isEmpty()) return 0;  // explicitly disabled
+            int v = Integer.parseInt(s);
+            return v >= 0 ? v : fallback;
+        } catch (NumberFormatException e) {
+            return fallback;
+        }
     }
 
     @Override
@@ -115,6 +149,43 @@ public class EditPlantDialogFragment extends DialogFragment {
             plant.setPersonalNote(personalNote);
         }
 
+        // v16: read the four interval fields on the main thread BEFORE
+        // handing off to the IO worker — EditText access from a worker
+        // thread crashes on some Android versions. 0 means "user disabled
+        // this reminder type" — the next regeneration will skip it.
+        // We snapshot the OLD values so we can detect "did the schedule
+        // actually change?" — only regenerate reminders when something
+        // changed, otherwise a no-op edit (e.g. fixing a typo in the
+        // lighting text) wouldn't wipe the user's wash-shifted dates.
+        final int oldWaterIv = plant.wateringInterval;
+        final int oldFertIv  = plant.fertilizingInterval;
+        final int oldMistIv  = plant.mistingInterval;
+        final int oldRepotIv = plant.repottingIntervalDays;
+
+        // Watering interval: text-parse takes priority over the dialog
+        // field so a user editing the watering description ("alle 14 Tage"
+        // → "alle 7 Tage") still gets the new interval applied.
+        int parsedFromText = TextUtils.isEmpty(watering)
+                ? 0
+                : ReminderUtils.parseWateringInterval(watering);
+        final int newWaterIv = parsedFromText > 0
+                ? parsedFromText
+                : readInterval(editIntervalWater, oldWaterIv);
+        final int newFertIv  = readInterval(editIntervalFertilize, oldFertIv);
+        final int newMistIv  = readInterval(editIntervalMist, oldMistIv);
+        final int newRepotIv = readInterval(editIntervalRepot, oldRepotIv);
+
+        plant.setWateringInterval(newWaterIv);
+        plant.fertilizingInterval = newFertIv;
+        plant.mistingInterval     = newMistIv;
+        plant.repottingIntervalDays = newRepotIv;
+
+        final boolean scheduleChanged =
+                oldWaterIv != newWaterIv
+             || oldFertIv  != newFertIv
+             || oldMistIv  != newMistIv
+             || oldRepotIv != newRepotIv;
+
         FragmentBg.runIO(this,
                 () -> {
                     com.example.plantcare.data.repository.PlantRepository plantRepo =
@@ -132,21 +203,18 @@ public class EditPlantDialogFragment extends DialogFragment {
                     // different rooms).
                     plantRepo.updateBlocking(plant);
 
-                    // Reschedule reminders only when the watering text was
-                    // actually populated and yields a valid interval.
+                    // v16: regenerate ALL four reminder series when the
+                    // schedule changed. Pre-v16 only the watering series
+                    // was rebuilt — fertilize/mist/repot kept their stale
+                    // dates after an interval edit. Now we drop every
+                    // future auto reminder for this plant and let
+                    // generateAllReminders rebuild from today.
                     List<WateringReminder> newReminders = null;
-                    if (!TextUtils.isEmpty(watering)) {
-                        int newInterval = ReminderUtils.parseWateringInterval(watering);
-                        if (newInterval > 0) {
-                            plant.setWateringInterval(newInterval);
-                            plantRepo.updateBlocking(plant);
-
-                            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-                            reminderRepo.deleteFutureRemindersForPlantBlocking(plant.id, today);
-
-                            newReminders = ReminderUtils.generateReminders(plant);
-                            if (newReminders != null) reminderRepo.insertAllBlocking(newReminders);
-                        }
+                    if (scheduleChanged) {
+                        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
+                        reminderRepo.deleteFutureRemindersForPlantBlocking(plant.id, today);
+                        newReminders = ReminderUtils.generateAllReminders(plant);
+                        if (newReminders != null) reminderRepo.insertAllBlocking(newReminders);
                     }
 
                     // Mirror the edits + new reminder schedule to Firebase.

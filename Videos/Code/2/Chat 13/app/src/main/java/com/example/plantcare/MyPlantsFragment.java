@@ -3,8 +3,6 @@ package com.example.plantcare;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +27,6 @@ public class MyPlantsFragment extends Fragment {
     private androidx.recyclerview.widget.ItemTouchHelper roomTouchHelper;
     private final List<RoomCategory> rooms = new ArrayList<>();
     private String userEmail;
-    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     private final Runnable dataChangeListener = this::loadRoomsEnsureDefaults;
 
@@ -52,22 +49,30 @@ public class MyPlantsFragment extends Fragment {
         adapter.setOnRoomLongClickListener(this::showRoomActions);
         rvRooms.setAdapter(adapter);
 
-        // Drag-to-reorder: long-press triggers the room actions menu (rename /
-        // delete / reorder), and the user picks "Reorder" to start a drag.
-        // We don't enable long-press auto-drag because that would collide
-        // with the actions menu intent. Drop persists once on clearView so
-        // we don't hit the DB once per pixel.
+        // Drag-to-reorder via the drag-handle icon at the right edge of each
+        // row (RoomAdapter wires its OnStartDragRequested listener to
+        // roomTouchHelper.startDrag). Long-press on the row body opens the
+        // actions menu; Verschieben was removed from that menu because
+        // calling startDrag from a menu callback fires after the original
+        // touch has lifted — the drag state activated and ended silently
+        // in the same frame, which used to (a) make the menu item appear
+        // to do nothing and (b) trigger persistCurrentOrder + the manual-
+        // reorder flag, falsely revealing the "Nach Anzahl Pflanzen
+        // sortieren" reset row on the next long-press.
         roomTouchHelper = new androidx.recyclerview.widget.ItemTouchHelper(
                 new androidx.recyclerview.widget.ItemTouchHelper.SimpleCallback(
                         androidx.recyclerview.widget.ItemTouchHelper.UP
                                 | androidx.recyclerview.widget.ItemTouchHelper.DOWN,
                         0) {
+                    private boolean dirty = false;
+
                     @Override
                     public boolean onMove(@NonNull androidx.recyclerview.widget.RecyclerView rv,
                                           @NonNull androidx.recyclerview.widget.RecyclerView.ViewHolder vh,
                                           @NonNull androidx.recyclerview.widget.RecyclerView.ViewHolder target) {
                         adapter.moveItem(vh.getAdapterPosition(),
                                 target.getAdapterPosition());
+                        dirty = true;
                         return true;
                     }
 
@@ -81,10 +86,24 @@ public class MyPlantsFragment extends Fragment {
                     public void clearView(@NonNull androidx.recyclerview.widget.RecyclerView rv,
                                           @NonNull androidx.recyclerview.widget.RecyclerView.ViewHolder vh) {
                         super.clearView(rv, vh);
-                        persistCurrentOrder();
+                        // Only persist + flip the manual-reorder flag when an
+                        // actual move happened. Without this guard, every
+                        // aborted drag (e.g. drag-handle tapped without
+                        // movement) wrote position 0..N-1 + set the flag,
+                        // making the auto-sort reset row appear randomly.
+                        if (dirty) {
+                            persistCurrentOrder();
+                            dirty = false;
+                        }
                     }
                 });
         roomTouchHelper.attachToRecyclerView(rvRooms);
+        // The drag handle in each row sits on the right side of the count
+        // badge. Touch+drag on the handle triggers ItemTouchHelper.startDrag
+        // immediately while the user's finger is still down — that's how
+        // we get reliable drag-and-reorder, unlike the prior
+        // startDrag-from-menu approach.
+        adapter.setOnStartDragListener(vh -> roomTouchHelper.startDrag(vh));
 
         userEmail = EmailContext.current(requireContext());
 
@@ -113,6 +132,7 @@ public class MyPlantsFragment extends Fragment {
                         return;
                     }
 
+                    final boolean[] inserted = { false };
                     FragmentBg.runIO(this, () -> {
                         com.example.plantcare.data.repository.RoomCategoryRepository roomRepo =
                                 com.example.plantcare.data.repository.RoomCategoryRepository
@@ -134,12 +154,15 @@ public class MyPlantsFragment extends Fragment {
                         rc.id = (int) newId;
                         try { FirebaseSyncManager.get().syncRoom(rc); }
                         catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
-                        // Refresh on the main thread + broadcast so other
-                        // screens (Today list, plant pickers) catch it too.
-                        mainHandler.post(() -> {
+                        inserted[0] = true;
+                    }, () -> {
+                        // Main callback only fires while the fragment is still
+                        // added (FragmentBg guard). Skip the refresh on the
+                        // duplicate-name no-op path.
+                        if (inserted[0]) {
                             loadRoomsEnsureDefaults();
                             DataChangeNotifier.notifyChange();
-                        });
+                        }
                     });
                 });
                 dialog.show(getParentFragmentManager(), "AddRoomDialog");
@@ -170,19 +193,64 @@ public class MyPlantsFragment extends Fragment {
 
     private void loadRoomsEnsureDefaults() {
         final Context appCtx = requireContext().getApplicationContext();
+        final String email = userEmail;
 
         FragmentBg.<List<RoomCategory>>runWithResult(this,
                 () -> {
-                    if (userEmail == null) {
+                    if (email == null) {
                         return null; // signal to use defaults
                     }
 
                     // Sprint-3 cleanup: synchronized helper avoids duplicate
                     // default rooms when this Fragment is recreated quickly.
-                    return com.example.plantcare.data.repository.RoomCategoryRepository
-                            .getInstance(appCtx)
-                            .ensureDefaultsForUserBlocking(userEmail,
+                    List<RoomCategory> loaded = com.example.plantcare.data.repository
+                            .RoomCategoryRepository.getInstance(appCtx)
+                            .ensureDefaultsForUserBlocking(email,
                                     com.example.plantcare.ui.util.DefaultRooms.get(appCtx));
+
+                    // Default sort: rooms with the most plants on top.
+                    // Once the user drag-reorders manually,
+                    // RoomOrderingPrefs.markManualReorder pins the flag and
+                    // we stop overriding the DAO's stored position order.
+                    if (loaded != null && !loaded.isEmpty()
+                            && !com.example.plantcare.ui.util.RoomOrderingPrefs
+                                    .wasManuallyReordered(appCtx, email)) {
+                        com.example.plantcare.data.repository.PlantRepository plantRepo =
+                                com.example.plantcare.data.repository.PlantRepository
+                                        .getInstance(appCtx);
+                        // Snapshot of (room → count) computed once on IO so the
+                        // sort comparator is O(n log n) reads from a HashMap
+                        // rather than re-running the COUNT query at every compare.
+                        java.util.Map<Integer, Integer> countByRoom = new java.util.HashMap<>();
+                        for (RoomCategory r : loaded) {
+                            countByRoom.put(r.id, plantRepo.countPlantsByRoomBlocking(r.id, email));
+                        }
+                        // Sort by count DESC. Ties fall through to `position`
+                        // (insertion-order from R.array.default_rooms ⇒
+                        // Wohnzimmer→Schlafzimmer→Flur→Küche→Bad→Toilette),
+                        // then default-rooms priority for legacy rows where
+                        // every position=0, then name as the final stable
+                        // tiebreaker. Pre-fix the tiebreaker was alphabetical,
+                        // so a fresh user with all-0 plants saw
+                        // Bad→Flur→Küche→… instead of the curated priority.
+                        final java.util.List<String> defaultsOrder =
+                                com.example.plantcare.ui.util.DefaultRooms.get(appCtx);
+                        java.util.Collections.sort(loaded, (a, b) -> {
+                            int ca = countByRoom.getOrDefault(a.id, 0);
+                            int cb = countByRoom.getOrDefault(b.id, 0);
+                            if (ca != cb) return Integer.compare(cb, ca);
+                            if (a.position != b.position) return Integer.compare(a.position, b.position);
+                            int pa = a.name == null ? Integer.MAX_VALUE : defaultsOrder.indexOf(a.name);
+                            int pb = b.name == null ? Integer.MAX_VALUE : defaultsOrder.indexOf(b.name);
+                            if (pa < 0) pa = Integer.MAX_VALUE;
+                            if (pb < 0) pb = Integer.MAX_VALUE;
+                            if (pa != pb) return Integer.compare(pa, pb);
+                            String na = a.name == null ? "" : a.name;
+                            String nb = b.name == null ? "" : b.name;
+                            return na.compareToIgnoreCase(nb);
+                        });
+                    }
+                    return loaded;
                 },
                 loaded -> {
                     if (loaded == null || loaded.isEmpty()) {
@@ -192,7 +260,7 @@ public class MyPlantsFragment extends Fragment {
                             RoomCategory r = new RoomCategory();
                             r.id = 0;
                             r.name = n;
-                            r.userEmail = userEmail;
+                            r.userEmail = email;
                             rooms.add(r);
                         }
                     } else {
@@ -211,54 +279,51 @@ public class MyPlantsFragment extends Fragment {
      */
     private void showRoomActions(RoomCategory room) {
         final android.content.Context appCtx = requireContext().getApplicationContext();
-        String[] actions = {
-                getString(R.string.room_action_rename),
-                getString(R.string.room_action_reorder),
-                getString(R.string.room_action_delete)
-        };
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
-                .setTitle(room.name)
-                .setItems(actions, (d, which) -> {
-                    switch (which) {
-                        case 0: showRenameRoomDialog(room); break;
-                        case 1: startDragForRoom(room); break;
-                        case 2: confirmDeleteRoom(room, appCtx); break;
-                    }
-                })
-                .setNegativeButton(R.string.action_cancel, null)
-                .show();
-    }
+        final boolean manual = com.example.plantcare.ui.util.RoomOrderingPrefs
+                .wasManuallyReordered(appCtx, userEmail);
+        // Verschieben was removed from this menu — drag-and-reorder now
+        // happens via the drag-handle icon on the right edge of each row.
+        // Show the "Auto-Sortierung" reset only when the user has
+        // actually overridden the auto-sort, otherwise it would be a
+        // no-op item.
+        // Renders through ActionListDialogFragment so the row styling
+        // matches the rest of the app (catalog plant-detail / "Mehr
+        // Optionen" / Add-Room dialogs) — pre-fix this used
+        // MaterialAlertDialogBuilder.setItems which looked flat.
+        final java.util.List<com.example.plantcare.ui.util
+                .ActionListDialogFragment.Item> items =
+                new java.util.ArrayList<>();
 
-    /**
-     * Bridge between the actions menu and ItemTouchHelper: locate the
-     * holder that currently shows this room and ask the helper to start
-     * a drag on it. Drop will trigger persistCurrentOrder().
-     */
-    private void startDragForRoom(RoomCategory room) {
-        if (rvRooms == null || roomTouchHelper == null) return;
-        // Locate the adapter position by id.
-        int pos = -1;
-        for (int i = 0; i < rooms.size(); i++) {
-            if (rooms.get(i).id == room.id) { pos = i; break; }
+        items.add(new com.example.plantcare.ui.util
+                .ActionListDialogFragment.Item(
+                        getString(R.string.room_action_rename),
+                        false,
+                        () -> { showRenameRoomDialog(room); return kotlin.Unit.INSTANCE; }));
+
+        if (manual) {
+            items.add(new com.example.plantcare.ui.util
+                    .ActionListDialogFragment.Item(
+                            getString(R.string.room_action_auto_sort),
+                            false,
+                            () -> {
+                                com.example.plantcare.ui.util.RoomOrderingPrefs
+                                        .clearManualReorder(appCtx, userEmail);
+                                loadRoomsEnsureDefaults();
+                                return kotlin.Unit.INSTANCE;
+                            }));
         }
-        if (pos < 0) return;
-        // Try the simple path first — usually the row is on-screen since
-        // the user just long-pressed it.
-        RecyclerView.ViewHolder vh = rvRooms.findViewHolderForAdapterPosition(pos);
-        if (vh != null) {
-            roomTouchHelper.startDrag(vh);
-            return;
-        }
-        // Off-screen fallback: scroll the row into view, then post the
-        // drag start so the freshly bound holder exists when we look
-        // again. Without this, picking "Reorder" on a long list silently
-        // does nothing for any room past the visible window.
-        final int finalPos = pos;
-        rvRooms.scrollToPosition(finalPos);
-        rvRooms.post(() -> {
-            RecyclerView.ViewHolder vh2 = rvRooms.findViewHolderForAdapterPosition(finalPos);
-            if (vh2 != null) roomTouchHelper.startDrag(vh2);
-        });
+
+        items.add(new com.example.plantcare.ui.util
+                .ActionListDialogFragment.Item(
+                        getString(R.string.room_action_delete),
+                        true,
+                        () -> { confirmDeleteRoom(room, appCtx); return kotlin.Unit.INSTANCE; }));
+
+        new com.example.plantcare.ui.util.ActionListDialogFragment()
+                .configure(room.name, items)
+                .show(getParentFragmentManager(),
+                        com.example.plantcare.ui.util
+                                .ActionListDialogFragment.TAG);
     }
 
     /**
@@ -272,10 +337,16 @@ public class MyPlantsFragment extends Fragment {
         final List<Integer> order = adapter.currentOrderIds();
         if (order.isEmpty()) return;
         final android.content.Context appCtx = requireContext().getApplicationContext();
+        final String email = userEmail;
         FragmentBg.runIO(this, () -> {
             com.example.plantcare.data.repository.RoomCategoryRepository repo =
                     com.example.plantcare.data.repository.RoomCategoryRepository.getInstance(appCtx);
             repo.reorderBlocking(order);
+            // Pin the manual-order flag so future loads stop overriding the
+            // user's order with the count-based auto-sort. Cleared by the
+            // long-press → "Auto-Sortierung" action.
+            com.example.plantcare.ui.util.RoomOrderingPrefs
+                    .markManualReorder(appCtx, email);
             // Mirror new positions to Firestore so the order survives a
             // reinstall. Pull each row back so we ship the updated
             // `position` field rather than the pre-drag snapshot.
@@ -365,12 +436,11 @@ public class MyPlantsFragment extends Fragment {
                                             .getInstance(appCtx).deleteBlocking(room);
                                     try { FirebaseSyncManager.get().deleteRoom(deletedId); }
                                     catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
-                                    mainHandler.post(() -> {
-                                        android.widget.Toast.makeText(appCtx, R.string.room_deleted,
-                                                android.widget.Toast.LENGTH_SHORT).show();
-                                        loadRoomsEnsureDefaults();
-                                        DataChangeNotifier.notifyChange();
-                                    });
+                                }, () -> {
+                                    android.widget.Toast.makeText(appCtx, R.string.room_deleted,
+                                            android.widget.Toast.LENGTH_SHORT).show();
+                                    loadRoomsEnsureDefaults();
+                                    DataChangeNotifier.notifyChange();
                                 });
                             })
                             .setNegativeButton(R.string.action_cancel, null)

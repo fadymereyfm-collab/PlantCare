@@ -99,46 +99,51 @@ public class ArchivePhotosDialogFragment extends DialogFragment {
     }
 
     private void showPhotoOptions(View contextView, PlantPhoto photo, GridLayout grid, int plantId) {
-        String[] options = {
+        java.util.List<com.example.plantcare.ui.util.ActionListDialogFragment.Item> items =
+                new java.util.ArrayList<>();
+        items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
                 getString(R.string.action_delete),
-                getString(R.string.action_change_date)
-        };
-        new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.photo_options_title)
-                .setItems(options, (dialog, which) -> {
-                    if (which == 0) {
-                        new AlertDialog.Builder(requireContext())
-                                .setMessage(R.string.confirm_delete_photo_message)
-                                .setPositiveButton(R.string.action_yes, (d, w) -> {
-                                    FragmentBg.runIO(this,
-                                            () -> FirebaseSyncManager.get().deletePhotoSmart(photo, requireContext()),
-                                            () -> reloadGrid(grid, plantId));
-                                })
-                                .setNegativeButton(R.string.action_no, null)
-                                .show();
-                    } else if (which == 1) {
-                        java.util.Calendar cal = java.util.Calendar.getInstance();
-                        try {
-                            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
-                            java.util.Date d = sdf.parse(photo.dateTaken);
-                            if (d != null) cal.setTime(d);
-                        } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
-                        android.app.DatePickerDialog dateDialog = new android.app.DatePickerDialog(requireContext(), (v, y, m, d) -> {
-                            String newDate = String.format(java.util.Locale.getDefault(), "%04d-%02d-%02d", y, m + 1, d);
-                            FragmentBg.runIO(this,
-                                    () -> {
-                                        photo.dateTaken = newDate;
-                                        com.example.plantcare.data.repository.PlantPhotoRepository
-                                                .getInstance(requireContext())
-                                                .updateBlocking(photo);
-                                    },
-                                    () -> reloadGrid(grid, plantId));
-                        }, cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH), cal.get(java.util.Calendar.DAY_OF_MONTH));
-                        dateDialog.show();
-                    }
-                })
-                .setNegativeButton(R.string.action_cancel, null)
-                .show();
+                true,
+                () -> {
+                    new AlertDialog.Builder(requireContext())
+                            .setMessage(R.string.confirm_delete_photo_message)
+                            .setPositiveButton(R.string.action_yes, (d, w) -> {
+                                FragmentBg.runIO(this,
+                                        () -> FirebaseSyncManager.get().deletePhotoSmart(photo, requireContext()),
+                                        () -> reloadGrid(grid, plantId));
+                            })
+                            .setNegativeButton(R.string.action_no, null)
+                            .show();
+                    return kotlin.Unit.INSTANCE;
+                }));
+        items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                getString(R.string.action_change_date),
+                false,
+                () -> {
+                    java.util.Calendar cal = java.util.Calendar.getInstance();
+                    try {
+                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
+                        java.util.Date d = sdf.parse(photo.dateTaken);
+                        if (d != null) cal.setTime(d);
+                    } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+                    android.app.DatePickerDialog dateDialog = new android.app.DatePickerDialog(requireContext(), (v, y, m, d) -> {
+                        String newDate = String.format(java.util.Locale.US, "%04d-%02d-%02d", y, m + 1, d);
+                        FragmentBg.runIO(this,
+                                () -> {
+                                    photo.dateTaken = newDate;
+                                    com.example.plantcare.data.repository.PlantPhotoRepository
+                                            .getInstance(requireContext())
+                                            .updateBlocking(photo);
+                                },
+                                () -> reloadGrid(grid, plantId));
+                    }, cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH), cal.get(java.util.Calendar.DAY_OF_MONTH));
+                    dateDialog.show();
+                    return kotlin.Unit.INSTANCE;
+                }));
+        new com.example.plantcare.ui.util.ActionListDialogFragment()
+                .configure(getString(R.string.photo_options_title), items)
+                .show(getParentFragmentManager(),
+                        com.example.plantcare.ui.util.ActionListDialogFragment.TAG);
     }
 
     private void reloadGrid(GridLayout grid, int plantId) {
@@ -193,9 +198,19 @@ public class ArchivePhotosDialogFragment extends DialogFragment {
         }
         String path = p.imagePath;
 
+        // PENDING_DOC:<docId>|<localUri> — extract the local URI after the
+        // separator so the upload-in-progress window doesn't blank the
+        // archive thumbnails. Pre-fix this branch returned the broken-image
+        // placeholder for every photo whose Firebase upload was still in
+        // flight (or had failed silently).
         if (path.startsWith("PENDING_DOC:")) {
-            iv.setImageResource(android.R.drawable.ic_menu_report_image);
-            return;
+            int sep = path.indexOf('|');
+            if (sep > 0 && sep + 1 < path.length()) {
+                path = path.substring(sep + 1);
+            } else {
+                iv.setImageResource(android.R.drawable.ic_menu_report_image);
+                return;
+            }
         }
 
         Object model;

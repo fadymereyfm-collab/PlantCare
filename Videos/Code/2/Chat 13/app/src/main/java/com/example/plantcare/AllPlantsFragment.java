@@ -120,6 +120,19 @@ public class AllPlantsFragment extends Fragment {
                                     // Kategorie automatisch ableiten (Nutzer kann später manuell ändern)
                                     p.category = PlantCategoryUtil.classify(p.name, p.lighting, p.watering);
 
+                                    // v16: tag the new catalog entry with its
+                                    // botanical family if we know it. Without
+                                    // this, when the user later picks this row
+                                    // and taps "Zu meinen Pflanzen hinzufügen",
+                                    // PlantCareDefaults.forFamily(null) returns
+                                    // GENERIC_FALLBACK regardless of species.
+                                    com.example.plantcare.data.CatalogFamilyMap.FamilyInfo fi =
+                                            com.example.plantcare.data.CatalogFamilyMap.lookup(p.name);
+                                    if (fi != null) {
+                                        p.family = fi.getFamily();
+                                        p.scientificName = fi.getScientificName();
+                                    }
+
                                     if (imagePath != null && !imagePath.isEmpty()) {
                                         if (imagePath.startsWith("content://") || imagePath.startsWith("http")) {
                                             p.imageUri = imagePath;

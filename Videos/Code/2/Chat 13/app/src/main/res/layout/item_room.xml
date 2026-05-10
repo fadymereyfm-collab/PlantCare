@@ -71,5 +71,18 @@
             android:gravity="center"
             tools:text="4 Pflanzen" />
 
+        <!-- Drag handle — touch+drag triggers reorder via the adapter's
+             OnStartDragListener. Wider tap target than the icon itself
+             (32dp container, 6dp inner padding) so the user can grab it
+             without missing on a small phone. -->
+        <ImageView
+            android:id="@+id/dragHandle"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="6dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_drag_handle"
+            android:contentDescription="@string/drag_handle_cd" />
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

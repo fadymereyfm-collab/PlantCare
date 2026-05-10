@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -35,10 +36,20 @@ public class PlantsInRoomActivity extends AppCompatActivity
         PlantDetailDialogFragment.PlantActionHandler,
         PlantDetailDialogFragment.PlantRoomHandler {
 
+    @Override
+    protected void attachBaseContext(android.content.Context newBase) {
+        super.attachBaseContext(com.example.plantcare.format.FontScaleHelper.wrap(newBase));
+    }
+
     private PlantAdapter adapter;
     private int roomId;
     private String roomName;
     private String userEmail;
+    // v16 close-out: empty-state TextView, hidden by default; flipped
+    // visible by refreshList when the room has 0 plants. Plus the FAB
+    // that lets the user add a plant straight into this room.
+    private android.widget.TextView emptyMessage;
+    private com.google.android.material.floatingactionbutton.FloatingActionButton fabAddPlant;
 
     /**
      * Reload the toolbar title + plant list when the room is renamed or
@@ -81,10 +92,74 @@ public class PlantsInRoomActivity extends AppCompatActivity
         }, true);
         recyclerView.setAdapter(adapter);
 
+        emptyMessage = findViewById(R.id.emptyMessage);
+        fabAddPlant = findViewById(R.id.fabAddPlant);
+        if (fabAddPlant != null) {
+            fabAddPlant.setOnClickListener(v -> showAddPlantOptions());
+        }
+
         userEmail = EmailContext.current(this);
 
         setupActivityResultLaunchers();
         refreshList();
+    }
+
+    /**
+     * v16 close-out — three-way picker for adding a plant straight into
+     * the current room. Pre-fix the user had to leave this Activity,
+     * find the catalog/identify/manual flow themselves, then move the
+     * new plant to this room afterwards. The catalog + camera flows
+     * remember `roomId` via the QuickAddHelper "last used room"
+     * preference so the new plant lands here.
+     */
+    private void showAddPlantOptions() {
+        java.util.List<com.example.plantcare.ui.util.ActionListDialogFragment.Item> items =
+                new java.util.ArrayList<>();
+        items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                getString(R.string.plants_in_room_add_from_catalog),
+                false,
+                () -> { openCatalogForRoom(); return kotlin.Unit.INSTANCE; }));
+        items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                getString(R.string.plants_in_room_add_with_camera),
+                false,
+                () -> { openCameraIdentifyForRoom(); return kotlin.Unit.INSTANCE; }));
+        items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                getString(R.string.plants_in_room_add_manual),
+                false,
+                () -> { openManualAddForRoom(); return kotlin.Unit.INSTANCE; }));
+        new com.example.plantcare.ui.util.ActionListDialogFragment()
+                .configure(getString(R.string.plants_in_room_add_dialog_title), items)
+                .show(getSupportFragmentManager(),
+                        com.example.plantcare.ui.util.ActionListDialogFragment.TAG);
+    }
+
+    /**
+     * Pre-stamps roomId via QuickAddHelper.rememberLastUsedRoom so the
+     * downstream AddToMyPlantsDialog defaults its room spinner to this
+     * room. Then bounces back to MainActivity on the catalog tab.
+     */
+    private void openCatalogForRoom() {
+        com.example.plantcare.ui.util.QuickAddHelper
+                .rememberLastUsedRoom(getApplicationContext(), userEmail, roomId);
+        android.content.Intent intent = new android.content.Intent(this, MainActivity.class);
+        intent.addFlags(android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.putExtra("launchTab", 0); // 0 = Alle Pflanzen
+        startActivity(intent);
+    }
+
+    private void openCameraIdentifyForRoom() {
+        com.example.plantcare.ui.util.QuickAddHelper
+                .rememberLastUsedRoom(getApplicationContext(), userEmail, roomId);
+        android.content.Intent intent = new android.content.Intent(
+                this, com.example.plantcare.ui.identify.PlantIdentifyActivity.class);
+        startActivity(intent);
+    }
+
+    private void openManualAddForRoom() {
+        com.example.plantcare.ui.util.QuickAddHelper
+                .rememberLastUsedRoom(getApplicationContext(), userEmail, roomId);
+        AddPlantDialogFragment dlg = new AddPlantDialogFragment();
+        dlg.show(getSupportFragmentManager(), "add_plant_manual");
     }
 
     @Override
@@ -268,7 +343,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
                     PlantPhoto photo = new PlantPhoto();
                     photo.plantId = currentPlantForPhoto.id;
                     photo.imagePath = (coverUri != null) ? coverUri.toString() : (photoURI != null ? photoURI.toString() : null);
-                    photo.dateTaken = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(new java.util.Date());
+                    photo.dateTaken = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(new java.util.Date());
                     photo.isCover = true;
                     photo.userEmail = userEmail;
                     long newId = photoRepo.insertBlocking(photo);
@@ -305,7 +380,17 @@ public class PlantsInRoomActivity extends AppCompatActivity
             List<Plant> plants = com.example.plantcare.data.repository.PlantRepository
                     .getInstance(this)
                     .getAllUserPlantsInRoomBlocking(finalRoomId, userEmail);
-            runOnUiThread(() -> adapter.setPlantList(plants));
+            runOnUiThread(() -> {
+                adapter.setPlantList(plants);
+                // v16 close-out: toggle empty-state visibility based
+                // on result count. The RecyclerView stays in the layout
+                // (no need to flip its visibility — adapter just shows
+                // 0 rows) so the empty TextView floats over an empty
+                // list cleanly via the FrameLayout stack.
+                if (emptyMessage != null) {
+                    emptyMessage.setVisibility(plants.isEmpty() ? View.VISIBLE : View.GONE);
+                }
+            });
         });
     }
 
@@ -415,28 +500,41 @@ public class PlantsInRoomActivity extends AppCompatActivity
                     Toast.makeText(this, R.string.no_rooms_available, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String[] names = new String[targets.size()];
-                for (int i = 0; i < targets.size(); i++) names[i] = targets.get(i).name;
-                new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
-                        .setTitle(R.string.move_to_room_title)
-                        .setItems(names, (d, which) -> {
-                            RoomCategory target = targets.get(which);
-                            com.example.plantcare.util.BgExecutor.io(() -> {
-                                plant.roomId = target.id;
-                                com.example.plantcare.data.repository.PlantRepository
-                                        .getInstance(getApplicationContext()).updateBlocking(plant);
-                                try {
-                                    FirebaseSyncManager.get().syncPlant(plant);
-                                } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
-                                runOnUiThread(() -> {
-                                    Toast.makeText(this, getString(R.string.msg_moved), Toast.LENGTH_SHORT).show();
-                                    refreshList();
-                                });
-                                DataChangeNotifier.notifyChange();
-                            });
-                        })
-                        .setNegativeButton(R.string.action_cancel, null)
-                        .show();
+                // Render as an ActionListDialogFragment so the list matches
+                // the rest of the app's polished modals (catalog dialog +
+                // Mehr-Optionen overflow + room long-press menu) instead of
+                // the flat MaterialAlertDialogBuilder.setItems look.
+                final java.util.List<com.example.plantcare.ui.util
+                        .ActionListDialogFragment.Item> items =
+                        new java.util.ArrayList<>();
+                for (RoomCategory target : targets) {
+                    final RoomCategory finalTarget = target;
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    target.name,
+                                    false,
+                                    () -> {
+                                        com.example.plantcare.util.BgExecutor.io(() -> {
+                                            plant.roomId = finalTarget.id;
+                                            com.example.plantcare.data.repository.PlantRepository
+                                                    .getInstance(getApplicationContext()).updateBlocking(plant);
+                                            try {
+                                                FirebaseSyncManager.get().syncPlant(plant);
+                                            } catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
+                                            runOnUiThread(() -> {
+                                                Toast.makeText(this, getString(R.string.msg_moved), Toast.LENGTH_SHORT).show();
+                                                refreshList();
+                                            });
+                                            DataChangeNotifier.notifyChange();
+                                        });
+                                        return kotlin.Unit.INSTANCE;
+                                    }));
+                }
+                new com.example.plantcare.ui.util.ActionListDialogFragment()
+                        .configure(getString(R.string.move_to_room_title), items)
+                        .show(getSupportFragmentManager(),
+                                com.example.plantcare.ui.util
+                                        .ActionListDialogFragment.TAG);
             });
         });
     }

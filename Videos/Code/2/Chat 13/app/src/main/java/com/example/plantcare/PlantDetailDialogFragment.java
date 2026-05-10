@@ -49,12 +49,22 @@ public class PlantDetailDialogFragment extends DialogFragment {
     private static final String TAG = "PlantCover";
     private static final String ARG_PLANT = "plant";
     private static final String ARG_IS_USER_PLANT = "is_user_plant";
+    private static final String ARG_HIGHLIGHT_TYPE = "highlight_type";
 
     private Plant plant;
     private boolean isUserPlant;
     private Runnable dismissListener;
     private Runnable onPlantAdded;
     private boolean readOnlyMode = false;
+    /**
+     * v16 — when non-null the dialog renders the bold task-highlight card
+     * at the top (water/fertilize/mist/repot). Set via
+     * {@link #setHighlightTaskType(String)} from the calendar/today
+     * reminder click handlers, or via the {@link #ARG_HIGHLIGHT_TYPE}
+     * bundle key after rotation.
+     */
+    @androidx.annotation.Nullable
+    private String highlightTaskType = null;
 
     private ImageView imageView;
 
@@ -97,6 +107,22 @@ public class PlantDetailDialogFragment extends DialogFragment {
     public void setOnPlantAdded(Runnable listener) { this.onPlantAdded = listener; }
     public void setReadOnlyMode(boolean mode) { this.readOnlyMode = mode; }
 
+    /**
+     * Show the bold task-highlight card at the top of the dialog. Pass
+     * the reminder type ("water" / "fertilize" / "mist" / "repot"); NULL
+     * keeps the default rendering (no highlight). Mirror into the
+     * arguments Bundle so it survives rotation.
+     */
+    public void setHighlightTaskType(@androidx.annotation.Nullable String type) {
+        this.highlightTaskType = type;
+        Bundle args = getArguments();
+        if (args == null) {
+            args = new Bundle();
+            setArguments(args);
+        }
+        args.putString(ARG_HIGHLIGHT_TYPE, type);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +135,9 @@ public class PlantDetailDialogFragment extends DialogFragment {
                 plant = (Plant) getArguments().getSerializable(ARG_PLANT);
             } catch (Throwable __ce) { CrashReporter.INSTANCE.log(__ce); }
             isUserPlant = getArguments().getBoolean(ARG_IS_USER_PLANT, false);
+        }
+        if (highlightTaskType == null && getArguments() != null) {
+            highlightTaskType = getArguments().getString(ARG_HIGHLIGHT_TYPE, null);
         }
 
         takePictureLauncher = registerForActivityResult(
@@ -213,7 +242,55 @@ public class PlantDetailDialogFragment extends DialogFragment {
         // Label-IDs unterscheiden sich zwischen den beiden Layouts
         // (dialog_plant_detail: labelPersonalNote | dialog_plant_detail_user: textPersonalNoteLabel).
         TextView personalNoteLabel = findText(view, R.id.labelPersonalNote, R.id.textPersonalNoteLabel);
+        // User-plant only: room name field (catalog layout doesn't include
+        // these IDs, so findText returns null and the block below no-ops).
+        TextView roomLabel    = findText(view, R.id.labelRoom);
+        TextView roomText     = findText(view, R.id.textRoom);
         imageView             = findImage(view, R.id.plantImageView, R.id.plantDetailImageView, R.id.imagePlant);
+
+        // v16 — bold task-highlight card. Only renders when the dialog
+        // was opened from a calendar/today reminder tap (highlightTaskType
+        // set via setHighlightTaskType / ARG_HIGHLIGHT_TYPE). Card sits
+        // ABOVE the cover image so the user sees "what to do today"
+        // before the rest of the plant info — accuracy source is
+        // documented in ReminderTaskHighlight.
+        View highlightCard = view.findViewById(R.id.cardReminderHighlight);
+        TextView highlightTitle = findText(view, R.id.textReminderHighlightTitle);
+        TextView highlightBody  = findText(view, R.id.textReminderHighlightBody);
+        ImageView highlightIcon = findImage(view, R.id.iconReminderHighlight);
+        if (highlightCard != null && highlightTaskType != null && plant != null) {
+            highlightCard.setVisibility(View.VISIBLE);
+            if (highlightTitle != null) {
+                highlightTitle.setText(
+                        com.example.plantcare.util.ReminderTaskHighlight
+                                .INSTANCE.title(requireContext(), highlightTaskType));
+            }
+            if (highlightBody != null) {
+                String body = com.example.plantcare.util.ReminderTaskHighlight
+                        .INSTANCE.instructions(requireContext(), plant, highlightTaskType);
+                if (body != null && !body.trim().isEmpty()) {
+                    highlightBody.setVisibility(View.VISIBLE);
+                    highlightBody.setText(body);
+                } else {
+                    // Defensive — should never hit (every reminder type
+                    // has at least the generic fallback string), but
+                    // hide the body row instead of showing "—".
+                    highlightBody.setVisibility(View.GONE);
+                }
+            }
+            if (highlightIcon != null) {
+                highlightIcon.setImageResource(
+                        com.example.plantcare.util.ReminderTaskHighlight
+                                .INSTANCE.iconFor(highlightTaskType));
+                highlightIcon.setColorFilter(
+                        androidx.core.content.ContextCompat.getColor(
+                                requireContext(),
+                                com.example.plantcare.util.ReminderTaskHighlight
+                                        .INSTANCE.tintFor(highlightTaskType)));
+            }
+        } else if (highlightCard != null) {
+            highlightCard.setVisibility(View.GONE);
+        }
 
         if (plant != null) {
             setTextSafe(name, nonEmpty(plant.name));
@@ -221,6 +298,43 @@ public class PlantDetailDialogFragment extends DialogFragment {
             setTextSafe(soil, nonEmpty(plant.soil));
             setTextSafe(fertilizing, nonEmpty(plant.fertilizing));
             setTextSafe(watering, nonEmpty(plant.watering));
+
+            // Resolve roomId → room name asynchronously and toggle the
+            // Raum row visibility based on whether the plant has a room.
+            // Legacy plants with roomId=0 hide the row entirely instead
+            // of showing "—" so the layout doesn't waste a slot.
+            if (roomText != null && roomLabel != null && isUserPlant && plant.roomId > 0) {
+                roomLabel.setVisibility(View.VISIBLE);
+                roomText.setVisibility(View.VISIBLE);
+                final int rid = plant.roomId;
+                final android.content.Context appCtx = requireContext().getApplicationContext();
+                com.example.plantcare.util.BgExecutor.io(() -> {
+                    String resolved;
+                    try {
+                        com.example.plantcare.RoomCategory rc =
+                                com.example.plantcare.data.repository.RoomCategoryRepository
+                                        .getInstance(appCtx)
+                                        .findByIdBlocking(rid);
+                        resolved = (rc != null && rc.name != null && !rc.name.trim().isEmpty())
+                                ? rc.name.trim()
+                                : getString(R.string.detail_placeholder_dash);
+                    } catch (Throwable t) {
+                        com.example.plantcare.CrashReporter.INSTANCE.log(t);
+                        resolved = getString(R.string.detail_placeholder_dash);
+                    }
+                    final String resolvedFinal = resolved;
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            if (isAdded() && roomText != null) {
+                                roomText.setText(resolvedFinal);
+                            }
+                        });
+                    }
+                });
+            } else if (roomText != null && roomLabel != null) {
+                roomLabel.setVisibility(View.GONE);
+                roomText.setVisibility(View.GONE);
+            }
 
             // Info‑Block: Label + Text gehören zusammen sichtbar/unsichtbar.
             // Vorher wurde das Label nie eingeblendet, weshalb der Text darunter ohne
@@ -383,6 +497,93 @@ public class PlantDetailDialogFragment extends DialogFragment {
 
         if (buttonClose != null) buttonClose.setOnClickListener(v -> dismiss());
 
+        // "Mehr Optionen" — opens a Material alert listing the six
+        // secondary actions (Verlauf / Archivfotos / Wachstumstagebuch /
+        // Familie teilen / In Raum verschieben / Löschen). Each item
+        // invokes callOnClick() on the corresponding hidden button so
+        // we reuse the existing setOnClickListener logic above without
+        // having to extract a half-dozen private methods just for the
+        // menu. Only wired for user plants — the catalog dialog has its
+        // own three-button layout and doesn't include buttonMoreOptions.
+        Button buttonMoreOptions = findButton(view, R.id.buttonMoreOptions);
+        if (buttonMoreOptions != null && isUserPlant && !readOnlyMode) {
+            // Capture references so the lambda below doesn't have to
+            // re-find the views.
+            final Button refOpenJournal = buttonOpenJournal;
+            final Button refViewPhotos  = buttonViewPhotos;
+            final Button refMemoir      = buttonMemoir;
+            final Button refShare       = buttonShare;
+            final Button refMoveRoom    = buttonMoveRoom;
+            final Button refDelete      = buttonDelete;
+
+            buttonMoreOptions.setOnClickListener(v -> {
+                // Build the polished action list dynamically so we skip
+                // rows whose underlying button is missing for this plant
+                // (e.g. journal disabled when plant.id <= 0). The
+                // ActionListDialogFragment renders rows as Outlined /
+                // Danger MaterialButtons styled identically to the
+                // catalog plant-detail dialog — pre-fix this menu used
+                // MaterialAlertDialogBuilder.setItems which looked flat
+                // and out of place against the rest of the app.
+                final java.util.List<com.example.plantcare.ui.util
+                        .ActionListDialogFragment.Item> items =
+                        new java.util.ArrayList<>();
+
+                if (refOpenJournal != null && plant != null && plant.id > 0) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.journal_open),
+                                    false,
+                                    () -> { refOpenJournal.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+                if (refViewPhotos != null) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.detail_action_view_archive),
+                                    false,
+                                    () -> { refViewPhotos.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+                if (refMemoir != null) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.memoir_button_label),
+                                    false,
+                                    () -> { refMemoir.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+                if (refShare != null) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.share_button_label),
+                                    false,
+                                    () -> { refShare.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+                if (refMoveRoom != null) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.detail_action_move_room),
+                                    false,
+                                    () -> { refMoveRoom.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+                if (refDelete != null) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.detail_action_delete),
+                                    true,
+                                    () -> { refDelete.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+
+                if (items.isEmpty()) return;
+
+                new com.example.plantcare.ui.util.ActionListDialogFragment()
+                        .configure(getString(R.string.detail_more_options_title), items)
+                        .show(getParentFragmentManager(),
+                                com.example.plantcare.ui.util
+                                        .ActionListDialogFragment.TAG);
+            });
+        } else if (buttonMoreOptions != null) {
+            buttonMoreOptions.setVisibility(View.GONE);
+        }
+
         AlertDialog dialog = new AlertDialog.Builder(requireActivity())
                 .setView(view)
                 .create();
@@ -455,21 +656,28 @@ public class PlantDetailDialogFragment extends DialogFragment {
                 return;
             }
             final String email = input.trim().toLowerCase();
-            com.example.plantcare.util.BgExecutor.io(() -> {
-                boolean ok = FamilyShareManager.addEmail(ctx, plant, email);
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> {
-                    if (ok) {
-                        Toast.makeText(ctx,
-                                getString(R.string.share_added_toast, email),
-                                Toast.LENGTH_SHORT).show();
-                        emailInput.setText("");
-                        renderList.run();
-                    } else {
-                        Toast.makeText(ctx, R.string.share_invalid_email, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            });
+            // Wave 2: dispatch a real invite via ShareInviteManager. The
+            // Cloud Function `onShareInviteCreated` resolves the invitee's
+            // uid + sends an FCM push. ShareInviteManager.createInvite also
+            // updates Plant.sharedWith locally so the rendered list refreshes
+            // immediately, before any cloud round-trip completes.
+            com.example.plantcare.feature.share.ShareInviteManager.INSTANCE.createInvite(
+                    ctx, plant, email,
+                    result -> {
+                        if (getActivity() == null) return null;
+                        getActivity().runOnUiThread(() -> {
+                            if (result instanceof com.example.plantcare.feature.share.ShareInviteManager.CreateResult.Ok) {
+                                Toast.makeText(ctx,
+                                        getString(R.string.share_added_toast, email),
+                                        Toast.LENGTH_SHORT).show();
+                                emailInput.setText("");
+                                renderList.run();
+                            } else {
+                                Toast.makeText(ctx, R.string.share_invalid_email, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        return kotlin.Unit.INSTANCE;
+                    });
         });
         dlg.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(v -> {
             String input = emailInput.getText() != null ? emailInput.getText().toString() : "";

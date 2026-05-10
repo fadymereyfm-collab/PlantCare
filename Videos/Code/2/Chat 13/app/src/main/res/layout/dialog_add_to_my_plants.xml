@@ -91,7 +91,127 @@
             android:layout_height="48dp"
             android:text="@string/add_to_my_plants_add_room"
             app:icon="@drawable/ic_add"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="16dp"/>
+
+        <!-- v16: per-care-type intervals — populated from PlantCareDefaults
+             based on the plant's botanical family, but the user can adjust
+             every row independently before tapping Hinzufügen. Empty/0 in
+             any field disables that reminder type for this plant. -->
+        <TextView
+            style="@style/PlantCareFieldLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/care_plan_section_title"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="6dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:fontFamily="@font/nunito"
+                android:text="@string/care_plan_water"/>
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="124dp"
+                android:layout_height="wrap_content"
+                app:suffixText="@string/care_plan_days_suffix">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editIntervalWater"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="4"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="6dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:fontFamily="@font/nunito"
+                android:text="@string/care_plan_fertilize"/>
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="124dp"
+                android:layout_height="wrap_content"
+                app:suffixText="@string/care_plan_days_suffix">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editIntervalFertilize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="4"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="6dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:fontFamily="@font/nunito"
+                android:text="@string/care_plan_mist"/>
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="124dp"
+                android:layout_height="wrap_content"
+                app:suffixText="@string/care_plan_days_suffix">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editIntervalMist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="4"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="20dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:fontFamily="@font/nunito"
+                android:text="@string/care_plan_repot"/>
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="124dp"
+                android:layout_height="wrap_content"
+                app:suffixText="@string/care_plan_days_suffix">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editIntervalRepot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="4"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonClose"

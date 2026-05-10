@@ -283,20 +283,22 @@ class PlantJournalDialogFragment : DialogFragment() {
      * Edit (re-opens the editor pre-filled) or Delete (confirmation prompt).
      */
     private fun showMemoActions(entry: com.example.plantcare.data.journal.JournalEntry.MemoEntry) {
-        val ctx = requireContext()
-        val items = arrayOf(
-            getString(R.string.journal_memo_action_edit),
-            getString(R.string.journal_memo_action_delete)
+        val items = listOf(
+            com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                label = getString(R.string.journal_memo_action_edit),
+                isDanger = false,
+                onClick = { showMemoEditor(entry) }
+            ),
+            com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                label = getString(R.string.journal_memo_action_delete),
+                isDanger = true,
+                onClick = { confirmMemoDelete(entry) }
+            )
         )
-        com.google.android.material.dialog.MaterialAlertDialogBuilder(ctx)
-            .setTitle(R.string.journal_memo_actions_title)
-            .setItems(items) { _, which ->
-                when (which) {
-                    0 -> showMemoEditor(entry)
-                    1 -> confirmMemoDelete(entry)
-                }
-            }
-            .show()
+        com.example.plantcare.ui.util.ActionListDialogFragment()
+            .configure(getString(R.string.journal_memo_actions_title), items)
+            .show(parentFragmentManager,
+                com.example.plantcare.ui.util.ActionListDialogFragment.TAG)
     }
 
     private fun confirmMemoDelete(entry: com.example.plantcare.data.journal.JournalEntry.MemoEntry) {
