@@ -2,6 +2,7 @@
 .gradle/
 build/
 app/build/
+macrobenchmark/build/
 *.apk
 *.aab
 *.ap_
@@ -30,3 +31,19 @@ out/
 
 # ── Room Schemas (optional — keep if you want schema in VCS) ──
 # app/schemas/
+
+# ── Claude Code (commit shared bits, ignore local state) ──────
+.claude/worktrees/
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
+.claude/.session_log
+.claude/cache/
+
+# ── Cloud Functions ───────────────────────────────────────────
+functions/node_modules/
+functions/lib/
+
+# ── Tools ─────────────────────────────────────────────────────
+tools/__pycache__/
+tools/wikidata_export.csv
+tools/wikidata_export.json

@@ -12,7 +12,12 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.example.plantcare.R
+import com.example.plantcare.WikiImageHelper
 import com.google.android.material.button.MaterialButton
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
@@ -57,10 +62,11 @@ class PlantCompareDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val args          = requireArguments()
-        val candidateUrl  = args.getString(ARG_CANDIDATE_URL)
-        val capturedPath  = args.getString(ARG_CAPTURED_PATH) ?: ""
-        val plantName     = args.getString(ARG_PLANT_NAME) ?: ""
+        val args            = requireArguments()
+        val candidateUrl    = args.getString(ARG_CANDIDATE_URL)
+        val capturedPath    = args.getString(ARG_CAPTURED_PATH) ?: ""
+        val plantName       = args.getString(ARG_PLANT_NAME) ?: ""
+        val scientificName  = args.getString(ARG_SCIENTIFIC_NAME) ?: ""
 
         // ── Toolbar ──────────────────────────────────────────────────────────
         view.findViewById<TextView>(R.id.txtComparePlantName).text = plantName
@@ -75,6 +81,11 @@ class PlantCompareDialogFragment : DialogFragment() {
         }
 
         // ── Candidate image (top) ────────────────────────────────────────────
+        // Pre-fix: when PlantNet returned no `images` for the suggestion
+        // (or the result came from a stale cache), we showed the abstract
+        // "C" placeholder against the user's real photo — defeating the
+        // whole point of a comparison dialog. Now we fetch a Wikipedia
+        // thumbnail keyed by scientific name as a fallback.
         val imgCandidate = view.findViewById<ImageView>(R.id.imgCandidatePlant)
         if (!candidateUrl.isNullOrBlank()) {
             Glide.with(this)
@@ -85,6 +96,21 @@ class PlantCompareDialogFragment : DialogFragment() {
                 .into(imgCandidate)
         } else {
             imgCandidate.setImageResource(R.drawable.ic_plant_placeholder)
+            if (scientificName.isNotBlank()) {
+                lifecycleScope.launch {
+                    val url = withContext(Dispatchers.IO) {
+                        try { WikiImageHelper.fetchImageUrl(scientificName) } catch (_: Throwable) { null }
+                    }
+                    if (!url.isNullOrBlank() && isAdded) {
+                        Glide.with(this@PlantCompareDialogFragment)
+                            .load(url)
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_plant_placeholder)
+                            .error(R.drawable.ic_plant_placeholder)
+                            .into(imgCandidate)
+                    }
+                }
+            }
         }
 
         // ── Captured photo (bottom) ──────────────────────────────────────────
@@ -118,19 +144,24 @@ class PlantCompareDialogFragment : DialogFragment() {
     companion object {
         const val TAG = "plant_compare"
 
-        private const val ARG_CANDIDATE_URL  = "candidate_url"
-        private const val ARG_CAPTURED_PATH  = "captured_path"
-        private const val ARG_PLANT_NAME     = "plant_name"
+        private const val ARG_CANDIDATE_URL    = "candidate_url"
+        private const val ARG_CAPTURED_PATH    = "captured_path"
+        private const val ARG_PLANT_NAME       = "plant_name"
+        private const val ARG_SCIENTIFIC_NAME  = "scientific_name"
 
+        @JvmStatic
+        @JvmOverloads
         fun newInstance(
             candidateImageUrl: String?,
             capturedImagePath: String,
-            plantName: String
+            plantName: String,
+            scientificName: String = ""
         ): PlantCompareDialogFragment = PlantCompareDialogFragment().apply {
             arguments = Bundle().apply {
                 putString(ARG_CANDIDATE_URL, candidateImageUrl)
                 putString(ARG_CAPTURED_PATH, capturedImagePath)
                 putString(ARG_PLANT_NAME, plantName)
+                putString(ARG_SCIENTIFIC_NAME, scientificName)
             }
         }
     }

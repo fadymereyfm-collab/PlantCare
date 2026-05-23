@@ -18,7 +18,7 @@ public class WateringEventStore {
     }
 
     public List<WateringReminder> getActiveReminders() {
-        String todayString = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String todayString = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
         String userEmail = EmailContext.current(context);
         return reminderRepo.getTodayAndOverdueRemindersForUserBlocking(todayString, userEmail);
     }

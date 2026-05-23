@@ -73,9 +73,16 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
         if (isManual) {
             holder.typeIcon.setVisibility(View.GONE);
         } else {
+            // v16: pick icon + tint per reminder.type so the user can scan
+            // the Today list and see at a glance which row is Gießen vs.
+            // Düngen vs. Sprühen vs. Umtopfen.
             holder.typeIcon.setVisibility(View.VISIBLE);
-            holder.typeIcon.setImageResource(R.drawable.ic_watering_can); // PNG الصحيح
-            holder.typeIcon.clearColorFilter(); // لا tint
+            holder.typeIcon.setImageResource(
+                    com.example.plantcare.util.ReminderTypeUi.INSTANCE.iconFor(r.type));
+            int tintColor = androidx.core.content.ContextCompat.getColor(
+                    context,
+                    com.example.plantcare.util.ReminderTypeUi.INSTANCE.tintFor(r.type));
+            holder.typeIcon.setColorFilter(tintColor);
         }
 
         // تحميل صورة مصغّرة للنبتة
@@ -105,26 +112,38 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
         // نقرة طويلة: إدارة التذكير اليدوي (تحرير/حذف) أو عرض تفاصيل النبات للتلقائي
         holder.itemView.setOnLongClickListener(v -> {
             if (isManual) {
-                new AlertDialog.Builder(context)
-                        .setTitle("Erinnerung verwalten")
-                        .setItems(new CharSequence[]{"Bearbeiten", "Löschen"}, (dialog, which) -> {
-                            if (which == 0 && context instanceof MainActivity) {
-                                EditManualReminderDialogFragment dialogFragment = EditManualReminderDialogFragment.newInstance(r);
-                                dialogFragment.show(((MainActivity) context).getSupportFragmentManager(), "edit_manual_reminder");
-                            } else if (which == 1) {
-                                com.example.plantcare.util.BgExecutor.io(() -> {
-                                    com.example.plantcare.data.repository.ReminderRepository
-                                            .getInstance(context).deleteBlocking(r);
-                                    ((MainActivity) context).runOnUiThread(() -> {
-                                        reminders.remove(position);
-                                        notifyDataSetChanged();
-                                        DataChangeNotifier.notifyChange();
-                                    });
+                if (!(context instanceof MainActivity)) return true;
+                java.util.List<com.example.plantcare.ui.util.ActionListDialogFragment.Item> items =
+                        new java.util.ArrayList<>();
+                items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                        context.getString(R.string.reminder_action_edit),
+                        false,
+                        () -> {
+                            EditManualReminderDialogFragment dialogFragment =
+                                    EditManualReminderDialogFragment.newInstance(r);
+                            dialogFragment.show(((MainActivity) context).getSupportFragmentManager(),
+                                    "edit_manual_reminder");
+                            return kotlin.Unit.INSTANCE;
+                        }));
+                items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                        context.getString(R.string.reminder_action_delete),
+                        true,
+                        () -> {
+                            com.example.plantcare.util.BgExecutor.io(() -> {
+                                com.example.plantcare.data.repository.ReminderRepository
+                                        .getInstance(context).deleteBlocking(r);
+                                ((MainActivity) context).runOnUiThread(() -> {
+                                    reminders.remove(position);
+                                    notifyDataSetChanged();
+                                    DataChangeNotifier.notifyChange();
                                 });
-                            }
-                        })
-                        .setNegativeButton("Abbrechen", null)
-                        .show();
+                            });
+                            return kotlin.Unit.INSTANCE;
+                        }));
+                new com.example.plantcare.ui.util.ActionListDialogFragment()
+                        .configure(context.getString(R.string.reminder_manage_title), items)
+                        .show(((MainActivity) context).getSupportFragmentManager(),
+                                com.example.plantcare.ui.util.ActionListDialogFragment.TAG);
             } else {
                 com.example.plantcare.util.BgExecutor.io(() -> {
                     com.example.plantcare.data.repository.PlantRepository plantRepo =

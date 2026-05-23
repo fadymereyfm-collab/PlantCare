@@ -1,0 +1,167 @@
+<!--
+  Soft 3D Clay theme — Watering reminders (page 2).
+  Olive watering can with handle, spout and three falling droplets.
+  Same layered approach as the welcome icon: cast shadow → back-shadow
+  → main body with vertical olive gradient → highlights/rim → spout
+  with its own gradient → handle → individual droplets each with their
+  own shadow + gradient.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Cast shadow under can -->
+    <path
+        android:pathData="M40,178 Q90,190, 140,178 Q90,168, 40,178 Z"
+        android:fillColor="#4F6B5E"
+        android:fillAlpha="0.20" />
+
+    <!-- Can back shadow -->
+    <path
+        android:pathData="M48,98 L48,166 Q48,172, 54,172 L132,172 Q138,172, 138,166 L138,98 Q138,92, 132,92 L54,92 Q48,92, 48,98 Z"
+        android:fillColor="#3D5448" />
+
+    <!-- Can body — olive gradient -->
+    <path android:pathData="M44,94 L44,162 Q44,168, 50,168 L128,168 Q134,168, 134,162 L134,94 Q134,88, 128,88 L50,88 Q44,88, 44,94 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="89" android:startY="88"
+                android:endX="89" android:endY="168">
+                <item android:offset="0.0" android:color="#A6C9B7" />
+                <item android:offset="1.0" android:color="#5C7E70" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Can rim (top band) -->
+    <path android:pathData="M44,94 Q44,88, 50,88 L128,88 Q134,88, 134,94 L134,100 L44,100 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="89" android:startY="88"
+                android:endX="89" android:endY="100">
+                <item android:offset="0.0" android:color="#C5DDD0" />
+                <item android:offset="1.0" android:color="#7BA590" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Body left highlight stripe -->
+    <path
+        android:pathData="M52,104 L55,160 L60,160 L57,104 Z"
+        android:fillColor="#FCF8F0"
+        android:fillAlpha="0.35" />
+
+    <!-- Spout shadow (back layer) -->
+    <path
+        android:pathData="M132,98 L178,72 Q184,69, 183,76 L183,90 Q183,95, 177,93 L135,114 Z"
+        android:fillColor="#3D5448" />
+
+    <!-- Spout body — olive gradient -->
+    <path android:pathData="M130,94 L174,68 Q180,65, 179,72 L179,86 Q179,91, 173,89 L133,110 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="130" android:startY="68"
+                android:endX="179" android:endY="110">
+                <item android:offset="0.0" android:color="#A6C9B7" />
+                <item android:offset="1.0" android:color="#6B9080" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Spout tip opening -->
+    <path
+        android:pathData="M172,66 Q181,62, 182,72 L176,78 Q170,75, 172,66 Z"
+        android:fillColor="#3D5448" />
+
+    <!-- Spout highlight -->
+    <path
+        android:pathData="M138,92 L172,72 L173,76 L140,96 Z"
+        android:fillColor="#FCF8F0"
+        android:fillAlpha="0.30" />
+
+    <!-- Handle (back outline) -->
+    <path
+        android:pathData="M62,90 Q90,48, 118,90"
+        android:strokeColor="#3D5448"
+        android:strokeWidth="9"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Handle (front shape) -->
+    <path
+        android:pathData="M62,90 Q90,52, 118,90"
+        android:strokeColor="#7BA590"
+        android:strokeWidth="6"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Handle highlight -->
+    <path
+        android:pathData="M68,82 Q90,58, 112,82"
+        android:strokeColor="#FCF8F0"
+        android:strokeWidth="2"
+        android:strokeAlpha="0.55"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Droplet 1 (closest to spout) -->
+    <path
+        android:pathData="M177,98 Q173,108, 180,116 Q187,108, 183,98 Q180,93, 177,98 Z"
+        android:fillColor="#3D5448" />
+    <path android:pathData="M179,96 Q175,106, 182,114 Q189,106, 185,96 Q182,91, 179,96 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="175" android:startY="91"
+                android:endX="189" android:endY="114">
+                <item android:offset="0.0" android:color="#A6C9B7" />
+                <item android:offset="1.0" android:color="#5C7E70" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M178,98 Q177,102, 181,103"
+        android:strokeColor="#FCF8F0"
+        android:strokeWidth="1.8"
+        android:strokeAlpha="0.7"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Droplet 2 (mid-air) -->
+    <path
+        android:pathData="M188,128 Q184,138, 191,146 Q198,138, 194,128 Q191,123, 188,128 Z"
+        android:fillColor="#3D5448" />
+    <path android:pathData="M190,126 Q186,136, 193,144 Q200,136, 196,126 Q193,121, 190,126 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="186" android:startY="121"
+                android:endX="200" android:endY="144">
+                <item android:offset="0.0" android:color="#A6C9B7" />
+                <item android:offset="1.0" android:color="#5C7E70" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Droplet 3 (lowest) -->
+    <path
+        android:pathData="M170,148 Q166,158, 173,166 Q180,158, 176,148 Q173,143, 170,148 Z"
+        android:fillColor="#3D5448" />
+    <path android:pathData="M172,146 Q168,156, 175,164 Q182,156, 178,146 Q175,141, 172,146 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="168" android:startY="141"
+                android:endX="182" android:endY="164">
+                <item android:offset="0.0" android:color="#A6C9B7" />
+                <item android:offset="1.0" android:color="#5C7E70" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

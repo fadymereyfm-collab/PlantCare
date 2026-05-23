@@ -56,8 +56,30 @@ class ReminderTopUpWorker(
             val plantRepo = PlantRepository.getInstance(ctx)
             val reminderRepo = ReminderRepository.getInstance(ctx)
 
+            // v16 close-out backfill — runs once per upgrade. Moved out
+            // of CatalogSeeder.seedIfEmpty (Application startup) to here
+            // because the original placement contributed to a startup ANR
+            // when a v15 user with N plants triggered ~240 reminder
+            // inserts plus Firebase syncs while Glide/Compose/AdMob were
+            // still initialising. Doing it from the daily worker means
+            // the device is already warm and the user is not staring at
+            // a blocked main thread.
+            runV16Backfill(ctx, plantRepo, reminderRepo)
+
+            // v16: include plants whose watering OR any other care interval
+            // is configured. Pre-fix the worker only topped up plants with
+            // wateringInterval>0 — multi-type users with watering disabled
+            // (e.g. a desert succulent on rain-only) saw zero fertilize/
+            // misting/repot top-ups even though those series existed.
             val plants = plantRepo.getAllUserPlantsForUserBlocking(email)
-                .filter { it.wateringInterval > 0 && it.startDate != null }
+                .filter {
+                    it.startDate != null && (
+                        it.wateringInterval > 0 ||
+                        it.fertilizingInterval > 0 ||
+                        it.mistingInterval > 0 ||
+                        it.repottingIntervalDays > 0
+                    )
+                }
             if (plants.isEmpty()) return@withContext Result.success()
 
             // Locale.US for the wire format used in SQLite queries and
@@ -73,7 +95,14 @@ class ReminderTopUpWorker(
 
             var inserted = 0
             for (plant in plants) {
-                inserted += topUpPlant(plant, todayStr, horizonStr, sdf, reminderRepo)
+                // v16: top up each enabled care type independently. Each
+                // type carries its own auto-reminder series in the DB,
+                // discriminated by the `type` column, so the
+                // "extend from latest" anchor is computed per-type.
+                inserted += topUpPlantForType(plant, "water",     plant.wateringInterval,     todayStr, horizonStr, sdf, reminderRepo)
+                inserted += topUpPlantForType(plant, "fertilize", plant.fertilizingInterval,  todayStr, horizonStr, sdf, reminderRepo)
+                inserted += topUpPlantForType(plant, "mist",      plant.mistingInterval,      todayStr, horizonStr, sdf, reminderRepo)
+                inserted += topUpPlantForType(plant, "repot",     plant.repottingIntervalDays, todayStr, horizonStr, sdf, reminderRepo)
             }
             if (inserted > 0) com.example.plantcare.DataChangeNotifier.notifyChange()
 
@@ -116,39 +145,56 @@ class ReminderTopUpWorker(
      * has FK CASCADE, so a freshly orphaned row would violate the FK
      * constraint.
      */
-    private fun topUpPlant(
+    /**
+     * v16 — type-aware top-up. Anchors per-type: a plant on a 14-day
+     * watering cycle and a 28-day fertilizing cycle has independent
+     * "latest auto date" anchors per series, so each is extended only
+     * by its own interval. Pre-v16 the worker had a single anchor for
+     * the watering series and would silently never top up other types.
+     */
+    private fun topUpPlantForType(
         plant: Plant,
+        type: String,
+        interval: Int,
         todayStr: String,
         horizonStr: String,
         sdf: SimpleDateFormat,
         reminderRepo: ReminderRepository
     ): Int {
+        if (interval <= 0) return 0
         val all = reminderRepo.getRemindersForPlantBlocking(plant.id)
+        // Anchor only on auto reminders of THIS type. NULL `type` rows
+        // (created before v15) count as "water" — same default the
+        // notification worker uses (PlantReminderWorker.java:152).
         val latestAutoDate = all
-            .filter { isAutoReminder(it) }
+            .filter { isAutoReminder(it) && matchesType(it, type) }
             .mapNotNull { it.date }
             .maxOrNull()
 
         val nextCal = Calendar.getInstance()
-        val interval = plant.wateringInterval
         if (latestAutoDate != null) {
             val parsed = try { sdf.parse(latestAutoDate) } catch (_: Throwable) { null }
             if (parsed == null) {
-                // Bad date string in DB — fall back to startDate path
-                // rather than starting at "now" and risk duplicating
-                // legitimate reminders.
                 nextCal.time = plant.startDate!!
+                // Same start-date skip as ReminderUtils.generateForType for
+                // non-water types — see comment below.
+                if (type != "water") nextCal.add(Calendar.DAY_OF_YEAR, interval)
             } else {
                 nextCal.time = parsed
                 nextCal.add(Calendar.DAY_OF_YEAR, interval)
             }
         } else {
             nextCal.time = plant.startDate!!
+            // Per Fady's 2026-05-09 directive, only WATER fires on the
+            // start date. If the user mutes water reminders for a few
+            // months on a multi-type plant and then re-enables, this
+            // worker would otherwise resurrect a "fertilize today"
+            // entry on the resync — we don't want that. Match the
+            // generateForType behaviour so both pipelines agree on
+            // when the first reminder of each type lands.
+            if (type != "water") nextCal.add(Calendar.DAY_OF_YEAR, interval)
         }
 
-        // Fast-forward to today so a long-dormant plant doesn't backfill
-        // historical reminders. The first iteration of the main loop
-        // emits the next future watering date.
         while (sdf.format(nextCal.time) < todayStr) {
             nextCal.add(Calendar.DAY_OF_YEAR, interval)
         }
@@ -164,6 +210,7 @@ class ReminderTopUpWorker(
                 repeat = interval.toString()
                 description = ""
                 userEmail = plant.userEmail
+                this.type = type
             }
             try {
                 reminderRepo.insertBlocking(r)
@@ -171,15 +218,21 @@ class ReminderTopUpWorker(
                 try { FirebaseSyncManager.get().syncReminder(r) }
                 catch (t: Throwable) { CrashReporter.log(t) }
             } catch (t: Throwable) {
-                // FK violation (plant deleted mid-run) or DB error —
-                // log + skip this date. The next worker run will retry
-                // from a fresh `existing` snapshot if the plant came
-                // back, or skip the plant entirely if it really is gone.
                 CrashReporter.log(t)
             }
             nextCal.add(Calendar.DAY_OF_YEAR, interval)
         }
         return inserted
+    }
+
+    /**
+     * v16 — type matcher. Treats NULL/blank `type` as "water" so
+     * pre-v15 reminders continue to anchor the watering series after
+     * upgrade (matches PlantReminderWorker's NULL→water default).
+     */
+    private fun matchesType(r: WateringReminder, want: String): Boolean {
+        val t = r.type
+        return if (t.isNullOrBlank()) want == "water" else t.equals(want, ignoreCase = true)
     }
 
     /**
@@ -195,5 +248,93 @@ class ReminderTopUpWorker(
         if (!desc.isNullOrBlank()) return false
         val repeatInt = r.repeat?.toIntOrNull() ?: return false
         return repeatInt > 0
+    }
+
+    /**
+     * v16 close-out — one-time per-device backfill, gated by SharedPreferences
+     * flags so it only runs once per upgrade. Two passes:
+     *
+     *   1. **Family backfill** — for every plant with `family=null`,
+     *      lookup [com.example.plantcare.data.CatalogFamilyMap] and stamp
+     *      `family` + `scientificName` if known. Targets catalog rows
+     *      seeded before v16 (the seed loop only runs on first install)
+     *      AND user plants whose name matches a catalog entry.
+     *
+     *   2. **Multi-type interval backfill** — for every USER plant with
+     *      a watering schedule but no fertilize/mist/repot intervals,
+     *      pull family-defaults from [PlantCareDefaults] and generate
+     *      the three new reminder series. Existing watering reminders
+     *      stay untouched (so weather-shifted dates survive).
+     *
+     * Both passes are bounded by Plant count, not Reminder count — the
+     * generator inside [ReminderUtils.generateForType] caps each series
+     * at GENERATION_WINDOW_DAYS. Memory cost is therefore O(plants),
+     * which is what we want from a daily worker invocation.
+     */
+    private fun runV16Backfill(
+        ctx: Context,
+        plantRepo: PlantRepository,
+        reminderRepo: ReminderRepository
+    ) {
+        val prefs = ctx.getSharedPreferences("prefs", android.content.Context.MODE_PRIVATE)
+
+        // Pass 1 — family backfill.
+        try {
+            if (!prefs.getBoolean("v16_family_backfill_done", false)) {
+                val all = plantRepo.getAllBlocking()
+                var touched = 0
+                for (p in all) {
+                    if (!p.family.isNullOrBlank()) continue
+                    val info = com.example.plantcare.data.CatalogFamilyMap.lookup(p.name)
+                        ?: continue
+                    p.family = info.family
+                    if (p.scientificName.isNullOrBlank())
+                        p.scientificName = info.scientificName
+                    plantRepo.updateBlocking(p)
+                    touched++
+                }
+                prefs.edit().putBoolean("v16_family_backfill_done", true).apply()
+                android.util.Log.d("TopUpWorker", "v16 family backfill: tagged $touched plants")
+            }
+        } catch (t: Throwable) {
+            CrashReporter.log(t)
+        }
+
+        // Pass 2 — multi-type interval + reminder backfill.
+        try {
+            if (!prefs.getBoolean("v16_multitype_backfill_done", false)) {
+                val all = plantRepo.getAllBlocking()
+                var touched = 0
+                for (p in all) {
+                    if (!p.isUserPlant) continue
+                    if (p.startDate == null) continue
+                    if (p.wateringInterval <= 0) continue
+                    if (p.fertilizingInterval > 0 || p.mistingInterval > 0
+                        || p.repottingIntervalDays > 0
+                    ) continue  // already populated — skip
+                    val care = com.example.plantcare.data.plantnet.PlantCareDefaults
+                        .forFamily(p.family)
+                    p.fertilizingInterval = care.fertilizingIntervalDays
+                    p.mistingInterval = care.mistingIntervalDays
+                    p.repottingIntervalDays = care.repottingIntervalDays
+                    plantRepo.updateBlocking(p)
+                    val newRems = mutableListOf<com.example.plantcare.WateringReminder>()
+                    newRems += com.example.plantcare.ReminderUtils.generateForType(
+                        p, "fertilize", p.fertilizingInterval)
+                    newRems += com.example.plantcare.ReminderUtils.generateForType(
+                        p, "mist", p.mistingInterval)
+                    newRems += com.example.plantcare.ReminderUtils.generateForType(
+                        p, "repot", p.repottingIntervalDays)
+                    if (newRems.isNotEmpty()) {
+                        reminderRepo.insertAllBlocking(newRems)
+                    }
+                    touched++
+                }
+                prefs.edit().putBoolean("v16_multitype_backfill_done", true).apply()
+                android.util.Log.d("TopUpWorker", "v16 multi-type backfill: hydrated $touched user plants")
+            }
+        } catch (t: Throwable) {
+            CrashReporter.log(t)
+        }
     }
 }

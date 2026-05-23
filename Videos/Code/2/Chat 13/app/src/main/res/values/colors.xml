@@ -185,4 +185,12 @@
     <color name="room_kids">#D87BA0</color>            <!-- Kinderzimmer / dusty pink -->
     <color name="room_dining">#A85A4A</color>          <!-- Esszimmer / brick -->
     <color name="room_default">#88A39A</color>         <!-- Default / neutral sage -->
+
+    <!-- v16: per-reminder-type tints used by ReminderTypeUi. Picked to be
+         distinguishable on the brand sage/cream background while still
+         feeling on-brand (no pure RGB primaries). -->
+    <color name="reminder_type_water">#3B7CB6</color>      <!-- water — deep blue -->
+    <color name="reminder_type_fertilize">#4A8B41</color>  <!-- fertilize — leaf green -->
+    <color name="reminder_type_mist">#5BA8C9</color>       <!-- mist — sky blue -->
+    <color name="reminder_type_repot">#8D6E63</color>      <!-- repot — pot brown -->
 </resources>

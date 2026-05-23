@@ -16,12 +16,27 @@ import com.example.plantcare.WikiImageHelper
 import com.example.plantcare.media.PhotoStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Locale
 
 object PlantImageLoader {
+
+    /**
+     * Per-ImageView resolution job. Tagged on the ImageView itself so a
+     * fresh `loadInto` call cancels the previous one — pre-fix this
+     * issued a fire-and-forget `CoroutineScope(Dispatchers.Main).launch`
+     * for every bind, and a quick scroll through a 30-item plants list
+     * left dozens of suspended IO/Wikipedia jobs alive holding view
+     * references (DEFERRED #18 in PROGRESS.md).
+     */
+    private val LOAD_JOB_TAG_KEY = R.id.tag_plant_image_load_job
+
+    private val ROOT_SCOPE = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     @JvmStatic
     fun loadInto(
@@ -38,7 +53,12 @@ object PlantImageLoader {
         try { Glide.with(context).clear(imageView); android.util.Log.d("PlantImageLoader", "Cleared image view for plantId: $plantId") } catch (_: Throwable) {}
         imageView.setImageResource(placeholder)
 
-        CoroutineScope(Dispatchers.Main).launch {
+        // Cancel any prior in-flight resolution attached to this view —
+        // RecyclerView reuse otherwise leaks a coroutine per recycle and
+        // can race a stale Wikipedia/DB result onto the bound-since plant.
+        (imageView.getTag(LOAD_JOB_TAG_KEY) as? Job)?.cancel()
+
+        val job = ROOT_SCOPE.launch {
             val source = withContext(Dispatchers.IO) { resolveBestImage(context, plantId, plantName, userEmail) }
             android.util.Log.d("PlantImageLoader", "Resolved image source for plantId $plantId: ${source.first?.javaClass?.simpleName ?: "null"} (drawable: ${source.second ?: "null"})")
             try {
@@ -66,7 +86,7 @@ object PlantImageLoader {
                                 .into(imageView)
                         } else {
                             val uri = model as Uri
-                            val isHttpUri = uri.scheme?.lowercase(Locale.getDefault())?.startsWith("http") == true
+                            val isHttpUri = uri.scheme?.lowercase(Locale.ROOT)?.startsWith("http") == true
                             if (isHttpUri) {
                                 // HTTP URI — convert to String for more reliable Glide loading
                                 Glide.with(context)
@@ -103,6 +123,7 @@ object PlantImageLoader {
                 imageView.setImageResource(placeholder)
             }
         }
+        imageView.setTag(LOAD_JOB_TAG_KEY, job)
     }
 
     /**
@@ -272,7 +293,7 @@ object PlantImageLoader {
      */
     private fun findCatalogDrawable(context: Context, name: String): Int {
         val base = name
-            .lowercase(Locale.getDefault())
+            .lowercase(Locale.ROOT)
             .replace("\u00e4", "ae").replace("\u00f6", "oe")
             .replace("\u00fc", "ue").replace("\u00df", "ss")
 
@@ -323,7 +344,7 @@ object PlantImageLoader {
 
     private fun safeLastModified(context: Context, uri: Uri): Long {
         return try {
-            when (uri.scheme?.lowercase(Locale.getDefault())) {
+            when (uri.scheme?.lowercase(Locale.ROOT)) {
                 "file" -> File(uri.path ?: "").lastModified().takeIf { it > 0 } ?: System.currentTimeMillis()
                 "content" -> queryLastModified(context.contentResolver, uri)
                 else -> System.currentTimeMillis()

@@ -1,0 +1,73 @@
+<!--
+  Header icon for the "Add new room" dialog.
+  Soft 3D clay treatment matching the onboarding theme: dark olive
+  back-shadow, olive body with vertical gradient, cream highlight
+  along the roof edge, and a small "+" badge in olive over a cream
+  circle so the action ("add") is immediately legible.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="56dp"
+    android:height="56dp"
+    android:viewportWidth="56"
+    android:viewportHeight="56">
+
+    <!-- House back-shadow -->
+    <path
+        android:pathData="M11,28 L29,11 L47,28 L47,46 Q47,48 45,48 L13,48 Q11,48 11,46 Z"
+        android:fillColor="#3D5448" />
+
+    <!-- House body gradient -->
+    <path android:pathData="M9,27 L28,9 L47,27 L47,45 Q47,47 45,47 L11,47 Q9,47 9,45 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="28" android:startY="9"
+                android:endX="28" android:endY="47">
+                <item android:offset="0.0" android:color="#A6C9B7" />
+                <item android:offset="1.0" android:color="#5C7E70" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Roof line / highlight -->
+    <path
+        android:pathData="M9,27 L28,9 L47,27 L44,29 L28,13 L12,29 Z"
+        android:fillColor="#FCF8F0"
+        android:fillAlpha="0.45" />
+
+    <!-- Door silhouette -->
+    <path
+        android:pathData="M22,32 L34,32 L34,47 L22,47 Z"
+        android:fillColor="#3D5448"
+        android:fillAlpha="0.55" />
+
+    <!-- Door handle -->
+    <path
+        android:pathData="M31,40 a1,1 0 1,0 0.001,0"
+        android:fillColor="#FCF8F0" />
+
+    <!-- "+" add badge background (cream circle) -->
+    <path
+        android:pathData="M44,44 a8,8 0 1,0 0.001,0 Z"
+        android:fillColor="#FCF8F0" />
+    <path
+        android:pathData="M44,44 a8,8 0 1,0 0.001,0 Z"
+        android:strokeColor="#5C7E70"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000" />
+
+    <!-- "+" plus glyph -->
+    <path
+        android:pathData="M40,44 L48,44"
+        android:strokeColor="#5C7E70"
+        android:strokeWidth="2.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M44,40 L44,48"
+        android:strokeColor="#5C7E70"
+        android:strokeWidth="2.2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+</vector>

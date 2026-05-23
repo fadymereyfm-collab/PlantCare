@@ -197,6 +197,15 @@ class ReminderRepository private constructor(context: Context) {
         reminderDao.deleteRemindersForPlant(plantId)
     fun deleteFutureRemindersForPlantBlocking(plantId: Int, fromDateStr: String?) =
         reminderDao.deleteFutureRemindersForPlant(plantId, fromDateStr)
+    /**
+     * v16 — delete only future reminders OF A SPECIFIC TYPE for a plant.
+     * Used by `ReminderUtils.rescheduleFromToday` so rescheduling a mist
+     * reminder doesn't wipe the plant's water/fertilize/repot series too.
+     * Treats NULL stored type as "water" (legacy default) to keep the
+     * delete consistent with how PlantReminderWorker reads NULL types.
+     */
+    fun deleteFutureRemindersForPlantAndTypeBlocking(plantId: Int, fromDateStr: String?, type: String?) =
+        reminderDao.deleteFutureRemindersForPlantAndType(plantId, fromDateStr, type)
     fun deleteAllRemindersForUserBlocking(email: String?) =
         reminderDao.deleteAllRemindersForUser(email)
     fun deleteRemindersForPlantAndUserBlocking(plantId: Int, plantName: String?, email: String?) =

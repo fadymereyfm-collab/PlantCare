@@ -247,10 +247,20 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                 }
             }
 
-            // أيقونة السقاية: تظهر فقط للتذكيرات التلقائية
+            // أيقونة النوع: تظهر فقط للتذكيرات التلقائية، وتختار الأيقونة
+            // واللون حسب reminder.type (water/fertilize/mist/repot — v16).
+            // Pre-v16 الـreminders بدون type تُعامل كـwater (الـlegacy default).
             boolean isManual = (reminder.description != null && !reminder.description.trim().isEmpty())
                     || (reminder.repeat == null || reminder.repeat.equals("0") || reminder.repeat.isEmpty());
             typeIcon.setVisibility(isManual ? View.GONE : View.VISIBLE);
+            if (!isManual) {
+                typeIcon.setImageResource(
+                        com.example.plantcare.util.ReminderTypeUi.INSTANCE.iconFor(reminder.type));
+                int tintColor = androidx.core.content.ContextCompat.getColor(
+                        context,
+                        com.example.plantcare.util.ReminderTypeUi.INSTANCE.tintFor(reminder.type));
+                typeIcon.setColorFilter(tintColor);
+            }
 
             // تحميل صورة النبتة عبر PlantImageLoader الموحّد
             loadPlantThumbAsync(reminder, imageThumb);
@@ -298,24 +308,26 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private void showManualReminderActions(WateringReminder reminder, int position) {
-        CharSequence[] actions = new CharSequence[]{
+        java.util.List<com.example.plantcare.ui.util.ActionListDialogFragment.Item> items =
+                new java.util.ArrayList<>();
+        items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
                 context.getString(R.string.reminder_action_edit),
-                context.getString(R.string.reminder_action_delete)
-        };
-        new AlertDialog.Builder(context)
-                .setTitle(R.string.reminder_manage_title)
-                .setItems(actions, (dialog, which) -> {
-                    if (which == 0) {
-                        EditManualReminderDialogFragment dialogFragment =
-                                EditManualReminderDialogFragment.newInstance(reminder);
-                        dialogFragment.show(((MainActivity) context).getSupportFragmentManager(),
-                                "edit_manual_reminder");
-                    } else {
-                        deleteReminderInline(reminder, position);
-                    }
-                })
-                .setNegativeButton(R.string.action_cancel, null)
-                .show();
+                false,
+                () -> {
+                    EditManualReminderDialogFragment dialogFragment =
+                            EditManualReminderDialogFragment.newInstance(reminder);
+                    dialogFragment.show(((MainActivity) context).getSupportFragmentManager(),
+                            "edit_manual_reminder");
+                    return kotlin.Unit.INSTANCE;
+                }));
+        items.add(new com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                context.getString(R.string.reminder_action_delete),
+                true,
+                () -> { deleteReminderInline(reminder, position); return kotlin.Unit.INSTANCE; }));
+        new com.example.plantcare.ui.util.ActionListDialogFragment()
+                .configure(context.getString(R.string.reminder_manage_title), items)
+                .show(((MainActivity) context).getSupportFragmentManager(),
+                        com.example.plantcare.ui.util.ActionListDialogFragment.TAG);
     }
 
     /**
@@ -360,6 +372,12 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
                     PlantDetailDialogFragment dialog =
                             PlantDetailDialogFragment.newInstance(foundPlant, true);
                     dialog.setReadOnlyMode(true);
+                    // Pass the reminder type so the dialog renders the bold
+                    // task-highlight at the top — same flow as RemindersList
+                    // in the calendar tab. ReminderTaskHighlight resolves the
+                    // body text per type (per-plant for water/fertilize,
+                    // per-family for mist/repot).
+                    dialog.setHighlightTaskType(reminder.type);
                     dialog.show(((MainActivity) context).getSupportFragmentManager(),
                             "plant_detail_popup");
                 });
@@ -417,7 +435,7 @@ public class DailyWateringAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (iso == null || iso.isEmpty()) return null;
         try {
             java.text.SimpleDateFormat src =
-                    new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+                    new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
             Date d = src.parse(iso);
             if (d == null) return null;
             return java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM,

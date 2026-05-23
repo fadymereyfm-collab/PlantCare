@@ -94,7 +94,8 @@ class PhotoCaptureCoordinator(
                     savePhotoToDb(context, userEmail, titlePlantId, imageUri, LocalDate.now(), true)
                     updatePlantImageUriIfPossible(context, titlePlantId, imageUri)
                     // Upload cover to Storage and mirror to Firestore + Room
-                    try { CoverCloudSync.uploadCover(context, titlePlantId, null, null) } catch (_: Throwable) {}
+                    try { CoverCloudSync.uploadCover(context, titlePlantId, null, null) }
+                    catch (t: Throwable) { com.example.plantcare.CrashReporter.log(t) }
                     onTitlePhotoSaved?.invoke(titlePlantId)
                     try { com.example.plantcare.DataChangeNotifier.notifyChange() }
                     catch (t: Throwable) { com.example.plantcare.CrashReporter.log(t) }
@@ -372,40 +373,54 @@ class PhotoCaptureCoordinator(
         imageUri: Uri,
         onArchive: () -> Unit
     ) {
-        AlertDialog.Builder(context)
-            .setTitle(R.string.calendar_photo_action_title)
-            .setMessage(R.string.calendar_photo_action_message)
-            .setPositiveButton(R.string.calendar_photo_action_diagnose) { dlg, _ ->
-                dlg.dismiss()
-                val path = copyImageForDiagnosis(context, imageUri)
-                if (path == null) {
-                    Toast.makeText(
-                        context,
-                        R.string.camera_file_create_error,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    clearPending()
-                    return@setPositiveButton
+        // Pre-fix this rendered as a vanilla Material AlertDialog with the
+        // two actions stuffed into setPositive/setNegative, which displayed
+        // them as small bottom-right buttons against an off-brand stethoscope
+        // emoji blue (B3 from screenshot 5). Now uses ActionListDialogFragment
+        // with its rounded card + brand-Outlined buttons and a subtitle.
+        val items = listOf(
+            com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                label = context.getString(R.string.calendar_photo_action_archive),
+                isDanger = false,
+                onClick = { onArchive() }
+            ),
+            com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                label = context.getString(R.string.calendar_photo_action_diagnose),
+                isDanger = false,
+                onClick = {
+                    val path = copyImageForDiagnosis(context, imageUri)
+                    if (path == null) {
+                        Toast.makeText(
+                            context,
+                            R.string.camera_file_create_error,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        clearPending()
+                    } else {
+                        val intent = android.content.Intent(
+                            context,
+                            com.example.plantcare.ui.disease.DiseaseDiagnosisActivity::class.java
+                        ).apply {
+                            putExtra(
+                                com.example.plantcare.ui.disease.DiseaseDiagnosisActivity
+                                    .EXTRA_PRELOADED_IMAGE_PATH,
+                                path
+                            )
+                        }
+                        context.startActivity(intent)
+                        clearPending()
+                    }
                 }
-                val intent = android.content.Intent(
-                    context,
-                    com.example.plantcare.ui.disease.DiseaseDiagnosisActivity::class.java
-                ).apply {
-                    putExtra(
-                        com.example.plantcare.ui.disease.DiseaseDiagnosisActivity
-                            .EXTRA_PRELOADED_IMAGE_PATH,
-                        path
-                    )
-                }
-                context.startActivity(intent)
-                clearPending()
-            }
-            .setNegativeButton(R.string.calendar_photo_action_archive) { dlg, _ ->
-                dlg.dismiss()
-                onArchive()
-            }
-            .setOnCancelListener { clearPending() }
-            .show()
+            )
+        )
+        com.example.plantcare.ui.util.ActionListDialogFragment()
+            .configure(context.getString(R.string.calendar_photo_action_title), items)
+            .subtitle(context.getString(R.string.calendar_photo_action_message))
+            .onDismissedWithoutPick { clearPending() }
+            .show(
+                fragment.parentFragmentManager,
+                com.example.plantcare.ui.util.ActionListDialogFragment.TAG
+            )
     }
 
     /**
@@ -418,7 +433,7 @@ class PhotoCaptureCoordinator(
     private fun copyImageForDiagnosis(context: Context, source: Uri): String? {
         return try {
             val timestamp = java.text.SimpleDateFormat(
-                "yyyyMMdd_HHmmss", java.util.Locale.getDefault()
+                "yyyyMMdd_HHmmss", java.util.Locale.US
             ).format(java.util.Date())
             val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 ?: return null
@@ -498,12 +513,17 @@ class PhotoCaptureCoordinator(
         onPicked: (PlantListItem) -> Unit
     ) {
         val context = fragment.requireContext()
-        val names = plants.map { it.name }.toTypedArray()
-        androidx.appcompat.app.AlertDialog.Builder(context)
-            .setTitle(R.string.pick_plant_title)
-            .setItems(names) { _, which -> onPicked(plants[which]) }
-            .setNegativeButton(android.R.string.cancel, null)
-            .show()
+        val items = plants.map { plant ->
+            com.example.plantcare.ui.util.ActionListDialogFragment.Item(
+                label = plant.name,
+                isDanger = false,
+                onClick = { onPicked(plant) }
+            )
+        }
+        com.example.plantcare.ui.util.ActionListDialogFragment()
+            .configure(context.getString(R.string.pick_plant_title), items)
+            .show(fragment.parentFragmentManager,
+                com.example.plantcare.ui.util.ActionListDialogFragment.TAG)
     }
 
     private fun pickDate(context: Context, onPicked: (LocalDate) -> Unit) {

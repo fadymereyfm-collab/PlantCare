@@ -1,5 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  User-plant detail dialog — unified with the catalog detail layout
+  (dialog_plant_detail.xml). Pre-fix this layout stacked nine outlined
+  action buttons (Bearbeiten / Titelbild / Verlauf / Archivfotos /
+  Wachstumstagebuch / Familie teilen / Verschieben / Löschen / Schließen),
+  which left the 220dp circular cover image squashed at the top of the
+  scrollable content with very little vertical breathing room.
+
+  New shape (matches the catalog dialog the user picked):
+    – centred title + divider
+    – ScrollView containing the 220dp circular cover image and the
+      Watering / Lighting / Soil / Fertilising / Personal-note fields
+    – fixed bottom button bar with three primary buttons:
+        1. Bearbeiten (Filled — primary action)
+        2. Titelbild aufnehmen (Tonal — secondary primary)
+        3. Mehr Optionen (Outlined — opens the 6-item secondary menu)
+       plus a Schließen text button at the bottom.
+
+  The remaining six action IDs (buttonOpenJournal / buttonViewPhotos /
+  buttonGrowthMemoir / buttonFamilyShare / buttonMoveToRoom /
+  buttonDeletePlant) are kept in the layout but `visibility="gone"` so
+  the existing `setOnClickListener` wiring in PlantDetailDialogFragment
+  continues to bind. The new "Mehr Optionen" menu just calls
+  `view.callOnClick()` on the right hidden button per item — keeps the
+  existing handler logic untouched and means we don't have to extract a
+  half-dozen private methods solely for the menu.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootUserDetail"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -37,7 +66,64 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- صورة دائرية تظهر دائماً -->
+            <!-- Reminder task highlight: rendered ABOVE the image when the
+                 dialog was opened from a tap on a calendar/today reminder.
+                 PlantDetailDialogFragment toggles visibility based on
+                 ARG_HIGHLIGHT_TYPE; default is GONE so the catalog/edit
+                 entry points keep the existing layout untouched. -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardReminderHighlight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/pc_secondaryContainer">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="14dp"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:id="@+id/iconReminderHighlight"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="12dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_watering_can"/>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/textReminderHighlightTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/nunito"
+                            android:textColor="@color/text_primary"
+                            tools:text="Heute gießen"/>
+                        <TextView
+                            android:id="@+id/textReminderHighlightBody"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/nunito"
+                            android:textColor="@color/text_primary"
+                            android:lineSpacingExtra="2dp"
+                            tools:text="Alle 3 Tage. Mäßig gießen."/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Circular cover image (mirrors catalog dialog). -->
             <ImageView
                 android:id="@+id/plantImageView"
                 android:layout_width="220dp"
@@ -51,19 +137,28 @@
                 android:layout_marginBottom="16dp"
                 android:src="@drawable/ic_default_plant"/>
 
-            <!-- نخفي Room/Start نهائياً (IDs موجودة لتوافق الكود إن لزم) -->
+            <!-- Raum: rendered first so users immediately see where the
+                 plant lives. PlantDetailDialogFragment fills textRoom
+                 from plant.roomId via RoomCategoryRepository; if the
+                 plant has no room (legacy data), both label + text are
+                 toggled to GONE in code. -->
             <TextView
                 android:id="@+id/labelRoom"
+                style="@style/PlantCareFieldLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:text="@string/detail_label_room"/>
             <TextView
                 android:id="@+id/textRoom"
+                style="@style/PlantCareFieldValue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:text="@string/detail_placeholder_dash"
+                android:layout_marginBottom="12dp"/>
 
+            <!-- Hidden compatibility holders for start-date — kept so
+                 PlantDetailDialogFragment's findText calls don't return
+                 null for unrelated layouts; never shown in user-plant. -->
             <TextView
                 android:id="@+id/labelStartDate"
                 android:layout_width="match_parent"
@@ -136,6 +231,8 @@
                 android:text="@string/detail_placeholder_dash"
                 android:layout_marginBottom="16dp"/>
 
+            <!-- Personal note (gone unless plant.personalNote is non-empty;
+                 PlantDetailDialogFragment toggles both label + text). -->
             <TextView
                 android:id="@+id/textPersonalNoteLabel"
                 style="@style/PlantCareFieldLabel"
@@ -155,6 +252,7 @@
         </LinearLayout>
     </ScrollView>
 
+    <!-- Fixed bottom button bar — three primary actions + close. -->
     <LinearLayout
         android:id="@+id/buttonBarUser"
         android:layout_width="match_parent"
@@ -165,7 +263,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonEdit"
-            style="@style/PlantCareOutlinedButton"
+            style="@style/PlantCare.Button.Filled"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:text="@string/detail_action_edit"/>
@@ -174,55 +272,23 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonCamera"
-            style="@style/PlantCareOutlinedButton"
+            style="@style/PlantCare.Button.Tonal"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:text="@string/detail_action_take_cover"/>
 
         <Space android:layout_width="match_parent" android:layout_height="10dp"/>
 
+        <!-- Mehr Optionen — opens the 6-item secondary menu (Verlauf,
+             Archivfotos, Wachstumstagebuch, Familie teilen, In Raum
+             verschieben, Löschen). Wired in PlantDetailDialogFragment
+             via buttonMoreOptions.setOnClickListener. -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonOpenJournal"
-            style="@style/PlantCareOutlinedButton"
+            android:id="@+id/buttonMoreOptions"
+            style="@style/PlantCare.Button.Outlined"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="@string/journal_open"/>
-
-        <Space android:layout_width="match_parent" android:layout_height="10dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonViewPhotos"
-            style="@style/PlantCareOutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="@string/detail_action_view_archive"/>
-
-        <Space android:layout_width="match_parent" android:layout_height="10dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonGrowthMemoir"
-            style="@style/PlantCareOutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="@string/memoir_button_label"/>
-
-        <Space android:layout_width="match_parent" android:layout_height="10dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonFamilyShare"
-            style="@style/PlantCareOutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="@string/share_button_label"/>
-
-        <Space android:layout_width="match_parent" android:layout_height="10dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonDeletePlant"
-            style="@style/PlantCare.Button.Danger"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="@string/detail_action_delete"/>
+            android:text="@string/detail_action_more_options"/>
 
         <Space android:layout_width="match_parent" android:layout_height="10dp"/>
 
@@ -233,21 +299,60 @@
             android:layout_height="56dp"
             android:text="@string/detail_action_close"/>
 
-        <!-- زر نقل النبتة إلى غرفة أخرى (نضيفه هنا فقط UI؛ السلوك ستضيفه لاحقاً) -->
-        <Space android:layout_width="match_parent" android:layout_height="10dp"/>
+        <!-- ──────────────────────────────────────────────────────────
+             Hidden secondary buttons. PlantDetailDialogFragment still
+             wires setOnClickListener on these IDs — the new "Mehr
+             Optionen" menu invokes `view.callOnClick()` on each so we
+             don't have to extract their click logic into separate
+             methods. Keeping them here means the existing handler
+             code in PlantDetailDialogFragment doesn't need to change.
+             ────────────────────────────────────────────────────────── -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonOpenJournal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/journal_open"
+            android:visibility="gone"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonViewPhotos"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/detail_action_view_archive"
+            android:visibility="gone"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonGrowthMemoir"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/memoir_button_label"
+            android:visibility="gone"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonFamilyShare"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/share_button_label"
+            android:visibility="gone"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonMoveToRoom"
-            style="@style/PlantCareOutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="@string/detail_action_move_room"/>
+            android:layout_height="0dp"
+            android:text="@string/detail_action_move_room"
+            android:visibility="gone"/>
 
-        <!-- مخفي للمستخدم -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonDeletePlant"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="@string/detail_action_delete"
+            android:visibility="gone"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonAddToMyPlants"
-            style="@style/PlantCareOutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="0dp"
             android:text="@string/add_plant"
             android:visibility="gone"/>
     </LinearLayout>

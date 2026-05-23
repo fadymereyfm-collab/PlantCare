@@ -88,6 +88,28 @@
             android:layout_marginTop="4dp"
             android:visibility="gone" />
 
+        <!-- v17: Catalog match badge — shows "✓ In unserem Katalog" when this
+             PlantNet suggestion has a curated row in plants.csv. Tells the user
+             that tapping "Hinzufügen" will pull verified care data instead of
+             family-default fallbacks. Hidden by default; toggled on by the
+             adapter when PlantCatalogLookup.findMatch returns non-null. -->
+        <TextView
+            android:id="@+id/txtCatalogBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:background="@drawable/badge_catalog_match"
+            android:drawablePadding="4dp"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/pc_onPrimary"
+            android:text="@string/identify_catalog_match_badge"
+            android:visibility="gone" />
+
         <!-- Confidence bar -->
         <ProgressBar
             android:id="@+id/confidenceBar"

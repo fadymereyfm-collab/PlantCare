@@ -9,23 +9,47 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.cancel
 import com.bumptech.glide.Glide
 import com.example.plantcare.R
+import com.example.plantcare.WikiImageHelper
 import com.example.plantcare.data.plantnet.IdentificationResult
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Adapter for displaying plant identification results in a RecyclerView.
  *
- * @param onAddClick  Callback when "Hinzufügen" button is clicked — triggers enrich + add flow.
- * @param onItemClick Callback when the card itself (or thumbnail) is clicked — opens the
- *                    split-screen comparison dialog so the user can visually compare the
- *                    candidate reference photo against their own captured image.
+ * @param onAddClick  Callback when "Hinzufügen" button is clicked.
+ * @param onItemClick Callback when the card itself is clicked.
  */
 class IdentificationResultAdapter(
     private val onAddClick: (result: IdentificationResult, rank: Int) -> Unit,
     private val onItemClick: (result: IdentificationResult, rank: Int) -> Unit = { _, _ -> }
 ) : ListAdapter<IdentificationResult, IdentificationResultAdapter.ResultViewHolder>(DIFF_CALLBACK) {
+
+    /**
+     * v17: per-row catalog match state. Keyed by lowercased scientific name.
+     */
+    private val catalogMatches: MutableMap<String, com.example.plantcare.Plant?> =
+        java.util.concurrent.ConcurrentHashMap()
+
+    /**
+     * Replace the catalog-match map and refresh visible cards.
+     */
+    fun setCatalogMatches(matches: Map<String, com.example.plantcare.Plant?>) {
+        catalogMatches.clear()
+        for ((k, v) in matches) catalogMatches[k.lowercase()] = v
+        notifyDataSetChanged()
+    }
+
+    /** Public read-only view for callers that need to know which rows match. */
+    fun catalogMatchFor(scientificName: String?): com.example.plantcare.Plant? =
+        scientificName?.lowercase()?.let { catalogMatches[it] }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -43,30 +67,67 @@ class IdentificationResultAdapter(
         private val txtScientificName: TextView = itemView.findViewById(R.id.txtScientificName)
         private val txtConfidence: TextView = itemView.findViewById(R.id.txtConfidence)
         private val txtFamily: TextView = itemView.findViewById(R.id.txtFamily)
+        private val txtCatalogBadge: TextView = itemView.findViewById(R.id.txtCatalogBadge)
         private val confidenceBar: ProgressBar = itemView.findViewById(R.id.confidenceBar)
         private val btnAddPlant: MaterialButton = itemView.findViewById(R.id.btnAddPlant)
 
         fun bind(result: IdentificationResult, rank: Int) {
-            // Display name: prefer common name, fall back to scientific name
-            val displayName = result.commonName ?: result.scientificName
+            // v17: prefer catalog name, fall back to PlantNet common, then sci.
+            val match = catalogMatchFor(result.scientificName)
+            val displayName = match?.name?.takeIf { it.isNotBlank() }
+                ?: result.commonName
+                ?: result.scientificName
             txtCommonName.text = displayName
             txtScientificName.text = result.scientificName
 
-            // Reference image from PlantNet. We always show something in the
-            // thumbnail slot — a real reference photo if the API returned one,
-            // otherwise the generic plant placeholder — so the cards stay
-            // visually consistent and the user can quickly scan.
+            // Toggle "In unserem Katalog" badge.
+            txtCatalogBadge.visibility = if (match != null) View.VISIBLE else View.GONE
+
+            // Reference image from PlantNet, with Wikipedia fallback.
             val imageUrl = result.imageUrl
+            val placeholderRes = R.drawable.ic_plant_placeholder
             if (!imageUrl.isNullOrBlank()) {
                 Glide.with(itemView.context)
                     .load(imageUrl)
                     .centerCrop()
-                    .placeholder(R.drawable.ic_plant_placeholder)
-                    .error(R.drawable.ic_plant_placeholder)
+                    .placeholder(placeholderRes)
+                    .error(placeholderRes)
                     .into(imgSuggestion)
             } else {
                 Glide.with(itemView.context).clear(imgSuggestion)
-                imgSuggestion.setImageResource(R.drawable.ic_plant_placeholder)
+                imgSuggestion.setImageResource(placeholderRes)
+                val sci = result.scientificName
+                if (sci.isNotBlank()) {
+                    val targetView = imgSuggestion
+                    val targetTag = sci
+                    targetView.tag = targetTag
+                    val cached = wikiUrlCache[sci]
+                    if (cached != null) {
+                        if (cached != NEGATIVE_CACHE) {
+                            Glide.with(targetView.context)
+                                .load(cached)
+                                .centerCrop()
+                                .placeholder(placeholderRes)
+                                .error(placeholderRes)
+                                .into(targetView)
+                        }
+                    } else {
+                        wikiScope.launch {
+                            val url = withContext(Dispatchers.IO) {
+                                try { WikiImageHelper.fetchImageUrl(sci) } catch (_: Throwable) { null }
+                            }
+                            wikiUrlCache[sci] = url ?: NEGATIVE_CACHE
+                            if (!url.isNullOrBlank() && targetView.tag == targetTag) {
+                                Glide.with(targetView.context)
+                                    .load(url)
+                                    .centerCrop()
+                                    .placeholder(placeholderRes)
+                                    .error(placeholderRes)
+                                    .into(targetView)
+                            }
+                        }
+                    }
+                }
             }
 
             // Confidence
@@ -82,17 +143,26 @@ class IdentificationResultAdapter(
                 txtFamily.visibility = View.GONE
             }
 
-            // Tap anywhere on the card → open split-screen comparison dialog.
-            // The "Hinzufügen" button consumes its own click and does NOT propagate
-            // to itemView, so both listeners are independent.
+            // Tap card -> compare dialog. Add button -> add flow.
             itemView.setOnClickListener { onItemClick(result, rank) }
-
-            // Add button → skip comparison, go straight to enrich + add flow.
             btnAddPlant.setOnClickListener { onAddClick(result, rank) }
         }
     }
 
+    /**
+     * Adapter-scoped coroutine scope for the Wikipedia thumbnail fallback.
+     */
+    private val wikiScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        wikiScope.cancel()
+    }
+
     companion object {
+        private const val NEGATIVE_CACHE = "__NEG__"
+        private val wikiUrlCache = java.util.concurrent.ConcurrentHashMap<String, String>()
+
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<IdentificationResult>() {
             override fun areItemsTheSame(
                 oldItem: IdentificationResult,

@@ -165,10 +165,13 @@ object MemoirPdfBuilder {
             c.drawText(rangeText, MARGIN.toFloat(), 230f, rangePaint)
         }
 
-        // Footer "created on" stamp
+        // Footer "created on" stamp — Wave 2: respect AppearancePrefs date format.
         val createdLabel = context.getString(
             R.string.memoir_pdf_created_format,
-            SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())
+            com.example.plantcare.format.DateFormatter.format(
+                context,
+                java.time.LocalDate.now()
+            )
         )
         val footerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = COLOR_MUTED; textSize = 12f
@@ -515,8 +518,13 @@ object MemoirPdfBuilder {
     /** Same path-aware loader the rest of the app uses, but minimal
      *  here: we only ever read local files, FileProvider URIs, or http(s)
      *  URLs that have been mirrored locally. */
-    private fun decodeScaled(context: Context, raw: String?, maxW: Int, maxH: Int): Bitmap? {
-        if (raw.isNullOrBlank() || raw.startsWith("PENDING_DOC:")) return null
+    private fun decodeScaled(context: Context, rawIn: String?, maxW: Int, maxH: Int): Bitmap? {
+        if (rawIn.isNullOrBlank()) return null
+        // Strip PENDING_DOC:<docId>| prefix so the local URI suffix is used.
+        val raw: String = if (rawIn.startsWith("PENDING_DOC:")) {
+            val sep = rawIn.indexOf('|')
+            if (sep > 0 && sep + 1 < rawIn.length) rawIn.substring(sep + 1) else return null
+        } else rawIn
         return try {
             when {
                 raw.startsWith("content://") -> {

@@ -35,10 +35,27 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         void onRoomLongClick(RoomCategory room);
     }
 
+    /**
+     * Wired by MyPlantsFragment to forward the drag-handle ACTION_DOWN
+     * event into ItemTouchHelper.startDrag while the user's finger is
+     * still on the screen. Without this active-touch contract a
+     * programmatic startDrag activates the drag state and immediately
+     * ends it in the same frame (the prior "Verschieben menu item"
+     * bug).
+     */
+    public interface OnStartDragListener {
+        void onStartDrag(@NonNull RecyclerView.ViewHolder vh);
+    }
+
     private OnRoomLongClickListener longClickListener;
+    private OnStartDragListener startDragListener;
 
     public void setOnRoomLongClickListener(OnRoomLongClickListener l) {
         this.longClickListener = l;
+    }
+
+    public void setOnStartDragListener(OnStartDragListener l) {
+        this.startDragListener = l;
     }
 
     public RoomAdapter(List<RoomCategory> rooms, OnRoomClickListener listener) {
@@ -110,8 +127,12 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             final int finalCount = count;
             holder.itemView.post(() -> {
                 if (holder.boundRoomId != boundRoomId) return; // Recycled — skip.
+                // Both branches must pass finalCount — `plants_count_one`
+                // is "%1$d Pflanze" (German singular still includes the
+                // number, e.g. "1 Pflanze"), so omitting the arg leaks
+                // the raw "%1$d Pflanze" placeholder into the UI.
                 String text = finalCount == 1
-                        ? ctx.getString(R.string.plants_count_one)
+                        ? ctx.getString(R.string.plants_count_one, finalCount)
                         : ctx.getString(R.string.plants_count_other, finalCount);
                 holder.count.setText(text);
             });
@@ -127,6 +148,30 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
             }
             return false;
         });
+
+        // Drag handle — touch+drag starts the reorder. The handle is
+        // disabled for synthetic default rooms (id == 0) since they
+        // can't be persisted yet.
+        if (holder.dragHandle != null) {
+            if (room.id > 0 && startDragListener != null) {
+                holder.dragHandle.setVisibility(View.VISIBLE);
+                holder.dragHandle.setOnTouchListener((v, event) -> {
+                    // Fire on ACTION_DOWN so ItemTouchHelper picks up the
+                    // drag while the finger is still down. Returning
+                    // false lets the touch keep flowing into the
+                    // RecyclerView so the drag actually follows the
+                    // finger.
+                    if (event.getActionMasked()
+                            == android.view.MotionEvent.ACTION_DOWN) {
+                        startDragListener.onStartDrag(holder);
+                    }
+                    return false;
+                });
+            } else {
+                holder.dragHandle.setVisibility(View.GONE);
+                holder.dragHandle.setOnTouchListener(null);
+            }
+        }
     }
 
     @Override
@@ -179,6 +224,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
         final ImageView icon;
         final TextView name;
         final TextView count;
+        final ImageView dragHandle;
         // Tracks the in-flight plant-count query so we can cancel it on
         // recycle and suppress its post() callback if it lands too late.
         Future<?> pendingCountQuery;
@@ -186,9 +232,10 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
         RoomViewHolder(View view) {
             super(view);
-            icon  = view.findViewById(R.id.roomIcon);
-            name  = view.findViewById(R.id.textViewRoomName);
-            count = view.findViewById(R.id.textViewPlantCount);
+            icon       = view.findViewById(R.id.roomIcon);
+            name       = view.findViewById(R.id.textViewRoomName);
+            count      = view.findViewById(R.id.textViewPlantCount);
+            dragHandle = view.findViewById(R.id.dragHandle);
         }
     }
 }

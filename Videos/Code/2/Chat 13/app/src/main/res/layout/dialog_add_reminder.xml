@@ -25,6 +25,15 @@
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown" />
 
+            <!-- Wave 2: reminder type picker (water / fertilize / mist / repot).
+                 Default selection is "water" so existing flows keep working. -->
+            <Spinner
+                android:id="@+id/typeSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:spinnerMode="dropdown" />
+
             <!-- التاريخ -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

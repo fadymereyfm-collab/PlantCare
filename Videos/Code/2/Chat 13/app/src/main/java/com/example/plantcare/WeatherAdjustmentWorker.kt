@@ -108,9 +108,14 @@ class WeatherAdjustmentWorker(
                 adjustReminders(context, advice.adjustmentFactor)
             } else 0
 
-            // F8: notify the user when at least one reminder actually shifted, so the
-            // change in their calendar isn't silent. One summary notification per run.
-            if (shiftedCount > 0) {
+            // F8 + v16: notify the user when at least one reminder actually shifted,
+            // so the change in their calendar isn't silent. One summary notification
+            // per run. v16 — gate on the "Wetterhinweise" toggle so a user who muted
+            // weather alerts in Settings doesn't get pinged here either.
+            // SettingsDialogFragment.KEY_NOTIF_TYPE_WEATHER == "notif_type_weather".
+            val appPrefs = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            val weatherToggleOn = appPrefs.getBoolean("notif_type_weather", true)
+            if (shiftedCount > 0 && weatherToggleOn) {
                 val dayShift = computeDayShift(advice.adjustmentFactor)
                 val description = weather.weather?.firstOrNull()?.description
                     ?: advice.tipMessage
@@ -183,10 +188,21 @@ class WeatherAdjustmentWorker(
         weekEndCal.add(Calendar.DAY_OF_YEAR, 7)
         val weekEndStr = sdf.format(weekEndCal.time)
 
+        // v16: only shift WATER reminders by weather. Rain doesn't postpone
+        // fertilizing, repotting cycles are once-every-few-years and totally
+        // weather-independent, and misting is an indoor-humidity decision
+        // that doesn't track outdoor weather (a rainy day means high indoor
+        // humidity for some homes but the reverse for many — leave it alone).
+        // Pre-fix the worker shifted ALL reminder types by the same factor,
+        // so a rainy week could push the next repot from "in 18 months" to
+        // "in 18 months + 2 days" — meaningless drift that polluted the
+        // schedule. Treats NULL/blank type as "water" for legacy compat.
         val futureReminders = reminderRepo.getAllRemindersForUserList(userEmail)
             .filter {
                 val date = it.date
-                !it.done && date != null && date in tomorrowStr..weekEndStr
+                val t = it.type
+                val isWater = t == null || t.isBlank() || t.equals("water", ignoreCase = true)
+                !it.done && isWater && date != null && date in tomorrowStr..weekEndStr
             }
 
         if (futureReminders.isEmpty()) return 0

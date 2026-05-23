@@ -11,18 +11,12 @@ import kotlinx.coroutines.withContext
 /**
  * Repository for Plant data access layer. Wraps PlantDao.
  *
- * Sprint-3 Task 3.1: read-side LiveData accessors now hand back the DAO's
- * Room-observable LiveData directly (no `liveData { emit(dao.xxx()) }`
- * one-shot builders), so the UI re-binds whenever the underlying rows
- * change without any DataChangeNotifier nudge.
+ * Sprint-3 Task 3.1: read-side LiveData accessors hand back the DAO\'s
+ * Room-observable LiveData directly so the UI re-binds whenever the
+ * underlying rows change.
  */
 class PlantRepository private constructor(context: Context) {
 
-    // Sprint-3 cleanup 2026-05-05: take Context as a constructor parameter
-    // (not a property) so the Singleton doesn't pin an Activity in memory
-    // when getInstance is called from `requireContext()`. Only used here to
-    // resolve the DAO; getInstance below additionally normalises to
-    // applicationContext as a defence in depth.
     private val plantDao: PlantDao = AppDatabase.getInstance(context).plantDao()
 
     /** User plants for a given email — reactive. */
@@ -37,26 +31,14 @@ class PlantRepository private constructor(context: Context) {
     fun getPlantById(id: Int): LiveData<Plant> =
         plantDao.observeById(id)
 
-    /**
-     * Insert a new plant into the database.
-     * Runs on IO dispatcher.
-     */
     suspend fun insertPlant(plant: Plant): Long = withContext(Dispatchers.IO) {
         plantDao.insert(plant)
     }
 
-    /**
-     * Update an existing plant in the database.
-     * Runs on IO dispatcher.
-     */
     suspend fun updatePlant(plant: Plant) = withContext(Dispatchers.IO) {
         plantDao.update(plant)
     }
 
-    /**
-     * Delete a plant from the database.
-     * Runs on IO dispatcher.
-     */
     suspend fun deletePlant(plant: Plant) = withContext(Dispatchers.IO) {
         plantDao.delete(plant)
     }
@@ -65,78 +47,47 @@ class PlantRepository private constructor(context: Context) {
     fun getAllCatalogPlants(): LiveData<List<Plant>> =
         plantDao.observeAllNonUserPlants()
 
-    /**
-     * Search for plants by name. Reactive lookups by name aren't supported
-     * by the current DAO surface (Room would need a separate observe method
-     * per query shape) — kept as a snapshot via withContext so the search
-     * field doesn't hang the main thread. Recompose by calling again on
-     * input change rather than wiring a Flow per keystroke.
-     */
     suspend fun searchPlants(query: String): List<Plant> =
         withContext(Dispatchers.IO) { plantDao.getAllUserPlantsWithName(query) }
 
     /** All plants (user + catalog) — reactive. */
     fun getAllPlants(): LiveData<List<Plant>> = plantDao.observeAll()
 
-    /**
-     * Get plants by IDs.
-     */
     suspend fun getPlantsByIds(ids: List<Int>): List<Plant> = withContext(Dispatchers.IO) {
         plantDao.getPlantsByIds(ids)
     }
 
-    /**
-     * Find a plant by name.
-     */
     suspend fun findPlantByName(name: String): Plant? = withContext(Dispatchers.IO) {
         plantDao.findByName(name)
     }
 
-    /**
-     * Find a user plant by name and email.
-     */
     suspend fun findUserPlantByNameAndEmail(name: String, userEmail: String): Plant? =
         withContext(Dispatchers.IO) {
             plantDao.findUserPlantByNameAndUser(name, userEmail)
         }
 
-    /**
-     * Update the profile image for a plant.
-     */
     suspend fun updateProfileImage(id: Int, imageUri: String) = withContext(Dispatchers.IO) {
         plantDao.updateProfileImage(id, imageUri)
     }
 
-    /**
-     * Clear the profile image for a plant.
-     */
     suspend fun clearProfileImage(id: Int) = withContext(Dispatchers.IO) {
         plantDao.clearProfileImage(id)
     }
 
-    /**
-     * Get catalog plants without images.
-     */
     suspend fun getCatalogPlantsWithoutImage(): List<Plant> = withContext(Dispatchers.IO) {
         plantDao.getCatalogPlantsWithoutImage()
     }
 
-    /**
-     * Delete all user plants for a specific email.
-     */
     suspend fun deleteAllUserPlantsForUser(userEmail: String) = withContext(Dispatchers.IO) {
         plantDao.deleteAllUserPlantsForUser(userEmail)
     }
 
-    /**
-     * Count plants in a room.
-     */
     suspend fun countPlantsByRoom(roomId: Int, userEmail: String): Int =
         withContext(Dispatchers.IO) {
             plantDao.countPlantsByRoom(roomId, userEmail)
         }
 
-    // ─── Suspend list accessors used by ViewModels ───────────────────────
+    // ─── Suspend list accessors used by ViewModels ───
     suspend fun getAllCatalogPlantsList(): List<Plant> = withContext(Dispatchers.IO) {
         plantDao.getAllNonUserPlants()
     }
@@ -172,35 +123,19 @@ class PlantRepository private constructor(context: Context) {
         plantDao.countUserPlants(email)
     }
 
-    /** Snapshot lookup by id — for callers that already sit on Dispatchers.IO
-     *  (e.g. weekbar ViewModel coroutines, image loaders). */
     suspend fun findPlantById(id: Int): Plant? = withContext(Dispatchers.IO) {
         plantDao.findById(id)
     }
 
-    /** Catalog (non-user) plants snapshot. */
     suspend fun getAllNonUserPlantsList(): List<Plant> = withContext(Dispatchers.IO) {
         plantDao.getAllNonUserPlants()
     }
 
-    /** All plants snapshot (user + catalog). */
     suspend fun getAllPlantsList(): List<Plant> = withContext(Dispatchers.IO) {
         plantDao.getAll()
     }
 
-    // ────────────────────────────────────────────────────────────────────
-    // Sprint-3 Task 3.2b: blocking helpers for legacy Java callers.
-    //
-    // Suspend fun + Java is friction (runBlocking + Continuation noise),
-    // and the legacy Java fragments already manage their own threading via
-    // `new Thread()` / Executors. These plain `fun` wrappers expose Repo
-    // semantics to those callers without forcing them to wrap every line
-    // in `BuildersKt.runBlocking`. The caller is responsible for being on
-    // a background thread — Room itself will throw on the main thread.
-    //
-    // These are the only plain `fun` accessors on the Repository; the
-    // canonical Kotlin API (above) stays suspend.
-    // ────────────────────────────────────────────────────────────────────
+    // ─── Blocking helpers for legacy Java callers ───
 
     fun countAllBlocking(): Int = plantDao.countAll()
     fun findByIdBlocking(id: Int): Plant? = plantDao.findById(id)
@@ -217,6 +152,18 @@ class PlantRepository private constructor(context: Context) {
     fun findCatalogByNameBlocking(name: String?): Plant? = plantDao.findCatalogByName(name)
     fun findCatalogByNameLikeBlocking(pattern: String?): Plant? =
         plantDao.findCatalogByNameLike(pattern)
+
+    /**
+     * v17: catalog lookup by Latin / binomial name.
+     */
+    fun findCatalogByScientificNameBlocking(scientificName: String?): Plant? =
+        plantDao.findCatalogByScientificName(scientificName)
+
+    /**
+     * v17: partial Latin-name match (genus prefix fallback).
+     */
+    fun findCatalogByScientificNameLikeBlocking(pattern: String?): Plant? =
+        plantDao.findCatalogByScientificNameLike(pattern)
 
     fun getAllUserPlantsForUserBlocking(email: String?): List<Plant> =
         plantDao.getAllUserPlantsForUser(email)
@@ -250,12 +197,6 @@ class PlantRepository private constructor(context: Context) {
 
         @JvmStatic
         fun getInstance(context: Context): PlantRepository {
-            // #5 fix: classic double-checked-locking — the inner
-            // recheck of INSTANCE was missing, so two threads racing
-            // through the outer null-check could each enter the
-            // synchronized block in turn and construct duplicate
-            // singletons. The first instance would silently lose its
-            // observer registrations / lazy DAO refs to the second.
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: PlantRepository(context.applicationContext).also { INSTANCE = it }
             }

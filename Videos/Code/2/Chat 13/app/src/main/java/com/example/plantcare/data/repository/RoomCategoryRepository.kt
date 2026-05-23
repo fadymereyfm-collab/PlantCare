@@ -144,11 +144,18 @@ class RoomCategoryRepository private constructor(context: Context) {
         // to do with our duplicate-prevention invariant and shouldn't block
         // a second screen waiting to read the room list.
         val freshlyInserted = mutableListOf<RoomCategory>()
-        for (def in defaults) {
+        for ((idx, def) in defaults.withIndex()) {
             if (def !in existing) {
                 val rc = RoomCategory()
                 rc.name = def
                 rc.userEmail = email
+                // Canonical position = index in the defaults list. The DAO
+                // sorts `ORDER BY position ASC, name COLLATE NOCASE ASC`,
+                // so this guarantees the user-visible order matches
+                // `R.array.default_rooms` (Wohnzimmer → Schlafzimmer →
+                // Flur → Küche → Bad → Toilette) instead of falling back
+                // to a flat alphabetical sort when every position is 0.
+                rc.position = idx
                 rc.id = roomCategoryDao.insert(rc).toInt()
                 freshlyInserted += rc
             }

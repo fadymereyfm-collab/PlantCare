@@ -24,31 +24,44 @@
         android:gravity="center"
         android:contentDescription="@null" />
 
+    <!-- Pre-fix the three text rows used Material textAppearanceTitleLarge /
+         BodyLarge / BodyMedium attributes which the active theme rendered
+         at ~22 / 16 / 14sp — far too small against the 64sp emoji above
+         them (screenshot 180625 showed the texts as a thin secondary line
+         under a huge celebration icon). Now: explicit 26sp bold headline,
+         20sp title, 16sp subtext + brand colours. -->
     <TextView
         android:id="@+id/challengeCompleteHeadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:gravity="center"
-        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textSize="26sp"
         android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:fontFamily="@font/nunito"
         android:text="@string/challenge_complete_headline" />
 
     <TextView
         android:id="@+id/challengeCompleteTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
-        android:textAppearance="?attr/textAppearanceBodyLarge"
+        android:textSize="20sp"
+        android:textColor="@color/pc_primary"
+        android:fontFamily="@font/nunito"
+        android:textStyle="bold"
         tools:text="7 Tage in Folge gegossen" />
 
     <TextView
         android:id="@+id/challengeCompleteSubtext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="14dp"
         android:gravity="center"
-        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textSize="16sp"
+        android:textColor="@color/text_primary"
+        android:fontFamily="@font/nunito"
         android:text="@string/challenge_complete_subtext" />
 </LinearLayout>

@@ -43,6 +43,17 @@ public interface ReminderDao {
     @Query("DELETE FROM WateringReminder WHERE plantId = :plantId AND date >= :fromDateStr")
     void deleteFutureRemindersForPlant(int plantId, @Nullable String fromDateStr);
 
+    /**
+     * v16 — delete future reminders of ONE care type for a plant.
+     * NULL stored type counts as "water" so legacy reminders (pre-v15)
+     * are wiped together with their water siblings when type=='water'.
+     * Used by ReminderUtils.rescheduleFromToday so rescheduling a mist
+     * reminder doesn't blow away the watering schedule.
+     */
+    @Query("DELETE FROM WateringReminder WHERE plantId = :plantId AND date >= :fromDateStr "
+            + "AND (CASE WHEN type IS NULL OR type = '' THEN 'water' ELSE LOWER(type) END) = LOWER(:type)")
+    void deleteFutureRemindersForPlantAndType(int plantId, @Nullable String fromDateStr, @Nullable String type);
+
     @Query("DELETE FROM WateringReminder WHERE plantId = :plantId")
     void deleteRemindersForPlant(int plantId);
 

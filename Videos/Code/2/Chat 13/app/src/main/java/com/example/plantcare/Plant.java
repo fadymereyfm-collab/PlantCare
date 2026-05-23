@@ -25,6 +25,40 @@ public class Plant implements Serializable {
     public Date startDate;
     public int wateringInterval;
 
+    /**
+     * v16 schema additions — multi-type reminder intervals.
+     * 0 = disabled (no reminders generated of that type). Defaults are
+     * derived from PlantCareDefaults (per botanical family) when the
+     * user adds a plant from the catalog or via PlantNet identification.
+     * The user can override any of these from the Edit dialog.
+     */
+    @ColumnInfo(name = "fertilizingInterval", defaultValue = "0")
+    public int fertilizingInterval;
+
+    @ColumnInfo(name = "mistingInterval", defaultValue = "0")
+    public int mistingInterval;
+
+    @ColumnInfo(name = "repottingIntervalDays", defaultValue = "0")
+    public int repottingIntervalDays;
+
+    /**
+     * Scientific (binomial) name — populated by PlantNet for identified
+     * plants and by the catalog seed for known species. Used as the
+     * stable lookup key for Wikipedia / Wikidata enrichment.
+     */
+    @ColumnInfo(name = "scientificName")
+    @Nullable
+    public String scientificName;
+
+    /**
+     * Botanical family (e.g. "Asparagaceae"). Drives PlantCareDefaults
+     * lookup for per-family default intervals when the user hasn't
+     * customised them.
+     */
+    @ColumnInfo(name = "family")
+    @Nullable
+    public String family;
+
     @ColumnInfo(name = "isUserPlant")
     public boolean isUserPlant;
 

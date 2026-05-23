@@ -63,6 +63,16 @@ class ReminderViewModel(application: Application) : AndroidViewModel(application
 
     val displayedMonthState = mutableStateOf(YearMonth.from(_selectedDate.value))
 
+    private val reminderRepo by lazy {
+        ReminderRepository.getInstance(getApplication<Application>().applicationContext)
+    }
+    private val plantRepo by lazy {
+        PlantRepository.getInstance(getApplication<Application>().applicationContext)
+    }
+    private val photoRepo by lazy {
+        PlantPhotoRepository.getInstance(getApplication<Application>().applicationContext)
+    }
+
     init {
         loadRemindersForDate(_selectedDate.value)
         onDisplayedMonthChanged(displayedMonthState.value)
@@ -133,16 +143,6 @@ class ReminderViewModel(application: Application) : AndroidViewModel(application
         onDisplayedMonthChanged(ym)
     }
 
-    private val reminderRepo by lazy {
-        ReminderRepository.getInstance(getApplication<Application>().applicationContext)
-    }
-    private val plantRepo by lazy {
-        PlantRepository.getInstance(getApplication<Application>().applicationContext)
-    }
-    private val photoRepo by lazy {
-        PlantPhotoRepository.getInstance(getApplication<Application>().applicationContext)
-    }
-
     fun onDisplayedMonthChanged(month: YearMonth) {
         displayedMonthState.value = month
         viewModelScope.launch {
@@ -175,10 +175,16 @@ class ReminderViewModel(application: Application) : AndroidViewModel(application
             val userEmail = EmailContext.current(context)
             val dateStr = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
-            // 1) Reminders for day
+            // 1) Reminders for day. v16 close-out: also drop rows whose
+            // type toggle is off in Settings — without this, a user who
+            // muted "Düngen" still sees fertilizer rows in the day view
+            // (the toggle previously only suppressed the morning summary
+            // notification, not the visible list).
             val remindersForDay = if (userEmail != null) {
-                reminderRepo.getAllRemindersForUserList(userEmail)
+                val raw = reminderRepo.getAllRemindersForUserList(userEmail)
                     .filter { it.date == dateStr }
+                com.example.plantcare.util.ReminderTypeUi
+                    .filterByEnabledTypes(context, raw)
                     .map { toComposeReminder(it) }
             } else emptyList()
             _reminders.value = remindersForDay
@@ -217,10 +223,16 @@ class ReminderViewModel(application: Application) : AndroidViewModel(application
             } else emptyList()
             _photosForSelectedDate.value = photosForDay
 
-            // 3) Week dots
+            // 3) Week dots — also gate on the per-type toggles so a day
+            // that ONLY had Düngen reminders disappears from the weekbar
+            // when the user mutes Düngen. Otherwise the indicator dot
+            // would stay even though tapping the day shows an empty list.
             val weekDays = getCurrentWeekDays(date)
             val allReminders = if (userEmail != null) {
-                reminderRepo.getAllRemindersForUserList(userEmail).map { toComposeReminder(it) }
+                val raw = reminderRepo.getAllRemindersForUserList(userEmail)
+                com.example.plantcare.util.ReminderTypeUi
+                    .filterByEnabledTypes(context, raw)
+                    .map { toComposeReminder(it) }
             } else emptyList()
             val reminderDaysWeek = allReminders.map { it.date }.distinct().filter { weekDays.contains(it) }
             _daysWithRemindersThisWeek.value = reminderDaysWeek
@@ -236,7 +248,13 @@ class ReminderViewModel(application: Application) : AndroidViewModel(application
             time = null,
             date = LocalDate.parse(w.date),
             plantName = w.plantName,
-            plantId = w.plantId.toLong()
+            plantId = w.plantId.toLong(),
+            // Carry the v16 type forward so RemindersList in the calendar
+            // can render the per-type icon. Without this, every auto
+            // reminder rendered with `ic_watering_can` (the legacy default)
+            // — the user saw three identical watering icons on a day with
+            // water+fertilize+repot reminders for the same plant.
+            type = w.type
         )
     }
 }

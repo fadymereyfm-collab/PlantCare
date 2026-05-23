@@ -39,7 +39,7 @@ import com.example.plantcare.data.plantnet.IdentificationCacheDao;
                 DiseaseReferenceImage.class,
                 JournalMemo.class
         },
-        version = 14,
+        version = 16,
         exportSchema = true
 )
 @TypeConverters({Converters.class})

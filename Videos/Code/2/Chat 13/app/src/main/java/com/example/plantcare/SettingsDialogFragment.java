@@ -6,24 +6,36 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.plantcare.format.AppearancePrefs;
+import com.example.plantcare.format.AvatarUploader;
+import com.example.plantcare.format.LastSyncTracker;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.example.plantcare.feature.vacation.VacationPrefs;
 import com.example.plantcare.ui.util.FragmentBg;
@@ -64,7 +76,49 @@ public class SettingsDialogFragment extends DialogFragment {
 
     // Datenschutz & Daten
     private SwitchMaterial switchAnalytics;
+    private SwitchMaterial switchCrashReports;
     private Button buttonExportData;
+
+    // Wave 1: Notifications card
+    private Button buttonNotifMorningTime;
+    private Button buttonNotifEveningTime;
+
+    // Wave 1: Help & About card
+    private Button buttonHelpFaq, buttonHelpFeedback, buttonHelpReplayTutorial,
+            buttonHelpRateApp, buttonHelpPrivacy, buttonHelpTerms, buttonHelpLicenses;
+    private TextView textAppVersion;
+
+    // Wave 2: search, avatar, bio, appearance extras, family, cloud, NPA, profile vis, per-type notifs
+    private EditText editSettingsSearch;
+    private TextView textSearchEmpty;
+    private LinearLayout settingsRoot;
+
+    private ShapeableImageView imageAvatar;
+    private Button buttonAvatarChange, buttonAvatarRemove;
+    private EditText editBio;
+
+    private RadioGroup unitsRadioGroup, dateFormatRadioGroup, fontScaleRadioGroup;
+
+    private SwitchMaterial switchProfilePublic, switchAdsPersonalized;
+    private SwitchMaterial switchNotifWater, switchNotifFertilize, switchNotifMist,
+            switchNotifRepot, switchNotifWeather;
+
+    private TextView textFamilyCount;
+    private Button buttonFamilyOpen;
+    private TextView textLastSync;
+
+    private ActivityResultLauncher<String> avatarPickerLauncher;
+
+    // Wave 2 pref keys (kept here as constants — single source of truth for both
+    // SettingsDialogFragment and any reader-side code like AdManager).
+    public static final String KEY_BIO = "user_bio";
+    public static final String KEY_PROFILE_PUBLIC = "profile_public";
+    public static final String KEY_ADS_PERSONALIZED = "ads_personalized";
+    public static final String KEY_NOTIF_TYPE_WATER = "notif_type_water";
+    public static final String KEY_NOTIF_TYPE_FERTILIZE = "notif_type_fertilize";
+    public static final String KEY_NOTIF_TYPE_MIST = "notif_type_mist";
+    public static final String KEY_NOTIF_TYPE_REPOT = "notif_type_repot";
+    public static final String KEY_NOTIF_TYPE_WEATHER = "notif_type_weather";
 
     // Urlaubsmodus
     private TextView vacationStatusText;
@@ -83,6 +137,16 @@ public class SettingsDialogFragment extends DialogFragment {
     private static final String PREFS_NAME = "prefs";
     private static final String KEY_USER_NAME  = "current_user_name";
     private static final String KEY_THEME_MODE = "theme_mode";
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Wave 2: register the gallery picker before STARTED so the launcher
+        // is available the moment the user taps "Change photo".
+        avatarPickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                this::onAvatarPicked);
+    }
 
     @NonNull
     @Override
@@ -188,11 +252,67 @@ public class SettingsDialogFragment extends DialogFragment {
         buttonVacationClear = view.findViewById(R.id.buttonVacationClear);
 
         switchAnalytics = view.findViewById(R.id.switchAnalytics);
+        switchCrashReports = view.findViewById(R.id.switchCrashReports);
         buttonExportData = view.findViewById(R.id.buttonExportData);
+
+        // Wave 1: notifications
+        buttonNotifMorningTime = view.findViewById(R.id.buttonNotifMorningTime);
+        buttonNotifEveningTime = view.findViewById(R.id.buttonNotifEveningTime);
+
+        // Wave 1: help & about
+        buttonHelpFaq = view.findViewById(R.id.buttonHelpFaq);
+        buttonHelpFeedback = view.findViewById(R.id.buttonHelpFeedback);
+        buttonHelpReplayTutorial = view.findViewById(R.id.buttonHelpReplayTutorial);
+        buttonHelpRateApp = view.findViewById(R.id.buttonHelpRateApp);
+        buttonHelpPrivacy = view.findViewById(R.id.buttonHelpPrivacy);
+        buttonHelpTerms = view.findViewById(R.id.buttonHelpTerms);
+        buttonHelpLicenses = view.findViewById(R.id.buttonHelpLicenses);
+        textAppVersion = view.findViewById(R.id.textAppVersion);
+
+        // Wave 2: search filter
+        editSettingsSearch = view.findViewById(R.id.editSettingsSearch);
+        textSearchEmpty = view.findViewById(R.id.textSearchEmpty);
+        // The dialog root LinearLayout that holds all cards — used for visibility filtering.
+        settingsRoot = (LinearLayout) ((ViewGroup) view.findViewById(R.id.settingsScroll)).getChildAt(0);
+
+        // Wave 2: avatar + bio
+        imageAvatar = view.findViewById(R.id.imageAvatar);
+        buttonAvatarChange = view.findViewById(R.id.buttonAvatarChange);
+        buttonAvatarRemove = view.findViewById(R.id.buttonAvatarRemove);
+        editBio = view.findViewById(R.id.editBio);
+
+        // Wave 2: appearance extras
+        unitsRadioGroup = view.findViewById(R.id.unitsRadioGroup);
+        dateFormatRadioGroup = view.findViewById(R.id.dateFormatRadioGroup);
+        fontScaleRadioGroup = view.findViewById(R.id.fontScaleRadioGroup);
+
+        // Wave 2: privacy extras
+        switchProfilePublic = view.findViewById(R.id.switchProfilePublic);
+        switchAdsPersonalized = view.findViewById(R.id.switchAdsPersonalized);
+
+        // Wave 2: per-type notifs
+        switchNotifWater = view.findViewById(R.id.switchNotifWater);
+        switchNotifFertilize = view.findViewById(R.id.switchNotifFertilize);
+        switchNotifMist = view.findViewById(R.id.switchNotifMist);
+        switchNotifRepot = view.findViewById(R.id.switchNotifRepot);
+        switchNotifWeather = view.findViewById(R.id.switchNotifWeather);
+
+        // Wave 2: family + cloud
+        textFamilyCount = view.findViewById(R.id.textFamilyCount);
+        buttonFamilyOpen = view.findViewById(R.id.buttonFamilyOpen);
+        textLastSync = view.findViewById(R.id.textLastSync);
 
         initThemeToggle();
         initVacationSection();
         initPrivacySection();
+        initNotificationsSection();
+        initHelpSection();
+        // Wave 2 inits
+        initAvatarAndBio();
+        initAppearanceExtras();
+        initPerTypeNotifications();
+        initFamilyAndCloudSections();
+        initSettingsSearch();
     }
 
     private void initVacationSection() {
@@ -261,17 +381,17 @@ public class SettingsDialogFragment extends DialogFragment {
         if (pendingVacationStart == null) pendingVacationStart = start;
         if (pendingVacationEnd == null) pendingVacationEnd = end;
 
-        DateTimeFormatter fmt = DateTimeFormatter.ISO_LOCAL_DATE;
+        // Wave 2: respect the user's date-format choice.
         if (pendingVacationStart != null && pendingVacationEnd != null) {
             vacationStatusText.setText(getString(
                     R.string.vacation_status_set,
-                    pendingVacationStart.format(fmt),
-                    pendingVacationEnd.format(fmt)
+                    com.example.plantcare.format.DateFormatter.INSTANCE.format(requireContext(), pendingVacationStart),
+                    com.example.plantcare.format.DateFormatter.INSTANCE.format(requireContext(), pendingVacationEnd)
             ));
         } else if (pendingVacationStart != null) {
             vacationStatusText.setText(getString(
                     R.string.vacation_status_start_only,
-                    pendingVacationStart.format(fmt)
+                    com.example.plantcare.format.DateFormatter.INSTANCE.format(requireContext(), pendingVacationStart)
             ));
         } else {
             vacationStatusText.setText(R.string.vacation_inactive_hint);
@@ -313,9 +433,173 @@ public class SettingsDialogFragment extends DialogFragment {
     private void initPrivacySection() {
         switchAnalytics.setChecked(ConsentManager.INSTANCE.isAnalyticsEnabled(requireContext()));
         switchAnalytics.setOnCheckedChangeListener((btn, checked) ->
-                ConsentManager.INSTANCE.setConsent(requireContext(), checked));
+                ConsentManager.INSTANCE.setAnalyticsEnabled(requireContext(), checked));
+
+        if (switchCrashReports != null) {
+            switchCrashReports.setChecked(ConsentManager.INSTANCE.isCrashReportsEnabled(requireContext()));
+            switchCrashReports.setOnCheckedChangeListener((btn, checked) ->
+                    ConsentManager.INSTANCE.setCrashReportsEnabled(requireContext(), checked));
+        }
 
         buttonExportData.setOnClickListener(v -> onExportData());
+    }
+
+    /** Wave 1: morning + evening reminder times — closes DEFERRED #6.
+     *  Saved hours are read by PlantReminderWorker on every run, so the
+     *  next periodic firing already respects the new window. */
+    private void initNotificationsSection() {
+        if (buttonNotifMorningTime == null || buttonNotifEveningTime == null) return;
+
+        refreshNotifTimeLabels();
+
+        buttonNotifMorningTime.setOnClickListener(v -> showNotifTimePicker(true));
+        buttonNotifEveningTime.setOnClickListener(v -> showNotifTimePicker(false));
+    }
+
+    private void refreshNotifTimeLabels() {
+        int morning = prefs.getInt(PlantReminderWorker.KEY_NOTIF_MORNING_HOUR,
+                PlantReminderWorker.DEFAULT_MORNING_HOUR);
+        int evening = prefs.getInt(PlantReminderWorker.KEY_NOTIF_EVENING_HOUR,
+                PlantReminderWorker.DEFAULT_EVENING_HOUR);
+        buttonNotifMorningTime.setText(getString(R.string.settings_notif_time_format, morning));
+        buttonNotifEveningTime.setText(getString(R.string.settings_notif_time_format, evening));
+    }
+
+    private void showNotifTimePicker(boolean isMorning) {
+        int currentHour = isMorning
+                ? prefs.getInt(PlantReminderWorker.KEY_NOTIF_MORNING_HOUR,
+                        PlantReminderWorker.DEFAULT_MORNING_HOUR)
+                : prefs.getInt(PlantReminderWorker.KEY_NOTIF_EVENING_HOUR,
+                        PlantReminderWorker.DEFAULT_EVENING_HOUR);
+
+        // We use the standard system TimePickerDialog with 24-hour layout —
+        // matches the German market convention. Minutes are forced to :00 on
+        // save because the Worker windows are hour-granular.
+        new android.app.TimePickerDialog(
+                requireContext(),
+                (view, hourOfDay, minute) -> {
+                    int saved;
+                    String prefKey;
+                    if (isMorning) {
+                        // Clamp to a sane morning band — outside this the
+                        // window would overlap evening or never fire.
+                        saved = clamp(hourOfDay, 5, 12);
+                        prefKey = PlantReminderWorker.KEY_NOTIF_MORNING_HOUR;
+                    } else {
+                        saved = clamp(hourOfDay, 14, 22);
+                        prefKey = PlantReminderWorker.KEY_NOTIF_EVENING_HOUR;
+                    }
+                    prefs.edit().putInt(prefKey, saved).apply();
+                    refreshNotifTimeLabels();
+                },
+                currentHour,
+                0,
+                /* is24HourView */ true
+        ).show();
+    }
+
+    private static int clamp(int value, int min, int max) {
+        return value < min ? min : (value > max ? max : value);
+    }
+
+    /** Wave 1: Help & About — pure UI + intents. */
+    private void initHelpSection() {
+        if (textAppVersion != null) {
+            textAppVersion.setText(getString(R.string.settings_help_version_value,
+                    BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
+        }
+
+        wireUrlButton(buttonHelpFaq, R.string.support_faq_url);
+        wireUrlButton(buttonHelpPrivacy, R.string.consent_privacy_url);
+        wireUrlButton(buttonHelpTerms, R.string.consent_terms_url);
+
+        if (buttonHelpFeedback != null) {
+            buttonHelpFeedback.setOnClickListener(v -> openFeedbackEmail());
+        }
+        if (buttonHelpReplayTutorial != null) {
+            buttonHelpReplayTutorial.setOnClickListener(v -> replayTutorial());
+        }
+        if (buttonHelpRateApp != null) {
+            buttonHelpRateApp.setOnClickListener(v -> openPlayStoreListing());
+        }
+        if (buttonHelpLicenses != null) {
+            buttonHelpLicenses.setOnClickListener(v -> showOssLicenses());
+        }
+    }
+
+    private void wireUrlButton(@Nullable Button btn, int urlRes) {
+        if (btn == null) return;
+        btn.setOnClickListener(v -> {
+            String url = getString(urlRes);
+            if (url == null || url.isEmpty()) {
+                toast(getString(R.string.settings_help_open_failed));
+                return;
+            }
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            } catch (Exception e) {
+                CrashReporter.INSTANCE.log(e);
+                toast(getString(R.string.settings_help_open_failed));
+            }
+        });
+    }
+
+    private void openFeedbackEmail() {
+        String to = getString(R.string.support_feedback_email);
+        Uri uri = Uri.parse("mailto:" + to)
+                .buildUpon()
+                .appendQueryParameter("subject", getString(R.string.settings_help_feedback_subject))
+                .appendQueryParameter("body", "\n\n— Version "
+                        + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")")
+                .build();
+        Intent i = new Intent(Intent.ACTION_SENDTO, uri);
+        try {
+            startActivity(i);
+        } catch (android.content.ActivityNotFoundException e) {
+            // Kein Email-Client installiert — Fallback zur Webseite, sonst Hinweis.
+            toast(getString(R.string.settings_help_open_failed));
+        }
+    }
+
+    private void replayTutorial() {
+        try {
+            Intent i = new Intent(requireContext(),
+                    com.example.plantcare.ui.onboarding.OnboardingActivity.class);
+            // Ensure a fresh task so the back stack stays clean (user came
+            // from Settings — they don't want to be dropped back into it).
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            dismiss();
+        } catch (Exception e) {
+            CrashReporter.INSTANCE.log(e);
+            toast(getString(R.string.settings_help_open_failed));
+        }
+    }
+
+    private void openPlayStoreListing() {
+        String pkg = requireContext().getPackageName();
+        Uri marketUri = Uri.parse("market://details?id=" + pkg);
+        Intent market = new Intent(Intent.ACTION_VIEW, marketUri);
+        // Try the Play Store app first, fall back to web.
+        try {
+            startActivity(market);
+        } catch (android.content.ActivityNotFoundException e) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=" + pkg)));
+            } catch (Exception ee) {
+                CrashReporter.INSTANCE.log(ee);
+                toast(getString(R.string.settings_help_open_failed));
+            }
+        }
+    }
+
+    private void showOssLicenses() {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle(R.string.settings_help_licenses_title)
+                .setMessage(R.string.settings_help_licenses_body)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     private void onExportData() {
@@ -710,6 +994,357 @@ public class SettingsDialogFragment extends DialogFragment {
         prefs.edit().clear().apply();
         toast(getString(R.string.settings_account_deleted));
         if (getActivity() != null) getActivity().recreate();
+    }
+
+    /* ──────────────────────────── Wave 2 ──────────────────────────── */
+
+    /** Wave 2: Bio + Avatar wiring. Bio persists on every keystroke (debounced
+     *  via TextWatcher → SharedPreferences); avatar uses a gallery picker. */
+    private void initAvatarAndBio() {
+        // Bio — read existing + persist on edit.
+        if (editBio != null) {
+            editBio.setText(prefs.getString(KEY_BIO, ""));
+            editBio.addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                @Override public void afterTextChanged(Editable s) {
+                    prefs.edit().putString(KEY_BIO, s == null ? "" : s.toString()).apply();
+                }
+            });
+        }
+
+        // Avatar — load existing local file if present, otherwise leave the
+        // placeholder drawable.
+        refreshAvatarPreview();
+
+        if (buttonAvatarChange != null) {
+            buttonAvatarChange.setOnClickListener(v -> {
+                try {
+                    avatarPickerLauncher.launch("image/*");
+                } catch (Exception e) {
+                    CrashReporter.INSTANCE.log(e);
+                    toast(getString(R.string.settings_avatar_pick_failed));
+                }
+            });
+        }
+        if (buttonAvatarRemove != null) {
+            buttonAvatarRemove.setOnClickListener(v -> {
+                if (email != null) AvatarUploader.INSTANCE.clearLocalAvatar(requireContext(), email);
+                refreshAvatarPreview();
+            });
+        }
+    }
+
+    private void refreshAvatarPreview() {
+        if (imageAvatar == null) return;
+        if (email == null) return;
+        java.io.File f = AvatarUploader.INSTANCE.localFile(requireContext(), email);
+        if (f.exists() && f.length() > 0) {
+            // Glide handles decoding off the main thread, applies the
+            // ShapeableImageView's circle crop on top of the bitmap, and
+            // caches the decoded result. Skip-memory-cache=false keeps
+            // re-opens of the dialog snappy.
+            imageAvatar.setPadding(0, 0, 0, 0);
+            com.bumptech.glide.Glide.with(this)
+                    .load(f)
+                    .signature(new com.bumptech.glide.signature.ObjectKey(f.lastModified()))
+                    .placeholder(R.drawable.ic_settings_black)
+                    .error(R.drawable.ic_settings_black)
+                    .centerCrop()
+                    .into(imageAvatar);
+            if (buttonAvatarRemove != null) buttonAvatarRemove.setVisibility(View.VISIBLE);
+            return;
+        }
+        // Fallback to placeholder.
+        com.bumptech.glide.Glide.with(this).clear(imageAvatar);
+        imageAvatar.setImageResource(R.drawable.ic_settings_black);
+        int padPx = (int) (14 * getResources().getDisplayMetrics().density);
+        imageAvatar.setPadding(padPx, padPx, padPx, padPx);
+        if (buttonAvatarRemove != null) buttonAvatarRemove.setVisibility(View.GONE);
+    }
+
+    private void onAvatarPicked(@Nullable Uri pickedUri) {
+        if (pickedUri == null || email == null) return;
+        FragmentBg.runIO(this,
+                () -> AvatarUploader.INSTANCE.saveLocalAndUpload(requireContext(), pickedUri, email),
+                this::refreshAvatarPreview);
+    }
+
+    /** Wave 2: Units / Date format / Font scale RadioGroups. Font scale recreates
+     *  the host Activity so the new Configuration takes effect. */
+    private void initAppearanceExtras() {
+        if (unitsRadioGroup != null) {
+            AppearancePrefs.Units u = AppearancePrefs.INSTANCE.getUnits(requireContext());
+            (u == AppearancePrefs.Units.IMPERIAL
+                    ? (RadioButton) unitsRadioGroup.findViewById(R.id.radioUnitsImperial)
+                    : (RadioButton) unitsRadioGroup.findViewById(R.id.radioUnitsMetric))
+                    .setChecked(true);
+            unitsRadioGroup.setOnCheckedChangeListener((g, id) -> {
+                AppearancePrefs.Units pick = (id == R.id.radioUnitsImperial)
+                        ? AppearancePrefs.Units.IMPERIAL
+                        : AppearancePrefs.Units.METRIC;
+                AppearancePrefs.INSTANCE.setUnits(requireContext(), pick);
+            });
+        }
+
+        if (dateFormatRadioGroup != null) {
+            AppearancePrefs.DateFormat fmt = AppearancePrefs.INSTANCE.getDateFormat(requireContext());
+            int rid;
+            switch (fmt) {
+                case DE: rid = R.id.radioDateDe; break;
+                case US: rid = R.id.radioDateUs; break;
+                default: rid = R.id.radioDateIso; break;
+            }
+            ((RadioButton) dateFormatRadioGroup.findViewById(rid)).setChecked(true);
+            dateFormatRadioGroup.setOnCheckedChangeListener((g, id) -> {
+                AppearancePrefs.DateFormat pick;
+                if (id == R.id.radioDateDe) pick = AppearancePrefs.DateFormat.DE;
+                else if (id == R.id.radioDateUs) pick = AppearancePrefs.DateFormat.US;
+                else pick = AppearancePrefs.DateFormat.ISO;
+                AppearancePrefs.INSTANCE.setDateFormat(requireContext(), pick);
+            });
+        }
+
+        if (fontScaleRadioGroup != null) {
+            AppearancePrefs.FontScale fs = AppearancePrefs.INSTANCE.getFontScale(requireContext());
+            int rid;
+            switch (fs) {
+                case SMALL: rid = R.id.radioFontSmall; break;
+                case LARGE: rid = R.id.radioFontLarge; break;
+                case EXTRA_LARGE: rid = R.id.radioFontXLarge; break;
+                default: rid = R.id.radioFontNormal; break;
+            }
+            ((RadioButton) fontScaleRadioGroup.findViewById(rid)).setChecked(true);
+            fontScaleRadioGroup.setOnCheckedChangeListener((g, id) -> {
+                AppearancePrefs.FontScale pick;
+                if (id == R.id.radioFontSmall) pick = AppearancePrefs.FontScale.SMALL;
+                else if (id == R.id.radioFontLarge) pick = AppearancePrefs.FontScale.LARGE;
+                else if (id == R.id.radioFontXLarge) pick = AppearancePrefs.FontScale.EXTRA_LARGE;
+                else pick = AppearancePrefs.FontScale.NORMAL;
+                AppearancePrefs.INSTANCE.setFontScale(requireContext(), pick);
+                // Activity recreate — base Context wraps fresh fontScale.
+                if (getActivity() != null) getActivity().recreate();
+            });
+        }
+    }
+
+    /** Wave 2: per-type notifications + visibility + NPA. */
+    private void initPerTypeNotifications() {
+        bindNotifTypeSwitch(switchNotifWater, KEY_NOTIF_TYPE_WATER, true);
+        bindNotifTypeSwitch(switchNotifFertilize, KEY_NOTIF_TYPE_FERTILIZE, true);
+        bindNotifTypeSwitch(switchNotifMist, KEY_NOTIF_TYPE_MIST, true);
+        bindNotifTypeSwitch(switchNotifRepot, KEY_NOTIF_TYPE_REPOT, true);
+        bindNotifTypeSwitch(switchNotifWeather, KEY_NOTIF_TYPE_WEATHER, true);
+
+        if (switchProfilePublic != null) {
+            switchProfilePublic.setChecked(prefs.getBoolean(KEY_PROFILE_PUBLIC, false));
+            switchProfilePublic.setOnCheckedChangeListener((btn, checked) -> {
+                prefs.edit().putBoolean(KEY_PROFILE_PUBLIC, checked).apply();
+                mirrorProfileVisibilityToFirestore(checked);
+            });
+        }
+
+        if (switchAdsPersonalized != null) {
+            // Default on — historical behaviour. Off = NPA flag set on AdRequest.
+            switchAdsPersonalized.setChecked(prefs.getBoolean(KEY_ADS_PERSONALIZED, true));
+            switchAdsPersonalized.setOnCheckedChangeListener((btn, checked) ->
+                    prefs.edit().putBoolean(KEY_ADS_PERSONALIZED, checked).apply());
+        }
+    }
+
+    private void bindNotifTypeSwitch(@Nullable SwitchMaterial sw, String key, boolean defaultOn) {
+        if (sw == null) return;
+        sw.setChecked(prefs.getBoolean(key, defaultOn));
+        sw.setOnCheckedChangeListener((btn, checked) ->
+                prefs.edit().putBoolean(key, checked).apply());
+    }
+
+    /** Best-effort mirror to /users/{uid}/profile/visibility — value used by
+     *  the public-facing surfaces (none today; the field is here for the
+     *  upcoming community/share epic). Failures are non-fatal. */
+    private void mirrorProfileVisibilityToFirestore(boolean isPublic) {
+        com.google.firebase.auth.FirebaseUser user =
+                FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+        java.util.Map<String, Object> data = new java.util.HashMap<>();
+        data.put("public", isPublic);
+        data.put("updated_at", com.google.firebase.firestore.FieldValue.serverTimestamp());
+        FirebaseFirestore.getInstance()
+                .collection("users").document(user.getUid())
+                .collection("profile").document("visibility")
+                .set(data, com.google.firebase.firestore.SetOptions.merge())
+                .addOnFailureListener(CrashReporter.INSTANCE::log);
+    }
+
+    /** Wave 2: Family Share entry + last-sync display. */
+    private void initFamilyAndCloudSections() {
+        if (textFamilyCount != null) {
+            textFamilyCount.setText(getString(R.string.settings_family_count, 0));
+            // Real count requires a per-user query against Plant.sharedWith;
+            // running here would touch DB on the main thread. Defer to IO.
+            FragmentBg.<Integer>runWithResult(this,
+                    () -> {
+                        if (email == null) return 0;
+                        try {
+                            java.util.List<Plant> plants = com.example.plantcare.data.repository
+                                    .PlantRepository.getInstance(requireContext().getApplicationContext())
+                                    .getAllUserPlantsForUserBlocking(email);
+                            java.util.Set<String> uniqueShared = new java.util.HashSet<>();
+                            if (plants != null) for (Plant p : plants) {
+                                uniqueShared.addAll(com.example.plantcare.feature.share.FamilyShareManager
+                                        .getSharedEmails(p));
+                            }
+                            return uniqueShared.size();
+                        } catch (Throwable t) {
+                            CrashReporter.INSTANCE.log(t);
+                            return 0;
+                        }
+                    },
+                    n -> {
+                        if (textFamilyCount != null) {
+                            textFamilyCount.setText(getString(R.string.settings_family_count, n == null ? 0 : n));
+                        }
+                    });
+        }
+
+        if (buttonFamilyOpen != null) {
+            buttonFamilyOpen.setOnClickListener(v -> showFamilyShareOverview());
+        }
+
+        refreshLastSyncLabel();
+    }
+
+    /**
+     * Wave 2: real Family Share overview — lists every co-waterer the user
+     * has across all their plants. Tapping a row navigates to the per-plant
+     * detail dialog where add/remove already lives. Cloud Functions
+     * invitations are still on the roadmap (DEFERRED #13) but this surface
+     * already exposes the full local share graph honestly.
+     */
+    private void showFamilyShareOverview() {
+        if (email == null) {
+            new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.settings_section_family)
+                    .setMessage(R.string.vacation_requires_account)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+            return;
+        }
+        FragmentBg.<java.util.List<Plant>>runWithResult(this,
+                () -> com.example.plantcare.data.repository
+                        .PlantRepository.getInstance(requireContext().getApplicationContext())
+                        .getAllUserPlantsForUserBlocking(email),
+                plants -> {
+                    if (plants == null || plants.isEmpty()) {
+                        toast(getString(R.string.settings_family_pending_body));
+                        return;
+                    }
+                    // Build email → list of plant names map.
+                    java.util.Map<String, java.util.List<String>> graph = new java.util.TreeMap<>();
+                    for (Plant p : plants) {
+                        for (String shared : com.example.plantcare.feature.share
+                                .FamilyShareManager.getSharedEmails(p)) {
+                            graph.computeIfAbsent(shared, k -> new java.util.ArrayList<>())
+                                    .add(p.name == null ? "—" : p.name);
+                        }
+                    }
+                    if (graph.isEmpty()) {
+                        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                                .setTitle(R.string.settings_section_family)
+                                .setMessage(R.string.settings_family_pending_body)
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show();
+                        return;
+                    }
+                    // Render as "email\n  • plant1\n  • plant2" entries.
+                    StringBuilder body = new StringBuilder();
+                    for (java.util.Map.Entry<String, java.util.List<String>> e : graph.entrySet()) {
+                        body.append(e.getKey()).append('\n');
+                        for (String pn : e.getValue()) {
+                            body.append("   • ").append(pn).append('\n');
+                        }
+                        body.append('\n');
+                    }
+                    new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                            .setTitle(R.string.settings_section_family)
+                            .setMessage(body.toString().trim())
+                            .setPositiveButton(android.R.string.ok, null)
+                            .setNeutralButton(R.string.settings_family_pending_title, (d, w) ->
+                                    new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                                            .setTitle(R.string.settings_family_pending_title)
+                                            .setMessage(R.string.settings_family_pending_body)
+                                            .setPositiveButton(android.R.string.ok, null)
+                                            .show())
+                            .show();
+                });
+    }
+
+    private void refreshLastSyncLabel() {
+        if (textLastSync == null) return;
+        long ts = LastSyncTracker.lastSyncMillis(requireContext());
+        if (ts <= 0L) {
+            textLastSync.setText(R.string.settings_cloud_last_sync_never);
+            return;
+        }
+        long deltaMs = System.currentTimeMillis() - ts;
+        long mins = deltaMs / 60_000L;
+        if (mins < 1) {
+            textLastSync.setText(R.string.settings_cloud_last_sync_just_now);
+        } else if (mins < 60) {
+            textLastSync.setText(getString(R.string.settings_cloud_last_sync_relative_min, (int) mins));
+        } else if (mins < 60 * 24) {
+            textLastSync.setText(getString(R.string.settings_cloud_last_sync_relative_hour, (int) (mins / 60)));
+        } else {
+            textLastSync.setText(getString(R.string.settings_cloud_last_sync_relative_day, (int) (mins / (60 * 24))));
+        }
+    }
+
+    /** Wave 2: settings search bar — filters the top-level MaterialCardView
+     *  children by the section title's text contains-match. */
+    private void initSettingsSearch() {
+        if (editSettingsSearch == null || settingsRoot == null) return;
+        editSettingsSearch.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(Editable s) {
+                applySearchFilter(s == null ? "" : s.toString().trim().toLowerCase());
+            }
+        });
+    }
+
+    private void applySearchFilter(String query) {
+        if (settingsRoot == null) return;
+        boolean anyMatch = query.isEmpty();
+        for (int i = 0; i < settingsRoot.getChildCount(); i++) {
+            View child = settingsRoot.getChildAt(i);
+            // Skip non-card scaffold (close button, search field, empty state).
+            if (!(child instanceof com.google.android.material.card.MaterialCardView)) continue;
+            if (query.isEmpty()) {
+                child.setVisibility(View.VISIBLE);
+                continue;
+            }
+            // Walk the card looking for a TextView whose text contains the query.
+            boolean match = cardMatchesQuery(child, query);
+            child.setVisibility(match ? View.VISIBLE : View.GONE);
+            if (match) anyMatch = true;
+        }
+        if (textSearchEmpty != null) {
+            textSearchEmpty.setVisibility(anyMatch ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    private boolean cardMatchesQuery(View card, String query) {
+        if (card instanceof TextView) {
+            CharSequence t = ((TextView) card).getText();
+            return t != null && t.toString().toLowerCase().contains(query);
+        }
+        if (card instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) card;
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                if (cardMatchesQuery(vg.getChildAt(i), query)) return true;
+            }
+        }
+        return false;
     }
 
     private void toast(String msg) {

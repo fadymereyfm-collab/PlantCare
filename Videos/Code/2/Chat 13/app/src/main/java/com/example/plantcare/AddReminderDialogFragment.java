@@ -21,13 +21,18 @@ import java.util.*;
 
 public class AddReminderDialogFragment extends DialogFragment {
 
-    private Spinner plantSpinner, repeatSpinner;
+    private Spinner plantSpinner, repeatSpinner, typeSpinner;
     private EditText dateEditText, descriptionEditText, titleEditText, customDaysEditText;
     private EditText editEndDate;
     private CheckBox checkNoEndDate;
     private Button photoButton, buttonConfirm;
     private String selectedDate = "";
     private Plant selectedPlant;
+
+    // Wave 2 — reminder types. "water" is the historical default and stays
+    // first. Order here matches typeSpinner indices in onCreateView.
+    private static final String[] TYPE_KEYS = { "water", "fertilize", "mist", "repot" };
+    private String selectedType = "water";
 
     private String userEmail;
 
@@ -40,6 +45,29 @@ public class AddReminderDialogFragment extends DialogFragment {
 
         plantSpinner = view.findViewById(R.id.plantSpinner);
         repeatSpinner = view.findViewById(R.id.repeatSpinner);
+        typeSpinner = view.findViewById(R.id.typeSpinner);
+        // Populate the type spinner with localized labels in TYPE_KEYS order.
+        if (typeSpinner != null) {
+            String[] typeLabels = {
+                    getString(R.string.settings_notif_type_water),
+                    getString(R.string.settings_notif_type_fertilize),
+                    getString(R.string.settings_notif_type_mist),
+                    getString(R.string.settings_notif_type_repot)
+            };
+            ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(
+                    requireContext(), android.R.layout.simple_spinner_item, typeLabels);
+            typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            typeSpinner.setAdapter(typeAdapter);
+            typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view1, int position, long id) {
+                    if (position >= 0 && position < TYPE_KEYS.length) {
+                        selectedType = TYPE_KEYS[position];
+                    }
+                }
+                @Override public void onNothingSelected(AdapterView<?> parent) {}
+            });
+        }
         dateEditText = view.findViewById(R.id.dateEditText);
         descriptionEditText = view.findViewById(R.id.descriptionEditText);
         titleEditText = view.findViewById(R.id.titleEditText);
@@ -130,7 +158,7 @@ public class AddReminderDialogFragment extends DialogFragment {
         photoButton.setOnClickListener(v -> {
             if (selectedPlant != null && getActivity() instanceof MainActivity activity) {
                 String dateToUse = selectedDate.isEmpty()
-                        ? new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date())
+                        ? new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date())
                         : selectedDate;
                 activity.startPhotoForDate(selectedPlant, dateToUse);
             }
@@ -168,6 +196,9 @@ public class AddReminderDialogFragment extends DialogFragment {
             reminder.repeat = String.valueOf(repeatDays);
             reminder.done = false;
             reminder.userEmail = userEmail;
+            // Wave 2: persist the user-chosen reminder type so the per-type
+            // notification toggles in Settings can filter the daily summary.
+            reminder.type = selectedType;
 
             String endDateStr = editEndDate.getText().toString().trim();
             boolean noEndDate = checkNoEndDate.isChecked();
@@ -183,7 +214,7 @@ public class AddReminderDialogFragment extends DialogFragment {
                         reminderRepo.insertBlocking(reminder);
                         FirebaseSyncManager.get().syncReminder(reminder);
                     } else {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                         Date start = sdf.parse(reminder.date);
                         Calendar cal = Calendar.getInstance();
                         cal.setTime(start);
@@ -218,6 +249,7 @@ public class AddReminderDialogFragment extends DialogFragment {
                             r.repeat = reminder.repeat;
                             r.description = reminder.description;
                             r.userEmail = reminder.userEmail;
+                            r.type = reminder.type;
                             reminderRepo.insertBlocking(r);
                             FirebaseSyncManager.get().syncReminder(r);
                             created++;
@@ -278,7 +310,7 @@ public class AddReminderDialogFragment extends DialogFragment {
         Calendar calendar = Calendar.getInstance();
         if (!TextUtils.isEmpty(editText.getText())) {
             try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                 calendar.setTime(sdf.parse(editText.getText().toString()));
             } catch (Exception __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
         }
@@ -288,7 +320,7 @@ public class AddReminderDialogFragment extends DialogFragment {
         new DatePickerDialog(
                 new android.view.ContextThemeWrapper(requireContext(), R.style.PlantCareDatePicker),
                 (view, y, m, d) -> {
-                    String dateStr = String.format(Locale.getDefault(), "%04d-%02d-%02d", y, m + 1, d);
+                    String dateStr = String.format(Locale.US, "%04d-%02d-%02d", y, m + 1, d);
                     editText.setText(dateStr);
                     if (editText == dateEditText) selectedDate = dateStr;
                 }, year, month, day

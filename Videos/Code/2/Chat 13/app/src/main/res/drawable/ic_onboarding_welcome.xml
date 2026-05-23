@@ -1,0 +1,152 @@
+<!--
+  Soft 3D Clay theme — Welcome (page 1).
+  Terracotta plant pot with three leaves rising from it.
+  Built as stacked layers (cast shadow → back-shadow body → main body
+  with linear gradient → rim → soil → stems → leaf shadow → leaf body
+  with gradient → leaf highlight) so the icon reads as a soft clay
+  rendering rather than a flat glyph. Fills the full 200×200 viewport.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Cast shadow on the ground under the pot -->
+    <path
+        android:pathData="M40,184 Q100,196, 160,184 Q100,174, 40,184 Z"
+        android:fillColor="#4F6B5E"
+        android:fillAlpha="0.20" />
+
+    <!-- Pot back-shadow (offset down/right to give depth) -->
+    <path
+        android:pathData="M58,118 L52,178 Q52,182 56,182 L144,182 Q148,182 148,178 L142,118 Z"
+        android:fillColor="#7B4A30" />
+
+    <!-- Pot body — vertical terracotta gradient -->
+    <path android:pathData="M55,115 L48,176 Q48,180 52,180 L148,180 Q152,180 152,176 L145,115 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="100" android:startY="115"
+                android:endX="100" android:endY="180">
+                <item android:offset="0.0" android:color="#E5A582" />
+                <item android:offset="1.0" android:color="#A05F40" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Pot rim (slightly lighter band at the top) -->
+    <path android:pathData="M50,108 L150,108 L146,120 L54,120 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="100" android:startY="108"
+                android:endX="100" android:endY="120">
+                <item android:offset="0.0" android:color="#EFBA9C" />
+                <item android:offset="1.0" android:color="#C97B5A" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Soil — dark ellipse on the pot opening -->
+    <path
+        android:pathData="M55,112 Q100,103, 145,112 Q100,121, 55,112 Z"
+        android:fillColor="#3D2818" />
+
+    <!-- Pot left highlight (cream stripe along the side) -->
+    <path
+        android:pathData="M62,124 L65,172 L70,172 L67,124 Z"
+        android:fillColor="#FCF8F0"
+        android:fillAlpha="0.35" />
+
+    <!-- Stems -->
+    <path
+        android:pathData="M100,108 L100,52"
+        android:strokeColor="#3D5448"
+        android:strokeWidth="3.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M88,110 L72,72"
+        android:strokeColor="#3D5448"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M112,110 L128,72"
+        android:strokeColor="#3D5448"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Center leaf shadow -->
+    <path
+        android:pathData="M103,22 Q80,38, 78,72 Q100,82, 122,72 Q120,38, 103,22 Z"
+        android:fillColor="#3D5448" />
+
+    <!-- Center leaf body — olive gradient -->
+    <path android:pathData="M100,18 Q77,34, 75,68 Q97,78, 119,68 Q117,34, 100,18 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="80" android:startY="22"
+                android:endX="115" android:endY="78">
+                <item android:offset="0.0" android:color="#A6C9B7" />
+                <item android:offset="1.0" android:color="#5C7E70" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Center leaf vein/highlight -->
+    <path
+        android:pathData="M99,24 L100,72"
+        android:strokeColor="#FCF8F0"
+        android:strokeWidth="2"
+        android:strokeAlpha="0.55"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Left leaf shadow -->
+    <path
+        android:pathData="M64,46 Q44,56, 42,82 Q60,90, 76,84 Q78,58, 64,46 Z"
+        android:fillColor="#3D5448" />
+
+    <!-- Left leaf body -->
+    <path android:pathData="M61,42 Q41,52, 39,78 Q57,86, 73,80 Q75,54, 61,42 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="42" android:startY="46"
+                android:endX="73" android:endY="86">
+                <item android:offset="0.0" android:color="#A6C9B7" />
+                <item android:offset="1.0" android:color="#5C7E70" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Right leaf shadow -->
+    <path
+        android:pathData="M136,46 Q156,56, 158,82 Q140,90, 124,84 Q122,58, 136,46 Z"
+        android:fillColor="#3D5448" />
+
+    <!-- Right leaf body -->
+    <path android:pathData="M139,42 Q159,52, 161,78 Q143,86, 127,80 Q125,54, 139,42 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="127" android:startY="46"
+                android:endX="158" android:endY="86">
+                <item android:offset="0.0" android:color="#A6C9B7" />
+                <item android:offset="1.0" android:color="#5C7E70" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Small upper highlight on pot rim -->
+    <path
+        android:pathData="M52,108 L88,108 L88,112 L52,112 Z"
+        android:fillColor="#FCF8F0"
+        android:fillAlpha="0.40" />
+</vector>

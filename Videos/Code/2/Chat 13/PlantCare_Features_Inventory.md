@@ -2,7 +2,7 @@
 
 > **Purpose:** قائمة موحّدة بكل وظائف التطبيق مع معرّف فريد لكل ميزة.
 > **Usage:** مرجع لـ Cloud Coding routines، اختبار، تتبّع تنفيذ، debugging.
-> **Last sync:** 2026-05-05 — يطابق الكود في `app/src/main/java/com/example/plantcare/`.
+> **Last sync:** 2026-05-10 — v17 catalog expansion + Identify-Catalog bridge.
 >
 > **Status legend:** ✅ مكتملة | ⏳ مؤجّلة لـ v1.1 | 🔴 معطّلة | ⚠️ جزئية
 
@@ -55,7 +55,7 @@
 | F3.5 | Room icons (16) | bedroom / kitchen / etc | ✅ | `res/drawable/sage_ic_room_*.xml` |
 | F3.6 | Race-safe defaults init | @Synchronized helper | ✅ | `RoomCategoryRepository.kt:ensureDefaultsForUserBlocking` |
 | **F4 — Plant catalog** | | | | |
-| F4.1 | 506+ plants (DE) | seeded from CSV | ✅ | `assets/plants.csv` |
+| F4.1 | 505 plants (DE) — v17 trust-gated catalog | seeded from 8-col CSV; only hand-curated rows retained after v17.10 rollback | ✅ | `assets/plants.csv` |
 | F4.2 | Search catalog | filter by name | ✅ | `AllPlantsFragment.java` |
 | F4.3 | Category filter | indoor/outdoor/herbal/cacti | ✅ | `AllPlantsFragment.java:169` |
 | F4.4 | Auto-classification | heuristic on insert | ✅ | `ui/util/PlantCategoryUtil.kt` |
@@ -108,6 +108,9 @@
 | F8.7 | Add to My Plants | one tap promotion | ✅ | `ui/identify/PlantIdentifyActivity.kt:433` |
 | F8.8 | Catalog auto-fill | care info from local match | ✅ | `data/plantnet/PlantCatalogLookup.kt` |
 | F8.9 | wateringInterval auto-detection | from family defaults | ✅ | `data/plantnet/PlantCareDefaults.kt` |
+| F8.10 | Catalog-match badge (v17) | "✓ In unserem Katalog" on PlantNet results | ✅ | `ui/identify/IdentificationResultAdapter.kt` |
+| F8.11 | Latin-name primary lookup (v17) | scientificName as catalog match key | ✅ | `data/plantnet/PlantCatalogLookup.kt:findMatch` |
+| F8.12 | Catalog-as-source-of-truth (v17) | Add flow uses curated row, not random | ✅ | `ui/identify/PlantIdentifyActivity.kt:enrichAndOpenDialog` |
 | **F9 — Disease diagnosis (Gemini)** | | | | |
 | F9.1 | Camera + diagnose | top-level toolbar button | ✅ | `ui/disease/DiseaseDiagnosisActivity.kt` |
 | F9.2 | Gemini 2.5 Flash API | cloud vision | ✅ | `data/gemini/GeminiVisionService.kt` |

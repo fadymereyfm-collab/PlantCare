@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Single-button stub inflated by ActionListDialogFragment for every
+  non-destructive row in the polished action-list dialog. Kept as a
+  separate file (rather than constructed programmatically) so the
+  PlantCare.Button.Outlined style applies cleanly via LayoutInflater
+  without needing a ContextThemeWrapper dance.
+-->
+<com.google.android.material.button.MaterialButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/PlantCare.Button.Outlined"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:textSize="16sp"/>

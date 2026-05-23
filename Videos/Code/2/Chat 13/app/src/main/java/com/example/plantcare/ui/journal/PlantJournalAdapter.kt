@@ -180,15 +180,26 @@ class PlantJournalAdapter(
             val placeholder = R.drawable.ic_default_plant
             val builder = Glide.with(ctx)
 
+            // Strip PENDING_DOC:<docId>| prefix so the local URI suffix
+            // is used directly while upload is in flight.
+            val effective: String? = when {
+                raw == null -> null
+                raw.startsWith("PENDING_DOC:") -> {
+                    val sep = raw.indexOf('|')
+                    if (sep > 0 && sep + 1 < raw.length) raw.substring(sep + 1) else null
+                }
+                else -> raw
+            }
+
             val model: Any? = when {
-                raw.isNullOrBlank() -> null
-                raw.startsWith("PENDING_DOC:") -> null
-                raw.startsWith("http://") || raw.startsWith("https://") -> raw
-                raw.startsWith("content://") ->
-                    resolveOwnFileProviderFile(ctx, raw) ?: Uri.parse(raw)
-                raw.startsWith("file://") ->
-                    File(Uri.parse(raw).path ?: "").takeIf { it.exists() && it.length() > 0 }
-                else -> File(raw).takeIf { it.exists() && it.length() > 0 }
+                effective.isNullOrBlank() -> null
+                effective.startsWith("PENDING_DOC:") -> null
+                effective.startsWith("http://") || effective.startsWith("https://") -> effective
+                effective.startsWith("content://") ->
+                    resolveOwnFileProviderFile(ctx, effective) ?: Uri.parse(effective)
+                effective.startsWith("file://") ->
+                    File(Uri.parse(effective).path ?: "").takeIf { it.exists() && it.length() > 0 }
+                else -> File(effective).takeIf { it.exists() && it.length() > 0 }
             }
 
             if (model == null) {

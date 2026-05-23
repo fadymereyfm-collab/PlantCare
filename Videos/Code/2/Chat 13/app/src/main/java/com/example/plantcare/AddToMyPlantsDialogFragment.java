@@ -41,6 +41,12 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
     private MaterialButton btnAddRoom;
     private MaterialButton btnClose;
     private MaterialButton btnNext;
+    // v16: per-care-type interval inputs. The user can override the
+    // family-default values here before tapping Hinzufügen.
+    private EditText editIntervalWater;
+    private EditText editIntervalFertilize;
+    private EditText editIntervalMist;
+    private EditText editIntervalRepot;
 
     private final List<RoomCategory> rooms = new ArrayList<>();
     private int selectedRoomId = 0;
@@ -49,6 +55,25 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
 
     private String cachedUserEmail = null;
     private boolean guestMode = false;
+
+    /** v16 helper — write an int to an EditText, leaving it blank when 0. */
+    private static void prefillInterval(EditText field, int value) {
+        if (field == null) return;
+        field.setText(value > 0 ? String.valueOf(value) : "");
+    }
+
+    /** v16 helper — read an int from an EditText, defaulting to fallback when blank/invalid. */
+    private static int readInterval(EditText field, int fallback) {
+        if (field == null) return fallback;
+        try {
+            String s = field.getText().toString().trim();
+            if (s.isEmpty()) return 0;  // explicitly disabled
+            int v = Integer.parseInt(s);
+            return v >= 0 ? v : fallback;
+        } catch (NumberFormatException e) {
+            return fallback;
+        }
+    }
 
     public static AddToMyPlantsDialogFragment newInstance(Plant p) {
         AddToMyPlantsDialogFragment f = new AddToMyPlantsDialogFragment();
@@ -77,6 +102,41 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
         btnClose = v.findViewById(R.id.buttonClose);
         btnNext = v.findViewById(R.id.buttonNext);
 
+        editIntervalWater     = v.findViewById(R.id.editIntervalWater);
+        editIntervalFertilize = v.findViewById(R.id.editIntervalFertilize);
+        editIntervalMist      = v.findViewById(R.id.editIntervalMist);
+        editIntervalRepot     = v.findViewById(R.id.editIntervalRepot);
+
+        // v16: pre-fill the four interval inputs. Priority cascade per type:
+        //   1. explicit interval on the draft (user already edited / cloud-restored)
+        //   2. parse the German care text via ReminderUtils.parseIntervalDays
+        //      ("Alle 3 Tage" → 3, "Alle 4 Wochen düngen…" → 28,
+        //       "Einmal im Monat" → 30, "Wöchentlich" → 7)
+        //   3. family default from PlantCareDefaults.forFamily (handles
+        //      Cactaceae, Crassulaceae, etc.)
+        // Misting and repotting have no per-row text in the catalog so
+        // they skip step 2 and go straight to family defaults.
+        com.example.plantcare.data.plantnet.PlantCareDefaults.CareTexts care =
+                com.example.plantcare.data.plantnet.PlantCareDefaults
+                        .INSTANCE.forFamily(plant != null ? plant.family : null);
+
+        int waterDefault = care.getWateringIntervalDays();
+        int fertilizeDefault = care.getFertilizingIntervalDays();
+        if (plant != null) {
+            int parsedWater = ReminderUtils.parseIntervalDays(plant.watering);
+            if (parsedWater > 0) waterDefault = parsedWater;
+            int parsedFert = ReminderUtils.parseIntervalDays(plant.fertilizing);
+            if (parsedFert > 0) fertilizeDefault = parsedFert;
+        }
+        prefillInterval(editIntervalWater,
+                plant != null && plant.wateringInterval > 0 ? plant.wateringInterval : waterDefault);
+        prefillInterval(editIntervalFertilize,
+                plant != null && plant.fertilizingInterval > 0 ? plant.fertilizingInterval : fertilizeDefault);
+        prefillInterval(editIntervalMist,
+                plant != null && plant.mistingInterval > 0 ? plant.mistingInterval : care.getMistingIntervalDays());
+        prefillInterval(editIntervalRepot,
+                plant != null && plant.repottingIntervalDays > 0 ? plant.repottingIntervalDays : care.getRepottingIntervalDays());
+
         cachedUserEmail = EmailContext.current(requireContext());
         guestMode = (cachedUserEmail == null);
 
@@ -100,25 +160,30 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
             AddRoomDialogFragment dialog = new AddRoomDialogFragment();
             dialog.setOnRoomAddedListener(roomName -> {
                 if (TextUtils.isEmpty(roomName)) return;
+                final String trimmed = roomName.trim();
 
                 if (guestMode) {
                     List<String> current = getSpinnerCurrentItems();
-                    if (!current.contains(roomName)) {
-                        current.add(roomName);
-                        populateSpinnerWithRoomNames(current);
+                    if (!current.contains(trimmed)) {
+                        current.add(trimmed);
                     }
+                    // Auto-select the row the user just typed instead of
+                    // snapping back to index 0 (the prior bug).
+                    populateSpinnerWithRoomNames(current, trimmed);
                 } else {
                     final Context appCtx = requireContext().getApplicationContext();
                     FragmentBg.runIO(this, () -> {
                         RoomCategory rc = new RoomCategory();
-                        rc.name = roomName;
+                        rc.name = trimmed;
                         rc.userEmail = cachedUserEmail;
                         long newId = com.example.plantcare.data.repository.RoomCategoryRepository
                                 .getInstance(appCtx).insertBlocking(rc);
                         rc.id = (int) newId;
                         try { FirebaseSyncManager.get().syncRoom(rc); }
                         catch (Throwable t) { CrashReporter.INSTANCE.log(t); }
-                        reloadRooms();
+                        // Pass the trimmed name to reloadRooms so the
+                        // refreshed adapter pins it as the active selection.
+                        reloadRooms(trimmed);
                     });
                 }
             });
@@ -156,12 +221,26 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
     }
 
     private void populateSpinnerWithRoomNames(List<String> roomNames) {
+        populateSpinnerWithRoomNames(roomNames, null);
+    }
+
+    /**
+     * `preferredName` lets the caller pin a specific entry as the active
+     * selection after a refresh — e.g. after the user just typed
+     * "Toilette 2" in the AddRoomDialog the freshly-loaded list jumped
+     * back to Bathroom (index 0) which felt like the dialog forgot the
+     * user's input.
+     */
+    private void populateSpinnerWithRoomNames(List<String> roomNames, @Nullable String preferredName) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_list_item_1, roomNames);
         spinnerRooms.setAdapter(adapter);
         if (!roomNames.isEmpty()) {
-            spinnerRooms.setText(roomNames.get(0), false);
-            selectedRoomId = resolveRoomIdFromName(roomNames.get(0));
+            String pick = (preferredName != null && roomNames.contains(preferredName))
+                    ? preferredName
+                    : roomNames.get(0);
+            spinnerRooms.setText(pick, false);
+            selectedRoomId = resolveRoomIdFromName(pick);
         }
         spinnerRooms.setOnItemClickListener((parent, view, position, id) -> {
             String name = (String) parent.getItemAtPosition(position);
@@ -226,6 +305,10 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
     }
 
     private void reloadRooms() {
+        reloadRooms(null);
+    }
+
+    private void reloadRooms(@Nullable String preferredName) {
         final Context appCtx = requireContext().getApplicationContext();
         FragmentBg.<List<RoomCategory>>runWithResult(this,
                 () -> com.example.plantcare.data.repository.RoomCategoryRepository
@@ -239,8 +322,35 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
                     if (names.isEmpty()) {
                         names.addAll(com.example.plantcare.ui.util.DefaultRooms.get(requireContext()));
                     }
-                    populateSpinnerWithRoomNames(names);
+                    // Honour the room the user entered the catalog flow from
+                    // (PlantsInRoomActivity stamps `last_used_room_id_<email>`
+                    // via QuickAddHelper.rememberLastUsedRoom before bouncing
+                    // here). Pre-fix the spinner always landed on
+                    // `roomNames[0]` (Wohnzimmer), so a user who tapped + in
+                    // Bad had to manually flip the dropdown before adding.
+                    String pick = preferredName;
+                    if (pick == null) pick = resolvePreferredRoomName();
+                    populateSpinnerWithRoomNames(names, pick);
                 });
+    }
+
+    /**
+     * Resolve the room id stamped by `QuickAddHelper.rememberLastUsedRoom`
+     * back to a name present in the loaded list. Returns null when the
+     * caller didn't pre-stamp a room (e.g. catalog opened from the
+     * "Alle Pflanzen" tab directly), in which case the spinner falls
+     * through to its default first-row pick.
+     */
+    @Nullable
+    private String resolvePreferredRoomName() {
+        if (guestMode) return null;
+        int rid = com.example.plantcare.ui.util.QuickAddHelper
+                .readLastUsedRoom(requireContext().getApplicationContext(), cachedUserEmail);
+        if (rid <= 0) return null;
+        for (RoomCategory r : rooms) {
+            if (r.id == rid) return r.name;
+        }
+        return null;
     }
 
     private void openDatePickerAndAddPlant() {
@@ -301,6 +411,14 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
     }
 
     private void actuallyAddPlant(Context appCtx, String email, String nickname, int roomId, Date startDate) {
+                    // v16: read the four interval fields on the main thread
+                    // BEFORE handing off to the IO worker — EditText access
+                    // from a background thread crashes on some Android
+                    // versions. 0 means "user disabled this reminder type".
+                    final int waterIv = readInterval(editIntervalWater, 0);
+                    final int fertIv  = readInterval(editIntervalFertilize, 0);
+                    final int mistIv  = readInterval(editIntervalMist, 0);
+                    final int repotIv = readInterval(editIntervalRepot, 0);
                     FragmentBg.runIO(this,
                             () -> {
                                 com.example.plantcare.data.repository.PlantRepository plantRepo =
@@ -333,14 +451,43 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
                                 newPlant.userEmail = email;
                                 newPlant.roomId = roomId;
 
-                                // Reihenfolge: Draft (PlantNet hat Familien-Default schon
-                                // gesetzt) → Text-Parsing → Hardcoded-Fallback. Vor F5 wurde
-                                // der Draft-Wert ignoriert und alle PlantNet-Pflanzen landeten
-                                // bei 5 Tagen (Functional Report §1.4).
-                                int interval = newPlant.wateringInterval > 0
-                                        ? newPlant.wateringInterval
-                                        : ReminderUtils.parseWateringInterval(newPlant.watering);
+                                // Priority cascade — same shape as the dialog prefill so
+                                // saving without touching a field reproduces the prefill:
+                                //   user-typed interval (waterIv) →
+                                //   draft.wateringInterval (PlantNet pre-fill) →
+                                //   parseIntervalDays(watering text) →
+                                //   family default →
+                                //   5d hardcoded fallback.
+                                // The text-parse step is what makes Basilikum's
+                                // "Alle 3 Tage" land on 3 instead of the GENERIC_FALLBACK 5.
+                                com.example.plantcare.data.plantnet.PlantCareDefaults.CareTexts care =
+                                        com.example.plantcare.data.plantnet.PlantCareDefaults
+                                                .INSTANCE.forFamily(newPlant.family);
+                                int interval = waterIv > 0 ? waterIv
+                                        : (newPlant.wateringInterval > 0
+                                                ? newPlant.wateringInterval
+                                                : ReminderUtils.parseIntervalDays(newPlant.watering));
+                                if (interval <= 0) interval = care.getWateringIntervalDays();
                                 newPlant.wateringInterval = interval > 0 ? interval : 5;
+
+                                // Fertilize: same cascade. Pre-fix this only ran user→family,
+                                // so a catalog plant whose fertilizing text said "Alle 4
+                                // Wochen düngen" (= 28d) was correct only by coincidence with
+                                // the GENERIC_FALLBACK 28d default — a different family
+                                // default would have masked the real catalog cadence.
+                                int fertInterval = fertIv > 0
+                                        ? fertIv
+                                        : ReminderUtils.parseIntervalDays(newPlant.fertilizing);
+                                if (fertInterval <= 0) fertInterval = care.getFertilizingIntervalDays();
+                                newPlant.fertilizingInterval = fertInterval;
+                                newPlant.mistingInterval = mistIv;  // 0 stays 0 (user disabled)
+                                if (mistIv == 0 && fertIv == 0 && waterIv == 0) {
+                                    // First add (no fields touched) — use family defaults.
+                                    newPlant.mistingInterval = care.getMistingIntervalDays();
+                                }
+                                newPlant.repottingIntervalDays = repotIv > 0
+                                        ? repotIv
+                                        : care.getRepottingIntervalDays();
 
                                 long id = plantRepo.insertBlocking(newPlant);
                                 newPlant.setId((int) id);
@@ -349,7 +496,11 @@ public class AddToMyPlantsDialogFragment extends DialogFragment {
                                     FirebaseSyncManager.get().syncPlant(newPlant);
                                 } catch (Throwable e) { CrashReporter.INSTANCE.log(e); }
 
-                                List<WateringReminder> reminders = ReminderUtils.generateReminders(newPlant);
+                                // v16 — emit reminders for ALL configured care types,
+                                // not just watering. Each type carries its own series
+                                // discriminated by `r.type` so the calendar/today list
+                                // can render them with distinct icons.
+                                List<WateringReminder> reminders = ReminderUtils.generateAllReminders(newPlant);
                                 for (WateringReminder r : reminders) {
                                     r.userEmail = email;
                                     reminderRepo.insertBlocking(r);

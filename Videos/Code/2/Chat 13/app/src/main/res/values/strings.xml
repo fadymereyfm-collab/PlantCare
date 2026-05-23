@@ -12,11 +12,16 @@
     <string name="default_plant_base">Pflanze</string>
     <string name="spinner_add_new_room">Neuen Raum hinzufügen…</string>
     <string name="my_plants_no_rooms_hint">Noch keine Räume — füge unten einen hinzu.</string>
-    <!-- Standardräume bei Erst-Anmeldung (vorher dreifach hart-kodiert) -->
+    <!-- Standardräume bei Erst-Anmeldung (vorher dreifach hart-kodiert).
+         Reihenfolge ist kanonisch — `RoomCategoryRepository.ensureDefaultsForUserBlocking`
+         übernimmt diese Reihenfolge per `position`-Feld, damit der Drop-down
+         und die Raum-Liste in der gleichen, lebensnahen Folge erscheinen
+         (Hauptraum → Schlafzimmer → Flur → Küche → Nasszellen). -->
     <string-array name="default_rooms">
         <item>Wohnzimmer</item>
         <item>Schlafzimmer</item>
         <item>Flur</item>
+        <item>Küche</item>
         <item>Bad</item>
         <item>Toilette</item>
     </string-array>
@@ -162,8 +167,6 @@
     <string name="onboarding_watering_desc">Erhalte tägliche Erinnerungen, wenn deine Pflanzen Wasser benötigen.</string>
     <string name="onboarding_catalog_title">Pflanzenkatalog &amp; Archiv</string>
     <string name="onboarding_catalog_desc">Durchsuche unseren Katalog nach Pflanzen und speichere Fotos deiner grünen Freunde.</string>
-    <string name="onboarding_plants_title">Wähle deine ersten Pflanzen</string>
-    <string name="onboarding_plants_subtitle">Wähle einige Pflanzen, um zu starten (optional)</string>
     <string name="onboarding_next">Weiter</string>
     <string name="onboarding_skip">Überspringen</string>
     <string name="onboarding_create_account">Konto erstellen</string>
@@ -192,6 +195,12 @@
     <string name="identify_none_correct">Keine Übereinstimmung — erneut versuchen</string>
     <string name="identify_error">Fehler: %1$s</string>
     <string name="identify_add_plant">Hinzufügen</string>
+    <!-- v17: Catalog match indicator. Shown when a PlantNet result corresponds
+         to a curated entry in the local plants.csv catalog. Tells the user that
+         tapping "Hinzufügen" pulls verified care data instead of family defaults. -->
+    <string name="identify_catalog_match_badge">✓ In unserem Katalog</string>
+    <string name="identify_catalog_match_hint">Diese Pflanze ist in unserer Datenbank — Pflegehinweise werden direkt übernommen.</string>
+    <string name="identify_no_catalog_match_hint">Pflegehinweise werden aus den Familien-Standards abgeleitet.</string>
     <string name="identify_plant_added">Pflanze wurde hinzugefügt!</string>
     <string name="identify_image_missing">Bild nicht gefunden</string>
     <string name="identify_family_format">Familie: %1$s</string>
@@ -218,10 +227,108 @@
 
     <!-- Datenschutz-Einstellungen (Einstellungen-Dialog) -->
     <string name="settings_section_privacy">Datenschutz &amp; Daten</string>
-    <string name="settings_analytics_label">Anonyme Nutzungsanalyse &amp; Absturzberichte</string>
+    <string name="settings_analytics_label">Anonyme Nutzungsanalyse</string>
+    <string name="settings_crashreports_label">Absturzberichte (Crashlytics)</string>
     <string name="settings_export_data">Meine Daten exportieren (JSON)</string>
     <string name="settings_export_success">Exportdatei erstellt</string>
     <string name="settings_export_error">Export fehlgeschlagen – bitte erneut versuchen</string>
+
+    <!-- Benachrichtigungen-Einstellungen (Wave 1) -->
+    <string name="settings_section_notifications">Benachrichtigungen</string>
+    <string name="settings_notif_morning_label">Morgens erinnern</string>
+    <string name="settings_notif_evening_label">Abends erinnern</string>
+    <string name="settings_notif_morning_hint">Wann sollen wir dich tagsüber an deine Pflanzen erinnern?</string>
+    <string name="settings_notif_evening_hint">Und am Abend, falls du es morgens vergisst?</string>
+    <string name="settings_notif_time_format">%1$02d:00 Uhr</string>
+    <string name="settings_notif_picker_morning_title">Erinnerungszeit morgens</string>
+    <string name="settings_notif_picker_evening_title">Erinnerungszeit abends</string>
+
+    <!-- Wave 2 — Suche, Avatar/Bio, Erscheinung, Profilsichtbarkeit, Family Share, NPA -->
+    <string name="settings_search_hint">Einstellungen durchsuchen</string>
+    <string name="settings_no_search_results">Keine passenden Einstellungen gefunden.</string>
+    <string name="settings_avatar_label">Profilbild</string>
+    <string name="settings_avatar_change">Foto ändern</string>
+    <string name="settings_avatar_remove">Foto entfernen</string>
+    <string name="settings_avatar_pick_failed">Foto konnte nicht geladen werden.</string>
+    <string name="settings_bio_hint">Über mich (optional)</string>
+    <string name="settings_bio_saved">Bio gespeichert</string>
+
+    <!-- Erscheinung — Wave 2 -->
+    <string name="settings_section_appearance_extra">Anzeigeeinstellungen</string>
+    <string name="settings_appearance_units">Einheiten</string>
+    <string name="settings_appearance_units_metric">Metrisch (cm, °C)</string>
+    <string name="settings_appearance_units_imperial">Imperial (in, °F)</string>
+    <string name="settings_appearance_date_format">Datumsformat</string>
+    <string name="settings_appearance_date_format_iso">2026‑05‑07 (ISO)</string>
+    <string name="settings_appearance_date_format_de">07.05.2026</string>
+    <string name="settings_appearance_date_format_us">05/07/2026</string>
+    <string name="settings_appearance_font_scale">Schriftgröße</string>
+    <string name="settings_appearance_font_small">Klein</string>
+    <string name="settings_appearance_font_normal">Normal</string>
+    <string name="settings_appearance_font_large">Groß</string>
+    <string name="settings_appearance_font_xlarge">Sehr groß</string>
+    <string name="settings_appearance_font_restart_hint">Änderung wird beim Öffnen von Bildschirmen aktiv.</string>
+
+    <!-- Pro-Notifikationen Typ-Toggles — Wave 2 -->
+    <string name="settings_notif_types_section">Welche Erinnerungen?</string>
+    <string name="settings_notif_type_water">Gießen</string>
+    <string name="settings_notif_type_fertilize">Düngen</string>
+    <string name="settings_notif_type_mist">Sprühen</string>
+    <string name="settings_notif_type_repot">Umtopfen</string>
+    <string name="settings_notif_type_weather">Wetterhinweise</string>
+
+    <!-- Profilsichtbarkeit — Wave 2 -->
+    <string name="settings_profile_visibility_label">Profil öffentlich anzeigen</string>
+    <string name="settings_profile_visibility_hint">Wenn aus, ist dein Profil nur für dich sichtbar.</string>
+
+    <!-- Personalized Ads (NPA) — Wave 2 -->
+    <string name="settings_ads_npa_label">Personalisierte Werbung erlauben</string>
+    <string name="settings_ads_npa_hint">Wenn aus, zeigen wir nur nicht‑personalisierte Anzeigen (NPA).</string>
+
+    <!-- Family Share — Wave 2 (FCM-driven invite flow) -->
+    <string name="share_invite_dialog_title">Mit‑Gieß‑Einladung</string>
+    <string name="share_invite_dialog_body">%1$s möchte „%2$s" mit dir teilen. Annehmen?</string>
+    <string name="share_invite_dialog_body_short">%1$s hat dich zum Mitgießen eingeladen.</string>
+    <string name="share_invite_dialog_body_generic">Du wurdest zum Mitgießen einer Pflanze eingeladen.</string>
+    <string name="share_invite_dialog_accept">Annehmen</string>
+    <string name="share_invite_dialog_decline">Ablehnen</string>
+    <string name="share_invite_accepted_toast">Einladung angenommen</string>
+    <string name="share_invite_accept_failed_toast">Annahme fehlgeschlagen — bitte erneut versuchen</string>
+    <string name="share_invite_accepted_owner_body">%1$s mit‑gießt jetzt mit dir.</string>
+    <string name="share_invite_accepted_owner_generic">Eine deiner Einladungen wurde angenommen.</string>
+
+    <!-- Family Share — Wave 2 -->
+    <string name="settings_section_family">Familien‑Freigabe</string>
+    <string name="settings_family_subtitle">Mit-Gießer für deine Pflanzen einladen.</string>
+    <string name="settings_family_open">Verwalten</string>
+    <string name="settings_family_count">%1$d Personen eingetragen</string>
+    <string name="settings_family_pending_title">Bald verfügbar</string>
+    <string name="settings_family_pending_body">Echte Einladungen über E‑Mail/Push folgen in einer kommenden Version. Vorerst kannst du in jeder Pflanze unter „Mit anderen teilen" eine Liste pflegen.</string>
+
+    <!-- Cloud / Last sync — Wave 2 -->
+    <string name="settings_section_cloud">Cloud &amp; Synchronisation</string>
+    <string name="settings_cloud_last_sync_label">Letzte Synchronisation</string>
+    <string name="settings_cloud_last_sync_never">Noch nie</string>
+    <string name="settings_cloud_last_sync_just_now">Gerade eben</string>
+    <string name="settings_cloud_last_sync_relative_min">vor %1$d min</string>
+    <string name="settings_cloud_last_sync_relative_hour">vor %1$d h</string>
+    <string name="settings_cloud_last_sync_relative_day">vor %1$d Tagen</string>
+
+    <!-- Hilfe &amp; Über (Wave 1) -->
+    <string name="settings_section_help">Hilfe &amp; Über</string>
+    <string name="settings_help_faq">Häufige Fragen</string>
+    <string name="settings_help_feedback">Feedback senden</string>
+    <string name="settings_help_feedback_subject">PlantCare Feedback</string>
+    <string name="settings_help_tutorial_replay">Tutorial wiederholen</string>
+    <string name="settings_help_privacy_policy">Datenschutzerklärung</string>
+    <string name="settings_help_terms">Nutzungsbedingungen</string>
+    <string name="settings_help_licenses">Open-Source-Lizenzen</string>
+    <string name="settings_help_rate_app">App im Play Store bewerten</string>
+    <string name="settings_help_version_label">Version</string>
+    <string name="settings_help_version_value">%1$s (Build %2$d)</string>
+    <string name="settings_help_open_failed">Aktion konnte nicht ausgeführt werden.</string>
+    <string name="settings_help_licenses_title">Open-Source-Lizenzen</string>
+    <string name="settings_help_licenses_body">PlantCare nutzt folgende Open-Source-Bibliotheken — Dank an alle Projekte und Mitwirkenden:\n\n• AndroidX &amp; Jetpack (Apache 2.0)\n• Material Components for Android (Apache 2.0)\n• Kotlin &amp; Coroutines (Apache 2.0)\n• Room, WorkManager, Lifecycle (Apache 2.0)\n• Glide — Bildladen (BSD/MIT/Apache 2.0)\n• Firebase Android SDKs — Auth, Firestore, Storage, Analytics, Crashlytics, Messaging (Apache 2.0)\n• Google Play Services Auth &amp; Identity (proprietär, Google-Lizenz)\n• Play Billing Library v7 (proprietär, Google-Lizenz)\n• OkHttp (Apache 2.0)\n• TensorFlow Lite (Apache 2.0)\n• Apache Commons (Apache 2.0)\n\nVollständige Lizenztexte siehe Datenschutzseite.</string>
 
     <!-- Allgemeine Aktionen — action_cancel / action_close / action_delete
          live in strings_messages.xml + strings_copilot_additions.xml. -->
@@ -255,10 +362,6 @@
     <string name="reminder_title_required">Titel darf nicht leer sein!</string>
     <string name="reminder_date_required">Datum darf nicht leer sein!</string>
 
-    <!-- Anmeldung -->
-    <string name="login_already_have_account">Schon Konto? Jetzt anmelden</string>
-    <string name="login_new_user_register">Neu hier? Jetzt registrieren</string>
-
     <!-- E-Mail &amp; Passwort -->
     <string name="email_invalid">Bitte gültige E-Mail eingeben</string>
     <string name="password_too_short">Bitte sicheres Passwort/PIN eingeben (mind. 4 Zeichen)</string>
@@ -282,6 +385,28 @@
     <string name="consent_accept">Zustimmen</string>
     <string name="consent_decline">Nur notwendige</string>
     <string name="consent_privacy_url">https://fadymereyfm-collab.github.io/plantcare-privacy/</string>
+    <string name="consent_terms_url">https://fadymereyfm-collab.github.io/plantcare-privacy/terms.html</string>
+    <string name="support_faq_url">https://fadymereyfm-collab.github.io/plantcare-privacy/faq.html</string>
+    <!-- Feedback-Empfänger. Falls leer: System-Email-Picker öffnet sich ohne Empfänger. -->
+    <string name="support_feedback_email" translatable="false">support@plantcare.app</string>
+
+    <!-- v16 close-out: empty-state copy for PlantsInRoomActivity.
+         Two-line: explicit "no plants yet" headline plus an
+         instruction pointing at the FAB. -->
+    <string name="plants_in_room_empty">In diesem Raum sind noch keine Pflanzen.\nMöchtest du eine hinzufügen?\nTippe einfach auf das +.</string>
+    <string name="plants_in_room_add_dialog_title">Pflanze hinzufügen</string>
+    <string name="plants_in_room_add_from_catalog">📚 Aus Katalog wählen</string>
+    <string name="plants_in_room_add_with_camera">📷 Mit Kamera erkennen</string>
+    <string name="plants_in_room_add_manual">✏️ Eigene erstellen</string>
+
+    <!-- v16: Pflege-Plan section in AddToMyPlantsDialog -->
+    <string name="care_plan_section_title">Pflege-Plan (anpassbar)</string>
+    <string name="care_plan_water">💧 Gießen</string>
+    <string name="care_plan_fertilize">🌿 Düngen</string>
+    <string name="care_plan_mist">💨 Sprühen</string>
+    <string name="care_plan_repot">🪴 Umtopfen</string>
+    <string name="care_plan_days_suffix">Tage</string>
+    <string name="care_plan_disabled_hint">0 = aus</string>
 
     <!-- Accessibility content descriptions -->
     <string name="cd_plant_preview">Pflanzenvorschau</string>
@@ -290,6 +415,7 @@
     <string name="cd_fab_add_plant">Pflanze hinzufügen</string>
     <string name="cd_onboarding_image">Vorschaubild</string>
     <string name="cd_selected">Ausgewählt</string>
+    <string name="cd_watering_reminder">Automatische Gießerinnerung</string>
 
     <!-- Paywall / PlantCare Pro -->
     <string name="paywall_title">PlantCare Pro 🌿</string>
@@ -541,11 +667,15 @@
 
     <!-- Auth start dialog -->
     <string name="auth_button_google_login">Mit Google anmelden</string>
-    <string name="auth_button_email_continue">Mit E‑Mail fortfahren</string>
-    <string name="auth_link_have_account">Schon ein Konto? Hier anmelden</string>
+    <string name="auth_button_email_continue">Mit E‑Mail registrieren</string>
 
-    <!-- Login dialog -->
-    <string name="login_link_register_new">Neu hier? Jetzt registrieren</string>
+    <!-- Login/Signup dialog: canonical toggle strings.
+         The two `auth_toggle_*` keys are the SINGLE source of truth used both
+         as the layout default in dialog_login.xml AND from applyModeUI in
+         LoginDialogFragment. Don't introduce variants — different wording for
+         the same action confuses users navigating between dialogs. -->
+    <string name="auth_toggle_to_register">Neu hier? Jetzt registrieren</string>
+    <string name="auth_toggle_to_login">Schon ein Konto? Hier anmelden</string>
 
     <!-- All Plants search hint (uses existing search_hint key) -->
 
@@ -559,7 +689,19 @@
 
     <!-- Add Room dialog -->
     <string name="add_room_dialog_title">Neuen Raum hinzufügen</string>
+    <string name="add_room_dialog_subtitle">Gib dem neuen Raum einen kurzen, eindeutigen Namen.</string>
     <string name="hint_room_name">Zimmername</string>
+
+    <!-- Long-press menu on a room row in MyPlantsFragment.
+         room_action_rename / room_action_reorder / room_action_delete
+         already live in values/strings_messages.xml — only add the new
+         auto-sort entry here so we don't duplicate. -->
+    <string name="room_action_auto_sort">Nach Anzahl Pflanzen sortieren</string>
+    <string name="drag_handle_cd">Halten und ziehen, um den Raum zu verschieben</string>
+
+    <!-- User-plant detail dialog "Mehr Optionen" overflow -->
+    <string name="detail_action_more_options">Mehr Optionen</string>
+    <string name="detail_more_options_title">Weitere Aktionen</string>
 
     <!-- Email-entry dialog -->
     <string name="email_pin_hint">Passwort oder PIN</string>
@@ -600,5 +742,22 @@
 
     <!-- Custom plant dialog (extras beyond hint_watering) -->
     <string name="dialog_custom_plant_hint_watering">Bewässerung</string>
+
+    <!-- Reminder task highlight in plant detail dialog (shown when the
+         dialog was opened from a tap on a calendar/today reminder).
+         Title sits in a coloured card at the top of the scroll view,
+         followed by the curated instructions text in bold. -->
+    <string name="reminder_task_water_title">Heute gießen</string>
+    <string name="reminder_task_fertilize_title">Heute düngen</string>
+    <string name="reminder_task_mist_title">Heute besprühen</string>
+    <string name="reminder_task_repot_title">Bald umtopfen</string>
+
+    <!-- Generic per-task instructions used when the plant has no
+         per-row text (mist/repot — plants.csv only carries water +
+         fertilize text) AND the family has no curated override in
+         PlantCareDefaults. Botanically accurate but generic — users on
+         a niche species should still get sensible care guidance. -->
+    <string name="reminder_task_mist_generic">Mit kalkarmem, zimmerwarmem Wasser besprühen, um die Luftfeuchtigkeit zu erhöhen. Auch Blattunterseiten benetzen. Morgens sprühen, damit die Blätter abends abgetrocknet sind — verhindert Pilzbefall.</string>
+    <string name="reminder_task_repot_generic">Im Frühling vor dem Austrieb umtopfen. Topf 2–4 cm größer im Durchmesser wählen. Wurzelballen vorsichtig lockern, beschädigte oder verfaulte Wurzeln abschneiden. Frische, der Pflanzenfamilie passende Erde verwenden. Nach dem Umtopfen 1–2 Wochen nicht düngen.</string>
 
 </resources>

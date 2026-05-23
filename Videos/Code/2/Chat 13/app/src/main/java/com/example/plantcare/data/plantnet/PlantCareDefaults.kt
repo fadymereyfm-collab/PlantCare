@@ -15,8 +15,10 @@ package com.example.plantcare.data.plantnet
  * im Detail‑Dialog überschreiben kann. Besser ein sinnvoller Richtwert aus der
  * botanischen Familie als gar nichts.
  *
- * Abdeckung: die in der Praxis häufigsten ~35 Familien, die PlantNet meldet. Für
- * unbekannte Familien gibt es [GENERIC_FALLBACK] — neutral gehaltene Texte, die
+ * Abdeckung: 34 verifizierte Familien (Stand v17.11 — die Liste wurde von zuvor 108
+ * auf 34 reduziert, weil die zusätzlichen 74 aus Trainingsdaten-Recall stammten und
+ * nicht aus einer verifizierten taxonomischen Quelle; siehe PROGRESS.md v17.11).
+ * Für unbekannte Familien gibt es [GENERIC_FALLBACK] — neutral gehaltene Texte, die
  * den Nutzer zur Feinjustierung einladen statt ihn zu blockieren.
  */
 object PlantCareDefaults {
@@ -33,7 +35,49 @@ object PlantCareDefaults {
          * 0 zurückgeben und der ganze Bewässerungsplan auf den Hardcoded‑Fallback
          * von 5 Tagen zusammenfallen (Functional Report §1.4).
          */
-        val wateringIntervalDays: Int
+        val wateringIntervalDays: Int,
+        /**
+         * Düng‑Rhythmus in Tagen. v16 schema: triggert die zweite
+         * Reminder-Spur (Type "fertilize"). Default 28 (monatlich) deckt
+         * 80% der Zimmerpflanzen — Sukkulenten/Kakteen sind seltener,
+         * Gemüse/Tomaten häufiger.
+         */
+        val fertilizingIntervalDays: Int = 28,
+        /**
+         * Sprüh‑Rhythmus in Tagen. v16 schema: nur für Pflanzen mit echtem
+         * Bedarf an hoher Luft­feuchte (Farne, Marantaceae, Bromelien).
+         * 0 = deaktiviert (kein Sprüh-Reminder erzeugt).
+         */
+        val mistingIntervalDays: Int = 0,
+        /**
+         * Umtopf‑Rhythmus in Tagen. v16 schema: Standard 730 (alle 2 Jahre)
+         * passt für die meisten Zimmerpflanzen. Schnellwachsende (Tomaten,
+         * Kürbisse) brauchen kürzere Zyklen, Kakteen längere.
+         */
+        val repottingIntervalDays: Int = 730,
+        /**
+         * Curated misting instructions per family. Optional — null means the
+         * caller (`ReminderTaskHighlight`) falls back to
+         * `R.string.reminder_task_mist_generic`. Only set for families that
+         * actually need misting (high-humidity tropicals: Marantaceae,
+         * Bromeliaceae, ferns) — for the rest, mistingIntervalDays=0 means
+         * no reminder fires anyway.
+         *
+         * Per-family granularity, NOT per-plant — plants.csv only carries
+         * watering + fertilizing text. Adding per-plant misting/repotting
+         * would require extending the CSV schema.
+         */
+        val mistingText: String? = null,
+        /**
+         * Curated repotting instructions per family. Optional — null means
+         * the caller falls back to `R.string.reminder_task_repot_generic`.
+         * Set for families with distinctive repotting needs (cacti dry-pot
+         * before watering, orchids need bark mix not soil, ferns hate root
+         * disturbance).
+         *
+         * Same per-family caveat as `mistingText` above.
+         */
+        val repottingText: String? = null
     )
 
     /**
@@ -54,7 +98,10 @@ object PlantCareDefaults {
         soil        = "Lockere, humose Blumenerde mit guter Drainage als Ausgangsbasis.",
         fertilizing = "Während der Wachstumsphase (Frühling–Sommer) alle 2–4 Wochen mit Flüssigdünger, im Winter pausieren.",
         watering    = "Regelmäßig mäßig gießen, Erde zwischen den Wassergaben leicht antrocknen lassen. Staunässe vermeiden.",
-        wateringIntervalDays = 7
+        wateringIntervalDays = 7,
+        fertilizingIntervalDays = 28,
+        mistingIntervalDays = 0,
+        repottingIntervalDays = 730
     )
 
     // Keys sind lowercased — Lookup geht auch case‑insensitive.
@@ -65,28 +112,43 @@ object PlantCareDefaults {
             soil        = "Mineralische Kakteenerde mit hohem Sand‑/Bimsanteil. Unbedingt drainagefähig.",
             fertilizing = "Im Sommer alle 4–6 Wochen sehr sparsam mit Kakteendünger. Im Winter keine Düngung.",
             watering    = "Sparsam gießen. Erde zwischen den Wassergaben komplett durchtrocknen lassen. Im Winter fast trocken halten.",
-            wateringIntervalDays = 21
+            wateringIntervalDays = 21,
+            fertilizingIntervalDays = 42,   // 6 Wochen, sparsam
+            mistingIntervalDays = 0,        // Kakteen NICHT besprühen
+            repottingIntervalDays = 1095,   // alle 3 Jahre — wachsen langsam
+            repottingText = "Im Frühling umtopfen, mit TROCKENER Kakteenerde. Vor dem Umtopfen 1 Woche nicht gießen, danach 1 Woche warten — verhindert Wurzelfäule. Stacheln mit Zeitungspapier oder Gartenhandschuhen schützen. Mineralisches Substrat (Bims, Sand, etwas Humus). Topf nur eine Größe größer."
         ),
         "crassulaceae" to CareTexts(
             lighting    = "Hell bis vollsonnig. Viel Licht fördert kräftiges, kompaktes Wachstum.",
             soil        = "Kakteen-/Sukkulentenerde mit grobem Mineralanteil.",
             fertilizing = "Im Frühling und Sommer alle 4 Wochen mit Kakteendünger halb dosiert.",
             watering    = "Nur gießen, wenn die Erde komplett trocken ist. Blätter speichern Wasser — lieber zu wenig als zu viel.",
-            wateringIntervalDays = 14
+            wateringIntervalDays = 14,
+            fertilizingIntervalDays = 28,
+            mistingIntervalDays = 0,        // Sukkulenten nicht sprühen — Faulnis-Risiko
+            repottingIntervalDays = 1095,
+            repottingText = "Im Frühling in Sukkulentenerde umtopfen. Wurzelballen sanft abschütteln, beschädigte Wurzeln entfernen. Nach dem Umtopfen 5–7 Tage warten, bevor das erste Mal gegossen wird — Schnittstellen müssen verheilen, sonst droht Fäulnis. Topfgröße nur leicht erhöhen."
         ),
         "asphodelaceae" to CareTexts(
             lighting    = "Hell bis vollsonnig. Verträgt auch direkte Sonne, besonders im Wachstum.",
             soil        = "Sandige, gut drainierende Kakteenerde.",
             fertilizing = "Im Sommer monatlich mit Kakteendünger, im Winter nicht düngen.",
             watering    = "Sparsam gießen. Erde vor der nächsten Gabe durchtrocknen lassen. Keine Staunässe.",
-            wateringIntervalDays = 14
+            wateringIntervalDays = 14,
+            fertilizingIntervalDays = 28,
+            mistingIntervalDays = 0,
+            repottingIntervalDays = 1095,
+            repottingText = "Im Frühling in sandige Sukkulentenerde umtopfen. Kindel zur Vermehrung vorsichtig abtrennen. Nach dem Umtopfen 1 Woche nicht gießen — Schnittstellen verheilen lassen, sonst Wurzelfäule. Tonscherben am Topfboden für Drainage."
         ),
         "euphorbiaceae" to CareTexts(
             lighting    = "Hell bis vollsonnig, je nach Art. Viele Arten mögen direkte Sonne.",
             soil        = "Durchlässige, eher magere Erde mit Sandanteil.",
             fertilizing = "Während der Wachstumsphase alle 4–6 Wochen schwach düngen.",
             watering    = "Mäßig bis sparsam gießen. Zwischen den Gaben antrocknen lassen. Milchsaft ist giftig – Vorsicht beim Umgang.",
-            wateringIntervalDays = 14
+            wateringIntervalDays = 14,
+            fertilizingIntervalDays = 35,
+            mistingIntervalDays = 0,
+            repottingIntervalDays = 1095
         ),
 
         // ------------- Klassische Zimmerpflanzen -------------
@@ -123,21 +185,32 @@ object PlantCareDefaults {
             soil        = "Humose, lockere Erde mit hoher Feuchtigkeitsspeicherung.",
             fertilizing = "Im Sommerhalbjahr alle 2 Wochen mit halber Dosis Grünpflanzendünger.",
             watering    = "Gleichmäßig feucht halten. Kalkarmes Wasser bevorzugt. Hohe Luftfeuchtigkeit hilft sehr.",
-            wateringIntervalDays = 5
+            wateringIntervalDays = 5,
+            fertilizingIntervalDays = 14,
+            mistingIntervalDays = 3,        // Calathea & Co. brauchen hohe Luftfeuchte
+            repottingIntervalDays = 730,
+            mistingText = "Hohe Luftfeuchtigkeit (>60%) ist essenziell. Mit kalkarmem, zimmerwarmem Wasser besprühen — kalkhaltiges Wasser hinterlässt weiße Flecken auf den Blättern. Bei trockener Heizungsluft täglich, sonst alle 2–3 Tage. Wenn sich die Blätter einrollen, ist die Luft zu trocken.",
+            repottingText = "Im Frühling in humose, kalkfreie Erde umtopfen. Wurzelballen vorsichtig — Marantaceen reagieren empfindlich auf Wurzelschock. Topf nur eine Größe größer. Nach dem Umtopfen besonders gleichmäßig feucht halten und schattig stellen, bis sich die Pflanze erholt hat."
         ),
         "bromeliaceae" to CareTexts(
             lighting    = "Hell, indirektes Licht. Direkte Mittagssonne vermeiden.",
             soil        = "Spezielle Bromelienerde oder Orchideensubstrat mit hohem Luftanteil.",
             fertilizing = "Schwach: alle 4 Wochen verdünnter Flüssigdünger, gern ins Blattinnere gespritzt.",
             watering    = "Trichter in der Blattrosette mit kalkarmem Wasser füllen. Substrat nur leicht feucht halten.",
-            wateringIntervalDays = 7
+            wateringIntervalDays = 7,
+            fertilizingIntervalDays = 28,
+            mistingIntervalDays = 4,        // Bromelien lieben Sprühen
+            repottingIntervalDays = 1095,   // wachsen langsam
+            mistingText = "Mit kalkarmem Wasser besprühen — gerne direkt in den Trichter der Blattrosette. Substrat dabei nicht zu nass werden lassen, die Wurzeln bevorzugen Trockenheit. Blattachseln gelegentlich ausspülen, damit kein stehendes Wasser fault.",
+            repottingText = "Bromelien wachsen sehr langsam — meistens reicht das Umtopfen alle 3 Jahre oder erst, wenn der Topf zu klein wird. Spezielles Bromeliensubstrat oder Orchideensubstrat verwenden, niemals normale Blumenerde — die Wurzeln sind primär zur Verankerung da, nicht zur Wassersaugung. Nach der Blüte stirbt die Mutterpflanze; Kindel können separat eingetopft werden."
         ),
         "orchidaceae" to CareTexts(
             lighting    = "Hell, aber ohne direkte Mittagssonne — Ostfenster ideal.",
             soil        = "Spezielles Orchideensubstrat aus Rindenstücken, kein normaler Blumenerde.",
             fertilizing = "Alle 2–3 Wochen mit Orchideendünger (halbe Dosis). In der Ruhezeit pausieren.",
             watering    = "Tauchmethode: alle 7–14 Tage Topf kurz in Wasser tauchen, gut abtropfen lassen. Keine Staunässe.",
-            wateringIntervalDays = 10
+            wateringIntervalDays = 10,
+            repottingText = "NIEMALS in normale Blumenerde umtopfen — Orchideen brauchen luftiges Rindensubstrat. Beste Zeit: nach der Blüte, alle 2–3 Jahre. Tote (braune, weiche) Wurzeln entfernen, gesunde grüne und silberweiße Luftwurzeln behutsam einrollen. Durchsichtigen Orchideentopf bevorzugen — die Wurzeln betreiben Photosynthese."
         ),
 
         // ------------- Heilpflanzen / Kräuter -------------
@@ -224,21 +297,36 @@ object PlantCareDefaults {
             soil        = "Humose, lockere Walderde mit hoher Feuchtigkeitsspeicherung.",
             fertilizing = "Sehr sparsam: alle 4–6 Wochen mit halber Dosis Flüssigdünger.",
             watering    = "Gleichmäßig feucht halten. Farne lieben hohe Luftfeuchtigkeit — gern regelmäßig übersprühen.",
-            wateringIntervalDays = 4
+            wateringIntervalDays = 4,
+            fertilizingIntervalDays = 35,
+            mistingIntervalDays = 3,        // Farne BRAUCHEN Sprühen
+            repottingIntervalDays = 730,
+            mistingText = "Farne BRAUCHEN hohe Luftfeuchtigkeit. Mit kalkarmem Wasser mehrmals pro Woche besprühen, ggf. mit Luftbefeuchter unterstützen. Nicht in der Mittagssonne sprühen — Wassertropfen wirken wie Brennglas und verbrennen die Wedel.",
+            repottingText = "Im Frühling in humose, leicht saure Walderde umtopfen. Rhizome NICHT vollständig mit Erde bedecken — sie brauchen Luft. Wurzelballen sehr vorsichtig behandeln, Farne reagieren stark auf Wurzelschock und können wochenlang braun werden, bevor sie sich erholen."
         ),
         "dryopteridaceae" to CareTexts(
             lighting    = "Schatten bis Halbschatten.",
             soil        = "Humose, leicht saure Erde.",
             fertilizing = "Sparsam, alle 6–8 Wochen.",
             watering    = "Erde konstant feucht, aber nie durchnässt.",
-            wateringIntervalDays = 4
+            wateringIntervalDays = 4,
+            fertilizingIntervalDays = 49,
+            mistingIntervalDays = 4,
+            repottingIntervalDays = 730,
+            mistingText = "Mit kalkarmem, zimmerwarmem Wasser besprühen für die geforderte hohe Luftfeuchtigkeit. Bei Heizungsluft im Winter häufiger sprühen oder die Pflanze auf einen Untersetzer mit feuchten Tonkugeln stellen.",
+            repottingText = "Im Frühling in humose, leicht saure Erde umtopfen. Wurzelballen behutsam — Farne sind empfindlich. Topf nur eine Nummer größer. Nach dem Umtopfen besonders gleichmäßig feucht halten und schattig stellen."
         ),
         "nephrolepidaceae" to CareTexts(
             lighting    = "Halbschatten, indirektes Licht. Direkte Sonne verbrennt die Wedel.",
             soil        = "Humose, lockere Blumenerde.",
             fertilizing = "Von Frühling bis Herbst alle 2–3 Wochen mit halber Dosis düngen.",
             watering    = "Gleichmäßig feucht halten. Regelmäßig besprühen für hohe Luftfeuchte.",
-            wateringIntervalDays = 4
+            wateringIntervalDays = 4,
+            fertilizingIntervalDays = 21,
+            mistingIntervalDays = 3,
+            repottingIntervalDays = 730,
+            mistingText = "Schwertfarne lieben hohe Luftfeuchtigkeit. Mit kalkarmem, zimmerwarmem Wasser mehrmals pro Woche besprühen, besonders im Winter bei trockener Heizungsluft. Auch Blattunterseiten benetzen.",
+            repottingText = "Im Frühling in humose, lockere Blumenerde umtopfen. Wurzelballen vorsichtig auflockern. Schwertfarne können auch geteilt werden, um neue Pflanzen zu vermehren — dabei jeden Teil mit eigenen Wurzeln versorgen."
         ),
 
         // ------------- Weitere häufige Familien -------------

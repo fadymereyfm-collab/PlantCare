@@ -1,26 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/pc_background">
 
-    <!-- Toolbar أعلى الشاشة -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/pc_background"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        android:elevation="2dp"
-        android:titleTextColor="@color/pc_onSurface"
-        />
+        android:layout_height="match_parent">
 
-    <!-- قائمة النباتات -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewPlants"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-</LinearLayout>
+        <!-- Toolbar أعلى الشاشة -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/pc_background"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            android:elevation="2dp"
+            android:titleTextColor="@color/pc_onSurface"
+            />
+
+        <!-- Stack: list when populated, empty state when not.
+             Pre-fix entering an empty room showed only the toolbar — no
+             feedback, no path forward. Now an explicit empty TextView +
+             FAB tells the user the room is empty and offers to add a
+             plant in one tap. -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <!-- قائمة النباتات -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewPlants"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <!-- v16 close-out: empty-state copy. Visibility flipped from
+                 PlantsInRoomActivity.refreshList based on plant count. -->
+            <TextView
+                android:id="@+id/emptyMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="32dp"
+                android:textColor="@color/pc_onSurfaceSecondary"
+                android:textSize="16sp"
+                android:fontFamily="@font/nunito"
+                android:lineSpacingExtra="4sp"
+                android:text="@string/plants_in_room_empty"
+                android:visibility="gone"/>
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- v16 close-out: floating + button to add a plant directly to
+         this room. Tap opens an ActionListDialog with three add paths:
+         Aus Katalog / Mit Kamera erkennen / Eigene erstellen. The
+         current roomId is forwarded into whichever flow the user
+         picks so the new plant lands in the right room without
+         a follow-up "move to room" step. -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddPlant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        android:contentDescription="@string/cd_fab_add_plant"
+        app:srcCompat="@drawable/ic_add"
+        app:tint="@color/pc_onPrimary"
+        app:backgroundTint="@color/pc_primary"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

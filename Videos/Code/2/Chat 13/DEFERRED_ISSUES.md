@@ -6,6 +6,121 @@
 > too narrow / context-specific to be worth fixing in the same session.
 > Headline numbers: 24 findings total, 14 fixed inline, 5 deferred,
 > rest already covered by earlier entries (e.g. #17a thread safety).
+>
+> **Post-PR follow-ups (#24-#26)** added after the audit-cycle PR
+> (commit `28d6194`) was pushed: the operational steps the PR
+> message flagged as "must do before shipping" but that the user
+> explicitly chose to defer rather than execute now. Treat these as
+> the **release blockers** before the next Play Store rollout.
+
+---
+
+## ⚠️ POST-PR RELEASE BLOCKERS (do these BEFORE shipping the audit cycle)
+
+These are not code bugs — they're operational tasks the PR depends
+on. Without them the on-device behaviour silently breaks despite a
+green build. Order matters.
+
+---
+
+## 24. Publish Firestore + Storage rules to Firebase Console (CRITICAL — release blocker)
+**Origin:** PR `28d6194` deployment notes (sessions 10 + 11).
+
+The audit cycle introduced two new rules files in version control:
+- `firestore.rules` — splits `read/delete` from `create/update` so
+  `request.resource.data.size()` no longer null-derefs on delete.
+  Pre-fix every cloud delete returned PermissionDenied.
+- `storage.rules` — first-ever version-controlled Storage rules.
+  Per-user subtree lockdown + 8 MB per-object cap + image/* MIME
+  filter. Without it, the Storage bucket runs on whatever drifted
+  state the Firebase Console currently has — could be open or
+  could be locked-down post-Sept-2025-default.
+
+**Symptoms if not deployed (will hit users immediately):**
+- Every `deleteJournalMemo` / `clearVacationCloud` /
+  `deletePhotosForPlantByUid` / `syncProStatus` / etc. returns
+  PermissionDenied. Local rows drop, cloud orphans accumulate.
+- Photo uploads succeed or fail unpredictably depending on
+  Console state.
+
+**Action (one of):**
+```bash
+firebase deploy --only firestore:rules
+firebase deploy --only storage:rules
+```
+Or paste both files into Firebase Console → Firestore → Rules
+and Storage → Rules → Publish.
+
+**Verification:**
+- Console shows "Rules published" timestamp matches now.
+- `MANUAL_TESTS.md` rows P0.1 + P0.2 pass.
+- `MANUAL_TESTS.md` rows 21.2 / 21.3 / 21.4 (cloud delete works
+  for memos / photos / vacation) all pass.
+
+---
+
+## 25. Run the 115-row manual verification sweep (HIGH — release gate)
+**Origin:** Created alongside PR `28d6194` as `MANUAL_TESTS.md`.
+
+The audit cycle shipped 73 fixes across all 23 features. None of
+them have an end-to-end test in CI (the project only has unit
+tests). The manual checklist in `MANUAL_TESTS.md` is the only
+verification that the user-visible flows still work. Skipping it
+risks shipping a regression the build pipeline cannot catch.
+
+**Action:** Work through `MANUAL_TESTS.md` row-by-row. Budget:
+4-6 hours on a single device for the full 115 rows. Sections are
+independent — pick a feature group per session if you can't do it
+all at once. The file ships with a fail-report template at the
+bottom; copy it back as you go.
+
+**Specific HIGH-priority rows worth running first** (CRITICAL fixes
+that have no other verification):
+- 10.5 — memos restore on second device (F10.3 cloud sync)
+- 12.3 — Mark all watered notification action + streak update (Z1)
+- 17.5 — banner ad disappears live after Pro purchase (B1)
+- 19.2 — widget refreshes on data change (W1)
+- 21.2-21.4 — cloud delete works for memos / photos / vacation (CS1)
+- 22.1-22.3 — Storage rules reject cross-user / oversize / non-image (SEC1)
+
+**Verification:** Fail-report table at the end of MANUAL_TESTS.md
+filled in. Bring back any 🔴 rows for triage.
+
+---
+
+## 26. Rotate the GitHub OAuth token leaked in conversation log (HIGH — security)
+**Origin:** PR-creation flow (commit `28d6194` push). When `gh` CLI
+turned out not to be installed, the fallback path used
+`git credential fill` to extract the saved GitHub token for direct
+API calls. The output of that command — including the token starting
+`gho_jt7J...` — appeared in the chat transcript / conversation log.
+
+**Why it's deferred not done:** The user explicitly chose to defer
+this rather than execute the rotation in-session.
+
+**Threat model:** The token has full GitHub API access for the user.
+A leak in transcripts the user's tooling persists (.claude, IDE
+chat history, etc.) is read-accessible to anyone with disk access
+on the machine. Not visible to GitHub itself or to any Anthropic
+infrastructure beyond the conversation.
+
+**Action:**
+1. Visit https://github.com/settings/tokens
+2. Find the token with prefix `gho_jt7J...` and click Revoke
+   (or rotate if you can identify the issuing OAuth app).
+3. Re-authenticate Git for Windows:
+   ```
+   git credential-manager erase
+   git credential-manager configure
+   ```
+   Next `git push` will trigger a fresh sign-in (browser-based).
+4. If `gh` is now needed for future PRs, install it:
+   `winget install --id GitHub.cli`
+
+**Verification:**
+- GitHub Tokens page no longer lists the old token.
+- A `git push` from the same machine prompts for fresh auth (proves
+  the credential manager forgot the old one).
 
 This file collects issues that audits surfaced but the originating session
 intentionally did NOT fix — either because they were out of scope for the
@@ -17,33 +132,37 @@ links back to the originating PROGRESS.md session for context.
 
 ---
 
-## 1. Cross-cutting `Locale.getDefault()` for wire formats (HIGH)
+## 1. Cross-cutting `Locale.getDefault()` for wire formats (HIGH) — ✅ COMPLETED 2026-05-10
+
 **Origin:** Session 2026-05-06 Notifications+Vacation re-audit (A2),
 later confirmed in Streaks+Challenges audit (C7).
 
-`SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())` is used in 13+
-files for the wire format that goes into SQLite. On ar/fa/ur devices
-`Locale.getDefault()` formats with Eastern-Arabic digits and the SQL
-`WHERE date <= today` comparison stops matching. Already fixed in the
-worker layer + `TodayViewModel.buildRoomGroups`, but still present in:
+**Original problem:** `SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())`
+emitted Eastern-Arabic digits on ar/fa/ur devices, breaking SQL
+`WHERE date <= today` comparisons.
 
-- `AddReminderDialogFragment.java` (3 sites)
-- `EditManualReminderDialogFragment.java` (3 sites)
-- `EditPlantDialogFragment.java`
-- `MainActivity.java` (2 sites)
-- `ReminderUtils.java` (3 sites — generation + parse)
-- `WateringReminder.java` (2 sites)
-- `WateringEventStore.java`
-- `widget/PlantCareWidgetDataFactory.kt`
-- `feature/treatment/TreatmentPlanBuilder.kt`
-- `data/repository/PlantJournalRepository.kt`
-- `ui/disease/DiseaseDiagnosisActivity.kt`
-- `app/src/test/java/com/example/plantcare/WateringReminderTest.kt` (test only — fine)
+**Closure verification (2026-05-10):**
+```
+$ grep -rn "SimpleDateFormat" app/src/main/java | grep -v "Locale.US"
+(no results — every wire-format SDF now uses Locale.US)
+```
 
-**Action:** Single-pass sweep replacing every wire-format
-`Locale.getDefault()` with `Locale.US`. Audit each site for whether the
-output is wire (DB / sync / file path → must be `Locale.US`) or display
-(UI label → keep `Locale.getDefault()`).
+All 13+ originally-listed files were already migrated to `Locale.US` in
+prior sessions; the deferred entry was stale. The 2026-05-10 sweep also
+fixed adjacent locale-on-ASCII bugs (same family) discovered during
+verification:
+- `weekbar/PlantImageLoader.kt` — 3× `lowercase(Locale.getDefault())`
+  on URI schemes + drawable name → `Locale.ROOT` (Turkish "I" → "ı"
+  would mis-match "http"/"file"/"content" and would mis-resolve catalog
+  drawable names like `aloe_vera`).
+- `AddPlantDialogFragment.java:223` — `String.format(Locale.getDefault(),
+  "%02d", ...)` for plant-name suggestion saved verbatim to DB
+  → `Locale.US`.
+
+**Display-format `Locale.getDefault()` retained (correct):**
+- `DailyWateringAdapter.java:442` — `DateFormat.getDateInstance(MEDIUM,
+  Locale.getDefault())` formats "12. Mai 2026" for UI.
+- `widget/PlantCareWidget.kt:38` — `"EEE, d MMM"` widget header.
 
 ---
 
@@ -342,33 +461,6 @@ mid-scroll leaks each captured ImageView (which holds an Activity).
 **Action:** Take a `LifecycleOwner` parameter and use
 `owner.lifecycleScope.launch`, OR cancel any in-flight job on a
 per-ImageView WeakHashMap.
-
----
-
-## 19. ArchiveStore.addCalendarPhoto: read-modify-write race (MED)
-**Origin:** Session 2026-05-07 final audit.
-
-`weekbar/ArchiveStore.kt:26` reads JSON array from prefs, mutates,
-writes back — two concurrent photo captures (rapid-fire from
-`PhotoCaptureCoordinator`'s IO dispatcher) can race and one's write
-overwrites the other → silent photo loss in the archive view.
-
-**Action:** Synchronize over the singleton (same shape as the just-
-fixed ChallengeRegistry/StreakTracker). One-line wrap.
-
----
-
-## 20. MyPlantsFragment.mainHandler.post bypasses lifecycle (MED)
-**Origin:** Session 2026-05-07 final audit.
-
-`MyPlantsFragment.java:139, 172` posts to a Fragment-field Handler
-that's not tied to viewLifecycleOwner. Posts continue running
-after `onDestroyView` / `onDetach`. The post calls
-`requireContext()` immediately → IllegalStateException on the
-narrow window of dialog dismiss → user back gesture (~50 ms).
-
-**Action:** Replace mainHandler use with FragmentBg.runIO three-arg
-overload that already guards isAdded. Remove the field.
 
 ---
 

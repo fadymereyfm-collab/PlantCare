@@ -6,10 +6,16 @@
         <item name="android:insetBottom">0dp</item>
     </style>
 
+    <!-- Field label: bumped 15→16sp + tighter padding-bottom so label
+         and its value visually group as one row. Pre-fix in screenshot 4
+         (User-Detail) the bold weight + brand-green colour didn't read
+         strongly enough against the value text on the same line height. -->
     <style name="PlantCareFieldLabel">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/pc_primary</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:letterSpacing">0.01</item>
         <item name="android:fontFamily">@font/nunito</item>
     </style>
 

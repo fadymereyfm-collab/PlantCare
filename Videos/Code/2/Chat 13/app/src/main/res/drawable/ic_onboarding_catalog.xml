@@ -1,0 +1,168 @@
+<!--
+  Soft 3D Clay theme — Pflanzenkatalog & Archiv (page 3).
+  Open photo book with a small plant illustration on the left page and
+  text-line marks on the right page. Same layered approach: cast shadow
+  → cover back-shadow → cover with olive gradient → cream pages with
+  gradient → spine → on-page content (mini plant + text lines) → cream
+  highlights along the top edge.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Cast shadow under book -->
+    <path
+        android:pathData="M28,182 Q100,194, 172,182 Q100,172, 28,182 Z"
+        android:fillColor="#4F6B5E"
+        android:fillAlpha="0.20" />
+
+    <!-- Book cover back-shadow -->
+    <path
+        android:pathData="M20,82 Q100,74, 180,82 L184,172 Q100,180, 16,172 Z"
+        android:fillColor="#3D5448" />
+
+    <!-- Book cover (open) — olive gradient -->
+    <path android:pathData="M16,78 Q100,70, 184,78 L184,170 Q100,178, 16,170 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="100" android:startY="70"
+                android:endX="100" android:endY="178">
+                <item android:offset="0.0" android:color="#9CC0AB" />
+                <item android:offset="1.0" android:color="#5C7E70" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Left page (cream) -->
+    <path android:pathData="M22,82 Q60,78, 99,76 L99,164 Q60,166, 26,162 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="22" android:startY="76"
+                android:endX="99" android:endY="166">
+                <item android:offset="0.0" android:color="#FCF8F0" />
+                <item android:offset="1.0" android:color="#E8DFC8" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Right page (cream) -->
+    <path android:pathData="M101,76 Q140,78, 178,82 L174,162 Q140,166, 101,164 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="101" android:startY="76"
+                android:endX="178" android:endY="166">
+                <item android:offset="0.0" android:color="#FCF8F0" />
+                <item android:offset="1.0" android:color="#E8DFC8" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Spine -->
+    <path
+        android:pathData="M100,76 L100,164"
+        android:strokeColor="#3D5448"
+        android:strokeWidth="2.5"
+        android:fillColor="#00000000" />
+
+    <!-- Mini plant on the LEFT page — terracotta pot -->
+    <path
+        android:pathData="M48,138 L72,138 L68,150 L52,150 Z"
+        android:fillColor="#A05F40" />
+    <path android:pathData="M50,134 L70,134 L66,148 L54,148 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="60" android:startY="134"
+                android:endX="60" android:endY="148">
+                <item android:offset="0.0" android:color="#E5A582" />
+                <item android:offset="1.0" android:color="#A05F40" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M52,134 L68,134 L66,138 L54,138 Z"
+        android:fillColor="#EFBA9C" />
+
+    <!-- Mini plant stems + leaves on left page -->
+    <path
+        android:pathData="M60,134 L60,108"
+        android:strokeColor="#3D5448"
+        android:strokeWidth="1.8"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M60,108 Q48,100, 50,116 Q60,118, 60,108 Z"
+        android:fillColor="#5C7E70" />
+    <path android:pathData="M60,108 Q48,98, 50,114 Q60,118, 60,108 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="48" android:startY="98"
+                android:endX="60" android:endY="118">
+                <item android:offset="0.0" android:color="#A6C9B7" />
+                <item android:offset="1.0" android:color="#6B9080" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M60,108 Q72,98, 70,114 Q60,118, 60,108 Z"
+        android:fillColor="#5C7E70" />
+    <path android:pathData="M60,108 Q72,96, 70,114 Q60,118, 60,108 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="60" android:startY="98"
+                android:endX="72" android:endY="118">
+                <item android:offset="0.0" android:color="#A6C9B7" />
+                <item android:offset="1.0" android:color="#6B9080" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M60,100 Q54,90, 58,86 Q62,90, 60,100 Z"
+        android:fillColor="#7BA590" />
+
+    <!-- Right page text-lines (each line = one entry in the catalog) -->
+    <path
+        android:pathData="M114,98 L168,98"
+        android:strokeColor="#9CC0AB"
+        android:strokeWidth="3.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M114,114 L162,114"
+        android:strokeColor="#9CC0AB"
+        android:strokeWidth="3.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M114,130 L168,130"
+        android:strokeColor="#9CC0AB"
+        android:strokeWidth="3.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M114,146 L156,146"
+        android:strokeColor="#9CC0AB"
+        android:strokeWidth="3.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round" />
+
+    <!-- Tiny page-turn highlight on the right page -->
+    <path
+        android:pathData="M170,82 L178,82 L174,162 L170,162 Z"
+        android:fillColor="#FCF8F0"
+        android:fillAlpha="0.30" />
+
+    <!-- Top edge cream highlight along the entire cover -->
+    <path
+        android:pathData="M16,78 Q100,70, 184,78 L184,82 Q100,74, 16,82 Z"
+        android:fillColor="#FCF8F0"
+        android:fillAlpha="0.45" />
+</vector>

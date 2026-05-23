@@ -281,7 +281,7 @@ class PlantJournalRepository private constructor(context: Context) {
         // SimpleDateFormat is not thread-safe — give each calling thread its own copy.
         private val ISO_FORMAT: ThreadLocal<SimpleDateFormat> = object : ThreadLocal<SimpleDateFormat>() {
             override fun initialValue(): SimpleDateFormat =
-                SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).apply {
+                SimpleDateFormat("yyyy-MM-dd", Locale.US).apply {
                     timeZone = TimeZone.getDefault()
                 }
         }

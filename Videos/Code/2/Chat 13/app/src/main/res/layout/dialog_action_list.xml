@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Reusable polished action-list dialog used by:
+    – PlantDetailDialogFragment "Mehr Optionen" (six secondary
+      actions on a user plant: Verlauf öffnen, Archivfotos ansehen,
+      Wachstumstagebuch, Mit Familie teilen, In Raum verschieben,
+      Löschen).
+    – MyPlantsFragment long-press menu on a room row (Umbenennen,
+      optional Auto-sort, Raum löschen).
+
+  Pre-fix both screens used a vanilla MaterialAlertDialogBuilder.setItems
+  rendering — flat text rows with no separators and no visual weight.
+  The user's review said the screen looked "fakir" (cheap) compared
+  to the catalog plant-detail dialog.
+
+  Shape mirrors dialog_plant_detail.xml exactly: rounded modern card
+  background, centred bold title, horizontal divider, scrollable
+  Outlined / Danger MaterialButtons stacked with 10dp spacers, and a
+  Text-style "Abbrechen" button at the bottom. ActionListDialogFragment
+  populates `actionsContainer` programmatically from view_action_outlined.xml
+  and view_action_danger.xml stubs so the styling matches the
+  catalog buttons exactly.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootActionList"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_modern"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/actionListTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+        android:gravity="center"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp" />
+
+    <!-- Optional subtitle (e.g. "Was möchtest du mit dem Foto tun?")
+         used by callers that previously rendered a Material AlertDialog
+         with both title + message. Hidden by default; ActionListDialogFragment
+         toggles visibility when the caller provides a subtitle. -->
+    <TextView
+        android:id="@+id/actionListSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/pc_onSurfaceSecondary"
+        android:textSize="14sp"
+        android:fontFamily="@font/nunito"
+        android:gravity="center"
+        android:paddingBottom="8dp"
+        android:visibility="gone"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/pc_outlineVariant"
+        android:layout_marginBottom="16dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="false"
+        android:overScrollMode="ifContentScrolls">
+
+        <LinearLayout
+            android:id="@+id/actionsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </ScrollView>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="14dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonActionListCancel"
+        style="@style/PlantCare.Button.Text"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="@string/action_cancel"/>
+</LinearLayout>

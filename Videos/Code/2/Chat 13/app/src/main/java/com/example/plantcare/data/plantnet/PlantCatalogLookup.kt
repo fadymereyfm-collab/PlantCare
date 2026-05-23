@@ -9,26 +9,61 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Versucht, eine per PlantNet erkannte Pflanze im lokalen 506‑Einträge‑Katalog
- * (plants.csv → Room mit isUserPlant = 0) wiederzufinden.
+ * Bridge between PlantNet identification results and the local plant
+ * catalog (`plants.csv` → Room with `isUserPlant = 0`).
  *
- * Warum das wichtig ist:
- * Nach der Erkennung lieferte das UI bisher leere Pflege‑Felder („Bewässerung: —").
- * Der Katalog hat aber für viele Pflanzen bereits geprüfte Texte für Licht, Boden,
- * Düngung und Bewässerung. Diese Klasse macht den Brückenschlag.
+ * v17 rewrite — primary lookup now goes through `scientificName` because
+ * the catalog CSV carries it as a first-class column. The pre-v17 flow
+ * tried 4 fragile name-based heuristics with low recall on the expanded
+ * 1500+ row catalog. The new flow:
  *
- * Reihenfolge der Versuche (erster Treffer gewinnt):
- * 1. Exakt: Katalog‑Name == commonName (case‑insensitive).
- * 2. Rückwärts‑Mapping über [WikiImageHelper.germanNameForScientific]: scientificName →
- *    deutscher Trivialname → Katalog.
- * 3. Partiell: das letzte Wort des commonName via LIKE (z. B. „Vielblütiges Salomonssiegel"
- *    → "%Salomonssiegel%"). Beugt dem Fall vor, dass der Katalog nur die Kurzform führt.
+ * 1. Latin name exact match — deterministic, 1:1 against the CSV column.
+ * 2. Latin name partial match — covers PlantNet returning a fully
+ *    qualified binomial when the catalog only carries the genus
+ *    (e.g. "Monstera deliciosa" → catalog row "Monstera").
+ * 3. German common name exact match — kept as a fallback for legacy CSV
+ *    rows that were imported before the schema upgrade and still don't
+ *    have a Latin name populated.
+ * 4. Reverse mapping via `WikiImageHelper.germanNameForScientific` —
+ *    last-resort guard for the same legacy gap.
+ *
+ * Two outputs:
+ *   - `findMatch(...)` returns the full catalog `Plant` (used by the
+ *     Identify UI to render the "In unserem Katalog" badge AND to
+ *     pre-fill the Add dialog with curated catalog data).
+ *   - `findByIdentification(...)` is a back-compat shim that wraps
+ *     `findMatch` into the legacy `CareInfo` view; kept for any caller
+ *     that still wants only the 4 care-text fields.
  */
 object PlantCatalogLookup {
 
     /**
-     * Ergebnis der Katalog‑Suche — nur die vier Pflege‑Texte, keine IDs/Bilder,
-     * damit der Aufrufer entscheiden kann, welche Felder er übernimmt.
+     * Full catalog match — exposes the matched [Plant] so callers can
+     * render badges, show the curated common name, and decide whether
+     * to fill from catalog vs PlantCareDefaults.
+     */
+    data class CatalogMatch(
+        val plant: Plant,
+        /** Which lookup branch fired — for analytics / debugging. */
+        val matchedBy: MatchSource
+    )
+
+    enum class MatchSource {
+        /** Direct hit on `scientificName` column. Highest confidence. */
+        SCIENTIFIC_EXACT,
+        /** LIKE on `scientificName` (genus → binomial fallback). */
+        SCIENTIFIC_PARTIAL,
+        /** Direct hit on the German common `name` column. */
+        COMMON_NAME_EXACT,
+        /** WikiImageHelper.germanNameForScientific reverse mapping. */
+        REVERSE_GERMAN
+    }
+
+    /**
+     * Legacy view: only the 4 care-text fields. Kept for callers that
+     * existed before v17 (PlantIdentifyActivity now uses [findMatch]
+     * directly, but the project still has tests / scripts referencing
+     * this shape).
      */
     data class CareInfo(
         val lighting: String?,
@@ -37,12 +72,9 @@ object PlantCatalogLookup {
         val watering: String?,
         /**
          * Aus dem watering‑Text extrahierter Tageswert (z. B. „Alle 14 Tage" → 14).
-         * 0, wenn der Text keinen Zahlenwert enthält. Der Aufrufer entscheidet, ob
-         * er stattdessen den familienbasierten Default aus [PlantCareDefaults] nimmt
-         * (Functional Report §1.4).
+         * 0, wenn der Text keinen Zahlenwert enthält.
          */
         val wateringIntervalDays: Int,
-        /** Der gefundene Katalog‑Name (zum Debuggen und als menschlich lesbarer Hinweis). */
         val matchedName: String?
     ) {
         val isEmpty: Boolean
@@ -51,48 +83,78 @@ object PlantCatalogLookup {
     }
 
     /**
-     * Sucht in Dispatchers.IO (Room erlaubt keine Abfragen auf dem UI‑Thread).
+     * Find a catalog row that corresponds to a PlantNet identification
+     * result. Returns the full catalog `Plant` plus which branch fired.
+     * Returns null when nothing matches → caller should fall back to
+     * `PlantCareDefaults.forFamily(family)` for sensible defaults.
      *
-     * @param scientificName z. B. "Polygonatum multiflorum"
-     * @param commonName     z. B. "Vielblütiges Salomonssiegel" (kann null sein)
+     * Runs on Dispatchers.IO (Room forbids main-thread queries).
+     */
+    suspend fun findMatch(
+        context: Context,
+        scientificName: String?,
+        commonName: String?
+    ): CatalogMatch? = withContext(Dispatchers.IO) {
+        val repo = PlantRepository.getInstance(context.applicationContext)
+
+        // 1) Latin-name exact — the primary key now that the CSV carries
+        //    scientificName. Catches "Monstera deliciosa" → curated row
+        //    in one query, no string heuristics involved.
+        val sci = scientificName?.trim()?.takeIf { it.isNotEmpty() }
+        if (sci != null) {
+            repo.findCatalogByScientificNameBlocking(sci)?.let {
+                return@withContext CatalogMatch(it, MatchSource.SCIENTIFIC_EXACT)
+            }
+
+            // 2) Latin-name partial — PlantNet returned the full binomial,
+            //    catalog only carries the genus. Try genus-only first
+            //    (first whitespace-separated word) since Latin binomials
+            //    are <Genus> <species>.
+            val genus = sci.split(' ').firstOrNull()?.takeIf { it.length >= 4 }
+            if (genus != null) {
+                repo.findCatalogByScientificNameLikeBlocking("$genus%")?.let {
+                    return@withContext CatalogMatch(it, MatchSource.SCIENTIFIC_PARTIAL)
+                }
+            }
+        }
+
+        // 3) German common-name exact — covers legacy CSV rows that
+        //    haven't been backfilled with scientificName yet, plus rare
+        //    cases where PlantNet's `commonName` is the German trivial
+        //    name itself (the API returns localised commons when they
+        //    exist).
+        val common = commonName?.trim()?.takeIf { it.isNotEmpty() }
+        if (common != null) {
+            repo.findCatalogByNameBlocking(common)?.let {
+                return@withContext CatalogMatch(it, MatchSource.COMMON_NAME_EXACT)
+            }
+        }
+
+        // 4) Reverse mapping — last-resort safety net for legacy rows.
+        if (sci != null) {
+            val reverseGerman = WikiImageHelper.germanNameForScientific(sci)
+            if (reverseGerman != null) {
+                repo.findCatalogByNameBlocking(reverseGerman)?.let {
+                    return@withContext CatalogMatch(it, MatchSource.REVERSE_GERMAN)
+                }
+            }
+        }
+
+        null
+    }
+
+    /**
+     * Back-compat wrapper — returns the legacy `CareInfo` view. Prefer
+     * [findMatch] for any new caller that needs the matched plant or
+     * the badge state.
      */
     suspend fun findByIdentification(
         context: Context,
         scientificName: String?,
         commonName: String?
-    ): CareInfo? = withContext(Dispatchers.IO) {
-        val plantRepo = PlantRepository.getInstance(context.applicationContext)
-
-        // 1) Exakt‑Treffer auf dem Trivialnamen
-        val exact = commonName?.takeIf { it.isNotBlank() }?.let { plantRepo.findCatalogByNameBlocking(it.trim()) }
-        if (exact != null) return@withContext exact.toCareInfo()
-
-        // 2) Rückwärts‑Mapping aus SEARCH_OVERRIDES: scientificName → deutscher Name
-        val reverseGerman = scientificName?.let { WikiImageHelper.germanNameForScientific(it) }
-        if (reverseGerman != null) {
-            val match = plantRepo.findCatalogByNameBlocking(reverseGerman)
-            if (match != null) return@withContext match.toCareInfo()
-        }
-
-        // 3) Partieller Treffer: letztes Wort des Trivialnamens als LIKE‑Muster
-        //    („Vielblütiges Salomonssiegel" → "%Salomonssiegel%").
-        //    Wir nehmen das letzte Wort, weil im Deutschen der charakteristische
-        //    Gattungsname üblicherweise am Ende steht.
-        val lastWord = commonName?.trim()?.split(' ')?.lastOrNull { it.isNotBlank() }
-        if (!lastWord.isNullOrBlank() && lastWord.length >= 4) {
-            val partial = plantRepo.findCatalogByNameLikeBlocking("%$lastWord%")
-            if (partial != null) return@withContext partial.toCareInfo()
-        }
-
-        // 4) Letzter Versuch: letzte Worte des wissenschaftlichen Namens — manchmal steht
-        //    der Gattungsname (z. B. "Monstera") als eigenständiger Katalog‑Eintrag.
-        val sciLastWord = scientificName?.trim()?.split(' ')?.firstOrNull { it.isNotBlank() }
-        if (!sciLastWord.isNullOrBlank() && sciLastWord.length >= 4) {
-            val partial = plantRepo.findCatalogByNameLikeBlocking("%$sciLastWord%")
-            if (partial != null) return@withContext partial.toCareInfo()
-        }
-
-        null
+    ): CareInfo? {
+        val match = findMatch(context, scientificName, commonName) ?: return null
+        return match.plant.toCareInfo()
     }
 
     private fun Plant.toCareInfo(): CareInfo {
@@ -102,9 +164,6 @@ object PlantCatalogLookup {
             soil = soil?.takeIf { it.isNotBlank() },
             fertilizing = fertilizing?.takeIf { it.isNotBlank() },
             watering = wateringText,
-            // Catalog rows come from plants.csv where watering reads e.g. "Alle 14 Tage. ...".
-            // The same regex used by AddToMyPlantsDialogFragment is reused here so the
-            // PlantNet draft already carries a meaningful interval (Functional Report §1.4).
             wateringIntervalDays = wateringText?.let { ReminderUtils.parseWateringInterval(it) } ?: 0,
             matchedName = name
         )
