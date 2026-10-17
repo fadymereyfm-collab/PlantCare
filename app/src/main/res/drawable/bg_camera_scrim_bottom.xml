@@ -1,0 +1,13 @@
+<!--
+    PlantCare — Camera bottom scrim (F2.3).
+    Mirrors bg_camera_scrim_top: transparent at top, dense black at bottom.
+    Hosts the mode toggle + shutter + gallery controls.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:type="linear"
+        android:angle="90"
+        android:startColor="#CC000000"
+        android:endColor="#00000000" />
+</shape>

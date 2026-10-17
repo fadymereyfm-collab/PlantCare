@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="6dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/pc_surface"
+    app:strokeColor="@color/pc_outlineVariant"
+    app:strokeWidth="1dp"
+    app:rippleColor="@color/pc_secondaryContainer">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="14dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imagePlant"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="14dp"
+            android:src="@drawable/ic_default_plant"
+            android:scaleType="centerCrop"
+            android:background="@color/pc_secondaryContainer"
+            android:contentDescription="@string/plant_image"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.PlantCare.RoundedSquare" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/textPlantName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textAppearance="@style/TextAppearance.PlantCare.Subtitle"
+                android:textSize="16sp"
+                tools:text="Monstera Deliciosa" />
+
+            <TextView
+                android:id="@+id/textPlantType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+                android:layout_marginTop="2dp"
+                tools:text="Bewaesserung alle 7 Tage" />
+
+            <TextView
+                android:id="@+id/textPersonalNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+                android:textStyle="italic"
+                android:textColor="@color/pc_primary"
+                android:visibility="gone"
+                android:layout_marginTop="3dp"
+                tools:text="Im Wohnzimmer am Fenster"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageFavorite"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_star_outline"
+            android:contentDescription="@string/add_to_favorites"
+            app:tint="@color/pc_tertiary"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

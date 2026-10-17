@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — AddPlantChoiceBottomSheet layout (F2.4)
+
+    Two MaterialCardView rows: catalog selection vs camera identify.
+    Hosted in BottomSheetDialogFragment so it inherits the
+    BottomSheetStyle.Modern surface + 28dp top corners from themes.xml.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="24dp">
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_plant_choice_title"
+        android:textAppearance="@style/TextAppearance.PlantCare.Title"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Option 1: Catalog -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/optionCatalog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="1dp"
+        app:strokeColor="@color/pc_outlineVariant"
+        app:strokeWidth="1dp"
+        app:cardBackgroundColor="@color/pc_surface">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/pc_secondaryContainer"
+                android:padding="8dp"
+                android:src="@drawable/ic_nav_garden"
+                android:contentDescription="@null"
+                app:tint="@color/pc_onSecondaryContainer" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_plant_choice_catalog_title"
+                    android:textAppearance="@style/TextAppearance.PlantCare.Subtitle" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_plant_choice_catalog_subtitle"
+                    android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Option 2: Camera identify -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/optionCamera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="1dp"
+        app:strokeColor="@color/pc_outlineVariant"
+        app:strokeWidth="1dp"
+        app:cardBackgroundColor="@color/pc_surface">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/pc_secondaryContainer"
+                android:padding="8dp"
+                android:src="@drawable/ic_camera"
+                android:contentDescription="@null"
+                app:tint="@color/pc_onSecondaryContainer" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_plant_choice_camera_title"
+                    android:textAppearance="@style/TextAppearance.PlantCare.Subtitle" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_plant_choice_camera_subtitle"
+                    android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

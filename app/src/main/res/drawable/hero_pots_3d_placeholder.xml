@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare - hero_pots_3d_placeholder (Phase G2.1).
+
+    Vector placeholder for the Pro banner hero image. Shows a stylised
+    cluster of three concrete pots with leaves. Replaced by a real 3D
+    raster (hero_pots_3d.webp) once Fady provides it from Storyset or
+    Freepik. Reference the placeholder in layouts as
+    @drawable/hero_pots_3d (an alias drawable that points here for now;
+    after the real WebP lands the alias re-points to it).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160">
+
+    <!-- Back pot (largest) -->
+    <path
+        android:fillColor="#BFC9C2"
+        android:pathData="M85,75 L135,75 L130,140 L90,140 Z" />
+    <!-- Back pot soil -->
+    <path
+        android:fillColor="#5C4533"
+        android:pathData="M88,75 L132,75 L132,80 L88,80 Z" />
+    <!-- Back pot tall leaves -->
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M105,75 C108,55 102,40 110,30 C115,40 118,55 115,75 Z" />
+    <path
+        android:fillColor="#2F8242"
+        android:pathData="M118,75 C123,60 132,52 130,38 C124,50 117,60 113,75 Z" />
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M99,75 C95,62 88,55 90,42 C95,52 100,62 105,75 Z" />
+
+    <!-- Middle small pot -->
+    <path
+        android:fillColor="#D6D9D2"
+        android:pathData="M58,100 L88,100 L85,140 L61,140 Z" />
+    <path
+        android:fillColor="#5C4533"
+        android:pathData="M60,100 L86,100 L86,104 L60,104 Z" />
+    <!-- Middle pot leaves -->
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M70,100 C68,90 65,80 73,72 C76,80 78,90 78,100 Z" />
+    <path
+        android:fillColor="#2F8242"
+        android:pathData="M78,100 C80,90 86,85 83,75 C78,82 75,90 73,100 Z" />
+
+    <!-- Front pot (left, taller-narrow) -->
+    <path
+        android:fillColor="#CFD3CC"
+        android:pathData="M25,85 L62,85 L58,140 L29,140 Z" />
+    <path
+        android:fillColor="#5C4533"
+        android:pathData="M28,85 L60,85 L60,89 L28,89 Z" />
+    <!-- Front pot broad leaves -->
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M40,85 C28,72 22,60 30,46 C38,58 44,72 48,85 Z" />
+    <path
+        android:fillColor="#2F8242"
+        android:pathData="M48,85 C56,68 65,55 60,40 C52,52 46,68 44,85 Z" />
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M35,85 C32,75 24,68 28,55 C32,65 38,75 42,85 Z" />
+
+</vector>

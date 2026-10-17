@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare G2.1 - Today-day-circle background for the Home week strip.
+    Solid pc_primary circle behind the numeric day for the current day.
+    Non-today columns omit this drawable and render the number directly.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/pc_primary" />
+</shape>

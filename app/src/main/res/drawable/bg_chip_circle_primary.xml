@@ -1,0 +1,9 @@
+<!--
+    PlantCare — Circular sage-tinted chip background (F3.1).
+    Used behind decorative icons in the new card headers (Today streak
+    chip, plant photo placeholders, etc.). Single solid color, no stroke.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/pc_primary" />
+</shape>

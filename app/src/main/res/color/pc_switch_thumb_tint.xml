@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Switch thumb tint. Default Material2 SwitchMaterial paints the unchecked
+  thumb with colorSurface — which is near-black in our dark theme
+  (pc_surface = #0B0F0E), making the toggle invisible on a dark dialog.
+  We pin the unchecked thumb to pc_outline (visible neutral in both modes:
+  #6F7973 light / #8A938F dark) and the checked thumb to pc_primary so the
+  on-state remains brand-mint.
+
+  Disabled state: keep the SAME hue (pc_outline / pc_primary) but reduce
+  to 0.5 alpha. This is critical for `switchBiometric` — when the device
+  has no biometric hardware, SettingsDialogFragment calls setEnabled(false)
+  and previously the thumb fell through to pc_outlineVariant (#495350 in
+  dark mode) which made it disappear against the dark dialog surface. The
+  alpha-dimmed pc_outline stays visible while still signalling "disabled".
+  android:alpha on ColorStateList items requires API 23+; minSdk=24 ✓.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:state_enabled="true" android:color="@color/pc_primary"/>
+    <item android:state_enabled="true" android:color="@color/pc_outline"/>
+    <item android:state_checked="true" android:alpha="0.5" android:color="@color/pc_primary"/>
+    <item android:alpha="0.5" android:color="@color/pc_outline"/>
+</selector>

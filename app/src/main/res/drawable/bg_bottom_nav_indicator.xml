@@ -1,0 +1,20 @@
+<!--
+    PlantCare — Bottom navigation active indicator (F2.1)
+
+    Material 3 pill indicator sits BEHIND the icon of the selected nav item.
+    Width is sized by BottomNavigationView automatically (default 64dp x 32dp).
+    We use pc_primaryContainer for the soft sage tint so it reads as
+    "selected, but not aggressive" — onPrimaryContainer (= #002113) goes on
+    top via the icon/text tint.
+
+    Used by:
+      activity_main.xml — bottomNav app:itemActiveIndicatorStyle (via theme)
+      themes.xml — BottomNavigationActiveIndicator style
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <corners android:radius="16dp" />
+    <solid android:color="@color/pc_primaryContainer" />
+
+</shape>

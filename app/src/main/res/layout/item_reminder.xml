@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — item_reminder (F4.3 — visual redesign)
+
+    Generic single-line reminder row used in compact lists (no photo
+    or type icon — those are in item_daily_watering for the rich
+    Heute list). Light card wrapper, body text inside.
+
+    Identifier preserved: textReminder.
+-->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="4dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/pc_surfaceContainerLow"
+    app:strokeWidth="0dp">
+
+    <TextView
+        android:id="@+id/textReminder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:textAppearance="@style/TextAppearance.PlantCare.Body"
+        tools:text="Reminder" />
+
+</com.google.android.material.card.MaterialCardView>

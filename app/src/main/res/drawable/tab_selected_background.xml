@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    F2.8 — orphan drawable. The top-tab layout was retired in F2.2 and
+    nothing references this file anymore. Kept on disk only because the
+    sandbox cannot delete it; AAPT still compiles it, so the body is now
+    self-contained (no @color references to the also-removed tab_*
+    color tokens). Safe to delete manually.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/pc_primary" />
+    <corners android:radius="20dp" />
+</shape>

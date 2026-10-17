@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — item_photo_grid (F4.4)
+    Simple photo tile used in compact grids. Wrapped in a
+    ShapeableImageView for rounded corners.
+-->
+<com.google.android.material.imageview.ShapeableImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/imagePhoto"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:layout_margin="6dp"
+    android:scaleType="centerCrop"
+    android:background="@color/pc_secondaryContainer"
+    android:contentDescription="@string/plant_image"
+    app:shapeAppearanceOverlay="@style/ShapeAppearance.PlantCare.LargeRoundedSquare" />

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare - include_hero_pro_banner (Phase G2.2).
+
+    Shared Pro-upgrade banner used at the top of Home, Settings, and
+    (eventually) the paywall preview. Mirrors the reference Plant
+    Identifier "Unlock all features" card:
+        - Left:  Title + subtitle + Pill "Go Pro" button.
+        - Right: 3D pots illustration that subtly overflows the card edge.
+        - Bg:    pc_primaryContainer (light fistuc), no elevation.
+
+    G-polish-1 (2026-05-17): inverted CTA to white-on-tint per reference
+    "Go pro" pill. Previous android:backgroundTint was ignored by
+    MaterialButton (Material reads only app:backgroundTint), so the
+    style's pc_primary green leaked through. Now: white background +
+    dark text + 2dp elevation = subtle "lifted pill" feel.
+-->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/pc_primaryContainer"
+    app:strokeWidth="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="156dp"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/heroTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/hero_unlock_all_features"
+            android:textAppearance="@style/TextAppearance.PlantCare.Title"
+            android:textSize="20sp"
+            android:textColor="@color/pc_onPrimaryContainer"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/heroImage"
+            app:layout_constraintHorizontal_bias="0" />
+
+        <TextView
+            android:id="@+id/heroSubtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/hero_unlock_subtitle"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body"
+            android:textSize="13sp"
+            android:textColor="@color/pc_onPrimaryContainer"
+            android:alpha="0.85"
+            app:layout_constraintTop_toBottomOf="@id/heroTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/heroImage" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/heroCta"
+            style="@style/PlantCare.Button.Filled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="@string/hero_go_pro"
+            android:textColor="@color/pc_on_surface_strong"
+            android:minHeight="44dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:backgroundTint="@color/pc_surface"
+            app:elevation="2dp"
+            app:rippleColor="@color/pc_outlineVariant"
+            app:layout_constraintTop_toBottomOf="@id/heroSubtitle"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/heroImage"
+            android:layout_width="136dp"
+            android:layout_height="148dp"
+            android:src="@drawable/hero_pots_3d"
+            android:scaleType="fitEnd"
+            android:contentDescription="@null"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

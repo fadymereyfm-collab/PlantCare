@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — item_archive_photo (F4.4 — visual redesign)
+
+    Photo grid cell used inside dialog_archive_photos. Wraps the
+    photo in a rounded ShapeableImageView so the corners match the
+    rest of the F2/F3 aesthetic. IDs preserved: img, date.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_columnWeight="1"
+    android:orientation="vertical"
+    android:padding="6dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/img"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:scaleType="centerCrop"
+        android:background="@color/pc_secondaryContainer"
+        android:contentDescription="@string/cd_archive_photo"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.PlantCare.LargeRoundedSquare" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/pc_onSurfaceSecondary"
+        android:textSize="12sp"
+        android:fontFamily="@font/inter"
+        android:paddingTop="6dp"
+        android:ellipsize="end"
+        android:maxLines="1" />
+</LinearLayout>

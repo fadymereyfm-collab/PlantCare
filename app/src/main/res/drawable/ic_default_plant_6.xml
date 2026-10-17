@@ -1,0 +1,32 @@
+<!--
+  Variante 6 — Topf mit Sprössling.
+  Warmer Terrakotta‑Topf + frischer grüner Trieb, passt zu „Zimmer­pflanze".
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#F1E3D1"
+        android:pathData="M24,4a20,20 0 1,0 0,40a20,20 0 1,0 0,-40"/>
+    <!-- Topf -->
+    <path
+        android:fillColor="#C96A4B"
+        android:pathData="M14,28 L34,28 L32,40 L16,40 Z"/>
+    <path
+        android:fillColor="#B85A3A"
+        android:pathData="M14,26 L34,26 L34,30 L14,30 Z"/>
+    <!-- Stamm -->
+    <path
+        android:fillColor="#3F8F4B"
+        android:pathData="M23,14 L25,14 L25,28 L23,28 Z"/>
+    <!-- linkes Blatt -->
+    <path
+        android:fillColor="#57B06A"
+        android:pathData="M24,18 C18,18 14,20 12,22 C14,24 20,24 24,22 Z"/>
+    <!-- rechtes Blatt -->
+    <path
+        android:fillColor="#57B06A"
+        android:pathData="M24,14 C30,14 34,16 36,18 C34,20 28,20 24,18 Z"/>
+</vector>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — item_empty_room (F4.4)
+    Used inside the Today list to signal a room with no waterings.
+-->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="5dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/pc_surfaceContainerLow"
+    app:strokeWidth="0dp">
+
+    <TextView
+        android:id="@+id/textViewEmptyRoom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+        tools:ignore="HardcodedText"
+        tools:text="Keine Pflanzen vorhanden" />
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,190 @@
+package com.example.plantcare;
+
+import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.Query;
+import androidx.room.Update;
+
+import java.util.List;
+
+/**
+ * Full Plant DAO with all original queries retained and
+ * added explicit profile image update helpers (updateProfileImage / clearProfileImage).
+ */
+@Dao
+public interface PlantDao {
+
+    // -------------------------
+    // Core retrieval
+    // -------------------------
+
+    @Query("SELECT * FROM plant")
+    List<Plant> getAll();
+
+    @Query("SELECT COUNT(*) FROM plant")
+    int countAll();
+
+    @Query("SELECT * FROM plant WHERE id = :id LIMIT 1")
+    Plant findById(int id);
+
+    @Query("SELECT * FROM plant WHERE id IN (:ids)")
+    List<Plant> getPlantsByIds(List<Integer> ids);
+
+    // -------------------------
+    // Name / nickname lookups
+    // -------------------------
+
+    @Query("SELECT * FROM plant WHERE name = :name LIMIT 1")
+    Plant findByName(@Nullable String name);
+
+    @Query("SELECT * FROM plant WHERE nickname = :nickname LIMIT 1")
+    Plant findByNickname(@Nullable String nickname);
+
+    // -------------------------
+    // User plant filtering (global)
+    // -------------------------
+
+    @Query("SELECT * FROM plant WHERE isUserPlant = 1")
+    List<Plant> getAllUserPlants();
+
+    @Query("SELECT * FROM plant WHERE isUserPlant = 0")
+    List<Plant> getAllNonUserPlants();
+
+    /**
+     * Catalog plants filtered by category (indoor / outdoor / herbal / cacti).
+     * Used by the Chip filter in AllPlantsFragment.
+     */
+    @Query("SELECT * FROM plant WHERE isUserPlant = 0 AND category = :category")
+    List<Plant> getCatalogPlantsByCategory(@Nullable String category);
+
+    /**
+     * Catalog plants that have no category yet.
+     */
+    @Query("SELECT * FROM plant WHERE isUserPlant = 0 AND (category IS NULL OR category = \'\')")
+    List<Plant> getCatalogPlantsWithoutCategory();
+
+    /**
+     * Update the category column without rewriting the whole row.
+     */
+    @Query("UPDATE plant SET category = :category WHERE id = :id")
+    void updateCategory(int id, @Nullable String category);
+
+    /**
+     * Case-insensitive catalog lookup by German name.
+     */
+    @Query("SELECT * FROM plant WHERE LOWER(name) = LOWER(:name) AND isUserPlant = 0 LIMIT 1")
+    Plant findCatalogByName(@Nullable String name);
+
+    /**
+     * Partial catalog name match.
+     */
+    @Query("SELECT * FROM plant WHERE LOWER(name) LIKE LOWER(:pattern) AND isUserPlant = 0 LIMIT 1")
+    Plant findCatalogByNameLike(@Nullable String pattern);
+
+    /**
+     * v17: catalog lookup by binomial / Latin name.
+     * Primary key for PlantNet matching now that the CSV carries scientificName.
+     */
+    @Query("SELECT * FROM plant WHERE LOWER(scientificName) = LOWER(:scientificName) AND isUserPlant = 0 LIMIT 1")
+    Plant findCatalogByScientificName(@Nullable String scientificName);
+
+    /**
+     * v17: partial Latin-name match (genus prefix fallback).
+     */
+    @Query("SELECT * FROM plant WHERE LOWER(scientificName) LIKE LOWER(:pattern) AND isUserPlant = 0 LIMIT 1")
+    Plant findCatalogByScientificNameLike(@Nullable String pattern);
+
+    @Query("SELECT * FROM plant WHERE name = :name AND isUserPlant = 1")
+    List<Plant> getAllUserPlantsWithName(@Nullable String name);
+
+    // -------------------------
+    // User-specific filtering (by userEmail)
+    // -------------------------
+
+    @Query("SELECT * FROM plant WHERE name = :name AND isUserPlant = 1 AND userEmail = :userEmail LIMIT 1")
+    Plant findUserPlantByNameAndUser(@Nullable String name, @Nullable String userEmail);
+
+    @Query("SELECT * FROM plant WHERE isUserPlant = 1 AND userEmail = :userEmail")
+    List<Plant> getAllUserPlantsForUser(@Nullable String userEmail);
+
+    @Query("SELECT * FROM plant WHERE name = :name AND isUserPlant = 1 AND userEmail = :userEmail")
+    List<Plant> getAllUserPlantsWithNameAndUser(@Nullable String name, @Nullable String userEmail);
+
+    @Query("SELECT * FROM plant WHERE nickname = :nickname AND isUserPlant = 1 AND userEmail = :userEmail")
+    List<Plant> getAllUserPlantsWithNicknameAndUser(@Nullable String nickname, @Nullable String userEmail);
+
+    // -------------------------
+    // Room-based filtering (scoped to user)
+    // -------------------------
+
+    @Query("SELECT COUNT(*) FROM plant WHERE roomId = :roomId AND userEmail = :userEmail")
+    int countPlantsByRoom(int roomId, @Nullable String userEmail);
+
+    @Query("SELECT COUNT(*) FROM plant WHERE isUserPlant = 1 AND userEmail = :userEmail")
+    int countUserPlants(@Nullable String userEmail);
+
+    @Query("SELECT * FROM plant WHERE roomId = :roomId AND isUserPlant = 1 AND userEmail = :userEmail")
+    List<Plant> getAllUserPlantsInRoom(int roomId, @Nullable String userEmail);
+
+    // -------------------------
+    // Profile image control
+    // -------------------------
+
+    @Query("UPDATE plant SET imageUri = :imageUri WHERE id = :id")
+    void updateProfileImage(int id, @Nullable String imageUri);
+
+    @Query("UPDATE plant SET imageUri = NULL WHERE id = :id")
+    void clearProfileImage(int id);
+
+    /**
+     * Every non-empty `imageUri` value currently stored on a plant. Used
+     * by the disease + identify temp-file cleanup so a cover-photo whose
+     * underlying file lives under the identify/ or disease/ temp dirs
+     * is not deleted out from under the user. Pre-fix the cleanup ran
+     * solely on mtime, which left user plants with broken cover images
+     * 7–30 days after they were identified or diagnosed.
+     */
+    @Query("SELECT imageUri FROM plant WHERE imageUri IS NOT NULL AND imageUri != ''")
+    List<String> getAllImageUris();
+
+    // -------------------------
+    // CRUD
+    // -------------------------
+
+    @Insert
+    long insert(Plant plant);
+
+    @Update
+    void update(Plant plant);
+
+    @Query("SELECT * FROM plant WHERE isUserPlant = 0 AND (imageUri IS NULL OR imageUri = \'\')")
+    List<Plant> getCatalogPlantsWithoutImage();
+
+    @Delete
+    void delete(Plant plant);
+
+    @Query("DELETE FROM plant WHERE userEmail = :userEmail")
+    void deleteAllUserPlantsForUser(@Nullable String userEmail);
+
+    // ────────────────────────────────────────────────────────────────────
+    // Sprint-3 Task 3.1: reactive LiveData<List<...>> read queries
+    // ────────────────────────────────────────────────────────────────────
+
+    @Query("SELECT * FROM plant")
+    LiveData<List<Plant>> observeAll();
+
+    @Query("SELECT * FROM plant WHERE isUserPlant = 0")
+    LiveData<List<Plant>> observeAllNonUserPlants();
+
+    @Query("SELECT * FROM plant WHERE isUserPlant = 1 AND userEmail = :userEmail")
+    LiveData<List<Plant>> observeAllUserPlantsForUser(@Nullable String userEmail);
+
+    @Query("SELECT * FROM plant WHERE roomId = :roomId AND isUserPlant = 1 AND userEmail = :userEmail")
+    LiveData<List<Plant>> observeAllUserPlantsInRoom(int roomId, @Nullable String userEmail);
+
+    @Query("SELECT * FROM plant WHERE id = :id LIMIT 1")
+    LiveData<Plant> observeById(int id);
+}

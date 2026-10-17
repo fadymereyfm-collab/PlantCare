@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — Widget plant thumbnail bg (F9.1).
+    Sage secondaryContainer behind the plant photo, 10dp corners for
+    the new image-led aesthetic.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#E0EEDF" />
+    <corners android:radius="10dp" />
+</shape>

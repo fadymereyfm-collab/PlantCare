@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — SettingsFragment layout (F2.6)
+
+    Replaces the placeholder body that F2.2 shipped (and the unused
+    legacy stub previously living at this path). Single NestedScrollView
+    host with the 7 sectioned MaterialCardViews specified in the
+    F2 plan:
+
+      1. Pro hero card (free users — collapsed for Pro)
+      2. KONTO          — name, email, logout, delete
+      3. DARSTELLUNG    — theme radios, language picker
+      4. ABONNEMENT     — status, restore purchases
+      5. DATEN          — data export, analytics + crash toggles, privacy, terms
+      6. HILFE          — contact, rate us, share app
+      7. ÜBER           — version, OSS licenses, advanced (= legacy Dialog)
+
+    Long-tail flows (vacation pickers, change password, avatar, per-type
+    notifications, family share) are reached via the "Erweiterte
+    Einstellungen" row in the ÜBER card, which opens the legacy
+    SettingsDialogFragment unchanged. This keeps every F18.x feature
+    reachable while the surrounding shell follows the new design.
+-->
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settingsScroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pc_background"
+    android:clipToPadding="false"
+    android:paddingTop="8dp"
+    android:paddingBottom="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <!-- ═════════════ 1) Pro hero card ═════════════ -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/proHeroCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/pc_primaryContainer">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/proHeroTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_pro_hero_title"
+                    android:textAppearance="@style/TextAppearance.PlantCare.Title"
+                    android:textColor="@color/pc_onPrimaryContainer" />
+
+                <TextView
+                    android:id="@+id/proHeroSubtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_pro_hero_subtitle"
+                    android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+                    android:textColor="@color/pc_onPrimaryContainer"
+                    android:layout_marginTop="4dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/proHeroCta"
+                    style="@style/PlantCare.Button.Filled"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_pro_hero_cta"
+                    android:layout_marginTop="12dp"
+                    android:minHeight="40dp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ═════════════ 2) KONTO ═════════════ -->
+        <TextView style="@style/SettingsSectionLabel"
+            android:text="@string/settings_section_account" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/SettingsCard">
+            <LinearLayout style="@style/SettingsCardInner">
+
+                <LinearLayout android:id="@+id/rowName" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_name" />
+                        <TextView android:id="@+id/rowNameValue"
+                            style="@style/SettingsRowSubtitle" tools:text="Fady" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout style="@style/SettingsRow"
+                    android:clickable="false" android:focusable="false" android:foreground="@null">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_email" />
+                        <TextView android:id="@+id/rowEmailValue"
+                            style="@style/SettingsRowSubtitle" tools:text="fady@example.com" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout android:id="@+id/rowLogout" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_arrow_back" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_logout" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout android:id="@+id/rowDeleteAccount" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_close"
+                        app:tint="@color/pc_error" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_delete_account"
+                            android:textColor="@color/pc_error" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ═════════════ 3) DARSTELLUNG ═════════════ -->
+        <TextView style="@style/SettingsSectionLabel"
+            android:text="@string/settings_section_appearance" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/SettingsCard">
+            <LinearLayout style="@style/SettingsCardInner">
+
+                <LinearLayout style="@style/SettingsRow"
+                    android:clickable="false" android:focusable="false" android:foreground="@null">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_theme" />
+                        <RadioGroup
+                            android:id="@+id/themeGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="6dp">
+                            <RadioButton android:id="@+id/themeLight"
+                                android:layout_width="0dp" android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/settings_theme_light" />
+                            <RadioButton android:id="@+id/themeDark"
+                                android:layout_width="0dp" android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/settings_theme_dark" />
+                            <RadioButton android:id="@+id/themeSystem"
+                                android:layout_width="0dp" android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/settings_theme_system" />
+                        </RadioGroup>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout android:id="@+id/rowLanguage" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_nav_settings" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_language" />
+                        <TextView android:id="@+id/rowLanguageValue"
+                            style="@style/SettingsRowSubtitle" tools:text="Deutsch" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ═════════════ 4) ABONNEMENT ═════════════ -->
+        <TextView style="@style/SettingsSectionLabel"
+            android:text="@string/settings_section_subscription" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/SettingsCard">
+            <LinearLayout style="@style/SettingsCardInner">
+
+                <LinearLayout style="@style/SettingsRow"
+                    android:clickable="false" android:focusable="false" android:foreground="@null">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_star_filled_gold" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_subscription_status" />
+                        <TextView android:id="@+id/rowSubscriptionValue"
+                            style="@style/SettingsRowSubtitle" tools:text="Kostenlos" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout android:id="@+id/rowRestorePurchases" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_history" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_restore_purchases" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ═════════════ 5) DATEN & DATENSCHUTZ ═════════════ -->
+        <TextView style="@style/SettingsSectionLabel"
+            android:text="@string/settings_section_data" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/SettingsCard">
+            <LinearLayout style="@style/SettingsCardInner">
+
+                <LinearLayout android:id="@+id/rowDataExport" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_gallery" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_data_export" />
+                        <TextView style="@style/SettingsRowSubtitle"
+                            android:text="@string/settings_row_data_export_subtitle" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout style="@style/SettingsRow"
+                    android:clickable="false" android:focusable="false" android:foreground="@null">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_analytics" />
+                    </LinearLayout>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchAnalytics"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout style="@style/SettingsRow"
+                    android:clickable="false" android:focusable="false" android:foreground="@null">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_crash" />
+                    </LinearLayout>
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchCrashReports"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout android:id="@+id/rowPrivacy" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_privacy" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout android:id="@+id/rowTerms" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_terms" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ═════════════ 6) HILFE & FEEDBACK ═════════════ -->
+        <TextView style="@style/SettingsSectionLabel"
+            android:text="@string/settings_section_help" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/SettingsCard">
+            <LinearLayout style="@style/SettingsCardInner">
+
+                <LinearLayout android:id="@+id/rowContact" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_contact" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout android:id="@+id/rowRateUs" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_star_filled" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_rate" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout android:id="@+id/rowShareApp" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_share_app" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ═════════════ 7) ÜBER + Erweitert ═════════════ -->
+        <TextView style="@style/SettingsSectionLabel"
+            android:text="@string/settings_section_about" />
+
+        <com.google.android.material.card.MaterialCardView style="@style/SettingsCard">
+            <LinearLayout style="@style/SettingsCardInner">
+
+                <LinearLayout style="@style/SettingsRow"
+                    android:clickable="false" android:focusable="false" android:foreground="@null">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_version" />
+                        <TextView android:id="@+id/rowVersionValue"
+                            style="@style/SettingsRowSubtitle" tools:text="1.0.0 (2)" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout android:id="@+id/rowOssLicenses" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_oss" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/SettingsRowDivider" />
+
+                <LinearLayout android:id="@+id/rowAdvanced" style="@style/SettingsRow">
+                    <ImageView style="@style/SettingsRowIcon"
+                        android:src="@drawable/ic_nav_settings" tools:ignore="ContentDescription" />
+                    <LinearLayout style="@style/SettingsRowText">
+                        <TextView style="@style/SettingsRowTitle"
+                            android:text="@string/settings_row_advanced" />
+                        <TextView style="@style/SettingsRowSubtitle"
+                            android:text="@string/settings_row_advanced_subtitle" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

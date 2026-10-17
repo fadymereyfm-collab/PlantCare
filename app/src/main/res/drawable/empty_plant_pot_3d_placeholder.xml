@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare - empty_plant_pot_3d_placeholder (Phase G2.1).
+
+    Vector placeholder for empty-state illustrations across Home,
+    Garden, Calendar, and Diagnose. Single concrete pot with broad
+    monstera-style leaves. Replaced by empty_plant_pot_3d.webp once
+    available.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="160"
+    android:viewportHeight="160">
+
+    <!-- Pot body (concrete grey, slightly tapered) -->
+    <path
+        android:fillColor="#CFD3CC"
+        android:pathData="M50,95 L110,95 L105,150 L55,150 Z" />
+    <!-- Pot inner shadow -->
+    <path
+        android:fillColor="#A8B2AC"
+        android:pathData="M50,95 L110,95 L108,99 L52,99 Z" />
+    <!-- Soil -->
+    <path
+        android:fillColor="#5C4533"
+        android:pathData="M53,98 L107,98 L107,103 L53,103 Z" />
+
+    <!-- Big leaf left -->
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M62,95 C40,82 30,60 38,40 C50,55 58,75 72,95 Z" />
+    <path
+        android:fillColor="#2F8242"
+        android:pathData="M62,95 C50,78 45,62 50,48 C56,62 60,78 66,95 Z" />
+
+    <!-- Big leaf right -->
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M98,95 C120,82 130,60 122,40 C110,55 102,75 88,95 Z" />
+    <path
+        android:fillColor="#2F8242"
+        android:pathData="M98,95 C110,78 115,62 110,48 C104,62 100,78 94,95 Z" />
+
+    <!-- Center leaf -->
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M80,95 C75,75 70,55 80,30 C90,55 85,75 80,95 Z" />
+    <path
+        android:fillColor="#2F8242"
+        android:pathData="M80,95 C80,80 78,65 80,50 C82,65 80,80 80,95 Z" />
+
+</vector>

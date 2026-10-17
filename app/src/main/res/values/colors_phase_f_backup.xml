@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Phase F backup of colors.xml — captured 2026-05-15 at start of Phase G0.
+    DO NOT REFERENCE these names from layouts (they live under the `pcf_`
+    prefix to avoid collision with active `pc_` tokens). This file exists
+    only as a revert reference.
+
+    To revert Phase G colors back to Phase F values:
+        1. Open this file.
+        2. Strip the `pcf_` prefix from each token.
+        3. Replace the contents of colors.xml.
+
+    Or use git: checkout the tag `phase-f-final-baseline` and copy the
+    original `app/src/main/res/values/colors.xml`.
+-->
+<resources>
+    <color name="pcf_sage_primary_legacy">#6B9080</color>
+    <color name="pcf_sage_primary_container_legacy">#C5E1D3</color>
+    <color name="pcf_cream_background_legacy">#FAF6EF</color>
+    <color name="pcf_on_surface_legacy">#2A3A33</color>
+    <color name="pcf_on_surface_secondary_legacy">#4A6B5C</color>
+    <color name="pcf_outline_variant_legacy">#BFC9C2</color>
+    <color name="pcf_bottom_nav_active_legacy">#002113</color>
+    <color name="pcf_bottom_nav_inactive_legacy">#4A6B5C</color>
+</resources>

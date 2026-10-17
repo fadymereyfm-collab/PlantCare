@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  2026-05-19 fix #6: ArchivePhotosDialog مُعاد تصميمه ليتوافق مع
+  هوية PlantCare البصرية (Phase G). قبل الإصلاح كان مجرّد ScrollView
+  + GridLayout يُعرَض عبر AlertDialog افتراضي بـ title + OK button
+  بنمط Material default (outline-only). الآن: container بـ
+  bg_dialog_modern + title + close icon + scroll + close button،
+  نفس شكل dialog_plant_detail.xml.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootArchivePhotos"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_modern"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/archiveTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+            android:gravity="center"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            tools:ignore="RtlSymmetry" />
+
+        <ImageButton
+            android:id="@+id/archiveClose"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_close"
+            android:contentDescription="@string/close"
+            app:tint="@color/pc_onSurface" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/pc_outlineVariant"
+        android:layout_marginBottom="16dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fadeScrollbars="false"
+        android:overScrollMode="ifContentScrolls">
+
+        <GridLayout
+            android:id="@+id/gridArchive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:useDefaultMargins="true"
+            android:alignmentMode="alignMargins" />
+    </ScrollView>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="14dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonArchiveClose"
+        style="@style/PlantCare.Button.Filled"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="@string/close" />
+</LinearLayout>

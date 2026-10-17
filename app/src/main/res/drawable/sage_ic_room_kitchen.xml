@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Küche · countertops on paprika circle -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="@color/room_kitchen"
+        android:pathData="M12,0 C18.6,0 24,5.4 24,12 C24,18.6 18.6,24 12,24 C5.4,24 0,18.6 0,12 C0,5.4 5.4,0 12,0 Z" />
+    <group
+        android:scaleX="0.55"
+        android:scaleY="0.55"
+        android:translateX="5.4"
+        android:translateY="5.4">
+        <!-- Pot with handles + lid -->
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M11,3V5H13V3H15V5H16C17.1,5 18,5.9 18,7V8H21V10H19.5V11C20.3,11.5 20.8,12.4 20.5,13.4L19,18.5C18.7,19.4 17.9,20 17,20H7C6.1,20 5.3,19.4 5,18.5L3.5,13.4C3.2,12.4 3.7,11.5 4.5,11V10H3V8H6V7C6,5.9 6.9,5 8,5H9V3H11Z" />
+    </group>
+</vector>

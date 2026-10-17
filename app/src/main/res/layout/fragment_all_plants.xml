@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — AllPlantsFragment layout (F3.3 — visual redesign).
+
+    Hosts the catalog inside both:
+      - CatalogActivity (F2.4 — fullscreen sub-screen from Mein Garten "+")
+      - PlantsInRoomActivity (legacy room-context add-from-catalog path)
+
+    Top-down:
+      1. Hero header (DM Serif title + caption).
+      2. Pill-shaped search input with leading magnifier icon.
+      3. Category filter chips (horizontal scroll, populated by Java).
+      4. RecyclerView with the plant list.
+      5. FAB for "+" custom plant — same affordance as before.
+
+    Identifiers preserved: editSearch, chipGroupCategories,
+    recyclerViewAllPlants, fabAddPlant.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/pc_background">
+
+    <!-- F3.3 — hero header. Hidden when this fragment is hosted by
+         CatalogActivity (which has its own toolbar title) — gated in
+         AllPlantsFragment via an arg flag. Always visible when hosted
+         elsewhere (the legacy paths still want a screen title). -->
+    <TextView
+        android:id="@+id/catalogHeaderTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/catalog_header_title"
+        android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+        android:textSize="26sp"
+        android:includeFontPadding="false" />
+
+    <TextView
+        android:id="@+id/catalogHeaderSubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/catalog_header_subtitle"
+        android:textAppearance="@style/TextAppearance.PlantCare.BodySmall" />
+
+    <!-- Search container — wraps the EditText in a soft surface card for
+         a modern pill look. -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="1dp"
+        app:cardBackgroundColor="@color/pc_surface"
+        app:strokeColor="@color/pc_outlineVariant"
+        app:strokeWidth="1dp">
+
+        <EditText
+            android:id="@+id/editSearch"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/search_hint"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="12dp"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.PlantCare.Body" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Kategorie-Filter: Alle / Zimmer / Garten / Kräuter / Kakteen.
+         Chips werden zur Laufzeit in AllPlantsFragment.setupCategoryChips() aufgebaut,
+         damit die Liste zentral aus PlantCategoryUtil.ALL_CATEGORIES kommt. -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:scrollbars="none"
+        android:fillViewport="true">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupCategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleLine="true"
+            app:singleSelection="true"
+            app:selectionRequired="true" />
+    </HorizontalScrollView>
+
+    <!-- حاوية تعرض القائمة والـ FAB كطبقة علوية -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewAllPlants"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="112dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddPlant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="18dp"
+            android:contentDescription="@string/cd_fab_add_plant"
+            app:tint="@color/pc_onPrimary"
+            app:backgroundTint="@color/pc_primary"
+            app:srcCompat="@drawable/ic_add" />
+    </FrameLayout>
+
+</LinearLayout>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare - Phase G0.2 - Manrope font family.
+    Production wiring: points at the real Manrope-ExtraBold TTF that
+    Fady dropped into res/font/ on 2026-05-16. Used for ALL hero and
+    title text via TextAppearance.PlantCare.Headline + .Title.
+-->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="800"
+        android:font="@font/manrope_extra_bold" />
+</font-family>

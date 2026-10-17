@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============================================================
+         PlantCare — Dark palette. Phase G additions on top of the
+         dark-mode foundation laid in 2026-05-13. Rebuilt 2026-05-16
+         after a filesystem truncation event removed the trailing
+         widget/room/reminder blocks.
+         ============================================================ -->
+
+    <!-- M3 Color Roles (Dark) — Mint Teal primary -->
+    <color name="pc_primary">#5DDABE</color>
+    <color name="pc_onPrimary">#00382A</color>
+    <color name="pc_primaryContainer">#135E4A</color>
+    <color name="pc_onPrimaryContainer">#B6F1DA</color>
+
+    <color name="pc_secondary">#B9CDC2</color>
+    <color name="pc_onSecondary">#233830</color>
+    <color name="pc_secondaryContainer">#324E45</color>
+    <color name="pc_onSecondaryContainer">#D5EADD</color>
+
+    <color name="pc_tertiary">#FFB597</color>
+    <color name="pc_onTertiary">#5C2400</color>
+    <color name="pc_tertiaryContainer">#823A18</color>
+    <color name="pc_onTertiaryContainer">#FFD6C2</color>
+
+    <color name="pc_error">#FFB4AB</color>
+    <color name="pc_onError">#690005</color>
+    <color name="pc_errorContainer">#93000A</color>
+    <color name="pc_onErrorContainer">#FFDAD6</color>
+
+    <!-- Background / Surface — near black -->
+    <color name="pc_background">#0B0F0E</color>
+    <color name="pc_onBackground">#F1F4F1</color>
+    <color name="pc_surface">#0B0F0E</color>
+    <color name="pc_onSurface">#F1F4F1</color>
+    <color name="pc_surfaceVariant">#404943</color>
+    <color name="pc_onSurfaceVariant">#C3CDC7</color>
+
+    <color name="pc_surfaceContainerLowest">#060807</color>
+    <color name="pc_surfaceContainerLow">#131817</color>
+    <color name="pc_surfaceContainer">#181E1C</color>
+    <color name="pc_surfaceContainerHigh">#1F2624</color>
+    <color name="pc_surfaceContainerHighest">#29302D</color>
+
+    <color name="pc_outline">#8A938F</color>
+    <color name="pc_outlineVariant">#495350</color>
+
+    <color name="pc_inverseSurface">#F1F4F1</color>
+    <color name="pc_inverseOnSurface">#2F3933</color>
+    <color name="pc_inversePrimary">#1F8C70</color>
+
+    <color name="pc_scrim">#000000</color>
+
+    <!-- ============================================================
+         Phase G new tokens — dark-mode parity.
+         ============================================================ -->
+    <color name="pc_surface_translucent">#33FFFFFF</color>
+    <color name="pc_surface_translucent_strong">#66FFFFFF</color>
+    <color name="pc_on_surface_strong">#FFFFFF</color>
+    <color name="pc_background_dim">#181E1C</color>
+    <color name="pc_accent_amber">#E0B86A</color>
+    <color name="pc_accent_amber_dark">#B4904D</color>
+    <color name="pc_on_accent_amber">#1F1300</color>
+    <color name="pc_accent_coral">#E89C9A</color>
+    <color name="pc_accent_coral_dark">#B47371</color>
+    <color name="pc_on_accent_coral">#2A0707</color>
+
+    <!-- Leaf tonal scale (consistent across modes) -->
+    <color name="leaf_50">#EAF7EE</color>
+    <color name="leaf_100">#D6E9C0</color>
+    <color name="leaf_200">#A6D5B0</color>
+    <color name="leaf_300">#6FBE83</color>
+    <color name="leaf_400">#3FA856</color>
+    <color name="leaf_500">#2F8242</color>
+    <color name="leaf_600">#236831</color>
+    <color name="leaf_700">#1F3D2A</color>
+    <color name="leaf_800">#15291C</color>
+    <color name="leaf_900">#0E1E14</color>
+
+    <!-- Semantic role aliases -->
+    <color name="pc_onSurfaceSecondary">#C3CDC7</color>
+    <color name="pc_accent">#FFB597</color>
+    <color name="pc_accent2">#E5C475</color>
+    <color name="modern_accent">#FFB597</color>
+    <color name="pc_success">#5DDABE</color>
+    <color name="colorPrimaryVariant">#1F8C70</color>
+
+    <!-- Backgrounds (legacy aliases) -->
+    <color name="bg_light">#0B0F0E</color>
+    <color name="creamy_background">#0B0F0E</color>
+    <color name="ultra_light_gray">#0B0F0E</color>
+    <color name="gray_very_light">#131817</color>
+    <color name="backgroundLight">#0B0F0E</color>
+    <color name="card_bg">#181E1C</color>
+    <color name="border_soft">#495350</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#F1F4F1</color>
+    <color name="text_secondary">#A8B4AE</color>
+    <color name="title_text">#F8FAF8</color>
+
+    <color name="manual_reminder_text">#E5C9A8</color>
+    <color name="auto_reminder_text">#5DDABE</color>
+
+    <!-- Bottom Navigation -->
+    <color name="pc_bottom_nav_active">#B6F1DA</color>
+    <color name="pc_bottom_nav_inactive">#C3CDC7</color>
+    <color name="pc_fab_camera_bg">#5DDABE</color>
+    <color name="pc_fab_camera_tint">#00382A</color>
+
+    <color name="card_shadow">#80000000</color>
+
+    <!-- Calendar -->
+    <color name="calendar_selected_day">#135E4A</color>
+    <color name="calendar_today_circle">#5DDABE</color>
+    <color name="calendar_event_day">#FFB597</color>
+    <color name="calendar_text">#F1F4F1</color>
+    <color name="calendar_text_disabled">#4D5552</color>
+    <color name="calendar_background">#0B0F0E</color>
+
+    <!-- Widget legacy aliases -->
+    <color name="gray_500">#A8B4AE</color>
+    <color name="gray_400">#6E7873</color>
+    <color name="green_500">#5DDABE</color>
+    <color name="blue_500">#6CB6F0</color>
+
+    <!-- Room icon palette (Dark) — UI-BUG-8 (2026-05-17): match the light
+         palette's hue spread but ~12% darker so icons read against dark sage
+         cards without glare. -->
+    <color name="room_living">#C26845</color>
+    <color name="room_bedroom">#587BA8</color>
+    <color name="room_bathroom">#3D9AA6</color>
+    <color name="room_toilet">#6B8194</color>
+    <color name="room_hallway">#A07F4D</color>
+    <color name="room_kitchen">#D89530</color>
+    <color name="room_office">#4F6B91</color>
+    <color name="room_balcony">#5DA05A</color>
+    <color name="room_garden">#338C47</color>
+    <color name="room_kids">#CC5D85</color>
+    <color name="room_dining">#A84A5C</color>
+    <color name="room_default">#88B0A1</color>
+
+
+    <!-- Reminder-type tints (Dark) -->
+    <color name="reminder_type_water">#6CB6F0</color>
+    <color name="reminder_type_fertilize">#7BC470</color>
+    <color name="reminder_type_mist">#82BFDB</color>
+    <color name="reminder_type_repot">#C49A88</color>
+</resources>

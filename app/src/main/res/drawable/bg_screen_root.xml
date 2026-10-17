@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — Phase G0.4: Screen root background.
+    Layer 1: solid mint pc_background (#EAF1E2)
+    Layer 2: leaf pattern overlay at 7% opacity, stretched to fill.
+
+    Bound to android:windowBackground in Theme.PlantCareApp so EVERY
+    Activity automatically inherits the textured backdrop. Fragments
+    that explicitly set their own background (a few legacy ones)
+    override this — they'll need to be reverted to "transparent" or
+    "@drawable/bg_screen_root" during G2-G7 layer rewrites.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@color/pc_background" />
+
+    <item
+        android:drawable="@drawable/bg_leaf_pattern"
+        android:gravity="fill" />
+
+</layer-list>

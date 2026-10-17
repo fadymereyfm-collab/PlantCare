@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Sprint-1 Task 1.4: celebration dialog body for a completed challenge.
+  Replaces the toast in TodayFragment.java that was easy to miss. Body only —
+  the OK button is supplied by MaterialAlertDialogBuilder.setPositiveButton.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/challengeCompleteEmoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/challenge_complete_emoji"
+        android:textSize="64sp"
+        android:gravity="center"
+        android:contentDescription="@null" />
+
+    <!-- Pre-fix the three text rows used Material textAppearanceTitleLarge /
+         BodyLarge / BodyMedium attributes which the active theme rendered
+         at ~22 / 16 / 14sp — far too small against the 64sp emoji above
+         them (screenshot 180625 showed the texts as a thin secondary line
+         under a huge celebration icon). Now: explicit 26sp bold headline,
+         20sp title, 16sp subtext + brand colours. -->
+    <TextView
+        android:id="@+id/challengeCompleteHeadline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:fontFamily="@font/inter"
+        android:text="@string/challenge_complete_headline" />
+
+    <TextView
+        android:id="@+id/challengeCompleteTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/pc_primary"
+        android:fontFamily="@font/inter"
+        android:textStyle="bold"
+        tools:text="7 Tage in Folge gegossen" />
+
+    <TextView
+        android:id="@+id/challengeCompleteSubtext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="@color/text_primary"
+        android:fontFamily="@font/inter"
+        android:text="@string/challenge_complete_subtext" />
+</LinearLayout>

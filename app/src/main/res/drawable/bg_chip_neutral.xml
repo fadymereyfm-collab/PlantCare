@@ -1,0 +1,9 @@
+<!-- 2026-05-20 Feature 4 (Enriched history): rounded chip background for
+     severity / affected-part badges. Background tint is overridden at
+     runtime to colour-code severity (green/amber/red); affected-part
+     keeps the default neutral container colour. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="12dp" />
+    <solid android:color="@color/pc_surfaceContainerHigh" />
+</shape>

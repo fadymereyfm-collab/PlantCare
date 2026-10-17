@@ -1,0 +1,199 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: caller is authenticated and owns the resource
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Helper: incoming data doesn't exceed reasonable size limits.
+    // Only valid for create / update — for delete the caller has no
+    // request.resource so the expression would fail. Always wrap
+    // validSize in a create+update gate, never on a generic write.
+    function validSize(fields, maxFields) {
+      return request.resource.data.size() <= maxFields;
+    }
+
+    // Helper (Wave 2 Family Share — Phase 1A, 2026-05-14):
+    // Does the caller hold an accepted share grant for this owner+plant?
+    //
+    // The grant is the pointer doc materialized by the
+    // `onShareInviteAccepted` Cloud Function under
+    // `users/{recipientUid}/sharedPlants/{plantId}`. The Cloud Function
+    // also stamps `ownerUid` on the doc so we can verify the recipient
+    // isn't trying to read a different owner's plant by smuggling the
+    // wrong path. Each call costs 1 rule-evaluation get() against the
+    // pointer collection.
+    function hasShareGrantFor(ownerId, plantId) {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid)/sharedPlants/$(plantId))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)/sharedPlants/$(plantId)).data.ownerUid == ownerId;
+    }
+
+    // ── Per-user data ─────────────────────────────────────────
+    //
+    // CS1 fix: each subcollection splits the verbs into
+    //   read, delete  → isOwner only (no request.resource at delete)
+    //   create, update → isOwner + validSize
+    //
+    // The previous shape `allow read, write: if isOwner && validSize`
+    // silently rejected every delete because `write` includes delete
+    // and `request.resource` is null on that operation. Result: the
+    // Firestore-side cleanup paths in FirebaseSyncManager
+    // (deleteJournalMemo, clearVacationCloud, deletePlant photo
+    // cascade, deleteReminder, etc.) all returned PermissionDenied —
+    // local rows were dropped but the cloud copy persisted forever
+    // as orphan data. This is the bug class that motivated
+    // DEFERRED_ISSUES #2 (account deletion orphans).
+
+    match /users/{userId} {
+      allow read, delete: if isOwner(userId);
+      allow create, update: if isOwner(userId);
+
+      match /plants/{plantId} {
+        // Wave 2 Family Share (Phase 1A): recipients with an active
+        // share grant for THIS plantId can read the plant doc. Writes
+        // remain owner-only — recipients use the
+        // `markSharedReminderWatered` callable for the only write they
+        // can perform (mark a reminder done).
+        allow read: if isOwner(userId) || hasShareGrantFor(userId, plantId);
+        allow delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 30);
+      }
+
+      match /reminders/{reminderId} {
+        // Wave 2 Family Share (Phase 1A): recipients can read individual
+        // reminder docs IF they have an active share grant for the
+        // reminder's plantId. We check resource.data.plantId so a
+        // recipient cannot enumerate the owner's other reminders.
+        // Note: the plantId in the reminder doc is stored as an
+        // integer; the pointer doc id is the same integer rendered as
+        // a string by the Android side. string(...) coerces both into
+        // the same form for the path build inside hasShareGrantFor.
+        allow read: if isOwner(userId)
+                    || hasShareGrantFor(userId, string(resource.data.plantId));
+        allow delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 20);
+      }
+
+      match /rooms/{roomId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 10);
+      }
+
+      match /photos/{photoId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 15);
+      }
+
+      // F10.3 Plant Journal memos. Field count = 6
+      // (id, plantId, userEmail, text, createdAt, updatedAt); cap at 10
+      // for a small headroom. Without this rule the catch-all at the
+      // bottom denies every memo write — and the app silently looks
+      // like it's syncing while Firestore returns PermissionDenied.
+      match /memos/{memoId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 10);
+      }
+
+      // V2 Vacation mode: single fixed doc id "current" per user.
+      // Field count = 3 (start, end, welcomeFired); cap at 5.
+      match /vacation/{vacationDocId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 5);
+      }
+
+      // C3 Gamification (streak + challenges): two fixed docs per user.
+      // streak doc: 3 fields. challenges doc: 3 nested entries × 3
+      // fields each = 9 logical fields but only 3 top-level. Cap at
+      // 10 to leave room for future challenge ids.
+      match /gamification/{docId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 10);
+      }
+
+      // B7 Pro status: single fixed doc id "proStatus" per user.
+      //
+      // Bug #10 fix (2026-05-14, server-side Pro verification): the doc
+      // is now WRITE-ONLY-VIA-CLOUD-FUNCTION. The `verifyPurchase`
+      // callable validates the purchase against the Play Developer API
+      // and writes the result with admin SDK privileges (which bypass
+      // these rules). Direct client writes are denied — a rooted
+      // device with Lucky Patcher can no longer set `isPro=true` by
+      // calling Firestore directly to circumvent the local
+      // BillingManager. The client RETAINS read access so it can
+      // mirror the verified state into local SharedPreferences for
+      // fast UI gating.
+      //
+      // delete: the owner CAN delete their own proStatus doc. Bug #5
+      // (DSGVO Article 17 — account erasure) needs this: the
+      // client-side FirebaseSyncManager.deleteAllForUser cascade runs
+      // while the user is still authenticated and uses the CLIENT SDK
+      // (not the admin SDK — it does NOT bypass these rules). create /
+      // update stay denied, so the anti-tampering guarantee still holds
+      // — a rooted device still can't fake isPro=true.
+      match /billing/{docId} {
+        allow read: if isOwner(userId);
+        allow create, update: if false;
+        allow delete: if isOwner(userId);
+      }
+
+      // Wave 2: per-user FCM token registry. Doc id = the FCM token itself.
+      // Cloud Functions reads these to send push to the device. Writes
+      // limited to the owning user — tokens are personally identifying
+      // (they tie a device to a user) and must never leak.
+      match /fcmTokens/{token} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) && validSize(request.resource.data, 5);
+      }
+
+      // Wave 2 Family Share — pointer docs the recipient reads to discover
+      // plants shared with them. Written ONLY by Cloud Functions (admin
+      // SDK bypasses rules); the client gets read-only visibility and is
+      // explicitly forbidden from creating these from the app.
+      match /sharedPlants/{plantId} {
+        allow read: if isOwner(userId);
+        allow write: if false;
+      }
+    }
+
+    // ── Family Share invitations ─────────────────────────────────
+    //
+    // Invite docs live at the top level (not under /users/) because the
+    // invitee usually isn't authenticated as the same user as the owner.
+    // The Cloud Function `onShareInviteCreated` resolves toUid by email
+    // and sends the FCM push.
+    //
+    // Owner can create + read + update (to mark expired/declined).
+    // Invitee can read + update (to flip status to "accepted").
+    // Nobody else can touch the doc.
+    match /shareInvites/{inviteId} {
+      allow create: if request.auth != null
+                    && request.resource.data.fromUid == request.auth.uid
+                    && request.resource.data.status == "pending"
+                    && validSize(request.resource.data, 15);
+      allow read:   if request.auth != null
+                    && (resource.data.fromUid == request.auth.uid
+                        || resource.data.toUid == request.auth.uid
+                        || resource.data.toEmail == request.auth.token.email);
+      allow update: if request.auth != null
+                    && (resource.data.fromUid == request.auth.uid
+                        || resource.data.toUid == request.auth.uid)
+                    && validSize(request.resource.data, 15);
+      allow delete: if request.auth != null
+                    && resource.data.fromUid == request.auth.uid;
+    }
+
+    // ── Public plant catalog (read-only for authenticated users) ─
+    match /plantCatalog/{plantId} {
+      allow read:  if request.auth != null;
+      allow write: if false; // admin via Console only
+    }
+
+    // ── Deny everything else ──────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

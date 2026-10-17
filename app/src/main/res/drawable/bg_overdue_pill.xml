@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PlantCare G2.1 - Coral pill background for "Overdue" badges. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/pc_accent_coral" />
+    <corners android:radius="100dp" />
+</shape>

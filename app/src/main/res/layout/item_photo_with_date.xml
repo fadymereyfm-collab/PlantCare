@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — item_photo_with_date (F4.4)
+    Large photo card with caption used in dialog_plant_photos_viewer.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:scaleType="centerCrop"
+        android:background="@color/pc_secondaryContainer"
+        android:contentDescription="@string/cd_plant_photo"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.PlantCare.LargeRoundedSquare" />
+
+    <TextView
+        android:id="@+id/textDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+        tools:ignore="HardcodedText"
+        tools:text="15. Mai 2026"
+        xmlns:tools="http://schemas.android.com/tools" />
+</LinearLayout>

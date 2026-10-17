@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PlantCare G2.1 - Top-left corner bracket for empty-state viewfinder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M5,5 L25,5 L25,9 L9,9 L9,25 L5,25 Z" />
+</vector>

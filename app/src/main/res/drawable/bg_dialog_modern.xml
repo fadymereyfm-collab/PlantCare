@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  AlertDialog background — was hardcoded @android:color/white, which made
+  every dialog (DSGVO consent, plant picker, save confirmations, …) pop as
+  a bright white sheet in dark mode. pc_surface auto-flips to the dark
+  surface (#0B0F0E) in values-night/colors.xml.
+
+  The stroke is necessary in dark mode: pc_surface (#0B0F0E) is nearly
+  identical to pc_background behind the dialog, so without an outline the
+  dialog edges vanished entirely (Plant detail + auth/consent + many other
+  dialogs reported invisible in night theme). pc_outline gives a visible
+  but subtle border in both modes (#6F7973 light / #8A938F dark).
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/pc_surface"/>
+    <stroke android:width="1dp" android:color="@color/pc_outline"/>
+    <corners android:radius="28dp"/>
+</shape>

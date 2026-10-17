@@ -1,0 +1,108 @@
+<!--
+  Add new room dialog (popup from Quick add / AddPlant flows).
+  Pre-fix: window width was Android-default (~280dp on most phones), which
+  made the card look cramped and out of place against the rest of the app's
+  92%-width modal sheets. AddRoomDialogFragment.onStart() now also forces
+  the same 92% width, but this layout was tightened in parallel:
+    – icon on top for visual anchor (clay theme: olive home glyph)
+    – title 24sp + subtle subtitle line for visual hierarchy
+    – outlined input field with rounded 16dp corners (already there)
+    – buttons elevated to 52dp tall and reordered (filled Add on top,
+      outlined Cancel below) to match the rest of the app's modals.
+-->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="0dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@color/card_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="24dp">
+
+        <!-- Header icon: olive home/door glyph anchors the dialog visually
+             and signals "room" without requiring extra copy. -->
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/ic_room_add_clay"
+            android:contentDescription="@null"
+            android:layout_marginBottom="14dp" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_room_dialog_title"
+            android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_room_dialog_subtitle"
+            android:textColor="@color/pc_onSurfaceSecondary"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Outlined input — rounded 16dp box keeps it consistent with
+             the rest of the app's TextInputLayout usages. -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/pc_outline"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            android:layout_marginBottom="24dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editRoomName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_room_name"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:background="@android:color/transparent"
+                android:inputType="textCapWords"
+                android:maxLines="1"
+                android:maxLength="40"
+                android:imeOptions="actionDone"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonAddRoomConfirm"
+            style="@style/PlantCare.Button.Filled"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="@string/action_add_short"
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonCancelAddRoom"
+            style="@style/PlantCare.Button.Outlined"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="@string/action_cancel"
+            android:textSize="16sp"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

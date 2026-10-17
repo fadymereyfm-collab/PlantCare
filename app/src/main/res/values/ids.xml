@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Tag-key IDs used by PlantImageLoader to attach a per-ImageView
+      coroutine Job. The Job is cancelled on the next loadInto call so
+      RecyclerView reuse doesn't leak suspended Wikipedia/IO work.
+      Defined as <item name=… type="id"/> instead of <id .../> so it
+      compiles to a stable resource id usable from setTag/getTag.
+    -->
+    <item name="tag_plant_image_load_job" type="id" />
+</resources>

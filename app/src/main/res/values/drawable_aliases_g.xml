@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare - Phase G drawable aliases.
+
+    Layouts reference @drawable/hero_pots_3d and @drawable/empty_plant_pot_3d.
+    Until Fady drops the real WebP rasters into drawable-nodpi/, these
+    aliases resolve to vector placeholders living in drawable/. The swap
+    is a one-line edit:
+        before: @drawable/hero_pots_3d_placeholder
+        after:  @drawable/hero_pots_3d_real   (after the WebP arrives)
+    Layouts never need to know.
+
+    Pattern note: <item type="drawable"> is the correct alias syntax
+    (NOT <drawable>, which produces a ColorDrawable). Existing PlantCare
+    uses this exact pattern in res/values/drawables_aliases.xml.
+-->
+<resources>
+    <item type="drawable" name="hero_pots_3d">@drawable/hero_pots_3d_placeholder</item>
+    <item type="drawable" name="empty_plant_pot_3d">@drawable/empty_plant_pot_3d_placeholder</item>
+    <item type="drawable" name="diagnose_3d_microscope">@drawable/diagnose_3d_microscope_placeholder</item>
+    <!-- The empty-diagnose illustration reuses the empty pot until Fady
+         provides a dedicated checkup vector. Visually appropriate: a
+         healthy plant means nothing to diagnose. -->
+    <item type="drawable" name="empty_diagnose_3d">@drawable/empty_plant_pot_3d_placeholder</item>
+</resources>

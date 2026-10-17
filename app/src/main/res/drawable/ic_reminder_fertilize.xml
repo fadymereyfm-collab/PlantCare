@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Leaf-and-stem outline — represents fertilising / nutrients. Same
+         24dp viewport as ic_water_drop so the two render at consistent
+         visual weight in the Today/Calendar lists. -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M12,2C7,2 4,6 4,11c0,4 3,8 8,11c5,-3 8,-7 8,-11C20,6 17,2 12,2zM12,17c-3,0 -5,-3 -5,-6c0,-3 2,-6 5,-6s5,3 5,6C17,14 15,17 12,17z" />
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M11,8h2v6h-2z" />
+</vector>

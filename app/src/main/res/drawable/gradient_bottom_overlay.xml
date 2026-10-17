@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    A vertical gradient used as an overlay for the bottom of each plant card. It
+    fades from fully transparent at the top to a semi‑transparent black at
+    the bottom, improving the readability of the text placed on top of the
+    plant photo. The gradient orientation is top to bottom (90 degrees).
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:startColor="#00000000"
+        android:endColor="#66000000"
+        android:angle="90" />
+</shape>

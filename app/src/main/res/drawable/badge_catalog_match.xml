@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  v17: badge background for the "✓ In unserem Katalog" indicator on
+  PlantNet identification results. Uses the brand primary instead of
+  pc_success so it visually distinguishes from the confidence badge —
+  catalog match is information, not a "good result" signal.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/pc_primary" />
+    <corners android:radius="10dp" />
+</shape>

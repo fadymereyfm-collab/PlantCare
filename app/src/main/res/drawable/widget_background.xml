@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — Widget background (F9.1 — modernized).
+    Widgets cannot reference theme attributes (RemoteViews limitation),
+    so we hard-code the cream/sage palette to match `pc_background` +
+    `pc_outlineVariant`. Slightly larger corner radius + thicker stroke
+    so the widget feels at home on Android 12+ rounded launcher.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FAF6EF" />
+    <corners android:radius="20dp" />
+    <stroke
+        android:color="#BFC9C2"
+        android:width="1dp" />
+</shape>

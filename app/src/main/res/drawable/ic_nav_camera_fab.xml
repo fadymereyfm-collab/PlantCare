@@ -1,0 +1,50 @@
+<!--
+    PlantCare — ic_nav_camera_fab (UI-BUG-6 redesign, 2026-05-17)
+
+    Center FAB icon for UnifiedCameraActivity (Plant Scanner).
+
+    Previous icon: generic camera + scanner-reticle corners + center dot.
+    Readable as "camera" but identical to every photo app on the Play Store.
+
+    Redesign: camera body keeps the universally-understood photo affordance
+    (users instantly recognise "tap to scan"), but the lens is replaced by a
+    leaf — the brand signature. Now reads as "PlantCare's scanner" at a glance.
+
+    Foreground: white. Sits on pc_fab_camera_bg (sage primary).
+    Renders at 28dp (FAB is 64dp custom, 32dp max image size).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="28dp"
+    android:height="28dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- 1. Camera body outline. Rounded rectangle from (2,7) to (22,20),
+         with a centered viewfinder bump on top so the silhouette reads
+         clearly as a camera even at small sizes. Stroke-only so the leaf
+         inside is the visual hero. -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1.6"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M9.6,5 L8.4,6.6 C8.1,7 7.6,7.2 7.1,7.2 H4 C2.9,7.2 2,8.1 2,9.2 V18 C2,19.1 2.9,20 4,20 H20 C21.1,20 22,19.1 22,18 V9.2 C22,8.1 21.1,7.2 20,7.2 H16.9 C16.4,7.2 15.9,7 15.6,6.6 L14.4,5 H9.6 Z" />
+
+    <!-- 2. Leaf — replaces the conventional lens circle. Almond shape with
+         pointed tip up-right + curved underside. Fills the centre of the
+         body so the icon's visual centre is a plant motif. -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M16,9.6 C16.7,10.3 17,11.3 16.8,12.5 C16.5,14.5 14.7,16.3 12.6,16.4 C11.4,16.5 10.4,16.2 9.7,15.6 C9.7,13.1 11,11.1 12.8,10.1 C13.7,9.6 14.9,9.4 16,9.6 Z" />
+
+    <!-- 3. Leaf central vein — thin sage-tinted stroke for depth. Goes from
+         the tip (top-right) down to the base (bottom-left) of the leaf. -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@color/pc_fab_camera_bg"
+        android:strokeWidth="0.55"
+        android:strokeLineCap="round"
+        android:pathData="M15.8,10 L10.3,15.4" />
+
+</vector>

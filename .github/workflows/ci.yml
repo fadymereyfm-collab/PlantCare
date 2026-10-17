@@ -1,0 +1,108 @@
+# ──────────────────────────────────────────────────────────────
+# PlantCare CI
+#
+# Jobs:
+#   unit-test  → runs on every PR and push to main
+#   build-aab  → runs only on push to main (after tests pass)
+#
+# Required GitHub Secrets:
+#   GOOGLE_SERVICES_JSON_PROD  – base64 of app/src/prod/google-services.json
+#   KEYSTORE_BASE64            – base64 of app/plantcare-upload.jks
+#   KEYSTORE_PASSWORD          – storePassword
+#   KEY_ALIAS                  – keyAlias  (plantcare)
+#   KEY_PASSWORD               – keyPassword
+#   PLANTNET_API_KEY           – PlantNet API key (https://my.plantnet.org/)
+#   OPENWEATHER_API_KEY        – OpenWeatherMap API key (https://openweathermap.org/api)
+#
+# How to encode a file:
+#   base64 -w 0 app/plantcare-upload.jks   (Linux/macOS)
+#   [Convert]::ToBase64String([IO.File]::ReadAllBytes("app\plantcare-upload.jks"))  (PowerShell)
+# ──────────────────────────────────────────────────────────────
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ── 1. Unit Tests ────────────────────────────────────────────
+  unit-test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      - name: Decode google-services.json (prod)
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_PROD }}" | base64 --decode \
+            > app/src/prod/google-services.json
+
+      - name: Run unit tests
+        run: ./gradlew testProdReleaseUnitTest
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: app/build/reports/tests/testProdReleaseUnitTest/
+          retention-days: 7
+
+  # ── 2. Build signed AAB (main branch only) ──────────────────
+  build-aab:
+    name: Build Release AAB
+    runs-on: ubuntu-latest
+    needs: unit-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v3
+
+      - name: Decode secrets
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_PROD }}" | base64 --decode \
+            > app/src/prod/google-services.json
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode \
+            > app/plantcare-upload.jks
+
+      - name: Configure signing & API keys (local.properties)
+        run: |
+          echo "KEYSTORE_PATH=plantcare-upload.jks"         >> local.properties
+          echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> local.properties
+          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}"         >> local.properties
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}"   >> local.properties
+          echo "PLANTNET_API_KEY=${{ secrets.PLANTNET_API_KEY }}" >> local.properties
+          echo "OPENWEATHER_API_KEY=${{ secrets.OPENWEATHER_API_KEY }}" >> local.properties
+
+      - name: Build prodRelease AAB
+        run: ./gradlew bundleProdRelease
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-prod-release-${{ github.sha }}
+          path: app/build/outputs/bundle/prodRelease/app-prod-release.aab
+          retention-days: 14

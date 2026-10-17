@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — item_plant_photo (F4.4)
+    Rich photo row with optional inspection metadata. Used by
+    PlantPhotosViewerDialogFragment and similar viewers.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imagePlantPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:scaleType="centerCrop"
+        android:background="@color/pc_secondaryContainer"
+        android:contentDescription="@string/app_name"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.PlantCare.LargeRoundedSquare" />
+
+    <TextView
+        android:id="@+id/textPhotoDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+        android:gravity="end"
+        android:layout_marginTop="6dp"
+        android:visibility="gone"
+        tools:text="📅 Datum" />
+
+    <TextView
+        android:id="@+id/textPhotoPlantName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.PlantCare.Subtitle"
+        android:textSize="15sp"
+        android:textColor="@color/pc_primary"
+        android:gravity="start"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        tools:text="@string/item_plant_name_placeholder" />
+
+    <TextView
+        android:id="@+id/textPhotoInspectionLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/pc_tertiary"
+        android:fontFamily="@font/inter"
+        android:gravity="start"
+        android:layout_marginTop="6dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/textPhotoInspectionNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+        android:gravity="start"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"/>
+</LinearLayout>

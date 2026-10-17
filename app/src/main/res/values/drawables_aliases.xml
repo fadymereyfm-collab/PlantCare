@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- If ic_default_plant does not exist, replace the right side with @android:drawable/ic_menu_report_image -->
+    <item type="drawable" name="ic_broken_image">@drawable/ic_default_plant</item>
+    <item type="drawable" name="ic_image_placeholder">@drawable/ic_default_plant</item>
+</resources>

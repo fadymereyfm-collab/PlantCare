@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare - diagnose_3d_microscope_placeholder (Phase G6.2).
+
+    Vector placeholder for the Diagnose tab hero card. Stylised
+    microscope tilted at 20-degree angle inspecting a leaf. Replaced by
+    diagnose_3d_microscope.webp once Fady provides it.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="140dp"
+    android:height="140dp"
+    android:viewportWidth="140"
+    android:viewportHeight="140">
+
+    <!-- Base plate -->
+    <path
+        android:fillColor="#A8B7AB"
+        android:pathData="M30,110 L110,110 L106,124 L34,124 Z" />
+    <!-- Inner plate shadow -->
+    <path
+        android:fillColor="#8B9C8E"
+        android:pathData="M34,113 L106,113 L104,118 L36,118 Z" />
+
+    <!-- Arm column -->
+    <path
+        android:fillColor="#7D8A7E"
+        android:pathData="M65,38 L72,38 L72,110 L65,110 Z" />
+
+    <!-- Eyepiece tube (tilted) -->
+    <path
+        android:fillColor="#5E6E5F"
+        android:pathData="M68,38 L72,18 L92,22 L88,42 Z" />
+    <!-- Eyepiece lens -->
+    <path
+        android:fillColor="#1B3A2A"
+        android:pathData="M73,16 C75,12 88,14 90,18 C90,21 76,20 73,16 Z" />
+
+    <!-- Objective barrel -->
+    <path
+        android:fillColor="#5E6E5F"
+        android:pathData="M55,58 L82,58 L80,76 L57,76 Z" />
+    <!-- Objective lens -->
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M62,76 L75,76 L73,84 L64,84 Z" />
+
+    <!-- Stage with leaf -->
+    <path
+        android:fillColor="#CFD3CC"
+        android:pathData="M44,92 L96,92 L94,102 L46,102 Z" />
+    <!-- Leaf on stage -->
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M62,92 C66,84 74,80 78,82 C82,86 76,94 70,94 Z" />
+    <path
+        android:fillColor="#2F8242"
+        android:pathData="M68,92 C70,86 74,84 76,86 C77,90 72,94 70,94 Z" />
+
+    <!-- Focus knob -->
+    <path
+        android:fillColor="#A8B7AB"
+        android:pathData="M52,68 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
+
+</vector>

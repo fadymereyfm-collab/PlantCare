@@ -1,22 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.plantcare">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- CAMERA permission is optional for TakePicture() when delegating to external camera,
+         but keeping it does not hurt. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 2026-05-05: declare camera as optional so Chromebooks (and any
+         device without a built-in camera) remain eligible to install. -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="false" />
+
+    <!-- Required for notifications on Android 13 (API 33) and above -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Location for weather-based reminders (coarse is sufficient) -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- Required for Firebase, Wikipedia image fetching, and Glide HTTP image loading -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <queries>
+        <package android:name="com.google.android.gms" />
+    </queries>
 
     <application
-        android:allowBackup="true"
+        android:name=".App"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:usesCleartextTraffic="false"
+        android:localeConfig="@xml/locale_config"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.PlantCare">
-        
+        android:supportsRtl="true"
+        android:theme="@style/Theme.PlantCareApp">
+
+        <!-- DSGVO: disable Firebase data collection until the user gives explicit consent -->
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+
+        <!-- AdMob — test App ID; replace with real ID from AdMob console before release -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
+        <!-- Resolve conflict between play-services-measurement-api and play-services-ads-lite
+             over AD_SERVICES_CONFIG; use the AdMob-provided config. -->
+        <property
+            android:name="android.adservices.AD_SERVICES_CONFIG"
+            android:resource="@xml/gma_ad_services_config"
+            tools:replace="android:resource" />
+
+        <!-- Onboarding is the launcher; it redirects to MainActivity if already completed -->
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".ui.onboarding.OnboardingActivity"
+            android:exported="true"
+            android:theme="@style/Theme.PlantCareApp">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".PlantsInRoomActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name=".ui.identify.PlantIdentifyActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:label="@string/identify_title" />
+
+        <!-- F2.3 — center FAB launches this. Hosts CameraX preview +
+             mode slider, then routes captured/picked image to either
+             PlantIdentifyActivity (Identify) or DiseaseDiagnosisActivity
+             (Diagnose). Hidden status bar via fitsSystemWindows="false"
+             in its layout root — no system-window theme override needed. -->
+        <activity
+            android:name=".ui.camera.UnifiedCameraActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:label="@string/fab_camera_cd"
+            android:screenOrientation="portrait" />
+
+        <!-- F2.4 — Catalog sub-screen launched from Mein Garten's
+             "+" → "Aus Katalog wählen" bottom sheet. Hosts
+             AllPlantsFragment. -->
+        <activity
+            android:name=".ui.catalog.CatalogActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:label="@string/catalog_activity_title" />
+
+        <activity
+            android:name=".ui.disease.DiseaseDiagnosisActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:label="@string/disease_title" />
+
+        <!-- uCrop — 2026-05-20 Feature 1: image cropping screen launched
+             from UnifiedCameraActivity after capture/pick and before
+             routing to Identify/Diagnose. singleTop matches the rest of
+             the camera pipeline; theme uses PlantCare colors via
+             Theme.PlantCare.Crop (see themes.xml). -->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.PlantCare.Crop" />
+
+        <activity
+            android:name=".ui.disease.DiagnosisHistoryActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:label="@string/disease_history_title" />
+
+        <!-- Wave 2 Family Share — dedicated recipient-side screen. -->
+        <activity
+            android:name=".feature.share.SharedPlantsActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:label="@string/shared_plants_title"
+            android:theme="@style/Theme.PlantCareApp" />
+
+        <!-- Notification action: "Mark all watered" inline button. exported=false
+             because the action only fires from PendingIntents we create
+             ourselves; nothing outside the app should be able to broadcast it. -->
+        <receiver
+            android:name=".NotificationActionReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.plantcare.action.MARK_ALL_WATERED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Widget Provider -->
+        <receiver
+            android:name=".widget.PlantCareWidget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/plantcare_widget_info" />
+        </receiver>
+
+        <!-- Widget Service -->
+        <service
+            android:name=".widget.PlantCareWidgetService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <!-- Wave 2: Family Share — FCM receiver. Handles invite + accept pushes
+             dispatched by the onShareInviteCreated / onShareInviteAccepted
+             Cloud Functions. -->
+        <service
+            android:name=".feature.share.PlantCareMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- FileProvider for sharing a destination Uri with the camera app -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
     </application>
 
 </manifest>

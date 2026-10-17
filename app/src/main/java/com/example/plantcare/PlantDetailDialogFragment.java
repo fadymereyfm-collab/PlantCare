@@ -1,0 +1,1115 @@
+package com.example.plantcare;
+
+import android.Manifest;
+import android.app.Dialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.textview.MaterialTextView;
+import com.google.android.material.textfield.TextInputEditText;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.ObjectKey;
+import com.example.plantcare.feature.share.FamilyShareManager;
+import com.example.plantcare.media.PhotoStorage;
+import com.example.plantcare.media.CoverCloudSync;
+import com.example.plantcare.ui.util.FragmentBg;
+import com.example.plantcare.ui.util.QuickAddHelper;
+import com.example.plantcare.weekbar.ArchiveStore;
+import com.example.plantcare.WikiImageHelper;
+
+import java.io.File;
+
+import kotlin.Unit;
+
+public class PlantDetailDialogFragment extends DialogFragment {
+
+    private static final String TAG = "PlantCover";
+    private static final String ARG_PLANT = "plant";
+    private static final String ARG_IS_USER_PLANT = "is_user_plant";
+    private static final String ARG_HIGHLIGHT_TYPE = "highlight_type";
+
+    private Plant plant;
+    private boolean isUserPlant;
+    private Runnable dismissListener;
+    private Runnable onPlantAdded;
+    private boolean readOnlyMode = false;
+    /**
+     * v16 — when non-null the dialog renders the bold task-highlight card
+     * at the top (water/fertilize/mist/repot). Set via
+     * {@link #setHighlightTaskType(String)} from the calendar/today
+     * reminder click handlers, or via the {@link #ARG_HIGHLIGHT_TYPE}
+     * bundle key after rotation.
+     */
+    @androidx.annotation.Nullable
+    private String highlightTaskType = null;
+
+    private ImageView imageView;
+
+    private Uri pendingCoverUri;
+    private ActivityResultLauncher<Uri> takePictureLauncher;
+    private ActivityResultLauncher<String> requestCameraPermissionLauncher;
+
+    private final Runnable dataChangeListener = new Runnable() {
+        @Override
+        public void run() {
+            if (getContext() == null || plant == null) return;
+            FragmentBg.runIO(PlantDetailDialogFragment.this, () -> {
+                try {
+                    Plant updated = com.example.plantcare.data.repository.PlantRepository
+                            .getInstance(requireContext().getApplicationContext())
+                            .findByIdBlocking((int) plant.id);
+                    if (updated != null) {
+                        plant = updated;
+                    }
+                } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+            }, () -> refreshCoverImage());
+        }
+    };
+
+    public static PlantDetailDialogFragment newInstance(Plant plant, boolean isUserPlant) {
+        PlantDetailDialogFragment fragment = new PlantDetailDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_PLANT, plant);
+        args.putBoolean(ARG_IS_USER_PLANT, isUserPlant);
+        fragment.setArguments(args);
+        // Mirror into fields so callers using a freshly-constructed instance
+        // (without going through getArguments) still see them. onCreate
+        // resolves from the Bundle for restored fragments.
+        fragment.plant = plant;
+        fragment.isUserPlant = isUserPlant;
+        return fragment;
+    }
+
+    public void setOnDismissListener(Runnable listener) { this.dismissListener = listener; }
+    public void setOnPlantAdded(Runnable listener) { this.onPlantAdded = listener; }
+    public void setReadOnlyMode(boolean mode) { this.readOnlyMode = mode; }
+
+    /**
+     * Show the bold task-highlight card at the top of the dialog. Pass
+     * the reminder type ("water" / "fertilize" / "mist" / "repot"); NULL
+     * keeps the default rendering (no highlight). Mirror into the
+     * arguments Bundle so it survives rotation.
+     */
+    public void setHighlightTaskType(@androidx.annotation.Nullable String type) {
+        this.highlightTaskType = type;
+        Bundle args = getArguments();
+        if (args == null) {
+            args = new Bundle();
+            setArguments(args);
+        }
+        args.putString(ARG_HIGHLIGHT_TYPE, type);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Restore from arguments after rotation / process death — without this,
+        // newInstance's field-set is lost and refreshCoverImage / button click
+        // handlers crash with NPE on `plant.id`.
+        if (plant == null && getArguments() != null) {
+            try {
+                plant = (Plant) getArguments().getSerializable(ARG_PLANT);
+            } catch (Throwable __ce) { CrashReporter.INSTANCE.log(__ce); }
+            isUserPlant = getArguments().getBoolean(ARG_IS_USER_PLANT, false);
+        }
+        if (highlightTaskType == null && getArguments() != null) {
+            highlightTaskType = getArguments().getString(ARG_HIGHLIGHT_TYPE, null);
+        }
+
+        takePictureLauncher = registerForActivityResult(
+                new ActivityResultContracts.TakePicture(),
+                success -> {
+                    Log.d(TAG, "TakePicture result: " + success + " uri=" + pendingCoverUri);
+                    if (plant == null || getContext() == null) {
+                        pendingCoverUri = null;
+                        return;
+                    }
+
+                    final Uri capturedUri = pendingCoverUri;
+                    pendingCoverUri = null;
+
+                    File f = PhotoStorage.coverFile(requireContext(), plant.id);
+                    Log.d(TAG, "Cover file exists=" + f.exists() + " size=" + f.length() + " lastModified=" + f.lastModified());
+
+                    if (success && capturedUri != null) {
+                        plant.imageUri = capturedUri.toString();
+                        showImmediateCover(capturedUri);
+
+                        FragmentBg.runIO(this, () -> {
+                            try {
+                                com.example.plantcare.data.repository.PlantRepository
+                                        .getInstance(requireContext().getApplicationContext())
+                                        .updateProfileImageBlocking((int) plant.id, capturedUri.toString());
+                                Log.d(TAG, "DB updated imageUri for plant " + plant.id + " (local content uri)");
+                            } catch (Throwable t) {
+                                Log.e(TAG, "Failed to update DB imageUri", t);
+                            }
+                        }, () -> refreshCoverImage());
+
+                        // Save Archive cover immediately
+                        try {
+                            String email = getCurrentUserEmailSafe();
+                            if (email != null) {
+                                ArchiveStore.INSTANCE.setCover(requireContext().getApplicationContext(), email, (long) plant.id, capturedUri);
+                            }
+                        } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+
+                        CoverCloudSync.uploadCover(
+                                requireContext(),
+                                plant.id,
+                                url -> {
+                                    Log.d(TAG, "Cloud cover uploaded. url=" + url);
+                                    plant.imageUri = url;
+                                    FragmentBg.runIO(this, () -> {
+                                        try {
+                                            com.example.plantcare.data.repository.PlantRepository
+                                                    .getInstance(requireContext().getApplicationContext())
+                                                    .updateProfileImageBlocking((int) plant.id, url);
+                                            Log.d(TAG, "DB updated imageUri for plant " + plant.id + " (cloud url)");
+                                        } catch (Throwable t) {
+                                            Log.e(TAG, "Failed to persist cloud URL", t);
+                                        }
+                                    }, () -> refreshCoverImage());
+                                    return Unit.INSTANCE;
+                                },
+                                err -> {
+                                    Log.e(TAG, "Cloud upload failed", err);
+                                    if (isAdded()) {
+                                        requireActivity().runOnUiThread(() ->
+                                                Toast.makeText(requireContext(), R.string.error_upload_failed, Toast.LENGTH_SHORT).show()
+                                        );
+                                    }
+                                    return Unit.INSTANCE;
+                                }
+                        );
+                    } else {
+                        Toast.makeText(requireContext(), R.string.msg_camera_required, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        requestCameraPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                granted -> {
+                    Log.d(TAG, "CAMERA permission result: " + granted);
+                    if (granted) {
+                        launchCameraInternal();
+                    } else {
+                        if (isAdded()) {
+                            Toast.makeText(requireContext(), R.string.permission_camera_denied, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        int layoutId = isUserPlant ? R.layout.dialog_plant_detail_user : R.layout.dialog_plant_detail;
+        View view = LayoutInflater.from(getActivity()).inflate(layoutId, null);
+
+        TextView name         = findText(view, R.id.textPlantName, R.id.textDate);
+        TextView lighting     = findText(view, R.id.textLighting);
+        TextView soil         = findText(view, R.id.textSoil, R.id.textSoilType);
+        TextView fertilizing  = findText(view, R.id.textFertilizing);
+        TextView watering     = findText(view, R.id.textWatering);
+        TextView personalNote = findText(view, R.id.textPersonalNote);
+        // Label-IDs unterscheiden sich zwischen den beiden Layouts
+        // (dialog_plant_detail: labelPersonalNote | dialog_plant_detail_user: textPersonalNoteLabel).
+        TextView personalNoteLabel = findText(view, R.id.labelPersonalNote, R.id.textPersonalNoteLabel);
+        // User-plant only: room name field (catalog layout doesn't include
+        // these IDs, so findText returns null and the block below no-ops).
+        TextView roomLabel    = findText(view, R.id.labelRoom);
+        TextView roomText     = findText(view, R.id.textRoom);
+        imageView             = findImage(view, R.id.plantImageView, R.id.plantDetailImageView, R.id.imagePlant);
+
+        // v16 — bold task-highlight card. Only renders when the dialog
+        // was opened from a calendar/today reminder tap (highlightTaskType
+        // set via setHighlightTaskType / ARG_HIGHLIGHT_TYPE). Card sits
+        // ABOVE the cover image so the user sees "what to do today"
+        // before the rest of the plant info — accuracy source is
+        // documented in ReminderTaskHighlight.
+        View highlightCard = view.findViewById(R.id.cardReminderHighlight);
+        TextView highlightTitle = findText(view, R.id.textReminderHighlightTitle);
+        TextView highlightBody  = findText(view, R.id.textReminderHighlightBody);
+        ImageView highlightIcon = findImage(view, R.id.iconReminderHighlight);
+        if (highlightCard != null && highlightTaskType != null && plant != null) {
+            highlightCard.setVisibility(View.VISIBLE);
+            if (highlightTitle != null) {
+                highlightTitle.setText(
+                        com.example.plantcare.util.ReminderTaskHighlight
+                                .INSTANCE.title(requireContext(), highlightTaskType));
+            }
+            if (highlightBody != null) {
+                String body = com.example.plantcare.util.ReminderTaskHighlight
+                        .INSTANCE.instructions(requireContext(), plant, highlightTaskType);
+                if (body != null && !body.trim().isEmpty()) {
+                    highlightBody.setVisibility(View.VISIBLE);
+                    highlightBody.setText(body);
+                } else {
+                    // Defensive — should never hit (every reminder type
+                    // has at least the generic fallback string), but
+                    // hide the body row instead of showing "—".
+                    highlightBody.setVisibility(View.GONE);
+                }
+            }
+            if (highlightIcon != null) {
+                highlightIcon.setImageResource(
+                        com.example.plantcare.util.ReminderTaskHighlight
+                                .INSTANCE.iconFor(highlightTaskType));
+                highlightIcon.setColorFilter(
+                        androidx.core.content.ContextCompat.getColor(
+                                requireContext(),
+                                com.example.plantcare.util.ReminderTaskHighlight
+                                        .INSTANCE.tintFor(highlightTaskType)));
+            }
+        } else if (highlightCard != null) {
+            highlightCard.setVisibility(View.GONE);
+        }
+
+        if (plant != null) {
+            setTextSafe(name, nonEmpty(plant.name));
+            setTextSafe(lighting, nonEmpty(plant.lighting));
+            setTextSafe(soil, nonEmpty(plant.soil));
+            setTextSafe(fertilizing, nonEmpty(plant.fertilizing));
+            setTextSafe(watering, nonEmpty(plant.watering));
+
+            // Resolve roomId → room name asynchronously and toggle the
+            // Raum row visibility based on whether the plant has a room.
+            // Legacy plants with roomId=0 hide the row entirely instead
+            // of showing "—" so the layout doesn't waste a slot.
+            if (roomText != null && roomLabel != null && isUserPlant && plant.roomId > 0) {
+                roomLabel.setVisibility(View.VISIBLE);
+                roomText.setVisibility(View.VISIBLE);
+                final int rid = plant.roomId;
+                final android.content.Context appCtx = requireContext().getApplicationContext();
+                com.example.plantcare.util.BgExecutor.io(() -> {
+                    String resolved;
+                    try {
+                        com.example.plantcare.RoomCategory rc =
+                                com.example.plantcare.data.repository.RoomCategoryRepository
+                                        .getInstance(appCtx)
+                                        .findByIdBlocking(rid);
+                        resolved = (rc != null && rc.name != null && !rc.name.trim().isEmpty())
+                                ? rc.name.trim()
+                                : getString(R.string.detail_placeholder_dash);
+                    } catch (Throwable t) {
+                        com.example.plantcare.CrashReporter.INSTANCE.log(t);
+                        resolved = getString(R.string.detail_placeholder_dash);
+                    }
+                    final String resolvedFinal = resolved;
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> {
+                            if (isAdded() && roomText != null) {
+                                roomText.setText(resolvedFinal);
+                            }
+                        });
+                    }
+                });
+            } else if (roomText != null && roomLabel != null) {
+                roomLabel.setVisibility(View.GONE);
+                roomText.setVisibility(View.GONE);
+            }
+
+            // Info‑Block: Label + Text gehören zusammen sichtbar/unsichtbar.
+            // Vorher wurde das Label nie eingeblendet, weshalb der Text darunter ohne
+            // Überschrift erschien (siehe Bug‑Screenshot).
+            boolean hasNote = plant.personalNote != null && !plant.personalNote.trim().isEmpty();
+            if (personalNote != null) {
+                if (hasNote) {
+                    personalNote.setVisibility(View.VISIBLE);
+                    personalNote.setText(plant.personalNote.trim());
+                } else {
+                    personalNote.setVisibility(View.GONE);
+                }
+            }
+            if (personalNoteLabel != null) {
+                personalNoteLabel.setVisibility(hasNote ? View.VISIBLE : View.GONE);
+            }
+        }
+
+        Button buttonAdd        = findButton(view, R.id.buttonAddToMyPlants);
+        Button buttonQuickAdd   = findButton(view, R.id.buttonQuickAdd);
+        Button buttonEdit       = findButton(view, R.id.buttonEdit);
+        Button buttonClose      = findButton(view, R.id.buttonClose);
+        Button buttonDelete     = findButton(view, R.id.buttonDeletePlant);
+        Button buttonCamera     = findButton(view, R.id.buttonCamera);
+        Button buttonViewPhotos = findButton(view, R.id.buttonViewPhotos);
+        Button buttonDiseaseCheck = findButton(view, R.id.buttonDiseaseCheck);
+        Button buttonOpenJournal = findButton(view, R.id.buttonOpenJournal);
+        Button buttonMoveRoom   = findButton(view, R.id.buttonMoveToRoom);
+        Button buttonMemoir     = findButton(view, R.id.buttonGrowthMemoir);
+        Button buttonShare      = findButton(view, R.id.buttonFamilyShare);
+
+        if (readOnlyMode) {
+            hide(buttonAdd, buttonQuickAdd, buttonEdit, buttonDelete, buttonCamera, buttonViewPhotos, buttonDiseaseCheck, buttonOpenJournal, buttonMoveRoom, buttonMemoir, buttonShare);
+            show(buttonClose);
+        }
+        // Disease-Check Shortcut: nur sichtbar bei eigenen Pflanzen — bei
+        // Katalog-Pflanzen kann es noch keine plantId geben, an die wir die
+        // Diagnose binden würden.
+        if (buttonDiseaseCheck != null && !isUserPlant) {
+            buttonDiseaseCheck.setVisibility(View.GONE);
+        }
+
+        if (!isUserPlant && buttonAdd != null && !readOnlyMode) {
+            // 2026-05-20 click-guard sweep: منع double-tap من فتح AddToMyPlants مرّتين
+            buttonAdd.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> {
+                AddToMyPlantsDialogFragment dialog = AddToMyPlantsDialogFragment.newInstance(plant);
+                dialog.setOnPlantAdded(() -> {
+                    if (onPlantAdded != null) onPlantAdded.run();
+                    dismiss();
+                });
+                dialog.show(getParentFragmentManager(), "add_to_my_plants");
+            }));
+        }
+
+        // Quick-Add: nur sichtbar im Katalogmodus. Ein Tap fügt die Pflanze sofort
+        // mit dem zuletzt benutzten Raum und heutigem Datum hinzu (Snackbar-Undo).
+        if (buttonQuickAdd != null) {
+            if (!isUserPlant && !readOnlyMode) {
+                buttonQuickAdd.setVisibility(View.VISIBLE);
+                // 2026-05-20 click-guard sweep: منع double-tap من مضاعفة البيانات في DB
+                buttonQuickAdd.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> {
+                    if (plant == null || getActivity() == null) return;
+                    View anchor = getActivity().getWindow().getDecorView();
+                    QuickAddHelper.quickAdd(PlantDetailDialogFragment.this, plant, anchor, () -> {
+                        if (onPlantAdded != null) onPlantAdded.run();
+                        dismissAllowingStateLoss();
+                    });
+                }));
+            } else {
+                buttonQuickAdd.setVisibility(View.GONE);
+            }
+        }
+
+        if (buttonEdit != null && !readOnlyMode) {
+            // 2026-05-20 click-guard sweep: منع double-tap من فتح EditPlant مرّتين
+            buttonEdit.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> {
+                EditPlantDialogFragment editDialog = EditPlantDialogFragment.newInstance(plant, isUserPlant);
+                editDialog.setOnPlantEdited(() -> {
+                    if (onPlantAdded != null) onPlantAdded.run();
+                    dismiss();
+                });
+                editDialog.show(getParentFragmentManager(), "edit_plant");
+            }));
+        }
+
+        if (buttonDelete != null && !readOnlyMode) {
+            // 2026-05-20 click-guard sweep: منع double-tap من تكرار طلب الحذف
+            buttonDelete.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> {
+                if (getParentFragment() instanceof PlantActionHandler) {
+                    ((PlantActionHandler) getParentFragment()).onRequestDeletePlant(plant);
+                } else if (getActivity() instanceof PlantActionHandler) {
+                    ((PlantActionHandler) getActivity()).onRequestDeletePlant(plant);
+                }
+                dismiss();
+            }));
+        }
+
+        // Only allow taking a cover photo for user plants
+        if (buttonCamera != null) {
+            if (!readOnlyMode && isUserPlant) {
+                buttonCamera.setVisibility(View.VISIBLE);
+                // 2026-05-20 click-guard sweep: منع double-tap من فتح permission dialog مرّتين
+                buttonCamera.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> requestCameraAndLaunch()));
+            } else {
+                buttonCamera.setVisibility(View.GONE);
+            }
+        }
+
+        if (buttonViewPhotos != null && !readOnlyMode) {
+            // 2026-05-20 click-guard sweep: منع double-tap من فتح ArchivePhotos مرّتين
+            buttonViewPhotos.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> {
+                if (getActivity() instanceof PlantMediaHandler) {
+                    ((PlantMediaHandler) getActivity()).onRequestViewPlantPhotos(plant);
+                }
+            }));
+        }
+
+        // Plant Journal — only meaningful for user plants (catalog rows have no
+        // history). Hidden in read-only mode and for non-user plants.
+        if (buttonOpenJournal != null) {
+            if (!readOnlyMode && isUserPlant && plant != null && plant.id > 0) {
+                buttonOpenJournal.setVisibility(View.VISIBLE);
+                // 2026-05-20 click-guard sweep: منع double-tap من فتح Journal مرّتين
+                buttonOpenJournal.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> {
+                    com.example.plantcare.ui.journal.PlantJournalDialogFragment journal =
+                            com.example.plantcare.ui.journal.PlantJournalDialogFragment.newInstance(plant.id);
+                    journal.show(getParentFragmentManager(),
+                            com.example.plantcare.ui.journal.PlantJournalDialogFragment.TAG);
+                }));
+            } else {
+                buttonOpenJournal.setVisibility(View.GONE);
+            }
+        }
+
+        if (buttonMoveRoom != null && !readOnlyMode) {
+            // 2026-05-20 click-guard sweep: منع double-tap من فتح Room picker مرّتين
+            buttonMoveRoom.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> {
+                if (getActivity() instanceof PlantRoomHandler) {
+                    ((PlantRoomHandler) getActivity()).onRequestMovePlantToRoom(plant);
+                }
+            }));
+        }
+
+        if (buttonMemoir != null && !readOnlyMode) {
+            // 2026-05-20 click-guard sweep: منع double-tap من تكرار PDF generation
+            buttonMemoir.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> generateAndShareGrowthMemoir()));
+        }
+
+        if (buttonShare != null && !readOnlyMode) {
+            // 2026-05-20 click-guard sweep: منع double-tap من فتح FamilyShare dialog مرّتين
+            buttonShare.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> showFamilyShareDialog()));
+        }
+
+        // Disease-Check Shortcut: öffnet die Diagnose-Activity direkt mit der
+        // plantId dieser Pflanze. Das umgeht den Vorab-Dialog (general/specific)
+        // im MainActivity-Flow und verbindet die spätere Diagnose automatisch
+        // mit dieser Pflanze inkl. Foto-Archiv-Vorschlag und Behandlungsplan.
+        if (buttonDiseaseCheck != null && isUserPlant && !readOnlyMode) {
+            // 2026-05-20 click-guard sweep: منع double-tap من تكرار Activity launch
+            // (singleTop يحمي لكن L1+L2 يمنعان حتى الـ taps الإضافية قبل وصول النظام)
+            buttonDiseaseCheck.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> {
+                android.content.Intent intent = new android.content.Intent(
+                        requireContext(),
+                        com.example.plantcare.ui.disease.DiseaseDiagnosisActivity.class);
+                intent.putExtra(
+                        com.example.plantcare.ui.disease.DiseaseDiagnosisActivity.EXTRA_PLANT_ID,
+                        plant.id);
+                startActivity(intent);
+                dismiss();
+            }));
+        }
+
+        if (buttonClose != null) buttonClose.setOnClickListener(v -> dismiss());
+
+        // "Mehr Optionen" — opens a Material alert listing the six
+        // secondary actions (Verlauf / Archivfotos / Wachstumstagebuch /
+        // Familie teilen / In Raum verschieben / Löschen). Each item
+        // invokes callOnClick() on the corresponding hidden button so
+        // we reuse the existing setOnClickListener logic above without
+        // having to extract a half-dozen private methods just for the
+        // menu. Only wired for user plants — the catalog dialog has its
+        // own three-button layout and doesn't include buttonMoreOptions.
+        Button buttonMoreOptions = findButton(view, R.id.buttonMoreOptions);
+        if (buttonMoreOptions != null && isUserPlant && !readOnlyMode) {
+            // Capture references so the lambda below doesn't have to
+            // re-find the views.
+            final Button refOpenJournal = buttonOpenJournal;
+            final Button refViewPhotos  = buttonViewPhotos;
+            final Button refMemoir      = buttonMemoir;
+            final Button refShare       = buttonShare;
+            final Button refMoveRoom    = buttonMoveRoom;
+            final Button refDelete      = buttonDelete;
+
+            // 2026-05-20 click-guard sweep: منع double-tap من فتح ActionList مرّتين
+            buttonMoreOptions.setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> {
+                // Build the polished action list dynamically so we skip
+                // rows whose underlying button is missing for this plant
+                // (e.g. journal disabled when plant.id <= 0). The
+                // ActionListDialogFragment renders rows as Outlined /
+                // Danger MaterialButtons styled identically to the
+                // catalog plant-detail dialog — pre-fix this menu used
+                // MaterialAlertDialogBuilder.setItems which looked flat
+                // and out of place against the rest of the app.
+                final java.util.List<com.example.plantcare.ui.util
+                        .ActionListDialogFragment.Item> items =
+                        new java.util.ArrayList<>();
+
+                if (refOpenJournal != null && plant != null && plant.id > 0) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.journal_open),
+                                    false,
+                                    () -> { refOpenJournal.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+                if (refViewPhotos != null) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.detail_action_view_archive),
+                                    false,
+                                    () -> { refViewPhotos.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+                if (refMemoir != null) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.memoir_button_label),
+                                    false,
+                                    () -> { refMemoir.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+                if (refShare != null) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.share_button_label),
+                                    false,
+                                    () -> { refShare.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+                if (refMoveRoom != null) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.detail_action_move_room),
+                                    false,
+                                    () -> { refMoveRoom.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+                if (refDelete != null) {
+                    items.add(new com.example.plantcare.ui.util
+                            .ActionListDialogFragment.Item(
+                                    getString(R.string.detail_action_delete),
+                                    true,
+                                    () -> { refDelete.callOnClick(); return kotlin.Unit.INSTANCE; }));
+                }
+
+                if (items.isEmpty()) return;
+
+                new com.example.plantcare.ui.util.ActionListDialogFragment()
+                        .configure(getString(R.string.detail_more_options_title), items)
+                        .show(getParentFragmentManager(),
+                                com.example.plantcare.ui.util
+                                        .ActionListDialogFragment.TAG);
+            }));
+        } else if (buttonMoreOptions != null) {
+            buttonMoreOptions.setVisibility(View.GONE);
+        }
+
+        AlertDialog dialog = new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireActivity())
+                .setView(view)
+                .create();
+
+        dialog.setOnDismissListener(d -> {
+            try { DataChangeNotifier.removeListener(dataChangeListener); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+            if (dismissListener != null) dismissListener.run();
+        });
+
+        return dialog;
+    }
+
+    /**
+     * Lokale Familien-Freigabe: zeigt die aktuelle Liste eingeladener E-Mails
+     * und ein Eingabefeld zum Hinzufügen/Entfernen.  Keine Server-Einladung,
+     * nur sichtbare Dokumentation, wer mit-giessen darf.
+     *
+     * Das ist absichtlich ein simpler AlertDialog ohne eigenes Fragment –
+     * der Zustand lebt komplett in Plant.sharedWith und wir müssen nichts
+     * über Rotationen hinweg re-assemblieren.
+     */
+    private void showFamilyShareDialog() {
+        if (plant == null || getContext() == null || !isAdded()) return;
+        final android.content.Context ctx = requireContext();
+        final android.widget.LinearLayout container = new android.widget.LinearLayout(ctx);
+        container.setOrientation(android.widget.LinearLayout.VERTICAL);
+        int pad = (int) (16 * ctx.getResources().getDisplayMetrics().density);
+        container.setPadding(pad, pad, pad, pad);
+
+        final TextView listView = new MaterialTextView(ctx);
+        listView.setTextSize(14f);
+        container.addView(listView);
+
+        final android.widget.EditText emailInput = new TextInputEditText(ctx);
+        emailInput.setHint(R.string.share_add_email_hint);
+        emailInput.setInputType(android.text.InputType.TYPE_CLASS_TEXT
+                | android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        container.addView(emailInput);
+
+        // Listen-Renderer als Runnable, damit Add/Remove es aufrufen kann.
+        Runnable renderList = () -> {
+            java.util.List<String> emails = FamilyShareManager.getSharedEmails(plant);
+            if (emails.isEmpty()) {
+                listView.setText(R.string.share_nobody_label);
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < emails.size(); i++) {
+                    sb.append("\u2022 ").append(emails.get(i));
+                    if (i < emails.size() - 1) sb.append('\n');
+                }
+                listView.setText(sb.toString());
+            }
+        };
+        renderList.run();
+
+        final AlertDialog dlg = new com.google.android.material.dialog.MaterialAlertDialogBuilder(ctx)
+                .setTitle(R.string.share_dialog_title)
+                .setView(container)
+                .setPositiveButton("OK", null) // Überschrieben nach show()
+                .setNegativeButton(R.string.share_remove, null)
+                .setNeutralButton(android.R.string.cancel, (d, w) -> d.dismiss())
+                .create();
+        dlg.show();
+
+        // Positive = Hinzufügen. Negative = Entfernen des eingegebenen Eintrags.
+        // 2026-05-20 click-guard sweep: منع double-tap من إنشاء invites مكرّرة في Firestore
+        dlg.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> {
+            String input = emailInput.getText() != null ? emailInput.getText().toString() : "";
+            if (!FamilyShareManager.isValidEmail(input.trim())) {
+                Toast.makeText(ctx, R.string.share_invalid_email, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            final String email = input.trim().toLowerCase();
+            // Wave 2: dispatch a real invite via ShareInviteManager. The
+            // Cloud Function `onShareInviteCreated` resolves the invitee's
+            // uid + sends an FCM push. ShareInviteManager.createInvite also
+            // updates Plant.sharedWith locally so the rendered list refreshes
+            // immediately, before any cloud round-trip completes.
+            com.example.plantcare.feature.share.ShareInviteManager.INSTANCE.createInvite(
+                    ctx, plant, email,
+                    result -> {
+                        if (getActivity() == null) return null;
+                        getActivity().runOnUiThread(() -> {
+                            if (result instanceof com.example.plantcare.feature.share.ShareInviteManager.CreateResult.Ok) {
+                                Toast.makeText(ctx,
+                                        getString(R.string.share_added_toast, email),
+                                        Toast.LENGTH_SHORT).show();
+                                emailInput.setText("");
+                                renderList.run();
+                            } else {
+                                Toast.makeText(ctx, R.string.share_invalid_email, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        return kotlin.Unit.INSTANCE;
+                    });
+        }));
+        // 2026-05-20 click-guard sweep: منع double-tap من تكرار remove
+        dlg.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(com.example.plantcare.ui.util.ClickGuard.wrap(v -> {
+            String input = emailInput.getText() != null ? emailInput.getText().toString() : "";
+            final String email = input.trim().toLowerCase();
+            if (email.isEmpty()) {
+                Toast.makeText(ctx, R.string.share_invalid_email, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            com.example.plantcare.util.BgExecutor.io(() -> {
+                boolean ok = FamilyShareManager.removeEmail(ctx, plant, email);
+                if (getActivity() == null) return;
+                getActivity().runOnUiThread(() -> {
+                    if (ok) {
+                        Toast.makeText(ctx,
+                                getString(R.string.share_removed_toast, email),
+                                Toast.LENGTH_SHORT).show();
+                        emailInput.setText("");
+                        renderList.run();
+                    } else {
+                        Toast.makeText(ctx, R.string.share_invalid_email, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
+        }));
+    }
+
+    /**
+     * Baut aus den Archivfotos dieser Pflanze eine PNG-Collage und öffnet
+     * einen System-Share-Dialog. Läuft auf einem Hintergrund-Thread, weil
+     * sowohl das Dekodieren (bis zu 12 Bilder) als auch das Zeichnen teuer
+     * sind.  UI-Feedback per Toast: "wird erstellt…", dann Share / Fehler.
+     */
+    private void generateAndShareGrowthMemoir() {
+        if (plant == null || getContext() == null || !isAdded()) return;
+        final android.content.Context ctx = requireContext().getApplicationContext();
+        final int plantId = plant.id;
+        final String plantName = plant.getNickname() != null && !plant.getNickname().isEmpty()
+                ? plant.getNickname() : plant.name;
+        final String email = EmailContext.current(ctx);
+
+        Toast.makeText(ctx, R.string.memoir_generating, Toast.LENGTH_SHORT).show();
+
+        // F15 (Sprint 2): replaced the legacy PNG collage with a multi-page PDF
+        // growth report that includes summary stats + the full Plant Journal
+        // timeline + a photo grid. Same Intent.ACTION_SEND chooser; mime type
+        // flips to application/pdf so the OS routes to PDF-aware apps first.
+        com.example.plantcare.util.BgExecutor.io(() -> {
+            com.example.plantcare.feature.memoir.MemoirPdfBuilder.Result result = null;
+            Throwable err = null;
+            try {
+                result = com.example.plantcare.feature.memoir.MemoirPdfBuilder
+                        .build(ctx, email, plantId, plantName);
+            } catch (Throwable t) {
+                err = t;
+                Log.e(TAG, "MemoirPdf build failed", t);
+            }
+            final com.example.plantcare.feature.memoir.MemoirPdfBuilder.Result finalResult = result;
+            final Throwable finalErr = err;
+            if (getActivity() == null) return;
+            getActivity().runOnUiThread(() -> {
+                if (!isAdded()) return;
+                if (finalErr != null) {
+                    Toast.makeText(ctx, R.string.memoir_build_failed, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (finalResult == null) {
+                    Toast.makeText(ctx, R.string.memoir_no_photos, Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Intent share = new Intent(Intent.ACTION_SEND)
+                        .setType("application/pdf")
+                        .putExtra(Intent.EXTRA_STREAM, finalResult.getUri())
+                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                try {
+                    startActivity(Intent.createChooser(share,
+                            getString(R.string.memoir_pdf_share_chooser)));
+                } catch (Throwable t) {
+                    Toast.makeText(ctx, R.string.memoir_build_failed, Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
+
+    private void requestCameraAndLaunch() {
+        if (getContext() == null) return;
+        int state = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA);
+        Log.d(TAG, "requestCameraAndLaunch() - permission state=" + state);
+        if (state == PackageManager.PERMISSION_GRANTED) {
+            launchCameraInternal();
+        } else {
+            requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+        }
+    }
+
+    private void launchCameraInternal() {
+        if (plant == null || getContext() == null) return;
+        try {
+            pendingCoverUri = PhotoStorage.coverUri(requireContext(), plant.id);
+            Log.d(TAG, "Launching camera with Uri=" + pendingCoverUri);
+            takePictureLauncher.launch(pendingCoverUri);
+        } catch (SecurityException se) {
+            Log.e(TAG, "SecurityException launching camera", se);
+            Toast.makeText(requireContext(), R.string.permission_camera_denied, Toast.LENGTH_SHORT).show();
+        } catch (Throwable t) {
+            Log.e(TAG, "Error launching camera", t);
+            Toast.makeText(requireContext(), R.string.msg_camera_required, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        try { DataChangeNotifier.addListener(dataChangeListener); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+
+        Dialog d = getDialog();
+        if (d != null) {
+            Window w = d.getWindow();
+            if (w != null) {
+                w.setBackgroundDrawableResource(android.R.color.transparent);
+                DisplayMetrics dm = new DisplayMetrics();
+                requireActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+                int width = (int) (dm.widthPixels * 0.90f);
+                int maxHeight = (int) (dm.heightPixels * 0.82f);
+                w.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT);
+
+                View scroll = d.findViewById(isUserPlant ? R.id.contentScrollUser : R.id.contentScroll);
+                if (scroll != null) {
+                    scroll.post(() -> {
+                        int totalHeight = scroll.getHeight() + getButtonsHeight(d) + dp(40);
+                        if (totalHeight > maxHeight) {
+                            int buttonsH = getButtonsHeight(d);
+                            int allowed = maxHeight - buttonsH - dp(40);
+                            if (allowed < dp(160)) allowed = dp(160);
+                            scroll.getLayoutParams().height = allowed;
+                            scroll.requestLayout();
+                        }
+                    });
+                }
+            }
+        }
+        refreshCoverImage();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshCoverImage();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        try { DataChangeNotifier.removeListener(dataChangeListener); } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+    }
+
+    private void refreshCoverImage() {
+        if (imageView == null || getContext() == null || plant == null) return;
+
+        // Priority 0) ArchiveStore cover (fast and consistent with list UI)
+        try {
+            String email = getCurrentUserEmailSafe();
+            if (email != null) {
+                Uri archived = ArchiveStore.INSTANCE.getCoverUri(requireContext().getApplicationContext(), email, (long) plant.id);
+                if (archived != null) {
+                    Log.d(TAG, "refreshCoverImage() using ArchiveStore uri=" + archived);
+                    loadCoverIntoImageView(archived);
+                    return;
+                }
+            }
+        } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+
+        // Priority 1) In-memory plant.imageUri
+        Uri cover = null;
+        try {
+            if (plant.imageUri != null && !plant.imageUri.trim().isEmpty()) cover = Uri.parse(plant.imageUri);
+        } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+
+        if (cover != null) {
+            Log.d(TAG, "refreshCoverImage() using in-memory uri=" + cover);
+            loadCoverIntoImageView(cover);
+            return;
+        }
+
+        FragmentBg.runIO(this, () -> {
+            try {
+                Plant p = com.example.plantcare.data.repository.PlantRepository
+                        .getInstance(requireContext().getApplicationContext())
+                        .findByIdBlocking((int) plant.id);
+                Uri dbUri = (p != null && p.imageUri != null && !p.imageUri.trim().isEmpty()) ? Uri.parse(p.imageUri) : null;
+                Log.d(TAG, "refreshCoverImage() DB uri=" + dbUri);
+
+                if (dbUri != null) {
+                    plant.imageUri = dbUri.toString();
+                    if (isAdded()) requireActivity().runOnUiThread(() -> loadCoverIntoImageView(dbUri));
+                    return;
+                }
+
+                // On-demand remote fetch by localId for user plants
+                if (isUserPlant) {
+                    if (isAdded()) requireActivity().runOnUiThread(() -> imageView.setImageResource(R.drawable.ic_default_plant));
+                    CoverCloudSync.fetchCoverForPlant(
+                            requireContext(),
+                            plant.id,
+                            url -> {
+                                Log.d(TAG, "fetchCoverForPlant -> " + url);
+                                try {
+                                    plant.imageUri = url;
+                                    Uri u = Uri.parse(url);
+                                    if (isAdded()) requireActivity().runOnUiThread(() -> loadCoverIntoImageView(u));
+                                } catch (Throwable t) {
+                                    Log.e(TAG, "Failed to parse cover url", t);
+                                }
+                                return Unit.INSTANCE;
+                            },
+                            err -> {
+                                Log.d(TAG, "No remote cover for plant " + plant.id, err);
+                                // Fallback: try drawable resource by plant name
+                                int resId = getDrawableResourceByPlantName();
+                                if (resId != 0 && isAdded()) {
+                                    requireActivity().runOnUiThread(() -> loadDrawableIntoImageView(resId));
+                                }
+                                return Unit.INSTANCE;
+                            }
+                    );
+                    return;
+                }
+
+                File f = PhotoStorage.coverFile(requireContext(), plant.id);
+                if (f.exists() && f.length() > 0) {
+                    Uri fileProviderUri = PhotoStorage.coverUri(requireContext(), plant.id);
+                    Log.d(TAG, "refreshCoverImage() fallback to fileProviderUri=" + fileProviderUri);
+                    if (isAdded()) requireActivity().runOnUiThread(() -> loadCoverIntoImageView(fileProviderUri));
+                } else {
+                    // Fallback: try drawable resource by plant name (e.g. "einblatt" -> einblatt.jpg)
+                    int resId = getDrawableResourceByPlantName();
+                    if (resId != 0) {
+                        Log.d(TAG, "refreshCoverImage() fallback to drawable resource for " + plant.name);
+                        if (isAdded()) requireActivity().runOnUiThread(() -> loadDrawableIntoImageView(resId));
+                    } else if (!plant.isUserPlant) {
+                        // On-demand Wikipedia image fetch for catalog plants
+                        Log.d(TAG, "refreshCoverImage() trying on-demand Wikipedia fetch for " + plant.name);
+                        try {
+                            String imageUrl = WikiImageHelper.fetchImageUrl(plant.name);
+                            if (imageUrl != null && !imageUrl.isEmpty()) {
+                                // Store in DB for future use
+                                com.example.plantcare.data.repository.PlantRepository
+                                        .getInstance(requireContext().getApplicationContext())
+                                        .updateProfileImageBlocking(plant.id, imageUrl);
+                                plant.imageUri = imageUrl;
+                                Uri wikiUri = Uri.parse(imageUrl);
+                                Log.d(TAG, "refreshCoverImage() Wikipedia image found: " + imageUrl);
+                                if (isAdded()) requireActivity().runOnUiThread(() -> loadCoverIntoImageView(wikiUri));
+                            } else {
+                                if (isAdded()) requireActivity().runOnUiThread(() -> imageView.setImageResource(R.drawable.ic_default_plant));
+                            }
+                        } catch (Throwable wikiErr) {
+                            Log.d(TAG, "refreshCoverImage() Wikipedia fetch failed for " + plant.name, wikiErr);
+                            if (isAdded()) requireActivity().runOnUiThread(() -> imageView.setImageResource(R.drawable.ic_default_plant));
+                        }
+                    } else {
+                        if (isAdded()) requireActivity().runOnUiThread(() -> imageView.setImageResource(R.drawable.ic_default_plant));
+                    }
+                }
+            } catch (Throwable t) {
+                Log.e(TAG, "refreshCoverImage() DB read failed", t);
+                if (isAdded()) requireActivity().runOnUiThread(() -> imageView.setImageResource(R.drawable.ic_default_plant));
+            }
+        });
+    }
+
+    private void showImmediateCover(@NonNull Uri uri) {
+        Log.d(TAG, "showImmediateCover() uri=" + uri);
+        loadCoverIntoImageView(uri);
+    }
+
+    private void loadCoverIntoImageView(@Nullable Uri uri) {
+        if (getContext() == null) return;
+
+        if (uri == null) {
+            Log.d(TAG, "loadCoverIntoImageView() uri is null, showing placeholder");
+            imageView.setImageResource(R.drawable.ic_default_plant);
+            return;
+        }
+
+        long last = PhotoStorage.lastModified(requireContext(), plant.id);
+        File f = PhotoStorage.coverFile(requireContext(), plant.id);
+        Log.d(TAG, "loadCoverIntoImageView() uri=" + uri + " lastModified=" + last + " fileExists=" + f.exists() + " size=" + f.length());
+
+        boolean isHttpUri = uri.getScheme() != null && uri.getScheme().toLowerCase().startsWith("http");
+        if (isHttpUri) {
+            // HTTP URLs (e.g. Wikipedia images): load as String for more reliable Glide HTTP loading
+            Glide.with(requireContext())
+                .load(uri.toString())
+                .placeholder(R.drawable.ic_default_plant)
+                .error(R.drawable.ic_default_plant)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .circleCrop()
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable com.bumptech.glide.load.engine.GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Log.e(TAG, "Glide onLoadFailed (HTTP) model=" + model, e);
+                        return false;
+                    }
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
+                        return false;
+                    }
+                })
+                .into(imageView);
+            return;
+        }
+
+        ObjectKey sig = new ObjectKey(String.valueOf(uri) + "#" + last);
+        Glide.with(requireContext())
+                .load(uri)
+                .placeholder(R.drawable.ic_default_plant)
+                .error(R.drawable.ic_default_plant)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .signature(sig)
+                .circleCrop()
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable com.bumptech.glide.load.engine.GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Log.e(TAG, "Glide onLoadFailed model=" + model, e);
+                        return false;
+                    }
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
+                        Log.d(TAG, "Glide onResourceReady model=" + model + " dataSource=" + dataSource + " first=" + isFirstResource);
+                        return false;
+                    }
+                })
+                .into(imageView);
+    }
+
+    /**
+     * Resolves a drawable resource ID from the plant name (e.g. "Einblatt" -> R.drawable.einblatt).
+     * Returns 0 if no matching drawable exists.
+     */
+    private int getDrawableResourceByPlantName() {
+        if (plant == null || getContext() == null) return 0;
+        String name = plant.name;
+        if (name == null || name.trim().isEmpty()) return 0;
+        String key = name.trim().toLowerCase();
+        key = key.replace("ä", "ae").replace("ö", "oe").replace("ü", "ue").replace("ß", "ss");
+        key = key.replaceAll("[^a-z0-9]", "_").replaceAll("_+", "_");
+        if (key.startsWith("_")) key = key.substring(1);
+        if (key.endsWith("_")) key = key.substring(0, key.length() - 1);
+        return requireContext().getResources().getIdentifier(key, "drawable", requireContext().getPackageName());
+    }
+
+    private void loadDrawableIntoImageView(int resId) {
+        if (getContext() == null || imageView == null) return;
+        Glide.with(requireContext())
+                .load(resId)
+                .placeholder(R.drawable.ic_default_plant)
+                .error(R.drawable.ic_default_plant)
+                .circleCrop()
+                .into(imageView);
+    }
+
+    private String getCurrentUserEmailSafe() {
+        try {
+            if (plant != null && plant.userEmail != null && !plant.userEmail.trim().isEmpty()) return plant.userEmail;
+        } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+        try {
+            String e = EmailContext.current(requireContext());
+            if (e != null && !e.trim().isEmpty()) return e;
+        } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+        try {
+            com.google.firebase.auth.FirebaseUser u = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+            if (u != null && u.getEmail() != null && !u.getEmail().trim().isEmpty()) return u.getEmail();
+        } catch (Throwable __ce) { com.example.plantcare.CrashReporter.INSTANCE.log(__ce); }
+        return null;
+    }
+
+    private int getButtonsHeight(Dialog d) {
+        View bar = d.findViewById(isUserPlant ? R.id.buttonBarUser : R.id.buttonBar);
+        if (bar == null) return 0;
+        return bar.getHeight() == 0 ? dp(220) : bar.getHeight();
+    }
+
+    private int dp(int v) { float density = getResources().getDisplayMetrics().density; return (int) (v * density); }
+
+    private TextView findText(View root, int... ids) {
+        for (int id : ids) {
+            View v = root.findViewById(id);
+            if (v instanceof TextView) return (TextView) v;
+        }
+        return null;
+    }
+    private ImageView findImage(View root, int... ids) {
+        for (int id : ids) {
+            View v = root.findViewById(id);
+            if (v instanceof ImageView) return (ImageView) v;
+        }
+        return null;
+    }
+    private Button findButton(View root, int id) {
+        View v = root.findViewById(id);
+        if (v instanceof Button) return (Button) v;
+        return null;
+    }
+
+    private void setTextSafe(TextView tv, String value) { if (tv != null) tv.setText(value == null ? "" : value); }
+    private void hide(View... views) { if (views != null) for (View v : views) if (v != null) v.setVisibility(View.GONE); }
+    private void show(View v) { if (v != null) v.setVisibility(View.VISIBLE); }
+    private String nonEmpty(String s) { return (s == null || s.trim().isEmpty()) ? "-" : s; }
+
+    public interface PlantActionHandler { void onRequestDeletePlant(Plant plant); }
+    public interface PlantMediaHandler {
+        void onRequestCapturePlantPhoto(Plant plant);
+        void onRequestViewPlantPhotos(Plant plant);
+    }
+    public interface PlantRoomHandler { void onRequestMovePlantToRoom(Plant plant); }
+}

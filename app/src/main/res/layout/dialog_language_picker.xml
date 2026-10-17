@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — Language picker dialog (B4 brand-match, 2026-05-17).
+
+    Mirrors dialog_forgot_password.xml's identity (MaterialCardView wrapper,
+    20dp corners, Inter typography, outlined Abbrechen) so the language
+    chooser opened from Einstellungen → Sprache matches the rest of the
+    app. The list itself is a single RadioGroup with 3 rows: System / DE / EN.
+-->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="@color/card_bg">
+
+    <LinearLayout
+        android:id="@+id/rootLanguage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
+
+        <!-- Title row: title + close -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:id="@+id/textLanguageTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/settings_row_language"
+                android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+                android:textSize="20sp" />
+
+            <ImageButton
+                android:id="@+id/buttonLanguageClose"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close"
+                app:tint="@color/pc_onSurfaceSecondary"
+                android:padding="10dp"
+                android:contentDescription="@string/close" />
+        </LinearLayout>
+
+        <!-- 3-option radio group: System / DE / EN. Selecting fires onChecked
+             in the host and dismisses the dialog. -->
+        <RadioGroup
+            android:id="@+id/languagePickerGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/radioLangSystemPicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_theme_system"
+                android:textAppearance="@style/TextAppearance.PlantCare.Body"
+                android:textSize="16sp"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:buttonTint="@color/pc_primary" />
+
+            <RadioButton
+                android:id="@+id/radioLangDePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_language_de"
+                android:textAppearance="@style/TextAppearance.PlantCare.Body"
+                android:textSize="16sp"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:buttonTint="@color/pc_primary" />
+
+            <RadioButton
+                android:id="@+id/radioLangEnPicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_language_en"
+                android:textAppearance="@style/TextAppearance.PlantCare.Body"
+                android:textSize="16sp"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:buttonTint="@color/pc_primary" />
+        </RadioGroup>
+
+        <!-- Cancel button row (single button, end-aligned) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="12dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonLanguageCancel"
+                style="@style/PlantCare.Button.Outlined"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="@android:string/cancel" />
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

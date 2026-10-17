@@ -1,0 +1,33 @@
+<!--
+  Variante 3 — Blüte mit rosa Blütenblättern.
+  Für blühende Katalog­einträge.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#F5E0E9"
+        android:pathData="M24,4a20,20 0 1,0 0,40a20,20 0 1,0 0,-40"/>
+    <!-- fünf Blütenblätter -->
+    <path
+        android:fillColor="#E57AA8"
+        android:pathData="M24,10a5,5 0 1,0 0,10a5,5 0 1,0 0,-10"/>
+    <path
+        android:fillColor="#E57AA8"
+        android:pathData="M14,18a5,5 0 1,0 0,10a5,5 0 1,0 0,-10"/>
+    <path
+        android:fillColor="#E57AA8"
+        android:pathData="M34,18a5,5 0 1,0 0,10a5,5 0 1,0 0,-10"/>
+    <path
+        android:fillColor="#E57AA8"
+        android:pathData="M18,30a5,5 0 1,0 0,10a5,5 0 1,0 0,-10"/>
+    <path
+        android:fillColor="#E57AA8"
+        android:pathData="M30,30a5,5 0 1,0 0,10a5,5 0 1,0 0,-10"/>
+    <!-- gelbes Zentrum -->
+    <path
+        android:fillColor="#F4C24A"
+        android:pathData="M24,21a3,3 0 1,0 0,6a3,3 0 1,0 0,-6"/>
+</vector>

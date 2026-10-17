@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — UnifiedCameraActivity layout (F2.3)
+
+    Full-screen camera UI launched by the center FAB in MainActivity.
+    Layered top-down:
+      - PreviewView fills the entire screen (CameraX renders here).
+      - Top scrim hosts a close button + a hint line.
+      - Bottom scrim hosts:
+          * MaterialButtonToggleGroup `modeToggle` with two buttons
+            (Pflanze erkennen | Gesundheit prüfen) — the segmented slider
+            the user described.
+          * Gallery picker (left) + Shutter button (center, big) + a
+            spacer on the right for visual balance.
+
+    After a capture, UnifiedCameraActivity routes the JPG file to:
+      - PlantIdentifyActivity (mode = IDENTIFY)
+      - DiseaseDiagnosisActivity (mode = DIAGNOSE)
+    via the existing `EXTRA_PRELOADED_IMAGE_PATH` contract — both target
+    activities skip their own camera step when they see the extra.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:fitsSystemWindows="false">
+
+    <!-- ─────────────────────────────────────────
+         Camera preview — fills the entire screen.
+         ───────────────────────────────────────── -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:implementationMode="performance"
+        app:scaleType="fillCenter"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ─────────────────────────────────────────
+         Top scrim — close button + hint.
+         ───────────────────────────────────────── -->
+    <FrameLayout
+        android:id="@+id/topScrim"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/bg_camera_scrim_top"
+        android:fitsSystemWindows="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/closeButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/camera_close_cd"
+            android:padding="12dp"
+            android:src="@drawable/ic_close"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/cameraHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/camera_hint"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:fontFamily="@font/inter" />
+
+    </FrameLayout>
+
+    <!-- ─────────────────────────────────────────
+         Bottom controls panel.
+         ───────────────────────────────────────── -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_camera_scrim_bottom"
+        android:paddingTop="24dp"
+        android:paddingBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Segmented mode toggle (the "Schiebeschalter" the user asked for). -->
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/modeToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/modeIdentify"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/camera_mode_identify"
+                android:textAllCaps="false"
+                app:strokeColor="#FFFFFF"
+                android:textColor="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/modeDiagnose"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/camera_mode_diagnose"
+                android:textAllCaps="false"
+                app:strokeColor="#FFFFFF"
+                android:textColor="@color/white" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <!-- Gallery picker (left of shutter). -->
+        <ImageButton
+            android:id="@+id/galleryButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/camera_gallery_cd"
+            android:padding="10dp"
+            android:src="@drawable/ic_gallery"
+            app:tint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/shutterButton"
+            app:layout_constraintBottom_toBottomOf="@id/shutterButton" />
+
+        <!-- Shutter button (center). -->
+        <ImageButton
+            android:id="@+id/shutterButton"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:background="@drawable/bg_shutter_button"
+            android:contentDescription="@string/camera_shutter_cd"
+            app:layout_constraintTop_toBottomOf="@id/modeToggle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Visual balance spacer on the right (mirrors gallery slot). -->
+        <View
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/shutterButton"
+            app:layout_constraintBottom_toBottomOf="@id/shutterButton" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

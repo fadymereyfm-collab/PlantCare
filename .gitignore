@@ -1,34 +1,59 @@
-# Gradle files
+# ── Android Build ─────────────────────────────────────────────
 .gradle/
 build/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Log/OS Files
-*.log
-
-# Android Studio generated files and folders
-captures/
-.externalNativeBuild/
-.cxx/
-*.aab
+app/build/
+macrobenchmark/build/
 *.apk
-output-metadata.json
+*.aab
+*.ap_
 
-# IntelliJ
-*.iml
-.idea/
-misc.xml
-deploymentTargetDropDown.xml
-render.experimental.xml
+# ── Local Config (NEVER commit these) ─────────────────────────
+local.properties
+google-services.json
+app/src/dev/google-services.json
+app/src/prod/google-services.json
 
-# Keystore files
+# ── Keystore & Signing (NEVER commit these) ───────────────────
 *.jks
 *.keystore
+keystore/
 
-# Google Services (e.g. APIs or Firebase)
-google-services.json
+# ── IDEs ──────────────────────────────────────────────────────
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
 
-# Android Profiling
-*.hprof
+# ── Kotlin / Java ─────────────────────────────────────────────
+*.class
+*.jar
+out/
+
+# ── Room Schemas (optional — keep if you want schema in VCS) ──
+# app/schemas/
+
+# ── Claude Code (commit shared bits, ignore local state) ──────
+.claude/worktrees/
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
+.claude/.session_log
+.claude/cache/
+.routine-backups/
+
+# ── Cloud Functions ───────────────────────────────────────────
+functions/node_modules/
+functions/lib/
+
+# ── Tools ─────────────────────────────────────────────────────
+tools/__pycache__/
+tools/wikidata_export.csv
+tools/wikidata_export.json
+
+# ── Gradle wrapper jar must be committed (overrides *.jar) ────
+!gradle/wrapper/gradle-wrapper.jar
+
+# ── Local backups / logs / old Firebase configs (contain keys) ─
+.backup_*/
+app/firebase-backup/
+build_*.txt
+build_verify.log

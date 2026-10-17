@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Destructive variant of the action-list row stub. Used for Löschen
+  (delete) entries so the danger styling (red filled button) reads as
+  an obvious "this destroys something" action without requiring the
+  caller to remember to flag it specially.
+-->
+<com.google.android.material.button.MaterialButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/PlantCare.Button.Danger"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:textSize="16sp"/>

@@ -1,0 +1,15 @@
+<!--
+    PlantCare — Bottom navigation item tint selector (F2.1)
+    state_checked = selected tab → pc_bottom_nav_active (sits on pill)
+    default                       → pc_bottom_nav_inactive
+
+    Used by BottomNavigationView's android:itemIconTint + itemTextColor.
+    Order matters: most-specific state first.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:color="@color/pc_bottom_nav_active"
+        android:state_checked="true" />
+    <item
+        android:color="@color/pc_bottom_nav_inactive" />
+</selector>

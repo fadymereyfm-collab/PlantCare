@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — Phase G shape system (Premium Visual Overhaul).
+    Added: 2026-05-15.
+
+    Five canonical shapes:
+      • Card       — 24dp squircle (was 20dp in Phase F)
+      • Pill       — 50% (= height/2) for full pills (buttons, indicators)
+      • Thumbnail  — 16dp for small photo tiles (was 12dp in Phase F)
+      • ThumbnailLarge — 22dp for hero/grid photos (was 18dp in Phase F)
+      • Input      — 18dp for TextInputLayout box corners
+-->
+<resources>
+
+    <style name="ShapeAppearance.PlantCare.Card" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">18dp</item>
+    </style>
+
+    <style name="ShapeAppearance.PlantCare.Pill" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="ShapeAppearance.PlantCare.Thumbnail" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="ShapeAppearance.PlantCare.ThumbnailLarge" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="ShapeAppearance.PlantCare.Input" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">14dp</item>
+    </style>
+
+    <!-- Hero banner shape (slightly larger for Pro card prominence) -->
+    <style name="ShapeAppearance.PlantCare.Hero" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
+</resources>

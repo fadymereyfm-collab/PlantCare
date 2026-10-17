@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PlantCare G2.1 - Top-right corner bracket. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <path
+        android:fillColor="#3FA856"
+        android:pathData="M35,5 L15,5 L15,9 L31,9 L31,25 L35,25 Z" />
+</vector>

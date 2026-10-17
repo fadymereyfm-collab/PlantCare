@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============================================================
+         Intentionally empty.
+         All colors that previously lived here (manual_reminder_text,
+         auto_reminder_text) are now consolidated into colors.xml as
+         part of the M3 token migration (2026-05-02). File kept so any
+         build script referencing it by name does not break.
+         ============================================================ -->
+</resources>

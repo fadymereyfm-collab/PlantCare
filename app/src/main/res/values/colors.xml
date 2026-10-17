@@ -1,13 +1,210 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="gray">#FF808080</color>
-    <color name="dark_gray">#FF404040</color>
-    <color name="light_blue">#FF2196F3</color>
+    <!-- ============================================================
+         PlantCare — Phase G palette (Premium Visual Overhaul)
+         Started: 2026-05-15. Rebuilt 2026-05-16 after a filesystem
+         truncation event that lost the last ~40 lines.
+
+         Identity shift from Phase F:
+           Phase F: muted Sage Garden (#6B9080 + cream #FAF6EF + Serif Regular)
+           Phase G: vibrant Mint Garden (#3FA856 + #EAF1E2 + Sans ExtraBold)
+
+         Naming convention:
+           pc_*           — semantic role (M3 token names).
+           pc_<new>       — new G-era tokens for Hero/Glass/Accent surfaces.
+           legacy *_text  — kept for backward compat with existing 53 layouts.
+           sage_/honey_   — fixed brand swatches kept untouched.
+         ============================================================ -->
+
+    <!-- ── Brand tonal palette (sage) — LEGACY, kept for room icons + widgets ── -->
+    <color name="sage_50">#EEF6F2</color>
+    <color name="sage_100">#D4E8E0</color>
+    <color name="sage_200">#A8C5B8</color>
+    <color name="sage_300">#7FAD9C</color>
+    <color name="sage_400">#6B9080</color>
+    <color name="sage_500">#578071</color>
+    <color name="sage_600">#4A7060</color>
+    <color name="sage_700">#3C5C4F</color>
+    <color name="sage_800">#2A3A33</color>
+    <color name="sage_900">#1A2620</color>
+
+    <!-- ── Legacy accent palettes (kept for spot use in widgets/disease) ── -->
+    <color name="terracotta_300">#E5B89D</color>
+    <color name="terracotta_500">#C47B5A</color>
+    <color name="terracotta_700">#8E5236</color>
+    <color name="honey_500">#D4A24C</color>
+    <color name="honey_300">#E5C475</color>
+
+    <!-- ============================================================
+         Phase G Brand swatches — Vibrant Leaf Green tonal scale.
+         ============================================================ -->
+    <color name="leaf_50">#EAF7EE</color>
+    <color name="leaf_100">#D6E9C0</color>
+    <color name="leaf_200">#A6D5B0</color>
+    <color name="leaf_300">#6FBE83</color>
+    <color name="leaf_400">#3FA856</color>
+    <color name="leaf_500">#2F8242</color>
+    <color name="leaf_600">#236831</color>
+    <color name="leaf_700">#1F3D2A</color>
+    <color name="leaf_800">#15291C</color>
+    <color name="leaf_900">#0E1E14</color>
+
+    <!-- ============================================================
+         M3 Color Roles (Light) — Phase G values.
+         ============================================================ -->
+
+    <!-- Primary — Vibrant Leaf Green -->
+    <color name="pc_primary">#2EB85F</color>
+    <color name="pc_onPrimary">#FFFFFF</color>
+    <color name="pc_primaryContainer">#D4F2DC</color>
+    <color name="pc_onPrimaryContainer">#1A3F25</color>
+
+    <!-- Secondary — softer leaf -->
+    <color name="pc_secondary">#6FBE83</color>
+    <color name="pc_onSecondary">#0E1E14</color>
+    <color name="pc_secondaryContainer">#EAF7EE</color>
+    <color name="pc_onSecondaryContainer">#1F3D2A</color>
+
+    <!-- Tertiary — amber accent -->
+    <color name="pc_tertiary">#D9B05F</color>
+    <color name="pc_onTertiary">#FFFFFF</color>
+    <color name="pc_tertiaryContainer">#F5D27A</color>
+    <color name="pc_onTertiaryContainer">#3A2B0E</color>
+
+    <!-- Error — proper Material red -->
+    <color name="pc_error">#BA1A1A</color>
+    <color name="pc_onError">#FFFFFF</color>
+    <color name="pc_errorContainer">#FFDAD6</color>
+    <color name="pc_onErrorContainer">#410002</color>
+
+    <!-- Background / Surface -->
+    <color name="pc_background">#EAF1E2</color>
+    <color name="pc_onBackground">#1B3A2A</color>
+    <color name="pc_surface">#FFFFFF</color>
+    <color name="pc_onSurface">#1B3A2A</color>
+    <color name="pc_surfaceVariant">#DCE7D1</color>
+    <color name="pc_onSurfaceVariant">#5E6E5F</color>
+
+    <!-- Surface containers -->
+    <color name="pc_surfaceContainerLowest">#FFFFFF</color>
+    <color name="pc_surfaceContainerLow">#F4F7EE</color>
+    <color name="pc_surfaceContainer">#EAF1E2</color>
+    <color name="pc_surfaceContainerHigh">#DCE7D1</color>
+    <color name="pc_surfaceContainerHighest">#CDD9C2</color>
+
+    <!-- Outlines -->
+    <color name="pc_outline">#A8B7AB</color>
+    <color name="pc_outlineVariant">#DCE5DD</color>
+
+    <!-- Inverse -->
+    <color name="pc_inverseSurface">#1B3A2A</color>
+    <color name="pc_inverseOnSurface">#EAF7EE</color>
+    <color name="pc_inversePrimary">#A6D5B0</color>
+
+    <!-- Scrim -->
+    <color name="pc_scrim">#000000</color>
+    <color name="pc_scrim_50">#80000000</color>
+    <color name="pc_scrim_67">#AA000000</color>
+
+    <!-- ============================================================
+         Phase G NEW tokens — glass + hero + accents.
+         ============================================================ -->
+
+    <color name="pc_surface_translucent">#B3FFFFFF</color>
+    <color name="pc_surface_translucent_strong">#D9FFFFFF</color>
+    <color name="pc_on_surface_strong">#0E2218</color>
+    <color name="pc_background_dim">#DCE7D1</color>
+    <color name="pc_accent_amber">#F5D27A</color>
+    <color name="pc_accent_amber_dark">#D9B05F</color>
+    <color name="pc_on_accent_amber">#3A2B0E</color>
+    <color name="pc_accent_coral">#E8918F</color>
+    <color name="pc_accent_coral_dark">#C46967</color>
+    <color name="pc_on_accent_coral">#3A1212</color>
+
+    <!-- ============================================================
+         Semantic role aliases (KEEP — referenced by 53 layouts)
+         ============================================================ -->
+
+    <color name="pc_onSurfaceSecondary">#7D8A7E</color>
+    <color name="pc_accent">#D9B05F</color>
+    <color name="pc_accent2">#F5D27A</color>
+    <color name="modern_accent">#D9B05F</color>
+    <color name="pc_success">#3FA856</color>
+    <color name="colorPrimaryVariant">#2F8242</color>
+
+    <!-- Backgrounds (legacy aliases) -->
+    <color name="bg_light">#EAF1E2</color>
+    <color name="creamy_background">#EAF1E2</color>
+    <color name="ultra_light_gray">#EAF1E2</color>
+    <color name="gray_very_light">#EAF7EE</color>
+    <color name="backgroundLight">#EAF1E2</color>
+    <color name="card_bg">#FFFFFF</color>
+    <color name="border_soft">#DCE5DD</color>
+
+    <!-- True white/black — never override -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#1B3A2A</color>
+    <color name="text_secondary">#7D8A7E</color>
+    <color name="title_text">#0E2218</color>
+
+    <!-- Custom semantic text -->
+    <color name="manual_reminder_text">#6D4C41</color>
+    <color name="auto_reminder_text">#3FA856</color>
+
+    <!-- Bottom Navigation -->
+    <color name="pc_bottom_nav_active">#1F3D2A</color>
+    <color name="pc_bottom_nav_inactive">#7D8A7E</color>
+    <color name="pc_fab_camera_bg">#3FA856</color>
+    <color name="pc_fab_camera_tint">#FFFFFF</color>
+
+    <!-- Card shadow -->
+    <color name="card_shadow">#223FA856</color>
+
+    <!-- Calendar -->
+    <color name="calendar_selected_day">#3FA856</color>
+    <color name="calendar_today_circle">#D6E9C0</color>
+    <color name="calendar_event_day">#D9B05F</color>
+    <color name="calendar_text">#1B3A2A</color>
+    <color name="calendar_text_disabled">#DCE5DD</color>
+    <color name="calendar_background">#EAF1E2</color>
+
+    <!-- Widget legacy aliases -->
+    <color name="gray_500">#7D8A7E</color>
+    <color name="gray_400">#A6D5B0</color>
+    <color name="green_500">#3FA856</color>
+    <color name="blue_500">#2F8242</color>
+
+    <!-- Room icon palette (12 distinct hues) -->
+    <!-- 2026-05-17 UI-BUG-8: distinct per-room palette (cohesive saturation,
+         AA-safe against the white foreground icon in sage_ic_room_*).
+         Reverts the G-polish-3 sage unification that made every room read
+         identically — Fady's emulator pass showed 6 indistinguishable cards.
+
+         2026-05-18 contrast audit (white icon foreground):
+         5 of the 12 colours failed the WCAG AA 3:1 threshold for large UI
+         glyphs — kitchen #F2A93B was the worst at 2.00. Darkened those 5
+         to the lightest variant that crosses 3.0 contrast so the white
+         icon stays visible on every card. The other 7 already passed and
+         are unchanged (saturation intent preserved). -->
+    <color name="room_living">#E07856</color>     <!-- terracotta · 3.00 (warm/social) -->
+    <color name="room_bedroom">#6A8FBF</color>    <!-- soft denim · 3.34 (restful) -->
+    <color name="room_bathroom">#2A92A0</color>   <!-- deeper teal · 3.67 (water/fresh — was #4FB3BF / 2.46) -->
+    <color name="room_toilet">#7E96A8</color>     <!-- slate · 3.08 (neutral utility) -->
+    <color name="room_hallway">#9C7A45</color>    <!-- deeper caramel · 3.97 (warm transit — was #B9925D / 2.86) -->
+    <color name="room_kitchen">#C97614</color>    <!-- burnt orange · 3.45 (appetite — was #F2A93B / 2.00) -->
+    <color name="room_office">#5D7DA8</color>     <!-- steel blue · 4.23 (focus) -->
+    <color name="room_balcony">#4F9C4D</color>    <!-- forest green · 3.39 (outdoor — was #6FB76C / 2.42) -->
+    <color name="room_garden">#3FA856</color>     <!-- deep green · 3.02 (full garden) -->
+    <color name="room_kids">#C9527E</color>       <!-- deeper rose · 4.21 (playful — was #E8729E / 2.86) -->
+    <color name="room_dining">#C45A6E</color>     <!-- wine · 4.17 (convivial) -->
+    <color name="room_default">#6B9080</color>    <!-- sage · 3.54 (fallback) -->
+
+
+    <!-- Reminder-type tints -->
+    <color name="reminder_type_water">#3B7CB6</color>
+    <color name="reminder_type_fertilize">#3FA856</color>
+    <color name="reminder_type_mist">#5BA8C9</color>
+    <color name="reminder_type_repot">#8D6E63</color>
 </resources>

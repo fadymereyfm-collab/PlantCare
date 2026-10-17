@@ -1,52 +1,252 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'androidx.baselineprofile'
 }
 
+// Load signing credentials from local.properties (never committed to git)
+def localProps = new Properties()
+def localPropsFile = rootProject.file("local.properties")
+if (localPropsFile.exists()) localProps.load(localPropsFile.newDataInputStream())
+
 android {
-    namespace 'com.plantcare'
-    compileSdk 34
+    namespace 'com.example.plantcare'
+    compileSdk 35
 
     defaultConfig {
-        applicationId "com.plantcare"
+        applicationId "com.fadymerey.plantcare"
         minSdk 24
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        targetSdk 35
+        versionCode 2
+        versionName "1.0.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resConfigs "de", "en"
+
+        // PlantNet API key — read from local.properties (dev) or env var (CI)
+        def plantnetKey = localProps.getProperty("PLANTNET_API_KEY")
+                ?: System.getenv("PLANTNET_API_KEY") ?: ""
+        buildConfigField "String", "PLANTNET_API_KEY", "\"${plantnetKey}\""
+
+        // OpenWeatherMap API key — read from local.properties (dev) or env var (CI)
+        def owmKey = localProps.getProperty("OPENWEATHER_API_KEY")
+                ?: System.getenv("OPENWEATHER_API_KEY") ?: ""
+        buildConfigField "String", "OPENWEATHER_API_KEY", "\"${owmKey}\""
+
+        // Gemini (Google AI Studio) API key — disease diagnosis backend
+        // Free tier: 250 RPD / 10 RPM (Gemini 2.5 Flash). EU production
+        // requires switching the same key to paid via aistudio.google.com/app/billing
+        // — see R3 in PROGRESS.md.
+        def geminiKey = localProps.getProperty("GEMINI_API_KEY")
+                ?: System.getenv("GEMINI_API_KEY") ?: ""
+        buildConfigField "String", "GEMINI_API_KEY", "\"${geminiKey}\""
+    }
+
+    flavorDimensions "environment"
+    productFlavors {
+        dev {
+            dimension "environment"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+            buildConfigField "boolean", "IS_DEV", "true"
+        }
+        prod {
+            dimension "environment"
+            buildConfigField "boolean", "IS_DEV", "false"
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile     file(localProps.getProperty("KEYSTORE_PATH", "plantcare-upload.jks"))
+            storePassword localProps.getProperty("KEYSTORE_PASSWORD", "")
+            keyAlias      localProps.getProperty("KEY_ALIAS", "plantcare")
+            keyPassword   localProps.getProperty("KEY_PASSWORD", "")
+        }
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
+
+    baselineProfile {
+        saveInSrc = true
+        // Don't block regular builds — run manually: ./gradlew generateProdReleaseBaselineProfile
+        automaticGenerationDuringBuild = false
+    }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        // 2026-05-05 cleanup: app uses java.time.* (LocalDate, YearMonth,
+        // DateTimeFormatter) extensively — those types didn't ship until
+        // API 26 (Android 8.0). With minSdk 24 this would NoClassDefFoundError
+        // on Android 7.0/7.1 devices. Core library desugaring rewrites the
+        // bytecode at build time to provide the missing classes on API 24+.
+        coreLibraryDesugaringEnabled true
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
+
     buildFeatures {
+        viewBinding true
         compose true
+        buildConfig true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.5.4'
+        kotlinCompilerExtensionVersion = "1.5.14"
+    }
+
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
-    implementation 'androidx.activity:activity-compose:1.8.2'
-    implementation platform('androidx.compose:compose-bom:2023.10.01')
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-graphics'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
-    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    // 2026-05-05: required by `coreLibraryDesugaringEnabled` above so
+    // java.time.* and similar API-26+ classes work on minSdk 24/25.
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+
+    // LeakCanary — debug-only memory leak detection (ships only in debug builds, no release impact)
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.13'
+
+    implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.7'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.7'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
+
+    // Add explicit Activity/Fragment KTX to ensure Activity Result works smoothly in fragments
+    implementation 'androidx.activity:activity-ktx:1.9.3'
+    implementation 'androidx.fragment:fragment-ktx:1.8.4'
+
+    // EXIF reader — used by PhotoCaptureCoordinator to apply orientation
+    // before downscaling so portrait camera shots don't end up sideways
+    // when re-encoded without their original EXIF header.
+    implementation 'androidx.exifinterface:exifinterface:1.3.7'
+
+    // Google Sign-In
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
+
+    // Compose
+    implementation "androidx.compose.foundation:foundation:1.6.0"
+    implementation "androidx.compose.ui:ui:1.6.0"
+    implementation "androidx.compose.material:material:1.6.0"
+    implementation "androidx.compose.material:material-icons-extended:1.6.0"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.6.0"
+    implementation "androidx.activity:activity-compose:1.8.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0"
+    implementation "androidx.compose.material3:material3:1.2.1"
+    implementation "io.coil-kt:coil-compose:2.4.0"
+
+    // BCrypt for password hashing
+    implementation "at.favre.lib:bcrypt:0.10.2"
+
+    // Encrypted SharedPreferences
+    implementation "androidx.security:security-crypto:1.1.0-alpha06"
+
+    // WorkManager
+    implementation "androidx.work:work-runtime:2.9.0"
+    implementation "androidx.work:work-runtime-ktx:2.9.0"
+
+    // Retrofit + Gson (Weather API)
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+    implementation "com.google.code.gson:gson:2.10.1"
+
+    // Location (Weather)
+    implementation "com.google.android.gms:play-services-location:21.2.0"
+
+    // Room
+    implementation "androidx.room:room-runtime:2.6.1"
+    ksp "androidx.room:room-compiler:2.6.1"
+    implementation "androidx.room:room-ktx:2.6.1"
+
+    // Glide
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    ksp 'com.github.bumptech.glide:ksp:4.16.0'
+
+    // CalendarView
+    implementation 'com.github.prolificinteractive:material-calendarview:1.5.0'
+
+    // Firebase (BoM)
+    implementation platform('com.google.firebase:firebase-bom:33.7.0')
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging'  // Wave 2: FCM for Family Share invites
+    implementation 'com.google.firebase:firebase-functions'  // Wave 2: callable for cross-user reminder writes
+
+    // Date/Time utils
+    implementation "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
+
+    // OkHttp for PlantNet multipart upload
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+
+    // Baseline Profiles — installs compiled profile on API 28+ devices
+    implementation 'androidx.profileinstaller:profileinstaller:1.3.1'
+
+    // Google Play Billing
+    implementation "com.android.billingclient:billing-ktx:6.2.0"
+
+    // Biometric authentication (Phase 4.1: fingerprint/face unlock for Settings + app open)
+    implementation "androidx.biometric:biometric:1.1.0"
+
+    // Google Mobile Ads (AdMob) — banner for free tier
+    implementation "com.google.android.gms:play-services-ads:23.4.0"
+
+    // CameraX — Phase F2.3 (UnifiedCameraActivity preview + ImageCapture).
+    // 1.3.4 is the last 1.3.x stable: API 24+ compatible, no Compose
+    // requirement (camera-view here is the AndroidView form, not the
+    // camera-compose artifact). Pinned together to avoid the runtime
+    // "androidx.camera version mismatch" warning.
+    implementation "androidx.camera:camera-core:1.3.4"
+    implementation "androidx.camera:camera-camera2:1.3.4"
+    implementation "androidx.camera:camera-lifecycle:1.3.4"
+    implementation "androidx.camera:camera-view:1.3.4"
+
+    // uCrop — 2026-05-20 Feature 1: image cropping before diagnose/identify.
+    // Comes from JitPack (repo already enabled in settings.gradle).
+    // 2.2.9 is the last stable; 2.2.10-native exists but pulls native libs
+    // we don't need (and bloats the APK by ~3MB).
+    implementation 'com.github.yalantis:ucrop:2.2.9'
+
+    // (TensorFlow Lite removed 2026-05-01 — disease diagnosis now uses the
+    // PlantNet `/v2/diseases/identify` cloud endpoint via PlantNetDiseaseService.)
+
+    // ── Unit Tests ────────────────────────────────────────────
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "org.mockito:mockito-core:5.11.0"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.2.1"
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"
+    testImplementation "com.google.truth:truth:1.4.2"
+    testImplementation "org.robolectric:robolectric:4.11.1"
+    testImplementation "androidx.test:core:1.5.0"
+
+    // ── Instrumentation Tests ────────────────────────────────
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation "androidx.room:room-testing:2.6.1"
+    androidTestImplementation "com.google.truth:truth:1.4.2"
+    androidTestImplementation "androidx.test:runner:1.5.2"
+    androidTestImplementation "androidx.test:rules:1.5.0"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"
 }

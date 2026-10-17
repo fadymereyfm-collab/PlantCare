@@ -1,0 +1,29 @@
+<!--
+    PlantCare — Shutter button background (F2.3).
+    Classic camera-app shutter: solid white inner disc with a thicker
+    semi-transparent white outer ring. The ImageButton above sets
+    no `src` — the shape itself is the visual. We draw it as a layer
+    so the ring + disc compose without overlap artifacts.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Outer ring — translucent white frame -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#33FFFFFF" />
+            <stroke android:width="3dp" android:color="#FFFFFFFF" />
+        </shape>
+    </item>
+
+    <!-- Inner disc — 12dp inset → leaves the ring visible -->
+    <item
+        android:left="10dp"
+        android:top="10dp"
+        android:right="10dp"
+        android:bottom="10dp">
+        <shape android:shape="oval">
+            <solid android:color="#FFFFFFFF" />
+        </shape>
+    </item>
+
+</layer-list>

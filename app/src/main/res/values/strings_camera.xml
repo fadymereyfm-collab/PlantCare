@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Needed by PlantDetailDialogFragment -->
+    <string name="permission_camera_denied">Kamera-Berechtigung ist erforderlich, um ein Foto aufzunehmen.</string>
+    <string name="msg_camera_required">Die Kamera konnte nicht gestartet werden.</string>
+
+    <!-- Added to stop aapt from removing non-default-only strings mentioned in your build log -->
+    <string name="msg_added">Hinzugefügt.</string>
+    <string name="msg_photos_opened">Fotos geöffnet.</string>
+</resources>

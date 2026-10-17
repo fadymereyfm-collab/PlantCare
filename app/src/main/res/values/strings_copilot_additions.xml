@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="archive_photos_title_for">Bilder von %1$s</string>
+    <string name="action_close">Schließen</string>
+    <string name="calendar_date_prefix">📅 %1$s</string>
+    <string name="photo_still_uploading">Bild lädt noch…</string>
+    <string name="action_change_date">Datum ändern</string>
+    <string name="photo_options_title">Bildoptionen</string>
+    <string name="action_no">Nein</string>
+    <string name="action_yes">Ja</string>
+    <string name="confirm_delete_photo_message">Soll dieses Bild wirklich gelöscht werden?</string>
+    <string name="msg_photo_deleted">Bild gelöscht</string>
+    <string name="msg_date_changed">Datum geändert</string>
+
+    <!-- Quick-Add -->
+    <string name="action_undo">Rückgängig</string>
+    <string name="quick_add_needs_login">Bitte zuerst anmelden</string>
+    <string name="quick_add_added">%1$s hinzugefügt</string>
+    <string name="quick_add_undone">Hinzufügen rückgängig gemacht</string>
+</resources>

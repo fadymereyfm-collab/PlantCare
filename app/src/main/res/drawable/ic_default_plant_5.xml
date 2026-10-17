@@ -1,0 +1,36 @@
+<!--
+  Variante 5 — Farn/Palme mit gefiederten Blättern,
+  auf Teal‑Kreis. Deutlich anderes Silhouetten­gefühl als Variante 1.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#BFE3DA"
+        android:pathData="M24,4a20,20 0 1,0 0,40a20,20 0 1,0 0,-40"/>
+    <!-- Stiel -->
+    <path
+        android:fillColor="#2E7D5B"
+        android:pathData="M23,12 L25,12 L25,38 L23,38 Z"/>
+    <!-- Blatt­paare -->
+    <path
+        android:fillColor="#3F9770"
+        android:pathData="M24,14 C16,14 12,18 10,22 C14,22 20,20 24,18 Z"/>
+    <path
+        android:fillColor="#3F9770"
+        android:pathData="M24,14 C32,14 36,18 38,22 C34,22 28,20 24,18 Z"/>
+    <path
+        android:fillColor="#4DAE83"
+        android:pathData="M24,22 C16,22 12,26 10,30 C14,30 20,28 24,26 Z"/>
+    <path
+        android:fillColor="#4DAE83"
+        android:pathData="M24,22 C32,22 36,26 38,30 C34,30 28,28 24,26 Z"/>
+    <path
+        android:fillColor="#5BC496"
+        android:pathData="M24,30 C18,30 14,32 12,36 C16,36 20,34 24,32 Z"/>
+    <path
+        android:fillColor="#5BC496"
+        android:pathData="M24,30 C30,30 34,32 36,36 C32,36 28,34 24,32 Z"/>
+</vector>

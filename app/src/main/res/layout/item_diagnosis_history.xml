@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/pc_surface"
+    app:strokeColor="@color/pc_outlineVariant"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgThumb"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:scaleType="centerCrop"
+            android:background="@color/pc_secondaryContainer"
+            android:contentDescription="@string/plant_image"
+            android:layout_marginEnd="12dp"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.PlantCare.RoundedSquare" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textColor="@color/pc_onSurface" />
+
+            <TextView
+                android:id="@+id/txtDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/pc_onSurfaceSecondary"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/txtConfidence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/pc_primary"
+                android:layout_marginTop="2dp" />
+
+            <!-- 2026-05-20 (#1): severity + affected-part badges, mirroring
+                 the detail dialog. Row hidden when both fields are null. -->
+            <LinearLayout
+                android:id="@+id/badgesRow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/badgeSeverity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:textStyle="bold"
+                    android:textSize="11sp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/bg_chip_neutral"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/badgeAffectedPart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:textStyle="bold"
+                    android:textSize="11sp"
+                    android:textColor="@color/pc_onSecondaryContainer"
+                    android:background="@drawable/bg_chip_neutral"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_close"
+            app:tint="@color/pc_onSurfaceSecondary"
+            android:contentDescription="@string/delete"
+            android:padding="12dp"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Switch track tint. Track sits behind the thumb so it stays subtler than
+  the thumb itself; SwitchCompat auto-blends with track alpha. We use the
+  same colors as the thumb but rely on M2's built-in track alpha (~0.3
+  unchecked / 0.54 checked) so the track reads as a soft band, not a
+  competing pill.
+
+  Disabled fall-through mirrors the thumb tint (0.5 alpha on the same hue)
+  so the biometric switch stays visible when biometric is unavailable on
+  the device.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true" android:state_enabled="true" android:color="@color/pc_primary"/>
+    <item android:state_enabled="true" android:color="@color/pc_outline"/>
+    <item android:state_checked="true" android:alpha="0.5" android:color="@color/pc_primary"/>
+    <item android:alpha="0.5" android:color="@color/pc_outline"/>
+</selector>

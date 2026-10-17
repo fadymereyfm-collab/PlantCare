@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="32dp"
+    android:background="@color/pc_background">
+
+    <!-- Hero image — claims all the slack between top padding and the title.
+         layout_weight=1 + minHeight 280dp gives a proper onboarding hero
+         (≈45 % of phone height) instead of the previous 200dp box that
+         rendered tiny inside a vast empty area. scaleType=fitCenter
+         scales the source vector up to fill the box. -->
+    <ImageView
+        android:id="@+id/ivImage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:minHeight="280dp"
+        android:layout_marginBottom="24dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/cd_onboarding_image" />
+
+    <!-- Title (F7.2 — DM Serif headline) -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.PlantCare.Headline"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:layout_marginBottom="14dp" />
+
+    <!-- Description -->
+    <TextView
+        android:id="@+id/tvDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/pc_onSurfaceSecondary"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.5"
+        android:layout_marginBottom="32dp" />
+</LinearLayout>

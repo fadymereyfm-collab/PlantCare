@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="1dp"
+            app:strokeColor="@color/pc_outlineVariant"
+            app:strokeWidth="1dp"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:id="@+id/imgDetail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@color/pc_surfaceVariant"
+                android:contentDescription="@string/plant_image" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/txtDetailName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/pc_onSurface" />
+
+        <TextView
+            android:id="@+id/txtDetailConfidence"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:textColor="@color/pc_primary"
+            android:layout_marginTop="2dp" />
+
+        <!-- 2026-05-20 Feature 4 (Enriched history): severity + affected
+             part badges. Two horizontal chips below the confidence line.
+             Hidden when both fields are null (older rows / unclear cases). -->
+        <LinearLayout
+            android:id="@+id/badgesRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/badgeSeverity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_chip_neutral"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/badgeAffectedPart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:textColor="@color/pc_onSecondaryContainer"
+                android:background="@drawable/bg_chip_neutral"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/pc_outline" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disease_history_detail_plant_label"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.07"
+            android:textColor="@color/pc_onSurfaceSecondary" />
+
+        <TextView
+            android:id="@+id/txtDetailPlant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/pc_onSurface"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disease_history_detail_advice_label"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.07"
+            android:textColor="@color/pc_onSurfaceSecondary" />
+
+        <TextView
+            android:id="@+id/txtDetailAdvice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/pc_onSurface"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginTop="2dp" />
+
+        <!-- 2026-05-20 Feature 4 (Enriched history): suggested treatment
+             from Gemini (read-only). Separate from `note` so the user's
+             free-text note doesn't overwrite the model's recommendation. -->
+        <TextView
+            android:id="@+id/labelSuggestedTreatment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disease_detail_suggested_treatment_label"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.07"
+            android:textColor="@color/pc_onSurfaceSecondary"
+            android:layout_marginTop="12dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txtSuggestedTreatment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/pc_onSurface"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginTop="2dp"
+            android:visibility="gone" />
+
+        <!-- 2026-05-20 Feature 4 (Enriched history): applied treatment is
+             user-editable. Persisted via DiagnosisDetailDialog's onDismiss
+             callback so the user doesn't need an explicit save button. -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disease_detail_applied_treatment_label"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.07"
+            android:textColor="@color/pc_onSurfaceSecondary"
+            android:layout_marginTop="12dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:hint="@string/disease_detail_applied_treatment_hint"
+            app:boxBackgroundMode="outline"
+            app:boxStrokeColor="@color/pc_outline">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editAppliedTreatment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:minLines="2"
+                android:gravity="top|start"
+                android:inputType="textMultiLine|textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+</ScrollView>

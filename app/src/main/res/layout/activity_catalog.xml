@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — CatalogActivity layout (F2.4)
+
+    Hosts AllPlantsFragment as a fullscreen sub-screen launched from
+    Mein Garten's "+" → "Aus Katalog wählen" sheet. Provides a back
+    arrow in the toolbar so the user always knows how to return to the
+    rooms view.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/pc_background"
+    android:fitsSystemWindows="true">
+
+    <!-- F3.3: toolbar title removed; the AllPlantsFragment hero header
+         provides the screen title. We keep the toolbar purely for the
+         back-arrow navigation affordance. -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/catalogToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/pc_background"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationContentDescription="@string/close" />
+
+    <FrameLayout
+        android:id="@+id/catalogContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

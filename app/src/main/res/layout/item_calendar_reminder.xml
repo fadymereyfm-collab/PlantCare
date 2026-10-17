@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare — item_calendar_reminder (F4.4 — visual redesign)
+
+    Row used inside the Compose calendar's day-detail bottom sheet
+    (RemindersListCompose) and any other reminder list bound by the
+    legacy CalendarReminderAdapter.
+
+    Mirrors `item_daily_watering` aesthetically: rounded-square photo,
+    outlined card, sage primary side stripe, type label below the
+    plant name.
+
+    IDs preserved: sideStripe, plantImageView, textReminderPlantName,
+    textReminderType.
+-->
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginVertical="5dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/pc_surface"
+    app:strokeColor="@color/pc_outlineVariant"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:id="@+id/layoutReminderRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:minHeight="72dp">
+
+        <View
+            android:id="@+id/sideStripe"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:background="@color/pc_success" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/plantImageView"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_default_plant"
+            android:background="@color/pc_secondaryContainer"
+            android:contentDescription="@string/plant_image"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.PlantCare.RoundedSquare" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingEnd="12dp">
+
+            <TextView
+                android:id="@+id/textReminderPlantName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textAppearance="@style/TextAppearance.PlantCare.Subtitle"
+                android:textSize="15sp"
+                tools:text="Monstera" />
+
+            <TextView
+                android:id="@+id/textReminderType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textAppearance="@style/TextAppearance.PlantCare.BodySmall"
+                android:layout_marginTop="2dp"
+                tools:text="Automatisch" />
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

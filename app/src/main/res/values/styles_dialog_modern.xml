@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Legacy alias — newer code should use PlantCare.Button.Outlined directly. -->
+    <style name="PlantCareOutlinedButton" parent="PlantCare.Button.Outlined">
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <!-- Field label: bumped 15→16sp + tighter padding-bottom so label
+         and its value visually group as one row. Pre-fix in screenshot 4
+         (User-Detail) the bold weight + brand-green colour didn't read
+         strongly enough against the value text on the same line height. -->
+    <style name="PlantCareFieldLabel">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/pc_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="PlantCareFieldValue">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">@font/inter</item>
+    </style>
+
+    <style name="PlantCareDividerStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/pc_outlineVariant</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+    </style>
+</resources>

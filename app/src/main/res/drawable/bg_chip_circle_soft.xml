@@ -1,0 +1,9 @@
+<!--
+    PlantCare — Soft sage-container circle (F4.1).
+    Used behind row-trailing decorative icons (reminder type icon,
+    diagnosis confidence chip, etc.) to lift them off the surface.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/pc_secondaryContainer" />
+</shape>

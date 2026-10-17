@@ -1,0 +1,30 @@
+<!--
+  Variante 2 — Sukkulente/Rosette mit warmem Ocker‑Kreis,
+  um die grüne Uniform­masse des Katalogs aufzubrechen.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#E9D6AE"
+        android:pathData="M24,4a20,20 0 1,0 0,40a20,20 0 1,0 0,-40"/>
+    <!-- äußere Blätter -->
+    <path
+        android:fillColor="#4E8C53"
+        android:pathData="M24,12 L30,22 L24,20 L18,22 Z"/>
+    <path
+        android:fillColor="#4E8C53"
+        android:pathData="M12,24 L22,30 L20,24 L22,18 Z"/>
+    <path
+        android:fillColor="#4E8C53"
+        android:pathData="M24,36 L30,26 L24,28 L18,26 Z"/>
+    <path
+        android:fillColor="#4E8C53"
+        android:pathData="M36,24 L26,30 L28,24 L26,18 Z"/>
+    <!-- Mitte -->
+    <path
+        android:fillColor="#8BBF80"
+        android:pathData="M24,19a5,5 0 1,0 0,10a5,5 0 1,0 0,-10"/>
+</vector>

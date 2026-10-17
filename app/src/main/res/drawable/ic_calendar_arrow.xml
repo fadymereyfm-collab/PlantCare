@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    PlantCare G2.1 - Right-arrow glyph used as the iconEnd of the
+    "Full calendar" TextButton in Home.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportWidth="20"
+    android:viewportHeight="20">
+    <path
+        android:fillColor="#000000"
+        android:pathData="M7,4 L13,10 L7,16 L5.6,14.6 L10.2,10 L5.6,5.4 Z" />
+</vector>
