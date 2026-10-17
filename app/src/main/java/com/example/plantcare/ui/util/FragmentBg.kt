@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.Callable
 
 /**
- * Java-friendly replacement for `new Thread(...).start()` inside Fragments / DialogFragments.
+ * Java-friendly replacement for raw `Thread(...).start()` calls inside Fragments / DialogFragments.
  *
  * Ties the background work to `viewLifecycleOwner.lifecycleScope` when a view exists,
  * otherwise falls back to the fragment's own lifecycleScope. In both cases the

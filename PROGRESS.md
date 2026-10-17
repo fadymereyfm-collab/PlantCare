@@ -1,5 +1,47 @@
 # PlantCare Progress Tracker
-## Last Updated: 2026-10-17
+## Last Updated: 2026-10-18
+
+## Session: 2026-10-18 (Auto-execution routine — Phase C.4 — C4 literal grep fix + first full test run on JDK 17)
+### Task Completed: C4 (literal acceptance check) — reword the `FragmentBg.kt` KDoc so `grep "new Thread("` over ui/ + weekbar/ returns 0 (Next Task item 3 of routine #4). Also closes the "tests not run" gap from the JDK 17 entry.
+### Layer: Phase C
+### Classification: **مكتملة** (comment-only change; no runtime behaviour touched)
+### Evidence:
+  - Files changed (1): `app/src/main/java/com/example/plantcare/ui/util/FragmentBg.kt` line 14 (KDoc only, 104 → 104 lines, ends with `}`)
+    ```
+    <  * Java-friendly replacement for `new Thread(...).start()` inside Fragments / DialogFragments.
+    >  * Java-friendly replacement for raw `Thread(...).start()` calls inside Fragments / DialogFragments.
+    ```
+  - CLAUDE.md §1 grep table (verbatim, after the change):
+    ```
+    A1: app/src/main/java/com/example/plantcare/SecurePrefsHelper.kt:16:    const val KEY_USER_EMAIL = "current_user_email"
+    C2: grep -rn "AppDatabase.getInstance\|DatabaseClient\." .../ui/ | wc -l  → 0
+    C4: grep -rn "new Thread(" .../ui/ .../weekbar/ | wc -l                  → 0   (was 1 — the KDoc)
+    B1: 26:        resConfigs "de", "en"
+    A3: grep -rn "YOUR_API_KEY_HERE" app/src/main/java | wc -l               → 0
+    A4: 44:        buildConfigField "String", "GEMINI_API_KEY", "\"${geminiKey}\""
+    ```
+  - Acceptance criteria checklist (Audit §8 Phase C):
+    - [✅] `grep -rn "AppDatabase.getInstance" .../ui/` ⇒ 0
+    - [✅] `grep -rn "new Thread(" .../ui/` ⇒ 0
+    - [❌] Hilt `@HiltAndroidApp/@AndroidEntryPoint` — not started (C1 still open)
+    - [ ] UI auto-refresh on add plant — manual QA, not verified here
+### Build Status: ✅ `./gradlew assembleProdRelease --rerun-tasks` → BUILD SUCCESSFUL in 9m 26s (61 actionable tasks: 61 executed), 0 `e:` lines
+  - Pre-change baseline run this session: BUILD SUCCESSFUL in 5m (incremental, 19 executed / 42 up-to-date, 0 warnings — not comparable, Kotlin only partially recompiled)
+  - **warnings_before → warnings_after: 18 → 18** (full-compile baseline from the 2026-10-17 JDK 17 entry vs this full `--rerun-tasks` compile)
+### Tests: ✅ `./gradlew test --rerun-tasks` → BUILD SUCCESSFUL in 19m 20s (242 tasks); JUnit XML totals across 8 unit-test variants: `tests=608 skipped=0 failures=0 errors=0` (76 tests × 8 variants)
+### Logs / backup: `.routine-backups/2026-10-17_2338/` (`build-before.log`, `build-after.log`, `test.log`, `src/` snapshot)
+### Regressions: none.
+### Note: the KDoc edit was applied while the baseline build was starting, so `build-before.log` already compiled the new comment; irrelevant for a comment-only change, and the after-build is a clean full rerun.
+### Next Task:
+  1. Phase C2 follow-up — 8 non-ui `AppDatabase.getInstance` calls (MainActivity ×3, DataExportManager ×2, CatalogSeeder, ReminderTopUpWorker, DatabaseClient). Audit C2 criterion is ui/-only (already 0), so this is optional hardening — Fady may waive it.
+  2. Phase C1 (Hilt) — adds dependencies ⇒ needs a decision from Fady before the routine can start it.
+  3. Phase C5 — 1 remaining `catch (.*ignored` (audit metric #4).
+### Needs from Fady:
+  - git commit of `FragmentBg.kt` (routine does not commit).
+  - Decision: start C1 Hilt (new dependency) or waive it for 1.0.
+  - Manual QA items still open from 2026-05-20 F.polish / F.crop (disease-screen flows).
+
+---
 
 ## Session: 2026-10-17 (Environment fix — JDK 17 installed, release build re-run)
 
