@@ -1,5 +1,72 @@
 # PlantCare Progress Tracker
-## Last Updated: 2026-05-20
+## Last Updated: 2026-10-17
+
+## Session: 2026-10-17 (End-of-Session verification routine #4 — BUILD NOT VERIFIED: environment has no matching JDK)
+
+### Routine: automated end-of-session verification (CLAUDE.md §9). No code changed; no task marked Completed by this run.
+### Verified entries:
+  - 2026-05-20 Phase F.polish — 4 follow-up fixes/enhancements
+  - 2026-05-20 Phase F.audit — deep audit of disease-diagnosis features
+  - 2026-05-20 Phase F.crop — in-activity crop gap
+  - 2026-05-20 Phase C.2 — route ui/identify + ui/disease DAO calls through repositories
+
+### STEP 1 — Build: ❌ NOT RUN (environment, not code) — warnings: n/a (previous: 0 Kotlin warnings, per F.polish entry)
+```
+$ ./gradlew assembleProdRelease --console=plain
+ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
+# retried with JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" (env var only, nothing written):
+FAILURE: Build failed with an exception.
+* What went wrong:
+Cannot find a Java installation on your machine (Windows 11 10.0 amd64) matching: Compatible with Java 17, vendor matching('adoptium') (from gradle/gradle-daemon-jvm.properties).
+```
+No compile ran, so no `e:`/`error:` lines exist. Root cause: `gradle/gradle-daemon-jvm.properties` pins `toolchainVendor=adoptium` / `toolchainVersion=17`, and this machine only has the Android Studio JBR. The routine did not download a JDK or edit the properties file (read-only routine). Logs: `.routine-backups/verify-2026-10-17_2241/build.log`.
+### STEP 1b — Tests: ❌ NOT RUN (same daemon-JVM error; `test.log` in the same folder). 0 tests executed — no pass/fail claim.
+### STEP 1c — Truncation guard: ✅ 51 `.kt`/`.java` files modified since 2026-05-19 checked; 49 end with `}`, the 2 others (`data/disease/DiseaseDiagnosis.kt`, `data/disease/DiseaseResult.kt`) are Kotlin data classes correctly closing with `)` — not truncated.
+
+### STEP 2 — Grep verification (verbatim, this run)
+| Check | Command | Result | Verdict |
+|-------|---------|--------|---------|
+| A1 | `grep -rn '"current_user_email"' app/src/main/java` | only `SecurePrefsHelper.kt:16` | ✅ |
+| C2 | `grep -rn "AppDatabase.getInstance\|DatabaseClient\." .../ui/ \| wc -l` | **0** | ✅ (was 4 at routine #3) |
+| C4 | `grep -rn "new Thread(" .../ui/ .../weekbar/ \| wc -l` | **1** — `ui/util/FragmentBg.kt:14`, a KDoc comment ("replacement for `new Thread(...).start()`") | ⚠️ literal check fails on a comment; no real call in ui/weekbar |
+| B1 | `grep -n 'resConfigs' app/build.gradle` | `26: resConfigs "de", "en"` | ✅ |
+| A3 | `grep -rn "YOUR_API_KEY_HERE" app/src/main/java \| wc -l` | 0 | ✅ |
+| A4 | `grep -n 'GEMINI_API_KEY' app/build.gradle` | L44 `buildConfigField "String", "GEMINI_API_KEY", ...` | ✅ |
+
+**Audit §7 metrics (13):**
+| # | Metric | Current | Previous | Verdict |
+|---|--------|---------|----------|---------|
+| 1 | DAO (`AppDatabase.getInstance\|DatabaseClient.`) outside repo | 19 | 17 (C.2 entry, `AppDatabase.getInstance`-only pattern; incl. 1 def + 8 comments) | ⚠️ not comparable (pattern differs); `AppDatabase.getInstance` non-repo re-run = **17** → ثابت |
+| 2 | `.getEmail()` | 8 | 8 (routine #3) | ⚠️ ثابت (all FirebaseUser/GoogleSignInAccount) |
+| 3 | `new Thread(` (all java) | 3 (2 comments + `util/BgExecutor.java:21` the executor's own factory) | — | ⚠️ |
+| 4 | `catch (.*ignored` | 1 | — | ⚠️ |
+| 5 | Hilt files | 0 | — | ⚠️ |
+| 6 | test files | 8 | — | ⚠️ |
+| 7 | resConfigs | `"de", "en"` | same | ✅ |
+| 8 | values-en | exists | exists | ✅ |
+| 9 | test AdMob / placeholder key | 0 | 0 | ✅ |
+| 10 | TFLite asset | absent | absent | ✅ (Gemini migration) |
+| 11 | BillingManager.getInstance outside billing/ | 3 | — | ⚠️ |
+| 12 | PaywallDialogFragment refs | 10 | — | ⚠️ |
+| 13 | prodRelease AAB | none in `app/build/outputs/bundle/prodRelease/` | — | ⚠️ (no build ran) |
+("—" = no value recorded in the entries since the last verification.)
+
+### Claims check:
+  - **F.polish:** ✅ greps confirmed — old helpers 0 matches; `DiagnosisBadgeUtil` 8 hits; `photoStripFirstEmission` (L149/869/882) + `saved.value == true` (L1318) present; `badgesRow` in `item_diagnosis_history.xml`. Build claim (assembleProdDebug, 0 warnings) **not re-verified** this run.
+  - **F.audit:** ✅ `noteText|suggestedHint` = 6; `lastDiagnosisPhotoCount` at L144/849/850 (lines shifted vs claim 144/836/837 — later edits, fine). Build not re-verified.
+  - **F.crop:** ✅ crop helpers grep = 10 (claim 8; ≥ claim, extra call sites from F.polish). Build not re-verified.
+  - **C.2:** ✅ ui/ = 0; 3 blocking delegates at the exact lines claimed; `AppDatabase.getInstance` total 27 / non-repo 17 — matches claim exactly. The ⚠️ "8 non-ui calls remain" caveat still stands.
+  - No Re-opened: all prior entries had ✅ build status (not ⏳), and every grep matched; the failure here is environmental, not evidence against a claim.
+  - Carry-over resolved: `SettingsFragment.kt` is now tracked (`git ls-files --error-unmatch` → matched); git root is now `C:/PlantC 01` and working tree is clean (commit fde00dc).
+
+### Regressions: none found by grep. Build/test regressions **unknown** (not runnable).
+### Next Task:
+  1. **Fady:** install a Temurin/Adoptium JDK 17 (or point Gradle at one) so `assembleProdRelease` + `test` can run here — required to confirm the 3 build claims from 2026-05-20 on the release variant.
+  2. Phase C follow-up — the 8 non-ui `AppDatabase.getInstance` calls (MainActivity ×3, DataExportManager ×2, CatalogSeeder, ReminderTopUpWorker, DatabaseClient), or an explicit waiver that C2 is ui/-only.
+  3. Optional: reword the `FragmentBg.kt:14` KDoc so the C4 grep returns 0 literally.
+  4. Manual QA of the disease-screen flows listed in F.polish / F.crop.
+
+---
 
 ## Session: 2026-05-20 (Phase F.polish — 4 follow-up fixes/enhancements from the audit observations)
 
