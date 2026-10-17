@@ -1,6 +1,22 @@
 # PlantCare Progress Tracker
 ## Last Updated: 2026-10-17
 
+## Session: 2026-10-17 (Environment fix — JDK 17 installed, release build re-run)
+
+### Context: routine #4 below could not build (no Adoptium JDK 17). Fady installed Eclipse Temurin 17.0.20.1 (`JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot\`). No code changed.
+### Build Status: ✅ `./gradlew assembleProdRelease --console=plain` → BUILD SUCCESSFUL in 15m 12s (61 actionable tasks: 59 executed, 2 up-to-date — full compile)
+  - Output: `app/build/outputs/apk/prod/release/app-prod-release.apk` (9,762,005 bytes)
+  - Log: `.routine-backups/verify-2026-10-17_2241/build-after-jdk17.log`
+### Warnings baseline (NEW, prodRelease, full compile): **18 Kotlin `w:` lines**, 0 `e:` lines
+  - 10 unused parameters (ConsentManager, FcmTokenManager, SharedPlantsAdapter, CoverCloudSync, UnifiedCameraActivity, MainScreenCompose ×2, WeekBarCompose ×3)
+  - 3 useless Elvis (DataExportManager ×2, QuickAddHelper) + 1 unnecessary safe call (QuickAddHelper)
+  - 2 unnecessary `!!` (RemindersListCompose) + 2 deprecations (PlantCareWidget)
+  - ⚠️ The F.polish "0 Kotlin warnings" was an incremental `assembleProdDebug` (only changed files recompiled) — not comparable. **18 is the baseline the auto-execution routine must not exceed.**
+### Tests: not run in this step (`./gradlew test --rerun-tasks` left for the next verification run).
+### Regressions: none — build green; 2026-05-20 code now confirmed to compile on prodRelease.
+
+---
+
 ## Session: 2026-10-17 (End-of-Session verification routine #4 — BUILD NOT VERIFIED: environment has no matching JDK)
 
 ### Routine: automated end-of-session verification (CLAUDE.md §9). No code changed; no task marked Completed by this run.
