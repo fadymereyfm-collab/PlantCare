@@ -1,6 +1,17 @@
 # PlantCare Progress Tracker
+
 ## Last Updated: 2026-10-19
 
+## Needs Decision: 2026-10-19 — Phase C closure (C1 Hilt + C3 UI-side wiring)
+### Question: كيف نُغلق Phase C لإصدار 1.0؟ البيانات (DAO + Repository) أصبحت reactive منذ 2026-05-05، لكن **لا توجد أي شاشة تراقب هذه LiveData** — كل الشاشات (MyPlantsFragment, PlantsInRoomActivity, AllPlantsFragment, TodayFragment, PlantDetailDialogFragment) لا تزال تعتمد على `DataChangeNotifier` + `getXxxBlocking()`، و Hilt = 0.
+### Options:
+  (أ) **تأجيل C1 (Hilt) و C3-UI إلى 1.1** — اعتبار Phase C مكتملة لـ1.0 بـ waiver صريح، وتشغيل `/phase-gate C` ثم الانتقال إلى Phase D.
+  (ب) **تنفيذ C3-UI الآن بلا Hilt** — شاشة واحدة لكل تشغيل روتين (البداية: PlantsInRoomActivity → MyPlantsFragment → AllPlantsFragment → TodayFragment)، مع إبقاء `DataChangeNotifier` لأحداث rename/delete الغرف و CoverCloudSync. كل شاشة تحتاج QA مرئياً منك (خصوصاً undo-delete في PlantAdapter الذي يخفي الصف مؤقتاً — LiveData قد يعيد إظهاره قبل انتهاء Snackbar).
+  (ج) **C1 Hilt + C3-UI معاً** — dependency جديدة (`com.google.dagger:hilt-android` + kapt/ksp plugin)، ~6h+، تغيير في App.java وكل ViewModel.
+### Recommendation: (أ). السبب: معيار القبول الوحيد المتبقّي في Audit §8 C الذي يمكن قياسه بـ grep هو Hilt، والـUI الحالي يتحدّث فعلاً عبر DataChangeNotifier (مُختبَر يدوياً سابقاً). نقل الشاشات إلى LiveData يلمس منطق undo-delete وتحديث الصور ويحتاج QA مرئياً لكل شاشة، ومخاطرته أعلى من فائدته قبل النشر. Hilt = dependency جديدة بلا أثر وظيفي للمستخدم.
+### How to answer: أضِف سطراً `### Decision (Fady): ...` تحت هذا العنوان، والروتين التالي سينفّذه.
+
+---
 ## Session: 2026-10-19 (UI Redesign R1 — palette, unified theme, Home in Compose, Settings icons)
 ### Task Completed: R1 — professional-look pass requested by Fady (outside Phase A–E ordering)
 ### Layer: UI
@@ -38,6 +49,202 @@
 
 ---
 
+
+## Session: 2026-10-19 (Release blocker — CameraX 1.3.4 → 1.4.2 for 16 KB page-size alignment)
+### Task Completed: 16KB — Android 15 emulator showed "This app isn't 16 KB compatible … lib/x86_64/libimage_processing_util_jni.so : LOAD segment not aligned" on `app-dev-debug.apk`. Source: CameraX 1.3.4 native lib. Google Play requires 16 KB support for apps targeting Android 15+.
+### Layer: Phase E prerequisite (Fady-requested, outside the routine order)
+### Classification: **مكتملة** (ELF + zip alignment verified on the prodRelease APK). Camera runtime behaviour on 1.4.2 not yet QA'd on-device.
+### Evidence:
+  - Files changed (1): `app/build.gradle` — camera-core / camera-camera2 / camera-lifecycle / camera-view `1.3.4` → `1.4.2` (comment updated; CRLF preserved)
+  - Baseline (old `app-dev-debug.apk`, CameraX 1.3.4), ELF PT_LOAD p_align check:
+    ```
+    BAD align=4096 lib/arm64-v8a/libimage_processing_util_jni.so
+    BAD align=4096 lib/x86_64/libimage_processing_util_jni.so
+    64-bit libs not 16KB-aligned: 2
+    ```
+  - After (`app/build/outputs/apk/prod/release/app-prod-release.apk`, CameraX 1.4.2):
+    ```
+    OK  align=16384 lib/{arm64-v8a,armeabi-v7a,x86,x86_64}/libimage_processing_util_jni.so
+    OK  align=16384 lib/{arm64-v8a,armeabi-v7a,x86,x86_64}/libsurface_util_jni.so
+    64-bit libs not 16KB-aligned: 0
+    $ zipalign -c -P 16 -v 4 app-prod-release.apk   (build-tools 36.0.0)
+    → all 8 .so (OK) — Verification successful
+    ```
+  - Acceptance criteria checklist:
+    - [✅] every 64-bit `.so` PT_LOAD alignment ≥ 16384 (0 bad)
+    - [✅] `zipalign -c -P 16` passes
+    - [ ] On-device: Android 15 16 KB emulator no longer shows the compatibility dialog — Fady to confirm
+    - [ ] Camera QA (UnifiedCameraActivity preview + capture, identify + diagnose flows) on 1.4.2
+### Build Status: ✅ `./gradlew assembleProdRelease --rerun-tasks` → BUILD SUCCESSFUL in 11m 26s (61 executed), 0 `e:` lines
+  - **warnings_before → warnings_after: 18 → 18** (same 18 Kotlin warnings, none new)
+### Tests: not run (no change in data/, db/ or repository/).
+### Logs / backup: `.routine-backups/camerax-16kb/` (`build.log`, `before-dev-debug.apk`)
+### Regressions: none detected statically.
+### Next Task: unchanged — Fady decision on Phase C closure (above); plus camera QA on 1.4.2.
+
+---
+
+## Session: 2026-10-19 (Auto-execution routine — Phase C.3 — re-verification of C3 reactive DAOs)
+### Task: C3 re-verification (Next Task item 3 of routine #5: "check which DAO methods still return `List<X>`"). No code changed.
+### Layer: Phase C
+### Classification: **شبه مكتملة** — data layer مكتمل (DAO → Repository LiveData بلا `liveData {}` builders)، لكن طبقة UI لا تستهلكه ⇒ معيار "UI يتحدّث تلقائياً بدون DataChangeNotifier" غير محقَّق معمارياً.
+### Evidence (verbatim, this run):
+  - `grep -rn "liveData {" app/src/main/java`
+    ```
+    app/src/main/java/com/example/plantcare/data/repository/RoomCategoryRepository.kt:27:     * `liveData { emit(dao.xxx()) }` builder violated the project rule
+    ```
+    (comment only — 0 builders in code ✅; `import androidx.lifecycle.liveData` = 0)
+  - Reactive DAO accessors: `grep -rnE "(LiveData|Flow)<" <all *Dao files>` ⇒ 19 lines = 16 reactive methods: PlantDao 5 (`observeAll`, `observeAllNonUserPlants`, `observeAllUserPlantsForUser`, `observeAllUserPlantsInRoom`, `observeById`), PlantPhotoDao 2, ReminderDao 6, RoomCategoryDao 1 (`observeAllRoomsForUser`), DiseaseDiagnosisDao 2. Blocking `List<X>` DAO methods: 31 (kept intentionally for workers / sync / one-shot reads, per the 2026-05-05 C3 entry).
+  - All 16 reactive DAO methods are consumed **only** inside `data/repository/` (PlantRepository 5, ReminderRepository 6, PlantPhotoRepository 2, RoomCategoryRepository 1, DiseaseDiagnosisRepository 2).
+  - UI consumers of the repository LiveData getters (`getAllUserPlants|getPlantsInRoom|getTodayReminders|getTodayAllReminders|getRemindersForDateRange|getAllCatalogPlants|getPhotosForPlant|getPhotosByDate|getAllRoomsForUser|observeAllForUser`) outside data/repository:
+    ```
+    app/src/main/java/com/example/plantcare/weekbar/ReminderViewModel.kt:194:                val raw = photoRepo.getPhotosByDate(dateStr)
+    ```
+    (one hit, and it is a one-shot read inside a coroutine, not an observer) ⇒ **0 UI observers**.
+  - `DataChangeNotifier` still referenced in 29 files; `DataChangeNotifier.addListener` in 6 call sites (AllPlantsFragment:163, MyPlantsFragment:192, PlantDetailDialogFragment:811, PlantsInRoomActivity:183, TodayFragment, …). Example: `PlantsInRoomActivity.refreshList()` (L392) still uses `getAllUserPlantsInRoomBlocking` via BgExecutor.
+  - CLAUDE.md §1 table (verbatim):
+    ```
+    A1: app/src/main/java/com/example/plantcare/SecurePrefsHelper.kt:16:    const val KEY_USER_EMAIL = "current_user_email"
+    C2: 0
+    C4: 0
+    B1: 26:        resConfigs "de", "en"
+    A3: 0
+    A4: 44:        buildConfigField "String", "GEMINI_API_KEY", "\"${geminiKey}\""
+    C5: 0
+    Hilt: 0
+    ```
+  - Acceptance criteria checklist (Audit §8 Phase C):
+    - [✅] C2 `AppDatabase.getInstance` in ui/ ⇒ 0
+    - [✅] C4 `new Thread(` in ui/ ⇒ 0
+    - [✅] C5 `catch (.*ignored` ⇒ 0
+    - [✅] C3 data layer: DAOs expose LiveData, Repositories forward them, 0 `liveData {}` builders
+    - [❌] C3 UI side: 0 screens observe the reactive LiveData (DataChangeNotifier still the refresh mechanism)
+    - [❌] C1 Hilt: 0 files ⇒ needs decision (see Needs Decision above)
+### Build Status: ✅ `./gradlew assembleProdRelease --console=plain` → BUILD SUCCESSFUL, 61 actionable tasks (16 executed, 45 up-to-date). Wall time reported "11h 4m 33s" — the machine evidently slept during the build (started 08:36, finished ~19:41); not a real build duration.
+  - warnings_before → warnings_after: 0 → 0 (no code change; incremental build, **not comparable** to the 18-warning full-compile baseline).
+  - Log: `.routine-backups/2026-10-19_0836/build-before.log`
+### Tests: not run (no change in data/, db/, repository/).
+### Backup: `.routine-backups/2026-10-19_0836/` (src snapshot + app.build.gradle + root.build.gradle + PROGRESS.md + DEFERRED_ISSUES.md)
+### Regressions: none.
+### Next Task: blocked on the Needs Decision above (Phase C closure). After the decision: (أ) ⇒ `/phase-gate C` then Phase D1 (tests); (ب) ⇒ C3-UI step 1 = PlantsInRoomActivity observes `PlantRepository.getPlantsInRoom`.
+### Needs from Fady:
+  - Answer the Phase C Needs Decision.
+  - git commit of the 5 C.5 files + PROGRESS.md (still `M` in git status).
+  - Manual QA items still open from 2026-05-20 F.polish / F.crop (disease-screen flows).
+
+---
+
+
+## Session: 2026-10-18 (End-of-Session verification routine #5 — BUILD GREEN)
+
+### Routine: automated end-of-session verification (CLAUDE.md §9). No code changed; no task marked Completed by this run.
+### Verified entries:
+  - 2026-10-18 Auto-execution routine — Phase C.5 — replace remaining swallowed catches
+  - 2026-10-18 Auto-execution routine — Phase C.4 — C4 literal grep fix + first full test run on JDK 17
+  - 2026-10-17 Environment fix — JDK 17 installed, release build re-run
+
+### STEP 1 — Build: ✅ `./gradlew assembleProdRelease --console=plain` → BUILD SUCCESSFUL in 2m 42s (61 actionable tasks: 16 executed, 45 up-to-date), 0 `e:`/`error:` lines — warnings: **0** (previous: 18, full compile)
+  - ⚠️ The 0 is **not comparable** to the 18 baseline: incremental build, Kotlin mostly up-to-date (same caveat as the C.4 pre-change run). The C.5 entry's own full `--rerun-tasks` run reported 18 → 18; this run neither confirms nor refutes that number.
+  - Log: `.routine-backups/verify-2026-10-18_1326/build.log`
+### STEP 1b — Tests: ✅ `./gradlew test --rerun-tasks --console=plain` → BUILD SUCCESSFUL in 10m 3s (242 tasks: 242 executed); JUnit XML (8 variants): `tests=608 skipped=0 failures=0 errors=0` (0 failed). Log: `test.log` in the same folder.
+### STEP 1c — Truncation guard: ✅ 6 `.kt`/`.java` files modified since the last verification (CrashReporter.kt, MainActivity.java, PlantsInRoomActivity.java, ui/util/FragmentBg.kt, weekbar/PlantImageLoader.kt, weekbar/RemindersListCompose.kt) — all end with `}`; line counts 23 / 1690 / 567 / 104 / 390 / 205 match the C.4/C.5 claims exactly. `RemindersListCompose.kt` is still CRLF (`file` → "with CRLF line terminators"), as the C.5 note says.
+
+### STEP 2 — Grep verification (verbatim, this run)
+| Check | Command | Result | Verdict |
+|-------|---------|--------|---------|
+| A1 | `grep -rn '"current_user_email"' app/src/main/java` | only `SecurePrefsHelper.kt:16` | ✅ |
+| C2 | `grep -rn "AppDatabase.getInstance\|DatabaseClient\." .../ui/ \| wc -l` | 0 | ✅ |
+| C4 | `grep -rn "new Thread(" .../ui/ .../weekbar/ \| wc -l` | **0** (was 1 at routine #4) | ✅ |
+| B1 | `grep -n 'resConfigs' app/build.gradle` | `26: resConfigs "de", "en"` | ✅ |
+| A3 | `grep -rn "YOUR_API_KEY_HERE" app/src/main/java \| wc -l` | 0 | ✅ |
+| A4 | `grep -n 'GEMINI_API_KEY' app/build.gradle` | L44 `buildConfigField "String", "GEMINI_API_KEY", "\"${geminiKey}\""` | ✅ |
+
+**Audit §7 metrics (13):**
+| # | Metric | Current | Previous (routine #4) | Verdict |
+|---|--------|---------|----------|---------|
+| 1 | DAO (`AppDatabase.getInstance\|DatabaseClient.`) outside repo | 19 | 19 | ⚠️ ثابت |
+| 2 | `.getEmail()` | 8 | 8 | ⚠️ ثابت |
+| 3 | `new Thread(` (all java) | 2 (`util/BgExecutor.java:9` KDoc + `:21` the executor's own factory) | 3 | ✅ تحسّن (FragmentBg KDoc removed) |
+| 4 | `catch (.*ignored` | **0** | 1 | ✅ تحسّن |
+| 5 | Hilt files | 0 | 0 | ⚠️ ثابت (C1 open) |
+| 6 | test files | 8 | 8 | ⚠️ ثابت |
+| 7 | resConfigs | `"de", "en"` | same | ✅ |
+| 8 | values-en | exists | exists | ✅ |
+| 9 | test AdMob / placeholder key | 0 | 0 | ✅ |
+| 10 | TFLite asset | absent | absent | ✅ (Gemini migration) |
+| 11 | BillingManager.getInstance outside billing/ | 3 | 3 | ⚠️ ثابت |
+| 12 | PaywallDialogFragment refs | 10 | 10 | ⚠️ ثابت |
+| 13 | prodRelease AAB | none in `app/build/outputs/bundle/prodRelease/` (only `assemble` ran) | none | ⚠️ |
+
+### Claims check:
+  - **C.5:** ✅ confirmed — `catch (.*ignored` = 0; `catch (.*\bignore\b` = 0; single-line empty catch = 0; multiline empty catch (`grep -Pzo`) = 0. All 7 claimed replacements are present at the claimed lines (MainActivity:203–206, PlantsInRoomActivity:480, RemindersListCompose:117, PlantImageLoader:53/384/386, CrashReporter:21). §1 table matches. Its "18 → 18 warnings" claim was not re-measured (incremental build here).
+  - **C.4:** ✅ confirmed — `FragmentBg.kt:14` now reads "replacement for raw `Thread(...).start()` calls"; C4 grep = 0; 608/608 tests green re-confirmed in this run.
+  - **Environment fix (JDK 17):** ✅ confirmed — prodRelease build + tests ran on the Temurin 17 JDK in this run.
+  - No Re-opened.
+
+### Regressions: none.
+### Housekeeping: `.routine-backups/` = 17 MB, no top-level items older than 30 days.
+### Next Task:
+  1. **Fady:** git commit of the 6 uncommitted files from C.4/C.5 (only FragmentBg.kt is in commit daedec8; the 5 C.5 files + PROGRESS.md are still `M`).
+  2. **Fady decision:** Phase C1 (Hilt) — start it (new dependency) or waive for 1.0.
+  3. Phase C3 — check which DAO methods still return `List<X>` instead of LiveData/Flow.
+  4. Optional: C2 follow-up (non-ui `AppDatabase.getInstance`), or an explicit waiver.
+  5. Manual QA of the disease-screen flows (F.polish / F.crop).
+
+---
+
+## Session: 2026-10-18 (Auto-execution routine — Phase C.5 — replace remaining swallowed catches with CrashReporter / `// expected:`)
+### Task Completed: C5 — Audit metric #4 (`catch (.*ignored`) 1 → 0, plus the same pattern under other names (`ignore`, empty `catch (_: Throwable) {}`) per CLAUDE.md §4 Error handling
+### Layer: Phase C
+### Classification: **مكتملة** (C5 grep criterion = 0; build green; no warnings added). Runtime effect = extra non-fatal Crashlytics reports only, no control-flow change.
+### Evidence:
+  - Files changed (5), all end with `}`, line counts vs backup: MainActivity.java 1687→1690, PlantsInRoomActivity.java 567→567, weekbar/PlantImageLoader.kt 390→390, weekbar/RemindersListCompose.kt 205→205 (CRLF preserved), CrashReporter.kt 23→23
+    - `MainActivity.java:203` `catch (Throwable ignored) { /* fall through… */ }` → `catch (Throwable t) { // fall through… ; CrashReporter.INSTANCE.log(t); }`
+    - `PlantsInRoomActivity.java:480` `catch (Throwable ignore) { /* best-effort */ }` → `catch (Throwable t) { CrashReporter.INSTANCE.log(t); /* best-effort */ }`
+    - `weekbar/RemindersListCompose.kt:117` (plant-detail lookup on reminder tap) `catch (_: Throwable) {}` → `catch (e: Throwable) { com.example.plantcare.CrashReporter.log(e) }`
+    - `weekbar/PlantImageLoader.kt:384` (MediaStore date query) empty catch → `catch (e: Throwable) { com.example.plantcare.CrashReporter.log(e)`
+    - `weekbar/PlantImageLoader.kt:53` (Glide clear) and `:386` (cursor close) → `catch (_: Throwable) { /* expected: … */ }`
+    - `CrashReporter.kt:21` (Crashlytics itself unavailable) → `catch (_: Throwable) { /* expected: … cannot report the reporter itself */ }`
+  - Grep (verbatim, after the change):
+    ```
+    C5 audit metric (catch (.*ignored): 0          (was 1 — MainActivity.java:203)
+    C5 ignore-variants: 0                           (was 1 — PlantsInRoomActivity.java:480)
+    empty single-line catch: 0                      (was 4)
+    multiline empty catch `catch (...) {\n}`: 0
+    ```
+  - CLAUDE.md §1 grep table (verbatim):
+    ```
+    A1: app/src/main/java/com/example/plantcare/SecurePrefsHelper.kt:16:    const val KEY_USER_EMAIL = "current_user_email"
+    C2: 0
+    C4: 0
+    B1: 26:        resConfigs "de", "en"
+    A3: 0
+    A4: 44:        buildConfigField "String", "GEMINI_API_KEY", "\"${geminiKey}\""
+    ```
+  - Acceptance criteria checklist (Audit §8 Phase C):
+    - [✅] C5: `catch (X ignored)` replaced with `CrashReporter.log(e)` → `grep -rn "catch (.*ignored"` = 0
+    - [✅] `grep -rn "AppDatabase.getInstance" .../ui/` ⇒ 0
+    - [✅] `grep -rn "new Thread(" .../ui/` ⇒ 0
+    - [❌] Hilt `@HiltAndroidApp/@AndroidEntryPoint`: not started (C1 needs a decision, since it adds a dependency)
+    - [ ] UI auto-refresh on add plant: manual QA, not verified here
+### Build Status: ✅ `./gradlew assembleProdRelease --rerun-tasks` → BUILD SUCCESSFUL in 4m 37s (61 executed), 0 `e:` lines
+  - Baseline (before any edit): BUILD SUCCESSFUL in 8m 41s, 18 warnings
+  - Intermediate (MainActivity only): BUILD SUCCESSFUL in 5m 4s, 18 warnings
+  - **warnings_before → warnings_after: 18 → 18** (same set of files as the baseline)
+### Tests: not run (no change in data/, db/ or repository/; per routine step 5.2 not required). Last full run: 2026-10-18 C.4 entry, 608/608 green.
+### Logs / backup: `.routine-backups/2026-10-18_0207/` (`build-before.log`, `build-after.log`, `build-after2.log`, `src/` snapshot)
+### Regressions: none.
+### Note: Git Bash `sed -i` stripped CRLF from `RemindersListCompose.kt`; this was restored before the final build (`diff` against the backup shows only line 117).
+### Next Task:
+  1. Phase C1 (Hilt) — adds dependencies ⇒ needs a decision from Fady (still open).
+  2. Phase C2 follow-up (optional) — 8 non-ui `AppDatabase.getInstance` calls; Audit C2 criterion is ui/-only (already 0) — Fady may waive.
+  3. Phase C3 — DAO `LiveData<List<X>>` conversion: check what is still `List<X>` in PlantDao/ReminderDao.
+### Needs from Fady:
+  - git commit of the 5 files above (the routine does not commit).
+  - Decision: start C1 Hilt (new dependency) or waive it for 1.0.
+  - Manual QA items still open from 2026-05-20 F.polish / F.crop (disease-screen flows).
+
+---
 
 ## Session: 2026-10-18 (Auto-execution routine — Phase C.4 — C4 literal grep fix + first full test run on JDK 17)
 ### Task Completed: C4 (literal acceptance check) — reword the `FragmentBg.kt` KDoc so `grep "new Thread("` over ui/ + weekbar/ returns 0 (Next Task item 3 of routine #4). Also closes the "tests not run" gap from the JDK 17 entry.

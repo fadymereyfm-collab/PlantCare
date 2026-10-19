@@ -114,7 +114,7 @@ fun RemindersList(
                                                 dialog.show(context.supportFragmentManager, "plant_detail_from_calendar")
                                             }
                                         }
-                                    } catch (_: Throwable) {}
+                                    } catch (e: Throwable) { com.example.plantcare.CrashReporter.log(e) }
                                 }
                             },
                             onLongClick = { /* no-op */ }

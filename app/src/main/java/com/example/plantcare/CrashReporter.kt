@@ -18,6 +18,6 @@ object CrashReporter {
     fun log(e: Throwable) {
         try {
             FirebaseCrashlytics.getInstance().recordException(e)
-        } catch (_: Throwable) {}
+        } catch (_: Throwable) { /* expected: Crashlytics unavailable — cannot report the reporter itself */ }
     }
 }

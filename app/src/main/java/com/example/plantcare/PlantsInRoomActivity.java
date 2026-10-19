@@ -477,7 +477,7 @@ public class PlantsInRoomActivity extends AppCompatActivity
                         .getPhotosForPlantBlocking(plant.id);
                 if (photos != null) {
                     for (PlantPhoto p : photos) {
-                        try { fsm.deletePhotoSmart(p, getApplicationContext()); } catch (Throwable ignore) { /* best-effort */ }
+                        try { fsm.deletePhotoSmart(p, getApplicationContext()); } catch (Throwable t) { CrashReporter.INSTANCE.log(t); /* best-effort */ }
                     }
                 }
                 com.example.plantcare.data.repository.ReminderRepository
