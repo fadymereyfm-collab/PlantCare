@@ -50,7 +50,7 @@ object PlantImageLoader {
         // bevor ein echtes Bild geladen ist. (Siehe DefaultPlantIcon / Core-Structure-Report.)
         val placeholder = DefaultPlantIcon.forPlant(plantName, plantId)
 
-        try { Glide.with(context).clear(imageView); android.util.Log.d("PlantImageLoader", "Cleared image view for plantId: $plantId") } catch (_: Throwable) {}
+        try { Glide.with(context).clear(imageView); android.util.Log.d("PlantImageLoader", "Cleared image view for plantId: $plantId") } catch (_: Throwable) { /* expected: view may be detached or Glide not yet bound — placeholder is set next */ }
         imageView.setImageResource(placeholder)
 
         // Cancel any prior in-flight resolution attached to this view —
@@ -381,9 +381,9 @@ object PlantImageLoader {
                     if (v > 0) last = v * 1000
                 }
             }
-        } catch (_: Throwable) {
+        } catch (e: Throwable) { com.example.plantcare.CrashReporter.log(e)
         } finally {
-            try { c?.close() } catch (_: Throwable) {}
+            try { c?.close() } catch (_: Throwable) { /* expected: cursor close failure is harmless */ }
         }
         return if (last > 0) last else System.currentTimeMillis()
     }

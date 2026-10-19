@@ -200,7 +200,10 @@ public class MainActivity extends AppCompatActivity {
                         requestedMode = AuthStartDialogFragment.MODE_LOGIN;
                     }
                 }
-            } catch (Throwable ignored) { /* fall through with register default */ }
+            } catch (Throwable t) {
+                // fall through with register default
+                CrashReporter.INSTANCE.log(t);
+            }
             AuthStartDialogFragment auth = AuthStartDialogFragment.newInstance(requestedMode);
             auth.show(getSupportFragmentManager(), "auth_start");
         } else if (isGuest && currentUserEmail == null) {
