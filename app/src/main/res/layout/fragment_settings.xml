@@ -94,7 +94,7 @@
 
                 <LinearLayout android:id="@+id/rowName" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_person" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_name" />
@@ -108,7 +108,7 @@
                 <LinearLayout style="@style/SettingsRow"
                     android:clickable="false" android:focusable="false" android:foreground="@null">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_mail" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_email" />
@@ -121,7 +121,7 @@
 
                 <LinearLayout android:id="@+id/rowLogout" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_arrow_back" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_logout" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_logout" />
@@ -132,7 +132,7 @@
 
                 <LinearLayout android:id="@+id/rowDeleteAccount" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_close"
+                        android:src="@drawable/ic_set_delete"
                         app:tint="@color/pc_error" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
@@ -154,7 +154,7 @@
                 <LinearLayout style="@style/SettingsRow"
                     android:clickable="false" android:focusable="false" android:foreground="@null">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_palette" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_theme" />
@@ -184,7 +184,7 @@
 
                 <LinearLayout android:id="@+id/rowLanguage" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_nav_settings" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_language" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_language" />
@@ -206,7 +206,7 @@
                 <LinearLayout style="@style/SettingsRow"
                     android:clickable="false" android:focusable="false" android:foreground="@null">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_star_filled_gold" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_workspace_premium" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_subscription_status" />
@@ -219,7 +219,7 @@
 
                 <LinearLayout android:id="@+id/rowRestorePurchases" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_history" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_history" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_restore_purchases" />
@@ -238,7 +238,7 @@
 
                 <LinearLayout android:id="@+id/rowDataExport" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_gallery" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_download" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_data_export" />
@@ -252,7 +252,7 @@
                 <LinearLayout style="@style/SettingsRow"
                     android:clickable="false" android:focusable="false" android:foreground="@null">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_analytics" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_analytics" />
@@ -268,7 +268,7 @@
                 <LinearLayout style="@style/SettingsRow"
                     android:clickable="false" android:focusable="false" android:foreground="@null">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_bug_report" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_crash" />
@@ -283,7 +283,7 @@
 
                 <LinearLayout android:id="@+id/rowPrivacy" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_shield" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_privacy" />
@@ -294,7 +294,7 @@
 
                 <LinearLayout android:id="@+id/rowTerms" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_description" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_terms" />
@@ -313,7 +313,7 @@
 
                 <LinearLayout android:id="@+id/rowContact" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_support_agent" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_contact" />
@@ -335,7 +335,7 @@
 
                 <LinearLayout android:id="@+id/rowShareApp" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_share" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_share_app" />
@@ -355,7 +355,7 @@
                 <LinearLayout style="@style/SettingsRow"
                     android:clickable="false" android:focusable="false" android:foreground="@null">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_info" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_version" />
@@ -368,7 +368,7 @@
 
                 <LinearLayout android:id="@+id/rowOssLicenses" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_security" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_code" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_oss" />
@@ -379,7 +379,7 @@
 
                 <LinearLayout android:id="@+id/rowAdvanced" style="@style/SettingsRow">
                     <ImageView style="@style/SettingsRowIcon"
-                        android:src="@drawable/ic_nav_settings" tools:ignore="ContentDescription" />
+                        android:src="@drawable/ic_set_tune" tools:ignore="ContentDescription" />
                     <LinearLayout style="@style/SettingsRowText">
                         <TextView style="@style/SettingsRowTitle"
                             android:text="@string/settings_row_advanced" />

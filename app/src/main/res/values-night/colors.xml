@@ -8,20 +8,20 @@
          ============================================================ -->
 
     <!-- M3 Color Roles (Dark) — Mint Teal primary -->
-    <color name="pc_primary">#5DDABE</color>
-    <color name="pc_onPrimary">#00382A</color>
-    <color name="pc_primaryContainer">#135E4A</color>
-    <color name="pc_onPrimaryContainer">#B6F1DA</color>
+    <color name="pc_primary">#5CDF81</color>
+    <color name="pc_onPrimary">#003916</color>
+    <color name="pc_primaryContainer">#005324</color>
+    <color name="pc_onPrimaryContainer">#B7F1C4</color>
 
-    <color name="pc_secondary">#B9CDC2</color>
-    <color name="pc_onSecondary">#233830</color>
-    <color name="pc_secondaryContainer">#324E45</color>
-    <color name="pc_onSecondaryContainer">#D5EADD</color>
+    <color name="pc_secondary">#BCCABA</color>
+    <color name="pc_onSecondary">#273427</color>
+    <color name="pc_secondaryContainer">#3D4A3E</color>
+    <color name="pc_onSecondaryContainer">#D8E6D6</color>
 
-    <color name="pc_tertiary">#FFB597</color>
-    <color name="pc_onTertiary">#5C2400</color>
-    <color name="pc_tertiaryContainer">#823A18</color>
-    <color name="pc_onTertiaryContainer">#FFD6C2</color>
+    <color name="pc_tertiary">#E0B86A</color>
+    <color name="pc_onTertiary">#3A2B0E</color>
+    <color name="pc_tertiaryContainer">#5A4312</color>
+    <color name="pc_onTertiaryContainer">#F5D27A</color>
 
     <color name="pc_error">#FFB4AB</color>
     <color name="pc_onError">#690005</color>
@@ -29,35 +29,37 @@
     <color name="pc_onErrorContainer">#FFDAD6</color>
 
     <!-- Background / Surface — near black -->
-    <color name="pc_background">#0B0F0E</color>
-    <color name="pc_onBackground">#F1F4F1</color>
-    <color name="pc_surface">#0B0F0E</color>
-    <color name="pc_onSurface">#F1F4F1</color>
-    <color name="pc_surfaceVariant">#404943</color>
-    <color name="pc_onSurfaceVariant">#C3CDC7</color>
+    <color name="pc_background">#101510</color>
+    <color name="pc_onBackground">#E5EAE1</color>
+    <color name="pc_surface">#1C211C</color>
+    <color name="pc_onSurface">#E5EAE1</color>
+    <color name="pc_surfaceVariant">#3D4A3E</color>
+    <color name="pc_onSurfaceVariant">#BCCABA</color>
 
-    <color name="pc_surfaceContainerLowest">#060807</color>
-    <color name="pc_surfaceContainerLow">#131817</color>
-    <color name="pc_surfaceContainer">#181E1C</color>
-    <color name="pc_surfaceContainerHigh">#1F2624</color>
-    <color name="pc_surfaceContainerHighest">#29302D</color>
+    <color name="pc_surfaceContainerLowest">#0B0F0B</color>
+    <color name="pc_surfaceContainerLow">#181D18</color>
+    <color name="pc_surfaceContainer">#1C211C</color>
+    <color name="pc_surfaceContainerHigh">#262B26</color>
+    <color name="pc_surfaceContainerHighest">#313631</color>
+    <color name="pc_surfaceDim">#101510</color>
+    <color name="pc_surfaceBright">#363A35</color>
 
-    <color name="pc_outline">#8A938F</color>
-    <color name="pc_outlineVariant">#495350</color>
+    <color name="pc_outline">#879486</color>
+    <color name="pc_outlineVariant">#3D4A3E</color>
 
-    <color name="pc_inverseSurface">#F1F4F1</color>
-    <color name="pc_inverseOnSurface">#2F3933</color>
-    <color name="pc_inversePrimary">#1F8C70</color>
+    <color name="pc_inverseSurface">#E5EAE1</color>
+    <color name="pc_inverseOnSurface">#2D322C</color>
+    <color name="pc_inversePrimary">#007B39</color>
 
     <color name="pc_scrim">#000000</color>
 
     <!-- ============================================================
          Phase G new tokens — dark-mode parity.
          ============================================================ -->
-    <color name="pc_surface_translucent">#33FFFFFF</color>
-    <color name="pc_surface_translucent_strong">#66FFFFFF</color>
-    <color name="pc_on_surface_strong">#FFFFFF</color>
-    <color name="pc_background_dim">#181E1C</color>
+    <color name="pc_surface_translucent">#FF1C211C</color>
+    <color name="pc_surface_translucent_strong">#FF262B26</color>
+    <color name="pc_on_surface_strong">#F1F5ED</color>
+    <color name="pc_background_dim">#262B26</color>
     <color name="pc_accent_amber">#E0B86A</color>
     <color name="pc_accent_amber_dark">#B4904D</color>
     <color name="pc_on_accent_amber">#1F1300</color>
@@ -78,50 +80,50 @@
     <color name="leaf_900">#0E1E14</color>
 
     <!-- Semantic role aliases -->
-    <color name="pc_onSurfaceSecondary">#C3CDC7</color>
+    <color name="pc_onSurfaceSecondary">#BCCABA</color>
     <color name="pc_accent">#FFB597</color>
     <color name="pc_accent2">#E5C475</color>
     <color name="modern_accent">#FFB597</color>
-    <color name="pc_success">#5DDABE</color>
-    <color name="colorPrimaryVariant">#1F8C70</color>
+    <color name="pc_success">#5CDF81</color>
+    <color name="colorPrimaryVariant">#3CC268</color>
 
     <!-- Backgrounds (legacy aliases) -->
-    <color name="bg_light">#0B0F0E</color>
-    <color name="creamy_background">#0B0F0E</color>
-    <color name="ultra_light_gray">#0B0F0E</color>
-    <color name="gray_very_light">#131817</color>
-    <color name="backgroundLight">#0B0F0E</color>
-    <color name="card_bg">#181E1C</color>
-    <color name="border_soft">#495350</color>
+    <color name="bg_light">#101510</color>
+    <color name="creamy_background">#101510</color>
+    <color name="ultra_light_gray">#101510</color>
+    <color name="gray_very_light">#181D18</color>
+    <color name="backgroundLight">#101510</color>
+    <color name="card_bg">#1C211C</color>
+    <color name="border_soft">#3D4A3E</color>
 
     <!-- Text colors -->
-    <color name="text_primary">#F1F4F1</color>
-    <color name="text_secondary">#A8B4AE</color>
-    <color name="title_text">#F8FAF8</color>
+    <color name="text_primary">#E5EAE1</color>
+    <color name="text_secondary">#BCCABA</color>
+    <color name="title_text">#F1F5ED</color>
 
     <color name="manual_reminder_text">#E5C9A8</color>
-    <color name="auto_reminder_text">#5DDABE</color>
+    <color name="auto_reminder_text">#5CDF81</color>
 
     <!-- Bottom Navigation -->
-    <color name="pc_bottom_nav_active">#B6F1DA</color>
-    <color name="pc_bottom_nav_inactive">#C3CDC7</color>
-    <color name="pc_fab_camera_bg">#5DDABE</color>
-    <color name="pc_fab_camera_tint">#00382A</color>
+    <color name="pc_bottom_nav_active">#B7F1C4</color>
+    <color name="pc_bottom_nav_inactive">#BCCABA</color>
+    <color name="pc_fab_camera_bg">#5CDF81</color>
+    <color name="pc_fab_camera_tint">#003916</color>
 
     <color name="card_shadow">#80000000</color>
 
     <!-- Calendar -->
-    <color name="calendar_selected_day">#135E4A</color>
-    <color name="calendar_today_circle">#5DDABE</color>
+    <color name="calendar_selected_day">#005324</color>
+    <color name="calendar_today_circle">#5CDF81</color>
     <color name="calendar_event_day">#FFB597</color>
-    <color name="calendar_text">#F1F4F1</color>
+    <color name="calendar_text">#E5EAE1</color>
     <color name="calendar_text_disabled">#4D5552</color>
-    <color name="calendar_background">#0B0F0E</color>
+    <color name="calendar_background">#101510</color>
 
     <!-- Widget legacy aliases -->
-    <color name="gray_500">#A8B4AE</color>
+    <color name="gray_500">#BCCABA</color>
     <color name="gray_400">#6E7873</color>
-    <color name="green_500">#5DDABE</color>
+    <color name="green_500">#5CDF81</color>
     <color name="blue_500">#6CB6F0</color>
 
     <!-- Room icon palette (Dark) — UI-BUG-8 (2026-05-17): match the light

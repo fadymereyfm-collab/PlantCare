@@ -11,6 +11,8 @@ plugins {
     id 'com.google.firebase.crashlytics' version '3.0.3' apply false
     // Baseline Profiles
     id 'androidx.baselineprofile' version '1.2.4' apply false
+    // Screenshot tests (Robolectric-based, run as plain unit tests)
+    id 'io.github.takahirom.roborazzi' version '1.26.0' apply false
 }
 
 tasks.register('clean', Delete) {

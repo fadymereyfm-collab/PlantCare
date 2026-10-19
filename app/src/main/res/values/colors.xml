@@ -53,7 +53,7 @@
          ============================================================ -->
 
     <!-- Primary — Vibrant Leaf Green -->
-    <color name="pc_primary">#2EB85F</color>
+    <color name="pc_primary">#007B39</color>
     <color name="pc_onPrimary">#FFFFFF</color>
     <color name="pc_primaryContainer">#D4F2DC</color>
     <color name="pc_onPrimaryContainer">#1A3F25</color>
@@ -90,15 +90,17 @@
     <color name="pc_surfaceContainer">#EAF1E2</color>
     <color name="pc_surfaceContainerHigh">#DCE7D1</color>
     <color name="pc_surfaceContainerHighest">#CDD9C2</color>
+    <color name="pc_surfaceDim">#DCE3D4</color>
+    <color name="pc_surfaceBright">#F4F7EE</color>
 
     <!-- Outlines -->
-    <color name="pc_outline">#A8B7AB</color>
+    <color name="pc_outline">#6D7B6D</color>
     <color name="pc_outlineVariant">#DCE5DD</color>
 
     <!-- Inverse -->
     <color name="pc_inverseSurface">#1B3A2A</color>
     <color name="pc_inverseOnSurface">#EAF7EE</color>
-    <color name="pc_inversePrimary">#A6D5B0</color>
+    <color name="pc_inversePrimary">#5CDF81</color>
 
     <!-- Scrim -->
     <color name="pc_scrim">#000000</color>
@@ -124,12 +126,12 @@
          Semantic role aliases (KEEP — referenced by 53 layouts)
          ============================================================ -->
 
-    <color name="pc_onSurfaceSecondary">#7D8A7E</color>
+    <color name="pc_onSurfaceSecondary">#5E6E5F</color>
     <color name="pc_accent">#D9B05F</color>
     <color name="pc_accent2">#F5D27A</color>
     <color name="modern_accent">#D9B05F</color>
-    <color name="pc_success">#3FA856</color>
-    <color name="colorPrimaryVariant">#2F8242</color>
+    <color name="pc_success">#23843F</color>
+    <color name="colorPrimaryVariant">#005324</color>
 
     <!-- Backgrounds (legacy aliases) -->
     <color name="bg_light">#EAF1E2</color>
@@ -146,24 +148,24 @@
 
     <!-- Text colors -->
     <color name="text_primary">#1B3A2A</color>
-    <color name="text_secondary">#7D8A7E</color>
+    <color name="text_secondary">#5E6E5F</color>
     <color name="title_text">#0E2218</color>
 
     <!-- Custom semantic text -->
     <color name="manual_reminder_text">#6D4C41</color>
-    <color name="auto_reminder_text">#3FA856</color>
+    <color name="auto_reminder_text">#007B39</color>
 
     <!-- Bottom Navigation -->
     <color name="pc_bottom_nav_active">#1F3D2A</color>
-    <color name="pc_bottom_nav_inactive">#7D8A7E</color>
-    <color name="pc_fab_camera_bg">#3FA856</color>
+    <color name="pc_bottom_nav_inactive">#5E6E5F</color>
+    <color name="pc_fab_camera_bg">#007B39</color>
     <color name="pc_fab_camera_tint">#FFFFFF</color>
 
     <!-- Card shadow -->
     <color name="card_shadow">#223FA856</color>
 
     <!-- Calendar -->
-    <color name="calendar_selected_day">#3FA856</color>
+    <color name="calendar_selected_day">#007B39</color>
     <color name="calendar_today_circle">#D6E9C0</color>
     <color name="calendar_event_day">#D9B05F</color>
     <color name="calendar_text">#1B3A2A</color>
@@ -171,9 +173,9 @@
     <color name="calendar_background">#EAF1E2</color>
 
     <!-- Widget legacy aliases -->
-    <color name="gray_500">#7D8A7E</color>
+    <color name="gray_500">#5E6E5F</color>
     <color name="gray_400">#A6D5B0</color>
-    <color name="green_500">#3FA856</color>
+    <color name="green_500">#007B39</color>
     <color name="blue_500">#2F8242</color>
 
     <!-- Room icon palette (12 distinct hues) -->

@@ -1,10 +1,10 @@
 package com.example.plantcare.ui.theme
 
-import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.plantcare.R
 
@@ -34,16 +34,17 @@ import com.example.plantcare.R
  * top heading).
  */
 
-private val InterFamily = FontFamily(
+val InterFamily = FontFamily(
     Font(R.font.inter_regular,  FontWeight.Normal),
     Font(R.font.inter_semibold, FontWeight.SemiBold)
 )
 
-private val ManropeFamily = FontFamily(
+val ManropeFamily = FontFamily(
     Font(R.font.manrope_extra_bold, FontWeight.ExtraBold)
 )
 
-val Typography = Typography(
+/** Legacy Material (M2) typography for the older `weekbar/` Compose screens. */
+val LegacyTypography = androidx.compose.material.Typography(
     // Brand-hero. Used by big screen titles like Home's "Home".
     h5 = TextStyle(
         fontFamily = ManropeFamily,
@@ -96,4 +97,41 @@ val Typography = Typography(
         fontSize = 11.sp,
         letterSpacing = 0.5.sp
     )
+)
+
+private fun manrope(size: Int, line: Int, tracking: Double) = TextStyle(
+    fontFamily = ManropeFamily,
+    fontWeight = FontWeight.ExtraBold,
+    fontSize = size.sp,
+    lineHeight = line.sp,
+    letterSpacing = tracking.em
+)
+
+private fun inter(size: Int, line: Int, weight: FontWeight, tracking: Double = 0.0) = TextStyle(
+    fontFamily = InterFamily,
+    fontWeight = weight,
+    fontSize = size.sp,
+    lineHeight = line.sp,
+    letterSpacing = tracking.em
+)
+
+/**
+ * Material 3 typography (2026-10 redesign) — same families and roles as
+ * the M2 scale above: Manrope ExtraBold for display/headline moments,
+ * Inter SemiBold for titles and labels, Inter Regular for body text.
+ */
+val PlantCareTypography = androidx.compose.material3.Typography(
+    displaySmall = manrope(34, 42, -0.02),
+    headlineLarge = manrope(30, 38, -0.02),
+    headlineMedium = manrope(26, 34, -0.015),
+    headlineSmall = manrope(22, 30, -0.01),
+    titleLarge = inter(19, 26, FontWeight.SemiBold, -0.005),
+    titleMedium = inter(16, 22, FontWeight.SemiBold),
+    titleSmall = inter(14, 20, FontWeight.SemiBold),
+    bodyLarge = inter(16, 24, FontWeight.Normal),
+    bodyMedium = inter(14, 20, FontWeight.Normal),
+    bodySmall = inter(13, 18, FontWeight.Normal),
+    labelLarge = inter(14, 20, FontWeight.SemiBold),
+    labelMedium = inter(12, 16, FontWeight.SemiBold, 0.01),
+    labelSmall = inter(11, 16, FontWeight.SemiBold, 0.02)
 )

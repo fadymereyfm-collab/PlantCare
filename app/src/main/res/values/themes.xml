@@ -1,5 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.PlantCareApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <!-- 2026-10 redesign: one base theme for light AND dark. The night theme
+         used to be a full hand-copied duplicate that had drifted (no shape
+         appearances, different date-picker theme). Now values-night only
+         overrides the system-bar flags and the plain window background. -->
+    <style name="Base.Theme.PlantCareApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/pc_primary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
         <item name="colorOnPrimary">@color/pc_onPrimary</item>
@@ -18,9 +22,7 @@
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.PlantCare.Hero</item>
 
         <item name="android:statusBarColor">@color/pc_background</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:navigationBarColor">@color/pc_surface</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
 
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
@@ -34,7 +36,7 @@
         <item name="alertDialogTheme">@style/PlantCare.AlertDialog</item>
         <item name="materialAlertDialogTheme">@style/PlantCare.MaterialAlertDialog</item>
         <item name="android:alertDialogTheme">@style/PlantCare.AlertDialog</item>
-        <item name="android:datePickerDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog</item>
+        <item name="android:datePickerDialogTheme">@style/PlantCare.DatePickerDialog</item>
 
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialog.Modern</item>
 
@@ -57,6 +59,12 @@
         <item name="switchStyle">@style/PlantCare.Switch</item>
 
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
+
+    <!-- Light: dark system-bar icons. -->
+    <style name="Theme.PlantCareApp" parent="Base.Theme.PlantCareApp">
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
     </style>
 
     <style name="TextAppearance.PlantCare" parent="TextAppearance.MaterialComponents.Body1" />

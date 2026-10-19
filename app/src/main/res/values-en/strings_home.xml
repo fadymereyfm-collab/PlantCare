@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home (redesign 2026-10, ui/home/HomeScreen.kt). Greetings: today_greeting_* -->
+    <plurals name="home_progress_remaining">
+        <item quantity="one">%d task left</item>
+        <item quantity="other">%d tasks left</item>
+    </plurals>
+    <string name="home_progress_all_done">All done!</string>
+    <string name="home_progress_nothing">Nothing to do today</string>
+    <string name="home_progress_summary">%1$d of %2$d done</string>
+    <string name="home_progress_rest">Your plants are taken care of.</string>
+
+    <plurals name="home_streak_days">
+        <item quantity="one">%d-day streak</item>
+        <item quantity="other">%d-day streak</item>
+    </plurals>
+    <string name="home_streak_none">Start your streak today</string>
+    <string name="home_streak_best">Best %1$d</string>
+
+    <string name="home_week_title">This week</string>
+    <string name="home_week_calendar">Calendar</string>
+
+    <string name="home_task_water">Water</string>
+    <string name="home_task_fertilize">Fertilize</string>
+    <string name="home_task_mist">Mist</string>
+    <string name="home_task_repot">Repot</string>
+    <plurals name="home_task_overdue">
+        <item quantity="one">%d day overdue</item>
+        <item quantity="other">%d days overdue</item>
+    </plurals>
+    <string name="home_task_done">Done</string>
+
+    <plurals name="home_section_open">
+        <item quantity="one">%d open</item>
+        <item quantity="other">%d open</item>
+    </plurals>
+    <string name="home_water_all">Do all</string>
+
+    <string name="home_challenges_title">Challenges</string>
+
+    <string name="home_empty_title">All good here</string>
+    <string name="home_empty_body">As soon as a plant needs water or care, it will show up here.</string>
+
+    <string name="home_pro_title">PlantCare Pro</string>
+    <string name="home_pro_body">Unlimited plants, diagnosis and identification.</string>
+
+    <string name="home_cd_mark_done">Mark %1$s as done</string>
+    <string name="home_cd_mark_undone">Undo %1$s</string>
+</resources>

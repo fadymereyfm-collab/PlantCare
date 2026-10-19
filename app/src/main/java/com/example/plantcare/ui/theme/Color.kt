@@ -34,6 +34,8 @@ object PlantCareColors {
 
     val error @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_error)
     val onError @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_onError)
+    val errorContainer @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_errorContainer)
+    val onErrorContainer @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_onErrorContainer)
 
     val background @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_background)
     val onBackground @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_onBackground)
@@ -48,6 +50,8 @@ object PlantCareColors {
     val surfaceContainer @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_surfaceContainer)
     val surfaceContainerHigh @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_surfaceContainerHigh)
     val surfaceContainerHighest @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_surfaceContainerHighest)
+    val surfaceDim @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_surfaceDim)
+    val surfaceBright @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_surfaceBright)
 
     val outline @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_outline)
     val outlineVariant @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_outlineVariant)
@@ -55,6 +59,7 @@ object PlantCareColors {
     val inverseSurface @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_inverseSurface)
     val inverseOnSurface @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_inverseOnSurface)
     val inversePrimary @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_inversePrimary)
+    val scrim @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_scrim)
 
     // ── Semantic role aliases (legacy) ─────────────────────────────
     val onSurfaceSecondary @Composable @ReadOnlyComposable get() = colorResource(R.color.pc_onSurfaceSecondary)
