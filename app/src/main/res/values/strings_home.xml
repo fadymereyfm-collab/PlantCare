@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home (Redesign 2026-10, ui/home/HomeScreen.kt). Grüße: today_greeting_* -->
+    <plurals name="home_progress_remaining">
+        <item quantity="one">Noch %d Aufgabe offen</item>
+        <item quantity="other">Noch %d Aufgaben offen</item>
+    </plurals>
+    <string name="home_progress_all_done">Alles erledigt!</string>
+    <string name="home_progress_nothing">Heute ist nichts zu tun</string>
+    <string name="home_progress_summary">%1$d von %2$d erledigt</string>
+    <string name="home_progress_fraction" translatable="false">%1$d/%2$d</string>
+    <string name="home_progress_rest">Deine Pflanzen sind versorgt.</string>
+
+    <plurals name="home_streak_days">
+        <item quantity="one">%d Tag Serie</item>
+        <item quantity="other">%d Tage Serie</item>
+    </plurals>
+    <string name="home_streak_none">Starte heute deine Serie</string>
+    <string name="home_streak_best">Bestwert %1$d</string>
+
+    <string name="home_week_title">Diese Woche</string>
+    <string name="home_week_calendar">Kalender</string>
+
+    <string name="home_task_water">Gießen</string>
+    <string name="home_task_fertilize">Düngen</string>
+    <string name="home_task_mist">Besprühen</string>
+    <string name="home_task_repot">Umtopfen</string>
+    <plurals name="home_task_overdue">
+        <item quantity="one">%d Tag überfällig</item>
+        <item quantity="other">%d Tage überfällig</item>
+    </plurals>
+    <string name="home_task_done">Erledigt</string>
+
+    <plurals name="home_section_open">
+        <item quantity="one">%d offen</item>
+        <item quantity="other">%d offen</item>
+    </plurals>
+    <string name="home_water_all">Alle erledigen</string>
+
+    <string name="home_challenges_title">Herausforderungen</string>
+
+    <string name="home_empty_title">Alles im grünen Bereich</string>
+    <string name="home_empty_body">Sobald eine Pflanze Wasser oder Pflege braucht, erscheint sie hier.</string>
+
+    <string name="home_pro_title">PlantCare Pro</string>
+    <string name="home_pro_body">Unbegrenzt Pflanzen, Diagnose und Erkennung.</string>
+
+    <string name="home_cd_mark_done">%1$s als erledigt markieren</string>
+    <string name="home_cd_mark_undone">Markierung für %1$s aufheben</string>
+</resources>

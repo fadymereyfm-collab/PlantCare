@@ -15,7 +15,7 @@ import java.time.LocalDate;
  *
  * Grund: Die Kotlin-Objekte nutzen funktionale Typen (lambdas mit 2 Parametern),
  * was aus Java aufrufbar ist, aber umständlich. Diese Klasse kapselt die
- * Standard-Vacation-Gap-Logik, sodass Java-Code (DailyWateringAdapter)
+ * Standard-Vacation-Gap-Logik, sodass Aufrufer (HomeScreenController)
  * nur eine Zeile pro Done-Event braucht.
  *
  * Idempotent: Mehrfachaufrufe am selben Tag mit demselben email erhöhen die

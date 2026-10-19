@@ -1,5 +1,43 @@
 # PlantCare Progress Tracker
-## Last Updated: 2026-10-18
+## Last Updated: 2026-10-19
+
+## Session: 2026-10-19 (UI Redesign R1 — palette, unified theme, Home in Compose, Settings icons)
+### Task Completed: R1 — professional-look pass requested by Fady (outside Phase A–E ordering)
+### Layer: UI
+### Classification: **مكتملة** (built, tested, screenshots reviewed). Device QA of Home interactions still recommended.
+### Changes:
+  - Palette (`values/colors.xml`, `values-night/colors.xml`): `pc_primary` #2EB85F → **#007B39** (white text 2.6:1 → 5.4:1, HCT tone 45 of the same seed);
+    `pc_onSurfaceSecondary`/`text_secondary` #7D8A7E → #5E6E5F (readable on white). Dark mode: teal #5DDABE → same green hue #5CDF81,
+    surfaces green-tinted, **cards (`pc_surface`) now lighter than the background** (was equal → grey translucent cards), tertiary amber in both modes.
+  - Theme: `Base.Theme.PlantCareApp` shared by light + dark; `values-night/themes.xml` only overrides system-bar flags + plain window background
+    (the old night copy had drifted: no shapeAppearance items, different date-picker theme).
+  - Compose theme: `PlantCareTheme` = M3 MaterialTheme (`PlantCareTypography` Inter/Manrope, `PlantCareShapes`) + legacy M2 theme for weekbar/.
+  - Home tab rewritten in Compose (`ui/home/`: HomeScreen, HomeUiModels, HomeStateMapper, HomeScreenController, previews):
+    greeting + date header (top bar hidden on Home only), search, progress hero (ring + streak), week strip, room sections with
+    type-aware task cards (water/fertilize/mist/repot), "Alle erledigen", empty state, compact Pro card (free users), challenges.
+    All DailyWateringAdapter behaviours kept: vacation guard (Bug #8), ActionListDialogFragment, task highlight in plant detail,
+    reschedule dialog, double-tap guard. Done reminders from earlier days are no longer listed under "today".
+    Removed (only used by the old Home): DailyWateringAdapter.java, fragment_today.xml, include_hero_pro_banner.xml,
+    item_daily_watering.xml, item_today_room_header.xml.
+  - `TodayViewModel.RoomGroup.plantIds` (default emptyMap()); vacation date localized ("26. Oktober 2026").
+  - Settings: 17 rows get distinct Material Symbols icons (`drawable/ic_set_*`) instead of the repeated shield.
+  - Roborazzi 1.26.0 + screenshot tests (Home ×5, Settings ×2); `includeAndroidResources`; `robolectric.properties` (sdk=34, plain Application —
+    needed because includeAndroidResources makes Robolectric read targetSdk 35 + App from the merged manifest).
+  - Docs: `docs/DESIGN_SYSTEM.md`, `docs/design/{home,settings}/*.png`, CLAUDE.md §4 "UI / التصميم".
+### Evidence:
+  - `./gradlew assembleDevDebug` → BUILD SUCCESSFUL
+  - `./gradlew assembleProdRelease --rerun-tasks` → BUILD SUCCESSFUL in 4m 28s (61 tasks executed), APK 9,841,288 bytes
+  - **warnings_before → warnings_after: 18 → 18**; 0 `w:` in ui/home, ui/theme, TodayViewModel, TodayFragment, MainActivity
+  - `testDevDebugUnitTest`: 83 tests, 0 failures (76 existing + 7 screenshot); `testProdReleaseUnitTest`: 83 tests, 7 skipped (screenshot, debug-only by design), 0 failures
+  - `./gradlew recordRoborazziDevDebug` → 7 baselines in app/src/test/screenshots/{home,settings}/, reviewed visually (light + dark)
+  - CLAUDE.md §1 greps unchanged: C2 `AppDatabase.getInstance|DatabaseClient.` in ui/ → 0; C4 `new Thread(` in ui/ + weekbar/ → 0
+### Build Status: ✅ assembleProdRelease passed (4m 28s)
+### Regressions: none found by build/tests. To check on device: Home flows (toggle/undo, overdue → reschedule, Alle erledigen,
+  long-press edit/delete, plant detail, search, Kalender, Pro card), and colours on other screens (primary is now darker green).
+### Next Task: R2 — Mein Garten + plant detail (dialog → full screen), then Diagnose.
+
+---
+
 
 ## Session: 2026-10-18 (Auto-execution routine — Phase C.4 — C4 literal grep fix + first full test run on JDK 17)
 ### Task Completed: C4 (literal acceptance check) — reword the `FragmentBg.kt` KDoc so `grep "new Thread("` over ui/ + weekbar/ returns 0 (Next Task item 3 of routine #4). Also closes the "tests not run" gap from the JDK 17 entry.

@@ -581,6 +581,12 @@ public class MainActivity extends AppCompatActivity {
         if (title != null) {
             title.setText(titleRes);
         }
+        // 2026-10 redesign: Home draws its own greeting + date header, so the
+        // generic "Home" title bar is hidden there; other tabs keep it.
+        View topBar = findViewById(R.id.topBar);
+        if (topBar != null) {
+            topBar.setVisibility(tabIndex == NAV_INDEX_TODAY ? View.GONE : View.VISIBLE);
+        }
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragmentToShow)

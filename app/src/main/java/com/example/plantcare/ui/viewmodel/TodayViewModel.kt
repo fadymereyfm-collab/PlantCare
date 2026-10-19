@@ -88,6 +88,7 @@ class TodayViewModel(application: Application) : AndroidViewModel(application) {
         val roomNameMap = rooms.associate { it.id to it.name }
 
         val plantRoomMap = mutableMapOf<String, Int>()
+        val plantIdMap = mutableMapOf<String, Int>()
         for (r in reminders) {
             val name = r.plantName ?: continue
             if (name in plantRoomMap) continue
@@ -98,6 +99,7 @@ class TodayViewModel(application: Application) : AndroidViewModel(application) {
             if (plant == null) plant = plantRepo.findAnyByName(name)
 
             plantRoomMap[name] = plant?.roomId ?: 0
+            if (plant != null) plantIdMap[name] = plant.id
         }
 
         val grouped = LinkedHashMap<Int, MutableList<WateringReminder>>()
@@ -114,7 +116,7 @@ class TodayViewModel(application: Application) : AndroidViewModel(application) {
             .map { (roomId, list) ->
                 val roomName = if (roomId == 0) "Sonstige"
                                else roomNameMap.getOrDefault(roomId, "Sonstige")
-                RoomGroup(roomId, roomName, list)
+                RoomGroup(roomId, roomName, list, plantIdMap)
             }
     }
 
@@ -205,7 +207,8 @@ class TodayViewModel(application: Application) : AndroidViewModel(application) {
                 if (VacationPrefs.isVacationActive(ctx, email, today) && end != null) {
                     ctx.getString(
                         com.example.plantcare.R.string.vacation_banner_format,
-                        end.toString()
+                        // Localized ("26. Oktober 2026"), not ISO "2026-10-26".
+                        end.format(java.time.format.DateTimeFormatter.ofLocalizedDate(java.time.format.FormatStyle.LONG))
                     )
                 } else null
             )
@@ -215,6 +218,12 @@ class TodayViewModel(application: Application) : AndroidViewModel(application) {
     data class RoomGroup(
         val roomId: Int,
         val roomName: String,
-        val reminders: List<WateringReminder>
+        val reminders: List<WateringReminder>,
+        /**
+         * Plant name → resolved plant id (same lookup chain as the room
+         * mapping above), so Home can load thumbnails without re-querying
+         * the DB per row.
+         */
+        val plantIds: Map<String, Int> = emptyMap()
     )
 }

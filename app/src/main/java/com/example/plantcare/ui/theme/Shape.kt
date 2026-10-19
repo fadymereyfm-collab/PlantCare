@@ -1,11 +1,22 @@
 package com.example.plantcare.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Shapes
-import androidx.compose.ui.unit.dp
 
-val Shapes = Shapes(
-    small = RoundedCornerShape(14.dp),
-    medium = RoundedCornerShape(20.dp),
-    large = RoundedCornerShape(32.dp)
+/**
+ * Shape scale — same values as @dimen/radius_* (res/values/dimens.xml)
+ * and the ShapeAppearance.PlantCare.Corner.* styles used by XML widgets.
+ */
+val PlantCareShapes = androidx.compose.material3.Shapes(
+    extraSmall = RoundedCornerShape(PlantCareRadius.xs),
+    small = RoundedCornerShape(PlantCareRadius.sm),
+    medium = RoundedCornerShape(PlantCareRadius.md),
+    large = RoundedCornerShape(PlantCareRadius.lg),
+    extraLarge = RoundedCornerShape(PlantCareRadius.xl)
+)
+
+/** Legacy Material (M2) shapes for the older `weekbar/` Compose screens. */
+val LegacyShapes = androidx.compose.material.Shapes(
+    small = RoundedCornerShape(PlantCareRadius.sm),
+    medium = RoundedCornerShape(PlantCareRadius.lg),
+    large = RoundedCornerShape(PlantCareRadius.xl)
 )

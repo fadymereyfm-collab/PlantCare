@@ -116,6 +116,11 @@ Phase F (Functional bugs)  →  Phase A متبقّي  →  Phase B (i18n)  →  
 ### Repositories
 - ViewModel جديد لا يستدعي `AppDatabase.getInstance` أبداً. يستقبل Repository في الـconstructor.
 
+### UI / التصميم (منذ 2026-10)
+- اقرأ **`docs/DESIGN_SYSTEM.md`** قبل أي عمل على الواجهة (الألوان `pc_*`، ثيم واحد للفاتح والداكن، `PlantCareTheme` لـ Compose).
+- لا ألوان hex ولا `textSize` خام في layouts جديدة. الشاشات الجديدة: Compose stateless + SampleData + `@Preview` + اختبار Roborazzi (المرجع: `ui/home/`).
+- مهمة UI لا تُعتبر مكتملة قبل `./gradlew recordRoborazziDevDebug` ومراجعة الصور الناتجة بصرياً.
+
 ---
 
 ## 5 — قواعد التسجيل في PROGRESS.md
