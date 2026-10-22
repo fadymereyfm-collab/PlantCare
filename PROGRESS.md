@@ -1,6 +1,188 @@
 # PlantCare Progress Tracker
 
-## Last Updated: 2026-10-19
+## Last Updated: 2026-10-22
+
+## Session: 2026-10-22 (R1-tests — Robolectric 4.11.1 → 4.14.1, screenshot tests green on Windows)
+### Task Completed: R1-tests — execute Fady's decision (أ) on Needs Decision 2026-10-21
+### Layer: Test infrastructure (R1 follow-up; no production code touched)
+### Decision (Fady): (أ) — upgrade Robolectric to a version that supports Windows. (given live in chat, 2026-10-22)
+### Evidence:
+  - Files changed:
+    - `app/build.gradle`: `org.robolectric:robolectric` `4.11.1` → `4.14.1` (+ 2-line comment)
+    - `app/src/test/resources/robolectric.properties`: stale comment "Robolectric 4.11 supports up to API 34" reworded; `sdk=34` **kept** (the baselines were recorded on API 34)
+  - Why 4.14.1: per Maven Central, its `nativeruntime` POM depends on `nativeruntime-dist-compat:1.0.16`; `unzip -l` of that jar lists `native/windows/x86_64/robolectric-nativeruntime.dll` (15 255 552 bytes). (1.0.2, used by 4.11.1, has Linux/macOS only.)
+  - `./gradlew verifyRoborazziDevDebug` → 7 FAILED with `... is changed` (no more `.dll not found` ⇒ the native runtime now loads). Visual review of all 7 `build/outputs/roborazzi/*_compare.png`: the diffs are **only** card shadows/elevation edges, Switch thumb edges, and noise on the "Erledigt" check circle. Text, layout, colours and content are identical ⇒ renderer difference (Robolectric 4.14 / Windows vs the Linux 4.11 recording), **not a UI regression**.
+  - Baselines in `app/src/test/screenshots/` were **not re-recorded** (left as recorded on Linux). Plain `test` does not compare images, and CI (`.github/workflows/ci.yml`) runs only `testProdReleaseUnitTest` (screenshots skipped) on ubuntu.
+  - Acceptance criteria checklist:
+    - [✅] `./gradlew test --rerun-tasks --continue` → BUILD SUCCESSFUL in 9m 27s; per-variant XML: devDebug 83/0 failures/0 skipped, prodDebug 83/0/0, the 6 release/benchmark variants 83/0/7 skipped each
+    - [❌ not a goal] `verifyRoborazziDevDebug` against the Linux baselines: still 7 "changed" (see above)
+### Build Status: ✅ assembleProdRelease passed (49s, incremental, 16/61 tasks executed). Warnings 0 (incremental; main sources unchanged, so the 18 full-compile baseline cannot change)
+### Regressions: none. Closes `## Re-opened: R1 (2026-10-20)`: `./gradlew test` is green on Windows again.
+### Open for Fady:
+  - The baselines must come from a single machine. Either re-record on Windows (`./gradlew recordRoborazziDevDebug`; only shadow pixels change) or keep recording on Linux. Until then, `verifyRoborazziDevDebug` fails on Windows.
+  - Needs Decision Phase C (2026-10-19) is still unanswered.
+### Next Task: Phase C closure decision ⇒ `/phase-gate C` ⇒ Phase D.
+
+---
+
+## Session: 2026-10-22 (End-of-Session verification routine #7 — BUILD GREEN, TESTS RED)
+
+### Routine: automated end-of-session verification (CLAUDE.md §9). No code changed; no task marked Completed by this run.
+### Verified entries:
+  - 2026-10-21 Needs Decision — R1-tests (Auto-execution routine, no code changed)
+  - Changes since routine #6 (`find app/src app/build.gradle PROGRESS.md -newer .routine-backups/last-verify.txt`): **only `PROGRESS.md`**. No code or build-file changes.
+  - Both open decisions (R1-tests 2026-10-21, Phase C 2026-10-19) still have no `### Decision (Fady):` line.
+
+### STEP 1 — Build: ✅ `./gradlew assembleProdRelease --console=plain` → BUILD SUCCESSFUL in 3m 35s (61 actionable tasks: 16 executed, 45 up-to-date), 0 `e:`/`error:` lines — warnings: 0 (previous: 18 on a full compile). The build was incremental, so the 0 **cannot be compared** to 18. No sources changed, so a new warning is not possible.
+  - Log: `.routine-backups/verify-2026-10-22_1853/build.log`
+### STEP 1b — Tests: ❌ `./gradlew test --rerun-tasks --continue --console=plain` → **BUILD FAILED in 12m 39s** (14 failed tests across 2 variants)
+  - `--continue` was added (not in the routine) so that all 8 variants run, instead of stopping at the first failure as in routine #6.
+  - testDevDebugUnitTest: tests=83 failures=7 skipped=0
+  - testProdDebugUnitTest: tests=83 failures=7 skipped=0
+  - Dev/Prod × Release / NonMinifiedRelease / BenchmarkRelease (6 variants): tests=83 failures=0 skipped=7 each
+  - Failing tests (same as #6): HomeScreenScreenshotTest {busy_light, busy_dark, empty_light, vacation_dark, busy_light_fullPage}, SettingsLayoutScreenshotTest {settings_light, settings_dark}. Cause: `robolectric-nativeruntime.dll not found` / `UnsatisfiedLinkError` (RenderNodeNatives, TypefaceNatives, VectorDrawableNatives).
+  - All 76 non-screenshot tests pass in all 8 variants. **This run is the first to confirm prodRelease since routine #5.**
+  - Log: `test.log` in the same folder.
+### STEP 1c — Truncation guard: ✅ no `.kt`/`.java` files were modified since the last verification ⇒ none to check.
+
+### STEP 2 — Grep verification (verbatim, this run)
+| Check | Command | Result | Verdict |
+|-------|---------|--------|---------|
+| A1 | `grep -rn '"current_user_email"' app/src/main/java` | only `SecurePrefsHelper.kt:16:    const val KEY_USER_EMAIL = "current_user_email"` | ✅ |
+| C2 | `grep -rn "AppDatabase.getInstance\|DatabaseClient\." .../ui/ \| wc -l` | 0 | ✅ |
+| C4 | `grep -rn "new Thread(" .../ui/ .../weekbar/ \| wc -l` | 0 | ✅ |
+| B1 | `grep -n 'resConfigs' app/build.gradle` | `27:        resConfigs "de", "en"` | ✅ |
+| A3 | `grep -rn "YOUR_API_KEY_HERE" app/src/main/java \| wc -l` | 0 | ✅ |
+| A4 | `grep -n 'GEMINI_API_KEY' app/build.gradle` | `45:        buildConfigField "String", "GEMINI_API_KEY", "\"${geminiKey}\""` | ✅ |
+
+**Audit §7 metrics (13):**
+| # | Metric | Current | Previous (routine #6) | Verdict |
+|---|--------|---------|----------|---------|
+| 1 | DAO outside repo | 19 | 19 | ⚠️ ثابت |
+| 2 | `.getEmail()` | 8 | 8 | ⚠️ ثابت |
+| 3 | `new Thread(` (all java) | 2 | 2 | ⚠️ ثابت |
+| 4 | `catch (.*ignored` | 0 | 0 | ✅ |
+| 5 | Hilt files | 0 | 0 | ⚠️ ثابت (C1 — Needs Decision) |
+| 6 | test files | 10 | 10 | ⚠️ ثابت |
+| 7 | resConfigs | `"de", "en"` | same | ✅ |
+| 8 | values-en | exists | exists | ✅ |
+| 9 | test AdMob / placeholder key | 0 | 0 | ✅ |
+| 10 | TFLite asset | absent | absent | ✅ (Gemini) |
+| 11 | BillingManager.getInstance outside billing/ | 3 | 3 | ⚠️ ثابت |
+| 12 | PaywallDialogFragment refs | 10 | 10 | ⚠️ ثابت |
+| 13 | prodRelease AAB | none (`assemble` only) | none | ⚠️ |
+
+### Claims check:
+  - **2026-10-21 Needs Decision (R1-tests):** ✅ confirmed. Its §1 table matches this run verbatim, and its claim "no code changed" matches (only PROGRESS.md is newer). The root cause it gives (no Windows native runtime) matches the `.dll not found` failures here.
+  - Re-opened: 0 new. R1 (2026-10-20) stays Re-opened.
+### Regressions: none new. Tests are still red from R1 (7 Roborazzi tests × 2 debug variants). No metric got worse.
+### Housekeeping: `.routine-backups/` = 70 MB, no top-level items older than 30 days.
+### Next Task:
+  1. **Fady:** answer Needs Decision R1-tests (recommended: (ب) OS guard). Until then, `./gradlew test` stays red on Windows.
+  2. **Fady:** answer Needs Decision Phase C (2026-10-19), then run `/phase-gate C` and move to Phase D.
+  3. Device QA: Home R1, CameraX 1.4.2, 16 KB emulator dialog.
+  4. git commit of PROGRESS.md (still `M`).
+
+---
+
+## Needs Decision: 2026-10-21 — R1-tests Fix the Roborazzi screenshot tests failing on Windows (Re-opened R1)
+### Question: كيف نجعل `./gradlew test` أخضر على جهازك (Windows) مرة أخرى؟
+### Root cause (confirmed this run): the JAR Robolectric 4.11.1 resolves, `~/.gradle/caches/.../org.robolectric/nativeruntime-dist-compat/1.0.2/nativeruntime-dist-compat-1.0.2.jar`, contains only
+  `native/linux/x86_64/librobolectric-nativeruntime.so`, `native/mac/aarch64/…dylib`, `native/mac/x86_64/…dylib` — **no `native/windows/`** ⇒ `robolectric-nativeruntime.dll not found`.
+### Options:
+  (أ) **رفع Robolectric** `4.11.1` → إصدار أحدث فيه native runtime لـ Windows (يُعتقد أنه 4.12+؛ لم يُتحقّق منه بلا شبكة). هذا تغيير في إصدار dependency، ويعيد تنزيل الـ artifacts، وقد يغيّر pixels الـ baselines ⇒ `recordRoborazziDevDebug` + مراجعة مرئية.
+  (ب) **OS guard** في `HomeScreenScreenshotTest.kt` و `SettingsLayoutScreenshotTest.kt`: نضيف إلى `assumeTrue(BuildConfig.DEBUG)` الموجود شرط `!System.getProperty("os.name").startsWith("Windows")` ⇒ الاختبارات السبعة تُتخطّى (skipped) على Windows وتعمل على Linux/macOS/CI. التغيير يخصّ الاختبارات فقط ولا يمسّ أي dependency.
+### Recommendation: (ب) الآن لأنه فوري وآمن ولا يمسّ dependencies، و (أ) لاحقاً إن أردت تسجيل الـ screenshots على Windows. العيب: على جهازك لن تتحقّق screenshots محلياً، بل على CI أو Linux فقط.
+### How to answer: أضِف سطراً `### Decision (Fady): ...` تحت هذا العنوان، والروتين التالي سينفّذه.
+### Decision (Fady): (أ) — 2026-10-22. ✅ Executed the same day (see the R1-tests session at the top).
+### Run notes (Auto-execution routine 2026-10-21, no code changed):
+  - Guards: no LOCK, no edits in the last 30 min. The top entry was `## Re-opened:`, not Needs Decision. ⇒ proceeded.
+  - Task selection: Next Task items from routine #6 are all blocked: (1) the screenshot-test fix is a choice between undecided options ⇒ this entry; (2) Phase C closure is still unanswered (Needs Decision 2026-10-19 below); (3) device QA is manual; (4) R2 is a UX redesign with no spec in the docs ⇒ not automatable.
+  - Baseline build: ✅ `./gradlew assembleProdRelease --console=plain` → BUILD SUCCESSFUL in 2m 29s (61 actionable tasks: 16 executed, 45 up-to-date); warnings 0 (incremental, **not comparable** to the 18 full-compile baseline). Log: `.routine-backups/2026-10-21_2117/build-before.log`
+  - CLAUDE.md §1 table (verbatim):
+    ```
+    A1: app/src/main/java/com/example/plantcare/SecurePrefsHelper.kt:16:    const val KEY_USER_EMAIL = "current_user_email"
+    C2: 0
+    C4: 0
+    B1: 27:        resConfigs "de", "en"
+    A3: 0
+    A4: 45:        buildConfigField "String", "GEMINI_API_KEY", "\"${geminiKey}\""
+    ```
+  - Backup: `.routine-backups/2026-10-21_2117/`
+### Needs from Fady:
+  - Answer this decision, and the Phase C decision from 2026-10-19 (below).
+  - git commit of PROGRESS.md (still `M`).
+  - Device QA: Home R1, CameraX 1.4.2, 16 KB emulator dialog.
+
+---
+
+## Re-opened: R1 (2026-10-20) — test claim not reproducible on this machine
+R1 claimed `testDevDebugUnitTest: 83 tests, 0 failures (76 existing + 7 screenshot)`. In this run, on Fady's Windows machine (JDK 17), all 7 Roborazzi tests fail with
+`java.lang.IllegalArgumentException: resource native/windows/x86_64/robolectric-nativeruntime.dll not found.` (+ `UnsatisfiedLinkError at RenderNodeNatives`) ⇒ `./gradlew test` = **BUILD FAILED**.
+The 76 other tests still pass. Likely cause: Robolectric 4.11.1 ships no Windows native-graphics runtime, and R1 was probably built/recorded in a Linux session (PR #6 branch `claude/jolly-cori-*`). Not fixed by this routine. Options for Fady: bump Robolectric (Windows native runtime support), or skip the screenshot tests outside Linux/macOS (`assumeTrue` on os.name) so `./gradlew test` is green again. The R1 code itself is otherwise confirmed (see claims check below).
+
+---
+
+## Session: 2026-10-20 (End-of-Session verification routine #6 — BUILD GREEN, TESTS RED)
+
+### Routine: automated end-of-session verification (CLAUDE.md §9). No code changed; no task marked Completed by this run.
+### Verified entries:
+  - 2026-10-19 UI Redesign R1 — palette, unified theme, Home in Compose, Settings icons
+  - 2026-10-19 Release blocker — CameraX 1.3.4 → 1.4.2 for 16 KB page-size alignment
+  - 2026-10-19 Auto-execution routine — Phase C.3 — re-verification of C3 reactive DAOs
+  - (Needs Decision 2026-10-19 — Phase C closure: still no `### Decision (Fady):` line)
+
+### STEP 1 — Build: ✅ `./gradlew assembleProdRelease --console=plain` → BUILD SUCCESSFUL in 12m 39s (61 actionable tasks: **61 executed** = full compile), 0 `e:`/`error:` lines — warnings: **18** (previous: 18, R1 / CameraX full compiles) ⇒ no new warnings. Same 18 Kotlin warnings (ConsentManager, DataExportManager ×2, FcmTokenManager, SharedPlantsAdapter, CoverCloudSync, UnifiedCameraActivity, QuickAddHelper ×2, MainScreenCompose ×2, RemindersListCompose ×2, WeekBarCompose ×3, PlantCareWidget ×2 deprecated); 0 in ui/home or ui/theme.
+  - Log: `.routine-backups/verify-2026-10-20_1946/build.log`
+### STEP 1b — Tests: ❌ `./gradlew test --rerun-tasks --console=plain` → **BUILD FAILED in 6m 24s** at `:app:testDevDebugUnitTest` (**7 failed**)
+  - testDevDebugUnitTest: tests=83 failures=7 skipped=0 — failing: HomeScreenScreenshotTest {busy_light, busy_dark, empty_light, vacation_dark, busy_light_fullPage}, SettingsLayoutScreenshotTest {settings_light, settings_dark}; cause `robolectric-nativeruntime.dll not found` (Windows x86_64) / `UnsatisfiedLinkError at RenderNodeNatives`.
+  - testDevBenchmarkReleaseUnitTest: tests=83 failures=0 skipped=7 (screenshot tests skipped on non-debug, by design).
+  - ⚠️ The other 6 variants **did not run** (Gradle stops at the first failed task; no `--continue`) ⇒ prodRelease etc. not re-confirmed in this run. The 76 non-screenshot tests are green in both variants that ran.
+  - Log: `test.log` in the same folder.
+### STEP 1c — Truncation guard: ✅ 20 `.kt`/`.java` files modified since the last verification. 15 end with `}`. The other 5 (ui/home/HomeScreenPreviews.kt, ui/home/HomeUiModels.kt, ui/theme/Color.kt, ui/theme/Shape.kt, ui/theme/Type.kt) end in valid top-level Kotlin (an expression-body fun, a data-class `)`, a property getter, `val … = X(...)`); they were inspected manually and they compile ⇒ not truncated.
+
+### STEP 2 — Grep verification (verbatim, this run)
+| Check | Command | Result | Verdict |
+|-------|---------|--------|---------|
+| A1 | `grep -rn '"current_user_email"' app/src/main/java` | only `SecurePrefsHelper.kt:16` | ✅ |
+| C2 | `grep -rn "AppDatabase.getInstance\|DatabaseClient\." .../ui/ \| wc -l` | 0 | ✅ |
+| C4 | `grep -rn "new Thread(" .../ui/ .../weekbar/ \| wc -l` | 0 | ✅ |
+| B1 | `grep -n 'resConfigs' app/build.gradle` | `27: resConfigs "de", "en"` (line moved 26→27) | ✅ |
+| A3 | `grep -rn "YOUR_API_KEY_HERE" app/src/main/java \| wc -l` | 0 | ✅ |
+| A4 | `grep -n 'GEMINI_API_KEY' app/build.gradle` | L45 `buildConfigField "String", "GEMINI_API_KEY", "\"${geminiKey}\""` | ✅ |
+
+**Audit §7 metrics (13):**
+| # | Metric | Current | Previous (routine #5) | Verdict |
+|---|--------|---------|----------|---------|
+| 1 | DAO outside repo | 19 | 19 | ⚠️ ثابت |
+| 2 | `.getEmail()` | 8 | 8 | ⚠️ ثابت |
+| 3 | `new Thread(` (all java) | 2 (BgExecutor.java:9 KDoc + :21 factory) | 2 | ⚠️ ثابت |
+| 4 | `catch (.*ignored` | 0 (`\bignore\b` also 0) | 0 | ✅ |
+| 5 | Hilt files | 0 | 0 | ⚠️ ثابت (C1 open — Needs Decision) |
+| 6 | test files | **10** | 8 | ✅ تحسّن (+2 Roborazzi tests — but they fail here, see Re-opened) |
+| 7 | resConfigs | `"de", "en"` | same | ✅ |
+| 8 | values-en | exists | exists | ✅ |
+| 9 | test AdMob / placeholder key | 0 | 0 | ✅ |
+| 10 | TFLite asset | absent | absent | ✅ (Gemini) |
+| 11 | BillingManager.getInstance outside billing/ | 3 | 3 | ⚠️ ثابت |
+| 12 | PaywallDialogFragment refs | 10 | 10 | ⚠️ ثابت |
+| 13 | prodRelease AAB | none (`assemble` only) | none | ⚠️ |
+
+### Claims check:
+  - **R1 (UI Redesign):** code claims ✅ confirmed: `ui/home/` has the 5 claimed files; the 4 removed layouts + `DailyWateringAdapter.java` are gone (only comments mention it); `pc_primary` = #007B39 / night #5CDF81; `pc_onSurfaceSecondary` = #5E6E5F; `TodayViewModel.kt:227 val plantIds: Map<String, Int> = emptyMap()`; 18 `drawable/ic_set_*` (entry says 17 rows; not a contradiction); Roborazzi 1.26.0 + `includeAndroidResources = true` + `robolectric.properties` (sdk=34, plain Application); 7 baselines in `app/src/test/screenshots/` and `docs/design/`; `docs/DESIGN_SYSTEM.md` exists. "18 → 18 warnings" ✅ confirmed (full compile in this run). **Test claim ❌ ⇒ Re-opened** (see top).
+  - **CameraX 16 KB:** ✅ confirmed statically: all 4 camera artifacts `1.4.2` in app/build.gradle L231–234; build green with 18 warnings. ELF/zipalign check was not re-run here; on-device + camera QA still open.
+  - **C.3 re-verification:** ✅ confirmed: `liveData {` = 1 hit, a comment only (RoomCategoryRepository.kt:27); Hilt = 0; §1 table matches.
+  - Re-opened: 1 (R1 tests).
+
+### Regressions: 1 — `./gradlew test` was green (608/608, routine #5) and is now red: 7 Roborazzi screenshot tests (added by R1) fail on Windows. No code regression found; warnings unchanged at 18.
+### Housekeeping: `.routine-backups/` = 60 MB, no top-level items older than 30 days.
+### Next Task:
+  1. **Fady:** fix the screenshot-test environment (Robolectric bump or OS guard) so `./gradlew test` is green on Windows; then re-run the full `test`.
+  2. **Fady decision:** Phase C closure (Needs Decision below — still unanswered) ⇒ then `/phase-gate C` → Phase D.
+  3. Device QA: Home (R1) flows, camera on CameraX 1.4.2, 16 KB emulator dialog, disease-screen flows (F.polish / F.crop).
+  4. Planned UI work: R2 (Mein Garten + plant detail full screen).
+
+---
 
 ## Needs Decision: 2026-10-19 — Phase C closure (C1 Hilt + C3 UI-side wiring)
 ### Question: كيف نُغلق Phase C لإصدار 1.0؟ البيانات (DAO + Repository) أصبحت reactive منذ 2026-05-05، لكن **لا توجد أي شاشة تراقب هذه LiveData** — كل الشاشات (MyPlantsFragment, PlantsInRoomActivity, AllPlantsFragment, TodayFragment, PlantDetailDialogFragment) لا تزال تعتمد على `DataChangeNotifier` + `getXxxBlocking()`، و Hilt = 0.
