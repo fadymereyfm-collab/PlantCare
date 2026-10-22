@@ -48,10 +48,17 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v3
 
+      # app/src/prod/ is not in git (its only file is gitignored) ⇒ mkdir first.
       - name: Decode google-services.json (prod)
+        env:
+          GOOGLE_SERVICES_JSON_PROD: ${{ secrets.GOOGLE_SERVICES_JSON_PROD }}
         run: |
-          echo "${{ secrets.GOOGLE_SERVICES_JSON_PROD }}" | base64 --decode \
-            > app/src/prod/google-services.json
+          if [ -z "$GOOGLE_SERVICES_JSON_PROD" ]; then
+            echo "::error::Secret GOOGLE_SERVICES_JSON_PROD is not set (see the header of this file)."
+            exit 1
+          fi
+          mkdir -p app/src/prod
+          echo "$GOOGLE_SERVICES_JSON_PROD" | base64 --decode > app/src/prod/google-services.json
 
       - name: Run unit tests
         run: ./gradlew testProdReleaseUnitTest
@@ -83,6 +90,7 @@ jobs:
 
       - name: Decode secrets
         run: |
+          mkdir -p app/src/prod
           echo "${{ secrets.GOOGLE_SERVICES_JSON_PROD }}" | base64 --decode \
             > app/src/prod/google-services.json
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode \
